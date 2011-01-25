@@ -60,6 +60,7 @@ public class J2Plugin extends JavaPlugin {
 	private final J2PlugPermissions func_permissions = new J2PlugPermissions(this);
 	private final J2PlugIRC func_irc = new J2PlugIRC(this);
 	private final J2PlugKickBan func_kickban = new J2PlugKickBan(this);
+	public BlockLogger blogger;
 
 	public J2Plugin(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
 		super(pluginLoader, instance, desc, folder, plugin, cLoader);
@@ -101,6 +102,10 @@ public class J2Plugin extends JavaPlugin {
 		//irc end
 		loadTips();
 		startTipsTimer();
+		
+		//Initialize BlockLogger
+		this.blogger = new BlockLogger(this.getConnection());
+		this.blogger.run();
 
 		// Register our events
 		PluginManager pm = getServer().getPluginManager();
@@ -110,6 +115,7 @@ public class J2Plugin extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_ITEM, plrlisItem, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_CANBUILD, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_DAMAGED, blockListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_IGNITE, blockListener, Priority.Normal, this);
 		//pm.registerEvent(Event.Type.ENTITY_EXPLODE, playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, plrlisJoinQuit, Priority.Normal, this);

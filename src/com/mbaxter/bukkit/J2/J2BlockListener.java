@@ -9,6 +9,10 @@ import org.bukkit.Material;
 import org.bukkit.event.block.*;
 
 
+
+
+
+
 /**
  * J2 block listener
  * @author mbaxter
@@ -45,6 +49,17 @@ public class J2BlockListener extends BlockListener {
             }
     	}
     	
+    	if (event.getDamageLevel()==BlockDamageLevel.BROKEN)
+		{
+			BlockRow changed;
+			Block smacked = event.getBlock();
+			Player player = event.getPlayer();
+			changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ());
+			//if(!event.isCancelled())
+			
+			BlockLogger.bqueue.offer(changed);
+		}
+    	
     }
     
     @Override
@@ -52,6 +67,11 @@ public class J2BlockListener extends BlockListener {
     	Player player=event.getPlayer();
     	Block blockPlaced=event.getBlockPlaced();
     	int type=blockPlaced.getTypeId();
+    	
+    	BlockRow test;
+		
+		test = new BlockRow(player.getDisplayName(),0,type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ());
+		BlockLogger.bqueue.offer(test);
     	
     	if(j2.getPerm().playerLevel(player)==1 && j2.isOnSuperBlacklist(type)){
     		player.sendMessage(ChatColor.RED+"Even trusted have limits. Can't place that block type");
@@ -74,6 +94,17 @@ public class J2BlockListener extends BlockListener {
             event.setCancelled(true);
         }
     }
+    
+    public void onBlockRightClick(BlockRightClickEvent event)
+	{
+    	Player player = event.getPlayer();
+		if(event.getItemInHand().getTypeId() == 284 && j2.getPerm().playerLevel(player) ==2)
+		{
+			this.j2.blogger.showBlockHistory(event.getPlayer(), event.getBlock()) ;
+		}
+		//System.out.println("Item type id ="+event.getItemInHand().getTypeId() );
+		
+	}
     
     /*public boolean onBlockBreak(Player player, Block block) {
     	/if(j2.mc2){
