@@ -1,4 +1,4 @@
-package com.mbaxter.bukkit.J2;
+package com.J2;
 /**
  * Yanked this code from LogBlock
  * https://github.com/bootswithdefer/LogBlock.git

@@ -1,4 +1,4 @@
-package com.mbaxter.bukkit.J2;
+package com.J2;
 
 /*
  * In-progress user class, for handling all sorts of fun things

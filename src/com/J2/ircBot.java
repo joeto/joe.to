@@ -1,4 +1,4 @@
-package com.mbaxter.bukkit.J2;
+package com.J2;
 
 /*
  * mbaxter's irc bot main code for bukkit

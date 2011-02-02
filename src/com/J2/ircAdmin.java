@@ -1,4 +1,4 @@
-package com.mbaxter.bukkit.J2;
+package com.J2;
 
 public class ircAdmin {
 	private String username,hostname;

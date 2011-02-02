@@ -1,4 +1,4 @@
-package com.mbaxter.bukkit.J2;
+package com.J2;
 
 import java.util.List;
 import java.util.logging.Level;

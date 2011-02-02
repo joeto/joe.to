@@ -12,7 +12,7 @@
  * 
  */
 
-package com.mbaxter.bukkit.J2;
+package com.J2;
 
 import java.io.File;
 import java.util.HashMap;
