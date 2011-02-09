@@ -405,7 +405,7 @@ public class J2Plugin extends JavaPlugin {
 	}*/
 
 	public void tpToCoord(Player player, double x, double y, double z, float rotation, float pitch){
-		player.teleportTo(new Location(this.getServer().getWorlds()[0], x, y, z, rotation, pitch));
+		player.teleportTo(new Location(this.getServer().getWorlds().get(0), x, y, z, rotation, pitch));
 	}
 
 	public String combineSplit(int startIndex, String[] string, String seperator) {

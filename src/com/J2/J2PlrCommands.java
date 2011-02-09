@@ -202,12 +202,12 @@ public class J2PlrCommands extends PlayerListener {
 				return;
 			}
 
-			long curTime=j2.getServer().getWorlds()[0].getTime();
+			long curTime=j2.getServer().getWorlds().get(0).getTime();
 			long margin = (desired-curTime) % 24000;
 			if (margin < 0) {
 				margin += 24000;
 			}
-			j2.getServer().getWorlds()[0].setTime(curTime+margin);
+			j2.getServer().getWorlds().get(0).setTime(curTime+margin);
 			player.sendMessage(ChatColor.RED+"Time changed");
 			event.setCancelled(true);
 		}

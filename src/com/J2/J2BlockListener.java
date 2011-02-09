@@ -44,7 +44,7 @@ public class J2BlockListener extends BlockListener {
             int z=event.getBlock().getZ();
             int y=event.getBlock().getY()+1;
             while(y<128){
-            	j2.getServer().getWorlds()[0].getBlockAt(x, y, z).setTypeId(0);
+            	event.getBlock().getWorld().getBlockAt(x, y, z).setTypeId(0);
             	y++;
             }
     	}
