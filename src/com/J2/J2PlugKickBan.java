@@ -25,7 +25,7 @@ public class J2PlugKickBan {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
-			conn = j2.getConnection();
+			conn = j2.mysql.getConnection();
 			Date curTime=new Date();
 			long timeNow=curTime.getTime()/1000;
 			long unBanTime;
@@ -80,7 +80,7 @@ public class J2PlugKickBan {
 			PreparedStatement ps = null;
 			ResultSet rs = null;
 			try {
-				conn = j2.getConnection();
+				conn = j2.mysql.getConnection();
 				ps = conn.prepareStatement("SELECT name,reason,unbantime FROM "+j2.bansTable+" WHERE unbanned=false and name=\""+user+"\"");
 				rs = ps.executeQuery();
 				while (rs.next()) {
@@ -230,7 +230,7 @@ public class J2PlugKickBan {
 		PreparedStatement ps = null;
 		String name=j2.stringClean(aname);
 		try {
-			conn = j2.getConnection();
+			conn = j2.mysql.getConnection();
 
 			for (j2Ban ban : bans) {
 				if (ban.getName().equalsIgnoreCase(name)) {

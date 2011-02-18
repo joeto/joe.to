@@ -31,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -69,7 +68,7 @@ public class J2Plugin extends JavaPlugin {
 
 	public void onDisable() {
 
-				getIRC().kill();
+		getIRC().kill();
 		stopTimer();
 		// NOTE: All registered events are automatically unregistered when a plugin is disabled
 
@@ -79,21 +78,7 @@ public class J2Plugin extends JavaPlugin {
 		log=Logger.getLogger("Minecraft");
 		protectedUsers=new ArrayList<String>();
 
-		//mysql start
-		PropFile properties = new PropFile("mysql.properties");
-		driver = properties.getString("driver", "com.mysql.jdbc.Driver");
-		username = properties.getString("user", "root");
-		password = properties.getString("pass", "root");
-		db = properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
-		//chatTable = properties.getString("chat","chat");
-		bansTable = properties.getString("j2bans", "j2bans");
-		usersTable = properties.getString("users", "users");
-		try {
-			Class.forName(driver);
-		} catch (ClassNotFoundException ex) {
-
-		}
-		//mysql end
+		
 
 		loadData();
 
@@ -104,7 +89,7 @@ public class J2Plugin extends JavaPlugin {
 		startTipsTimer();
 		
 		//Initialize BlockLogger
-		this.blogger = new BlockLogger(this.getConnection());
+		this.blogger = new BlockLogger(this.mysql.getConnection());
 		this.blogger.run();
 
 		// Register our events
@@ -139,6 +124,23 @@ public class J2Plugin extends JavaPlugin {
 	}
 
 	public void loadData(){
+		//mysql start
+		PropFile properties = new PropFile("mysql.properties");
+		String mysql_driver = properties.getString("driver", "com.mysql.jdbc.Driver");
+		String mysql_username = properties.getString("user", "root");
+		String mysql_password = properties.getString("pass", "root");
+		String mysql_db = properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
+		//chatTable = properties.getString("chat","chat");
+		bansTable = properties.getString("j2bans", "j2bans");
+		usersTable = properties.getString("users", "users");
+		try {
+			Class.forName(mysql_driver);
+		} catch (ClassNotFoundException ex) {
+
+		}
+		mysql = new mysqlInfo(mysql_username,mysql_password,mysql_db);
+		//mysql end
+		
 		rules=readDaFile("rules.txt");
 		blacklist=readDaFile("blacklistinfo.txt");
 		intro=readDaFile("intro.txt");
@@ -146,7 +148,6 @@ public class J2Plugin extends JavaPlugin {
 		playerLimit=servproperties.getInt("max-players");
 		PropFile j2properties = new PropFile("j2.properties");
 		try { 
-			tips_location = j2properties.getString("tip-location", "tips.txt");
 			tips_delay = j2properties.getInt("tip-delay", 120);
 			tips_prefix = j2properties.getString("tip-prefix","");
 			tips_color = "\u00A7"+j2properties.getString("tip-color", "b");
@@ -169,16 +170,11 @@ public class J2Plugin extends JavaPlugin {
 			ircOnJoin = j2properties.getString("irc-onjoin","");
 			gsAuth = j2properties.getString("gs-auth","");
 			gsPass = j2properties.getString("gs-pass","");
-			banBuckets = j2properties.getBoolean("banbuckets",false);
 			String[] superBlacklist = j2properties.getString("superblacklist", "").split(",");
 			String[] regBlacklist = j2properties.getString("regblacklist", "").split(",");
 			ircLevel2 = j2properties.getString("irc-level2","").split(",");
 			superblacklist=new ArrayList<Integer>();
 			itemblacklist=new ArrayList<Integer>();
-			/*natureXmin = j2properties.getInt("nature-xmin",2000);
-			natureXmax = j2properties.getInt("nature-xmax",2001);
-			natureZmin = j2properties.getInt("nature-zmin",2000);
-			natureZmax = j2properties.getInt("nature-zmax",2001);*/
 			mc2=j2properties.getBoolean("mc2",false);
 			maintenance = j2properties.getBoolean("maintenance",false);
 			fun=j2properties.getBoolean("funmode",false);
@@ -198,14 +194,7 @@ public class J2Plugin extends JavaPlugin {
 		}
 	}
 
-	public Connection getConnection() {
-		try {
-			return DriverManager.getConnection(db + "?autoReconnect=true&user=" + username + "&password=" + password);
-		} catch (SQLException ex) {
-
-		}
-		return null;
-	}
+	
 
 	public String[] readDaFile(String filename)
 	{
@@ -246,7 +235,7 @@ public class J2Plugin extends JavaPlugin {
 		ResultSet rs = null;
 		String name=stringClean(aname);
 		try {
-			conn = getConnection();
+			conn = this.mysql.getConnection();
 			ps = conn.prepareStatement("SELECT count(id) FROM "+usersTable+" WHERE name=\""+name+"\"");
 			rs = ps.executeQuery();
 			boolean exists=false;
@@ -278,12 +267,12 @@ public class J2Plugin extends JavaPlugin {
 
 	//tips
 	private void startTipsTimer() {
-		stopTimer = false;
+		tips_stopTimer = false;
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				if (stopTimer) {
+				if (tips_stopTimer) {
 					timer.cancel();
 					return;
 				}
@@ -294,7 +283,7 @@ public class J2Plugin extends JavaPlugin {
 
 
 	private void stopTimer() {
-		stopTimer = true;
+		tips_stopTimer = true;
 	}
 
 	public void broadcastTip()
@@ -434,9 +423,9 @@ public class J2Plugin extends JavaPlugin {
 		return func_kickban;
 	}
 
-	public String driver, username, password, db, /*chatTable,*/ bansTable, usersTable;
+	public String bansTable, usersTable;
 	public Logger log;
-
+	public mysqlInfo mysql;
 	public ArrayList<String> protectedUsers;
 	public String[] rules, blacklist, intro;
 
@@ -447,11 +436,10 @@ public class J2Plugin extends JavaPlugin {
 	private String tips_location = "tips.txt";
 	private String  tips_color = ChatColor.AQUA.toString();
 	private String  tips_prefix = "";
-	private boolean stopTimer = false;
+	private boolean tips_stopTimer = false;
 	private int tips_delay = 120;
 	private ArrayList<String> tips;
 	private int currentTip = 0;
-	public boolean banBuckets;
 	public String[] ircLevel2;
 	public boolean ircEnable;
 	private ArrayList<Integer> itemblacklist,superblacklist;
