@@ -59,6 +59,7 @@ public class J2Plugin extends JavaPlugin {
 	private final J2PlugPermissions func_permissions = new J2PlugPermissions(this);
 	private final J2PlugIRC func_irc = new J2PlugIRC(this);
 	private final J2PlugKickBan func_kickban = new J2PlugKickBan(this);
+	public final userCache users = new userCache();
 	public BlockLogger blogger;
 
 	public J2Plugin(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {

@@ -1,9 +1,8 @@
 package com.J2;
 
 
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerListener;
-import org.bukkit.event.player.PlayerLoginEvent;
+
+import org.bukkit.event.player.*;
 
 
 public class J2PlrJoinQuit extends PlayerListener {
@@ -16,15 +15,26 @@ public class J2PlrJoinQuit extends PlayerListener {
 	
 	@Override
 	public void onPlayerJoin(PlayerEvent event) {
-		if(!j2.ircEnable)
-			return;
-		j2.getIRC().ircMsg(event.getPlayer().getName()+" has logged in");
-		j2.getIRC().adminChannel();
+		if(j2.ircEnable){
+			j2.getIRC().ircMsg(event.getPlayer().getName()+" has logged in");
+			j2.getIRC().adminChannel();
+		}
 	}
 
 	@Override
+	public void onPlayerKick(PlayerKickEvent event){
+		j2.users.delUser(event.getPlayer());
+		if(j2.ircEnable){
+			j2.getIRC().ircMsg(event.getPlayer().getName()+" has logged in");
+			j2.getIRC().adminChannel();
+		}
+	}
+	
+	@Override
 	public void onPlayerQuit(PlayerEvent event) {
-		j2.getIRC().ircMsg(event.getPlayer().getName()+" has left the server");
+		if(j2.ircEnable){
+			j2.getIRC().ircMsg(event.getPlayer().getName()+" has left the server");
+		}
 	}
 
 	@Override
@@ -38,12 +48,16 @@ public class J2PlrJoinQuit extends PlayerListener {
 		}
 		if(j2.maintenance && !j2.getPerm().isAtOrAbove(2,event.getPlayer())){
 			reason="Server offline for maintenance";
-		}
-		if(reason!=null){
 			event.setKickMessage(reason);
 			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, reason);
 			return;
 		}
+		if(j2.users.getOnlineUser(event.getPlayer())!=null){
+			event.setKickMessage("Already logged in");
+			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Already logged in");
+			return;
+		}
+		j2.users.addUser(event.getPlayer());
 		event.allow();
 	}
 }
