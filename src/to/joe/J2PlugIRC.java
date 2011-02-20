@@ -156,14 +156,14 @@ public class J2PlugIRC {
 		}
 	}
 	
-	public void ircMsg(String mess){
+	public void ircMsg(String message){
 		if(j2.ircEnable)
-			bot.sendMessage(j2.ircChannel,mess);
+			bot.sendMessage(j2.ircChannel,message);
 	}
 
-	public void ircAdminMsg(String mess){
+	public void ircAdminMsg(String message){
 		if(j2.ircEnable)
-			bot.sendMessage(j2.ircAdminChannel,mess);
+			bot.sendMessage(j2.ircAdminChannel,message);
 	}
 	
 	public J2Plugin getJ2(){

@@ -22,8 +22,8 @@ public class j2User {
 		group=Group;
 		extraFlags=ExtraFlags;
 	}
-	public void setGroup(j2Group g){
-		group=g;
+	public void setGroup(j2Group Group){
+		group=Group;
 	}
 	public String getName(){
 		return name;
@@ -31,17 +31,14 @@ public class j2User {
 	public String getColorName(){
 		return color+name+ChatColor.WHITE;
 	}
-	public boolean hasResSlot(){
-		return extraFlags.contains(Flag.RESSLOT);
-	}
 	public j2Group getGroup(){
 		return group;
 	}
-	public boolean hasFlag(Flag f){
-		if(group.hasFlag(f))
+	public boolean hasFlag(Flag flag){
+		if(group.hasFlag(flag))
 			return true;
 		for(Flag i:extraFlags){
-			if(i.equals(f))
+			if(i.equals(flag))
 				return true;
 		}
 		return false;
@@ -52,27 +49,19 @@ public class j2User {
 		allFlags.addAll(extraFlags);
 		return allFlags;
 	}
-	public void addFlag(Flag f){
-		if(!extraFlags.contains(f)){
-			extraFlags.add(f);
+	public boolean addFlag(Flag flag){
+		if(!extraFlags.contains(flag)){
+			extraFlags.add(flag);
+			return true;
 		}
+		return false;
 	}
-	public void dropFlag(Flag f){
-		if(extraFlags.contains(f)){
-			extraFlags.remove(f);
+	public boolean dropFlag(Flag flag){
+		if(extraFlags.contains(flag)){
+			extraFlags.remove(flag);
+			return true;
 		}
-	}
-	public boolean isJailed(){
-		return extraFlags.contains(Flag.JAILED);
-	}
-	
-	public boolean putInJail(){
-		//If was already jailed, return false.
-		if(extraFlags.contains(Flag.JAILED)){
-			return false;
-		}
-		addFlag(Flag.JAILED);
-		return true;
+		return false;
 	}
 	private ArrayList<Flag> extraFlags;
 	private String name;

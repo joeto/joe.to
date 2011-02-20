@@ -58,7 +58,7 @@ public class J2Plugin extends JavaPlugin {
 	private final J2PlugChat func_chat = new J2PlugChat(this);
 	private final J2PlugIRC func_irc = new J2PlugIRC(this);
 	private final J2PlugKickBan func_kickban = new J2PlugKickBan(this);
-	public final userCache users = new userCache();
+	public final userCache users = new userCache(this);
 	public BlockLogger blogger;
 
 	public J2Plugin(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
@@ -77,11 +77,7 @@ public class J2Plugin extends JavaPlugin {
 	public void onEnable() {
 		log=Logger.getLogger("Minecraft");
 		protectedUsers=new ArrayList<String>();
-
-		
-
 		loadData();
-
 		//irc start
 		if(ircEnable)getIRC().prepIRC();
 		//irc end
@@ -105,8 +101,7 @@ public class J2Plugin extends JavaPlugin {
 		//pm.registerEvent(Event.Type.ENTITY_EXPLODE, playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, plrlisJoinQuit, Priority.Normal, this);
-
-		// EXAMPLE: Custom code, here we just output some info so we can check all is well
+		
 		PluginDescriptionFile pdfFile = this.getDescription();
 		System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
 	}
@@ -131,14 +126,13 @@ public class J2Plugin extends JavaPlugin {
 		String mysql_password = properties.getString("pass", "root");
 		String mysql_db = properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
 		//chatTable = properties.getString("chat","chat");
-		bansTable = properties.getString("j2bans", "j2bans");
-		usersTable = properties.getString("users", "users");
+		int mysql_server = properties.getInt("server-number", 1);
 		try {
 			Class.forName(mysql_driver);
 		} catch (ClassNotFoundException ex) {
 
 		}
-		mysql = new mysqlInfo(mysql_username,mysql_password,mysql_db);
+		mysql = new MySQLTools(mysql_username,mysql_password,mysql_db, mysql_server, this);
 		//mysql end
 		
 		rules=readDaFile("rules.txt");
@@ -225,45 +219,9 @@ public class J2Plugin extends JavaPlugin {
 		return fileLines.toArray(new String[fileLines.size()]);
 	}
 
-	public String stringClean(String hat){
-		return hat.replace('\"', '_').replace('\'', '_').replace(';', '_');
-	}
+	
 
-	public void trust(String aname){
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		String name=stringClean(aname);
-		try {
-			conn = this.mysql.getConnection();
-			ps = conn.prepareStatement("SELECT count(id) FROM "+usersTable+" WHERE name=\""+name+"\"");
-			rs = ps.executeQuery();
-			boolean exists=false;
-			while (rs.next()) {
-				if(rs.getInt("count(id")>0){
-					exists=true;
-				}
-			}
-
-			if(exists)
-				ps = conn.prepareStatement("UPDATE " + usersTable + " SET groups=\"trusted\" WHERE name=\""+ name +"\"");
-			else
-				ps = conn.prepareStatement("INSERT INTO " + usersTable + " VALUES ('',\""+ name.toLowerCase() +"\",\"trusted\",'','','','','','')");
-			ps.executeUpdate();
-		} catch (SQLException ex) {
-
-		} finally {
-			try {
-				if (ps != null) {
-					ps.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException ex) {
-			}
-		}
-	}
+	
 
 	//tips
 	private void startTipsTimer() {
@@ -426,10 +384,11 @@ public class J2Plugin extends JavaPlugin {
 		}
 		return false;
 	}
+	
+	
 
-	public String bansTable, usersTable;
 	public Logger log;
-	public mysqlInfo mysql;
+	public MySQLTools mysql;
 	public ArrayList<String> protectedUsers;
 	public String[] rules, blacklist, intro;
 

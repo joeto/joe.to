@@ -39,7 +39,7 @@ public class J2PlrJoinQuit extends PlayerListener {
 
 	@Override
 	public void onPlayerLogin(PlayerLoginEvent event) {
-		String reason=j2.getKickBan().checkBans(event.getPlayer().getName());
+		String reason=j2.mysql.checkBans(event.getPlayer().getName());
 		
 		if(reason!=null){
 			event.setKickMessage(reason);
@@ -57,7 +57,7 @@ public class J2PlrJoinQuit extends PlayerListener {
 			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Already logged in");
 			return;
 		}
-		j2.users.addUser(event.getPlayer());
+		j2.users.addUser(event.getPlayer().getName());
 		event.allow();
 	}
 }

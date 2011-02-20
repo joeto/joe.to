@@ -20,8 +20,16 @@ public class J2PlrCommands extends PlayerListener {
 	public void onPlayerCommand(PlayerChatEvent event) {
 		String[] split = event.getMessage().split(" ");
 		Player player = event.getPlayer();
+		j2User user = j2.users.getOnlineUser(player);
 
-
+		if(user.hasFlag(Flag.JAILED)){
+			if(split[0].equalsIgnoreCase("/confess")){
+				user.dropFlag(Flag.JAILED);
+			}
+			event.setCancelled(true);
+			return;
+		}
+		
 		if (split[0].equalsIgnoreCase("/rules")){
 			for(String line : j2.rules){
 				player.sendMessage(line);
@@ -57,7 +65,7 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 
-		if(split[0].equalsIgnoreCase("/tp") && (j2.fun || j2.hasFlag(player, Flag.ADMIN))){
+		if(split[0].equalsIgnoreCase("/tp") && (j2.hasFlag(player, Flag.FUN))){
 			List<Player> inquest = j2.getServer().matchPlayer(split[1]);
 			if(inquest.size()==1){
 				Player inquestion=inquest.get(0);
@@ -120,18 +128,15 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 
-		if(split[0].equalsIgnoreCase("/item") || split[0].equalsIgnoreCase("/i")){
+		if(split[0].equalsIgnoreCase("/item") || split[0].equalsIgnoreCase("/i") && j2.hasFlag(player, Flag.FUN)){
 			if (split.length < 2) {
 				player.sendMessage(ChatColor.RED+"Correct usage is: /i [item] (amount)");
 				event.setCancelled(true);
 				return;
 			}
-
 			int item = 0;
 			int amount = 1;
 			int dataType = -1;
-
-
 			try {
 				if(split[1].contains(":")) {
 					String[] data = split[1].split(":");
@@ -156,23 +161,17 @@ public class J2PlrCommands extends PlayerListener {
 				player.sendMessage(ChatColor.RED+"Command fail.");
 				return;
 			}
-
-
-
 			if((new ItemStack(item)).getType() == null || item == 0) {
 				player.sendMessage(ChatColor.RED+"Invalid item.");
 				event.setCancelled(true);
 				return;
 			}
-
 			if(dataType != -1) {
 				player.getWorld().dropItem(player.getLocation(), new ItemStack(item, amount, ((byte)dataType)));
 			} else {
 				player.getWorld().dropItem(player.getLocation(), new ItemStack(item, amount));
 			}
-
 			player.sendMessage(ChatColor.RED+"Here you go!");
-
 			event.setCancelled(true);
 			return;
 		}
@@ -260,7 +259,7 @@ public class J2PlrCommands extends PlayerListener {
 			event.setCancelled(true);	
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/ban") && j2.hasFlag(player, Flag.KICKBAN)){
+		if(split[0].equalsIgnoreCase("/ban") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length < 4){
 				player.sendMessage(ChatColor.RED+"Usage: /ban playername time-in-minutes reason");
 				player.sendMessage(ChatColor.RED+"        do time as 0 for permaban");
@@ -273,7 +272,7 @@ public class J2PlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/kick") && j2.hasFlag(player, Flag.KICKBAN)){
+		if(split[0].equalsIgnoreCase("/kick") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length < 3){
 				player.sendMessage(ChatColor.RED+"Usage: /kick playername reason");
 				event.setCancelled(true);
@@ -284,7 +283,7 @@ public class J2PlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/addban") && j2.hasFlag(player, Flag.KICKBAN)){
+		if(split[0].equalsIgnoreCase("/addban") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length < 4){
 				player.sendMessage(ChatColor.RED+"Usage: /addban playername time-in-minutes reason");
 				player.sendMessage(ChatColor.RED+"        do time as 0 for permaban");
@@ -298,7 +297,7 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 
-		if((split[0].equalsIgnoreCase("/unban") || split[0].equalsIgnoreCase("/pardon")) && j2.hasFlag(player, Flag.KICKBAN)){
+		if((split[0].equalsIgnoreCase("/unban") || split[0].equalsIgnoreCase("/pardon")) && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length < 2){
 				player.sendMessage(ChatColor.RED+"Usage: /unban playername");
 				event.setCancelled(true);
@@ -306,7 +305,7 @@ public class J2PlrCommands extends PlayerListener {
 			}
 			String name=split[1];
 			String adminName=player.getName();
-			j2.getKickBan().unban(name);
+			j2.mysql.unban(name);
 			j2.log.log(Level.INFO, "Unbanning " + name + " by " + adminName);
 			j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Unbanning " + name + " by " + adminName);
 			event.setCancelled(true);
@@ -359,7 +358,7 @@ public class J2PlrCommands extends PlayerListener {
 			//TODO: /ignore code will also be here
 		}
 
-		if (split[0].equalsIgnoreCase("/forcekick") && j2.hasFlag(player, Flag.KICKBAN)){
+		if (split[0].equalsIgnoreCase("/forcekick") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length==1){
 				player.sendMessage(ChatColor.RED+"Usage: /forcekick playername");
 				player.sendMessage(ChatColor.RED+"       Requires full name");
