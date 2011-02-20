@@ -19,12 +19,12 @@ public class J2PlrItem extends PlayerListener {
 		Player player = event.getPlayer();
 		int type=event.getMaterial().getId();
 
-		if(j2.getPerm().playerLevel(player)==1 && j2.isOnSuperBlacklist(type)){
+		if(j2.hasFlag(player, Flag.TRUSTED) && j2.isOnSuperBlacklist(type)){
 			player.sendMessage(ChatColor.RED+"Even trusted have limits. Can't place that.");
 			event.setCancelled(true);
 			return;
 		}
-		if(j2.getPerm().playerLevel(player)==0 && (j2.isOnRegularBlacklist(type)||j2.isOnSuperBlacklist(type))){
+		if(!j2.hasFlag(player, Flag.TRUSTED) && (j2.isOnRegularBlacklist(type)||j2.isOnSuperBlacklist(type))){
 			player.sendMessage(ChatColor.RED+"You need to be trusted or higher to place that.");
 			event.setCancelled(true);
 			return;

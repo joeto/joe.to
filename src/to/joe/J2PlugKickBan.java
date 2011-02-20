@@ -130,15 +130,16 @@ public class J2PlugKickBan {
 			ban(name,banReason,banTime,adminName);
 			if (split.length > 2) {
 				toBan.kickPlayer("Banned: " + banReason);
+				
 				j2.log.log(Level.INFO, "Banning " + name + " by " + adminName + ": " + banReason);
-				j2.getChat().msgByLvlPlus(2,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
-				j2.getChat().msgByLvlMinus(1,ChatColor.RED + name + " banned (" + banReason+")");
+				j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
+				j2.getChat().msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned (" + banReason+")");
 				j2.getIRC().ircMsg(name + " banned (" + banReason+")");
 			} else {
 				toBan.kickPlayer("Banned.");
 				j2.log.log(Level.INFO, "Banning " + name + " by " + adminName);
-				j2.getChat().msgByLvlPlus(2,ChatColor.RED + "Banning " + name + " by " + adminName);
-				j2.getChat().msgByLvlMinus(1,ChatColor.RED + name + " banned");
+				j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName);
+				j2.getChat().msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned");
 				j2.getIRC().ircMsg(name + " banned");
 			}
 			j2.getIRC().ircMsg(name+" has left the server");
@@ -160,10 +161,10 @@ public class J2PlugKickBan {
 		forceKick(name,"Banned: "+banReason);
 		if (split.length > 2) {
 			j2.log.log(Level.INFO, "Banning " + name + " by " + adminName + ": " + banReason);
-			j2.getChat().msgByLvlPlus(2,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
+			j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
 		} else {
 			j2.log.log(Level.INFO, "Banning " + name + " by " + adminName);
-			j2.getChat().msgByLvlPlus(2,ChatColor.RED + "Banning " + name + " by " + adminName);
+			j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName);
 		}
 	}
 	
@@ -180,14 +181,14 @@ public class J2PlugKickBan {
 			if (reason!="") {
 				toKick.kickPlayer("Kicked: " + reason);
 				j2.log.log(Level.INFO, "Kicking " + name + " by " + admin + ": " + reason);
-				j2.getChat().msgByLvlPlus(2,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
-				j2.getChat().msgByLvlMinus(1,ChatColor.RED + name + "kicked ("+reason+")");
+				j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
+				j2.getChat().msgByFlagless(Flag.ADMIN,ChatColor.RED + name + "kicked ("+reason+")");
 				j2.getIRC().ircMsg(name + " kicked ("+reason+")");
 			} else {
 				toKick.kickPlayer("Kicked.");
 				j2.log.log(Level.INFO, "Kicking " + name + " by " + admin);
-				j2.getChat().msgByLvlPlus(2,ChatColor.RED + "Kicking " + name + " by " + admin);
-				j2.getChat().msgByLvlMinus(1,ChatColor.RED + name + "kicked");
+				j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin);
+				j2.getChat().msgByFlagless(Flag.ADMIN,ChatColor.RED + name + "kicked");
 				j2.getIRC().ircMsg(name + " kicked");
 			}
 			j2.getIRC().ircMsg(name+" has left the server");

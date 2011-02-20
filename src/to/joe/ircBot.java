@@ -56,7 +56,7 @@ public class ircBot extends PircBot {
 			else if (message.equalsIgnoreCase("!admins")) {
 				String curAdmins = "Admins: ";
 				for (Player p : plug.getJ2().getServer().getOnlinePlayers()) {
-					if (p != null && (plug.getJ2().getPerm().isAtOrAbove(2, p))) {
+					if (p != null && (plug.getJ2().hasFlag(p,Flag.ADMIN))) {
 						if(curAdmins=="Admins: "){
 							curAdmins+=p.getName();
 						}

@@ -46,7 +46,7 @@ public class J2PlrJoinQuit extends PlayerListener {
 			event.disallow(PlayerLoginEvent.Result.KICK_BANNED, reason);
 			return;
 		}
-		if(j2.maintenance && !j2.getPerm().isAtOrAbove(2,event.getPlayer())){
+		if(j2.maintenance && !j2.hasFlag(event.getPlayer(),Flag.ADMIN)){
 			reason="Server offline for maintenance";
 			event.setKickMessage(reason);
 			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, reason);

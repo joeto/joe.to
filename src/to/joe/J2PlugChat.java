@@ -32,17 +32,17 @@ public class J2PlugChat {
 		return colorlist;
 	}
 	
-	public void msgByLvlPlus(int lvl,String msg){
+	public void msgByFlag(Flag flag,String msg){
 		for (Player plr : j2.getServer().getOnlinePlayers()) {
-			if (plr != null && j2.getPerm().isAtOrAbove(lvl, plr)) {
+			if (plr != null && j2.hasFlag(plr, flag)) {
 				plr.sendMessage(msg);
 			}
 		}
 	}
 
-	public void msgByLvlMinus(int lvl,String msg){
+	public void msgByFlagless(Flag flag,String msg){
 		for (Player plr : j2.getServer().getOnlinePlayers()) {
-			if (plr != null && !j2.getPerm().isAtOrAbove(lvl+1,plr)) {
+			if (plr != null && !j2.hasFlag(plr, flag)) {
 				plr.sendMessage(msg);
 			}
 		}
@@ -57,17 +57,17 @@ public class J2PlugChat {
 	}
 	public void aMsg(String name,String message){
 		String msg="<§d"+name+"§f> "+message;
-		msgByLvlPlus(2,msg);
+		msgByFlag(Flag.ADMIN,msg);
 		j2.log.log(Level.INFO, "adminsChat: <"+name+"> "+message);
 	}
 	public void gMsg(String name,String message){
 		String amessage="<"+name+"> "+message;
 		String pmessage="<ADMIN> "+message;
 		for (Player p : j2.getServer().getOnlinePlayers()) {
-			if (p != null && j2.getPerm().isAtOrAbove(2,p)) {
+			if (p != null && j2.hasFlag(p, Flag.ADMIN)) {
 				p.sendMessage(amessage);
 			}
-			else if (p !=null && !j2.getPerm().isAtOrAbove(2,p)) {
+			else if (p !=null && !j2.hasFlag(p,Flag.ADMIN)) {
 				p.sendMessage(pmessage);
 			}
 		}
@@ -77,7 +77,10 @@ public class J2PlugChat {
 	}
 	
 	public void addChat(String name, String message) {
-		/*Connection conn = null;
+		/*this is a terrible, horrible idea. Never do it again.
+		 * 
+		 * 
+		 * Connection conn = null;
 		PreparedStatement ps = null;
 		try {
 			conn = getConnection();

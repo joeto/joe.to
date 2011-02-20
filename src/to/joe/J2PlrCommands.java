@@ -43,7 +43,7 @@ public class J2PlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/protectme") && j2.getPerm().isAtOrAbove(1, player)){
+		if(split[0].equalsIgnoreCase("/protectme") && j2.hasFlag(player, Flag.TRUSTED)){
 			String playerName = player.getName().toLowerCase();
 			if(j2.tpProtect.getBoolean(playerName,false)){
 				j2.tpProtect.setBoolean(playerName, false);
@@ -57,11 +57,11 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 
-		if(split[0].equalsIgnoreCase("/tp") && (j2.fun || j2.getPerm().isAtOrAbove(2, player))){
+		if(split[0].equalsIgnoreCase("/tp") && (j2.fun || j2.hasFlag(player, Flag.ADMIN))){
 			List<Player> inquest = j2.getServer().matchPlayer(split[1]);
 			if(inquest.size()==1){
 				Player inquestion=inquest.get(0);
-				if(!j2.getPerm().isAtOrAbove(2, player) && inquestion!=null && (j2.getPerm().isAtOrAbove(1, inquestion)) && j2.tpProtect.getBoolean(inquestion.getName().toLowerCase(), false)){
+				if(!j2.hasFlag(player, Flag.ADMIN) && inquestion!=null && (j2.hasFlag(inquestion, Flag.TRUSTED)) && j2.tpProtect.getBoolean(inquestion.getName().toLowerCase(), false)){
 					player.sendMessage(ChatColor.RED + "Cannot teleport to protected player.");
 				}
 				else if(inquestion.getName().equalsIgnoreCase(player.getName())){
@@ -79,7 +79,7 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 
-		if(split[0].equalsIgnoreCase("/tphere") && j2.getPerm().isAtOrAbove(2, player)){
+		if(split[0].equalsIgnoreCase("/tphere") && j2.hasFlag(player, Flag.ADMIN)){
 			List<Player> inquest = j2.getServer().matchPlayer(split[1]);
 			if(inquest.size()==1){
 				Player inquestion=inquest.get(0);
@@ -177,7 +177,7 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 
-		if(split[0].equalsIgnoreCase("/time") && j2.getPerm().isAtOrAbove(2, player)){
+		if(split[0].equalsIgnoreCase("/time") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length!=2){
 				player.sendMessage(ChatColor.RED+"Usage: /time day|night");
 				event.setCancelled(true);
@@ -218,7 +218,7 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 
-		if(split[0].equalsIgnoreCase("/a") && j2.getPerm().isAtOrAbove(2, player)){
+		if(split[0].equalsIgnoreCase("/a") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length<2){
 				event.getPlayer().sendMessage(ChatColor.RED+"Usage: /a Message");
 				event.setCancelled(true);
@@ -237,7 +237,7 @@ public class J2PlrCommands extends PlayerListener {
 				String report=j2.combineSplit(1, split, " ");
 				String message="Report: <§d"+playerName+"§f>"+report;
 				String ircmessage="Report from "+playerName+": "+report;
-				j2.getChat().msgByLvlPlus(2, message);
+				j2.getChat().msgByFlag(Flag.ADMIN, message);
 				j2.getIRC().ircAdminMsg(ircmessage);
 				player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
 			}
@@ -247,7 +247,7 @@ public class J2PlrCommands extends PlayerListener {
 			}
 			event.setCancelled(true);	
 		}
-		if(split[0].equalsIgnoreCase("/g") && j2.getPerm().isAtOrAbove(2, player)){
+		if(split[0].equalsIgnoreCase("/g") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length<2){
 				event.getPlayer().sendMessage(ChatColor.RED+"Usage: /g Message");
 				event.setCancelled(true);
@@ -260,7 +260,7 @@ public class J2PlrCommands extends PlayerListener {
 			event.setCancelled(true);	
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/ban") && j2.getPerm().isAtOrAbove(2,player)){
+		if(split[0].equalsIgnoreCase("/ban") && j2.hasFlag(player, Flag.KICKBAN)){
 			if(split.length < 4){
 				player.sendMessage(ChatColor.RED+"Usage: /ban playername time-in-minutes reason");
 				player.sendMessage(ChatColor.RED+"        do time as 0 for permaban");
@@ -273,7 +273,7 @@ public class J2PlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/kick") && j2.getPerm().isAtOrAbove(2,player)){
+		if(split[0].equalsIgnoreCase("/kick") && j2.hasFlag(player, Flag.KICKBAN)){
 			if(split.length < 3){
 				player.sendMessage(ChatColor.RED+"Usage: /kick playername reason");
 				event.setCancelled(true);
@@ -284,7 +284,7 @@ public class J2PlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/addban") && j2.getPerm().isAtOrAbove(2,player)){
+		if(split[0].equalsIgnoreCase("/addban") && j2.hasFlag(player, Flag.KICKBAN)){
 			if(split.length < 4){
 				player.sendMessage(ChatColor.RED+"Usage: /addban playername time-in-minutes reason");
 				player.sendMessage(ChatColor.RED+"        do time as 0 for permaban");
@@ -298,7 +298,7 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 
-		if((split[0].equalsIgnoreCase("/unban") || split[0].equalsIgnoreCase("/pardon")) && j2.getPerm().isAtOrAbove(2,player)){
+		if((split[0].equalsIgnoreCase("/unban") || split[0].equalsIgnoreCase("/pardon")) && j2.hasFlag(player, Flag.KICKBAN)){
 			if(split.length < 2){
 				player.sendMessage(ChatColor.RED+"Usage: /unban playername");
 				event.setCancelled(true);
@@ -308,7 +308,7 @@ public class J2PlrCommands extends PlayerListener {
 			String adminName=player.getName();
 			j2.getKickBan().unban(name);
 			j2.log.log(Level.INFO, "Unbanning " + name + " by " + adminName);
-			j2.getChat().msgByLvlPlus(2,ChatColor.RED + "Unbanning " + name + " by " + adminName);
+			j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Unbanning " + name + " by " + adminName);
 			event.setCancelled(true);
 			return;
 		}
@@ -327,7 +327,7 @@ public class J2PlrCommands extends PlayerListener {
 			return true;
 		}*/
 
-		if(split[0].equalsIgnoreCase("/getgroup") && j2.getPerm().isAtOrAbove(2,player)){
+		if(split[0].equalsIgnoreCase("/getgroup") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length==1){
 				player.sendMessage("/getgroup playername");
 				event.setCancelled(true);
@@ -339,19 +339,10 @@ public class J2PlrCommands extends PlayerListener {
 				event.setCancelled(true);
 				return;
 			}
-			Player who=match.get(0); 
+			j2User who = j2.users.getOnlineUser(match.get(0)); 
 			String message="Player "+who.getName()+": ";
-			switch(j2.getPerm().playerLevel(who)){
-			case 0:
-				message+="default";break;
-			case 1:
-				message+="trusted";break;
-			case 2:
-				message+="admin";break;
-			case 3:
-				message+="srstaff";break;
-			default:
-				message+="wtf it broke";break;
+			for(Flag f: who.getFlags()){
+				message+=f.getDescription()+", ";
 			}
 			player.sendMessage(message);
 			event.setCancelled(true);
@@ -365,10 +356,10 @@ public class J2PlrCommands extends PlayerListener {
 			j2.getChat().addChat(player.getName(), message);
 			j2.getIRC().ircMsg("* "+ player.getName()+" "+message);
 			//don't cancel this after reading it. 
-			//TODO: ignore here
+			//TODO: /ignore code will also be here
 		}
 
-		if (split[0].equalsIgnoreCase("/forcekick") && j2.getPerm().isAtOrAbove(2, player)){
+		if (split[0].equalsIgnoreCase("/forcekick") && j2.hasFlag(player, Flag.KICKBAN)){
 			if(split.length==1){
 				player.sendMessage(ChatColor.RED+"Usage: /forcekick playername");
 				player.sendMessage(ChatColor.RED+"       Requires full name");
@@ -382,8 +373,8 @@ public class J2PlrCommands extends PlayerListener {
 				reason=j2.combineSplit(2, split, " ");
 			j2.getKickBan().forceKick(name,reason);
 			j2.log.log(Level.INFO, "Kicking " + name + " by " + admin + ": " + reason);
-			j2.getChat().msgByLvlPlus(2,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
-			j2.getChat().msgByLvlMinus(1,ChatColor.RED + name+" kicked ("+reason+")");
+			j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
+			j2.getChat().msgByFlagless(Flag.ADMIN,ChatColor.RED + name+" kicked ("+reason+")");
 			event.setCancelled(true);
 			return;
 		}
@@ -401,27 +392,27 @@ public class J2PlrCommands extends PlayerListener {
 			}
 			return true;
 		}*/
-		if(split[0].equalsIgnoreCase("/ircrefresh") && j2.getPerm().isAtOrAbove(3, player)){
+		if(split[0].equalsIgnoreCase("/ircrefresh") && j2.hasFlag(player, Flag.SRSTAFF)){
 			j2.getIRC().loadIRCAdmins();
 			player.sendMessage(ChatColor.RED+"IRC admins reloaded");
 			event.setCancelled(true);
 			return;
 		}
 
-		if(split[0].equalsIgnoreCase("/j2reload") && j2.getPerm().isAtOrAbove(3, player)){
+		if(split[0].equalsIgnoreCase("/j2reload") && j2.hasFlag(player, Flag.SRSTAFF)){
 			j2.loadData();
-			j2.getChat().msgByLvlPlus(3, "j2 data reloaded by "+player.getName());
+			j2.getChat().msgByFlag(Flag.SRSTAFF, "j2 data reloaded by "+player.getName());
 			j2.log.info("j2 data reloaded by "+player.getName());
 			event.setCancelled(true);
 			return;
 		}
 
-		if(split[0].equalsIgnoreCase("/maintenance") && j2.getPerm().isAtOrAbove(3, player)){
+		if(split[0].equalsIgnoreCase("/maintenance") && j2.hasFlag(player, Flag.SRSTAFF)){
 			if(!j2.maintenance){
 				j2.log.info(player.getName()+" has turned on maintenance mode");
 				j2.maintenance=true;
 				for (Player p : j2.getServer().getOnlinePlayers()) {
-					if (p != null && !j2.getPerm().isAtOrAbove(2, p)) {
+					if (p != null && !j2.hasFlag(player, Flag.ADMIN)) {
 						p.sendMessage("Server entering maintenance mode");
 						p.kickPlayer("Server entering maintenance mode");
 					}
@@ -436,7 +427,7 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 
-		if(split[0].equalsIgnoreCase("/1x1") && j2.getPerm().isAtOrAbove(2, player)){
+		if(split[0].equalsIgnoreCase("/1x1") && j2.hasFlag(player, Flag.ADMIN)){
 			player.sendMessage("Next block you break (not by stick), everything above it goes byebye");
 			j2.OneByOne=player;
 			event.setCancelled(true);

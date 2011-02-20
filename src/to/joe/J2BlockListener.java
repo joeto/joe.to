@@ -73,12 +73,12 @@ public class J2BlockListener extends BlockListener {
 		test = new BlockRow(player.getDisplayName(),0,type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ());
 		BlockLogger.bqueue.offer(test);
     	
-    	if(j2.getPerm().playerLevel(player)==1 && j2.isOnSuperBlacklist(type)){
+    	if(j2.hasFlag(player, Flag.TRUSTED) && j2.isOnSuperBlacklist(type)){
     		player.sendMessage(ChatColor.RED+"Even trusted have limits. Can't place that block type");
     		event.setCancelled(true);
     		return;
     	}
-    	if(j2.getPerm().playerLevel(player)==0 && (j2.isOnRegularBlacklist(type)||j2.isOnSuperBlacklist(type))){
+    	if(!j2.hasFlag(player, Flag.TRUSTED) && (j2.isOnRegularBlacklist(type)||j2.isOnSuperBlacklist(type))){
     		player.sendMessage(ChatColor.RED+"You need to be trusted or higher to place that block type");
     		event.setCancelled(true);
     		return;
@@ -88,7 +88,7 @@ public class J2BlockListener extends BlockListener {
         double z = player.getLocation().getZ() - (blockPlaced.getZ() + 0.5D);
         double dist = x*x + y*y + z*z;
         if(dist>400.0D) {
-            j2.getChat().msgByLvlPlus(2, player.getName()+" placed a block over 20 away. *thwump*");
+            j2.getChat().msgByFlag(Flag.ADMIN, player.getName()+" placed a block over 20 away. *thwump*");
             j2.log.info(player.getName() + " placed a block too far away");
             player.kickPlayer("Detected as using a hack. Just rejoin if you aren't :)");
             event.setCancelled(true);
@@ -98,7 +98,7 @@ public class J2BlockListener extends BlockListener {
     public void onBlockRightClick(BlockRightClickEvent event)
 	{
     	Player player = event.getPlayer();
-		if(event.getItemInHand().getTypeId() == 284 && j2.getPerm().playerLevel(player) ==2)
+		if(event.getItemInHand().getTypeId() == 284 && j2.hasFlag(player, Flag.ADMIN))
 		{
 			this.j2.blogger.showBlockHistory(event.getPlayer(), event.getBlock()) ;
 		}

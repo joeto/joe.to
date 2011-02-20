@@ -8,13 +8,13 @@ import java.util.ArrayList;
  */
 
 public class j2Group {
-	public j2Group(String n, ArrayList<Character> f){
+	public j2Group(String n, ArrayList<Flag> f){
 		name=n;
 		flags=f;
 	}
-	public boolean hasFlag(char f){
-		for(Character i:flags){
-			if(i.equals(Character.valueOf(f)))
+	public boolean hasFlag(Flag f){
+		for(Flag i:flags){
+			if(i.equals(f))
 				return true;
 		}
 		return false;
@@ -22,7 +22,7 @@ public class j2Group {
 	public String getName(){
 		return name;
 	}
-	public ArrayList<Character> getFlags(){
+	public ArrayList<Flag> getFlags(){
 		return flags;
 	}
 	public int getImmunity(){
@@ -30,6 +30,6 @@ public class j2Group {
 	}
 	int immunity;
 	String name;
-	ArrayList<Character> flags;
+	ArrayList<Flag> flags;
 	boolean cake=true; //Thank you Untamed for the suggestion
 }

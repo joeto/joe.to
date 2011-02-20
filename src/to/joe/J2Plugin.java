@@ -56,7 +56,6 @@ public class J2Plugin extends JavaPlugin {
 	private final J2BlockListener blockListener = new J2BlockListener(this);
 	private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 	private final J2PlugChat func_chat = new J2PlugChat(this);
-	private final J2PlugPermissions func_permissions = new J2PlugPermissions(this);
 	private final J2PlugIRC func_irc = new J2PlugIRC(this);
 	private final J2PlugKickBan func_kickban = new J2PlugKickBan(this);
 	public final userCache users = new userCache();
@@ -412,16 +411,20 @@ public class J2Plugin extends JavaPlugin {
 		return func_chat;
 	}
 
-	public J2PlugPermissions getPerm(){
-		return func_permissions;
-	}
-
 	public J2PlugIRC getIRC(){
 		return func_irc;
 	}
 	
 	public J2PlugKickBan getKickBan(){
 		return func_kickban;
+	}
+	
+	public boolean hasFlag(Player player, Flag flag){
+		j2User user=users.getOnlineUser(player);
+		if(user!=null && user.hasFlag(flag)){
+			return true;
+		}
+		return false;
 	}
 
 	public String bansTable, usersTable;
