@@ -30,10 +30,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -133,15 +129,15 @@ public class J2Plugin extends JavaPlugin {
 
 		}
 		mysql = new MySQLTools(mysql_username,mysql_password,mysql_db, mysql_server, this);
+		mysql.loadMySQLData();
 		//mysql end
 		
 		rules=readDaFile("rules.txt");
 		blacklist=readDaFile("blacklistinfo.txt");
-		intro=readDaFile("intro.txt");
-		PropFile servproperties = new PropFile("server.properties");
-		playerLimit=servproperties.getInt("max-players");
+		intro=readDaFile("intro.txt");		
 		PropFile j2properties = new PropFile("j2.properties");
 		try { 
+			playerLimit=j2properties.getInt("max-players");
 			tips_delay = j2properties.getInt("tip-delay", 120);
 			tips_prefix = j2properties.getString("tip-prefix","");
 			tips_color = "\u00A7"+j2properties.getString("tip-color", "b");
@@ -385,7 +381,6 @@ public class J2Plugin extends JavaPlugin {
 		return false;
 	}
 	
-	
 
 	public Logger log;
 	public MySQLTools mysql;
@@ -413,6 +408,6 @@ public class J2Plugin extends JavaPlugin {
 	public Player OneByOne = null;
 	public boolean fun,randomcolor;
 	Random random = new Random();
-	int playerLimit=0;
+	int playerLimit;
 	ArrayList<String> srstaffList,adminsList,trustedList;
 }
