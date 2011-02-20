@@ -1,4 +1,4 @@
-package com.J2;
+package to.joe;
 
 public class ircAdmin {
 	private String username,hostname;

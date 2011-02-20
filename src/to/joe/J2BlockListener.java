@@ -1,5 +1,5 @@
 
-package com.J2;
+package to.joe;
 
 
 import org.bukkit.entity.*;

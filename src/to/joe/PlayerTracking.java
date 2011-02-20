@@ -1,4 +1,4 @@
-package com.J2;
+package to.joe;
 
 public class PlayerTracking {
 	public static j2User getUser(String name){

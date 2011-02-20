@@ -12,7 +12,7 @@
  * 
  */
 
-package com.J2;
+package to.joe;
 
 import java.io.File;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.J2;
+package to.joe;
 
 /*
  * In-progress user class, for handling all sorts of fun things
@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import org.bukkit.ChatColor;
 
 public class j2User {
-	public j2User(String n, ChatColor c, boolean w, boolean r, j2Group g, boolean j, ArrayList<j2Flag> ep){
-		name=n;
-		color=c;
-		whitelist=w;
-		reservelist=r;
-		group=g;
-		jailed=j;
-		extraFlag=ep;
+	public j2User(String Name, ChatColor Color, boolean Whitelist, boolean ReserveList, j2Group Group, boolean Jailed, ArrayList<Character> ExtraFlags){
+		name=Name;
+		color=Color;
+		whitelist=Whitelist;
+		reservelist=ReserveList;
+		group=Group;
+		jailed=Jailed;
+		extraFlags=ExtraFlags;
 	}
 	public void setGroup(j2Group g){
 		group=g;
@@ -45,17 +45,8 @@ public class j2User {
 	public boolean hasFlag(char f){
 		if(group.hasFlag(f))
 			return true;
-		for(j2Flag i:extraFlag){
-			if(i.getFlag()==f)
-				return true;
-		}
-		return false;
-	}
-	public boolean hasPriv(String p){
-		if(group.hasPerm(p))
-			return true;
-		for( j2Flag f : extraFlag){
-			if(f.hasPerm(p))
+		for(Character i:extraFlags){
+			if(i.equals(Character.valueOf(f)))
 				return true;
 		}
 		return false;
@@ -71,7 +62,7 @@ public class j2User {
 		jailed=true;
 		return true;
 	}
-	private ArrayList<j2Flag> extraFlag;
+	private ArrayList<Character> extraFlags;
 	private String name;
 	private ChatColor color;
 	private boolean whitelist,reservelist,jailed;

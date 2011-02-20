@@ -1,4 +1,4 @@
-package com.J2;
+package to.joe;
 /**
  * Yanked this code from LogBlock
  * https://github.com/bootswithdefer/LogBlock.git

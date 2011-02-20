@@ -1,4 +1,4 @@
-package com.J2;
+package to.joe;
 
 import java.util.logging.Level;
 

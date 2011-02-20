@@ -1,4 +1,4 @@
-package com.J2;
+package to.joe;
 
 import java.util.ArrayList;
 
@@ -8,21 +8,13 @@ import java.util.ArrayList;
  */
 
 public class j2Group {
-	public j2Group(String n, ArrayList<j2Flag> f){
+	public j2Group(String n, ArrayList<Character> f){
 		name=n;
 		flags=f;
 	}
 	public boolean hasFlag(char f){
-		for(j2Flag i:flags){
-			if(i.getFlag()==f)
-				return true;
-		}
-		return false;
-	}
-	//TODO: BUKKIT INTEGRATION
-	public boolean hasPerm(String p){
-		for( j2Flag f : flags){
-			if(f.hasPerm(p))
+		for(Character i:flags){
+			if(i.equals(Character.valueOf(f)))
 				return true;
 		}
 		return false;
@@ -30,7 +22,7 @@ public class j2Group {
 	public String getName(){
 		return name;
 	}
-	public ArrayList<j2Flag> getFlags(){
+	public ArrayList<Character> getFlags(){
 		return flags;
 	}
 	public int getImmunity(){
@@ -38,6 +30,6 @@ public class j2Group {
 	}
 	int immunity;
 	String name;
-	ArrayList<j2Flag> flags;
+	ArrayList<Character> flags;
 	boolean cake=true; //Thank you Untamed for the suggestion
 }

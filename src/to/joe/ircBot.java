@@ -1,4 +1,4 @@
-package com.J2;
+package to.joe;
 
 /*
  * mbaxter's irc bot main code for bukkit
