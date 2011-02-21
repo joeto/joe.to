@@ -73,7 +73,7 @@ public class J2BlockListener extends BlockListener {
 		test = new BlockRow(player.getDisplayName(),0,type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ());
 		BlockLogger.bqueue.offer(test);
     	
-    	if(j2.hasFlag(player, Flag.TRUSTED) && j2.isOnSuperBlacklist(type)){
+    	if(j2.hasFlag(player, Flag.TRUSTED) && !j2.hasFlag(player, Flag.ADMIN) && j2.isOnSuperBlacklist(type)){
     		player.sendMessage(ChatColor.RED+"Even trusted have limits. Can't place that block type");
     		event.setCancelled(true);
     		return;
@@ -95,12 +95,19 @@ public class J2BlockListener extends BlockListener {
         }
     }
     
+    
     public void onBlockRightClick(BlockRightClickEvent event)
 	{
     	Player player = event.getPlayer();
+    	if(j2.debug)j2.log.info(player.getName()+" stick");
 		if(event.getItemInHand().getTypeId() == 284 && j2.hasFlag(player, Flag.ADMIN))
 		{
-			this.j2.blogger.showBlockHistory(event.getPlayer(), event.getBlock()) ;
+			if(j2.debug)j2.log.info(player.getName()+ "used gold shovel");
+			this.j2.blogger.showBlockHistory(event.getPlayer(), event.getBlock());
+		}
+		if(event.getItemInHand().getTypeId() == 280 && j2.hasFlag(player, Flag.ADMIN)){
+			event.getBlock().setTypeId(0);
+			if(j2.debug)j2.log.info(player.getName()+" used a stick");
 		}
 		//System.out.println("Item type id ="+event.getItemInHand().getTypeId() );
 		

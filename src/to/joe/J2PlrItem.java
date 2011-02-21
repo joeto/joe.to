@@ -19,7 +19,7 @@ public class J2PlrItem extends PlayerListener {
 		Player player = event.getPlayer();
 		int type=event.getMaterial().getId();
 
-		if(j2.hasFlag(player, Flag.TRUSTED) && j2.isOnSuperBlacklist(type)){
+		if(j2.hasFlag(player, Flag.TRUSTED) && !j2.hasFlag(player,Flag.ADMIN) && j2.isOnSuperBlacklist(type)){
 			player.sendMessage(ChatColor.RED+"Even trusted have limits. Can't place that.");
 			event.setCancelled(true);
 			return;

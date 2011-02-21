@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import org.bukkit.ChatColor;
 
 public class j2User {
-	public j2User(String Name, ChatColor Color, j2Group Group,  ArrayList<Flag> ExtraFlags){
+	public j2User(String Name, ChatColor Color, String Group,  ArrayList<Flag> ExtraFlags){
 		name=Name;
 		color=Color;
 		group=Group;
 		extraFlags=ExtraFlags;
 	}
-	public void setGroup(j2Group Group){
+	public void setGroup(String Group){
 		group=Group;
 	}
 	public String getName(){
@@ -31,23 +31,11 @@ public class j2User {
 	public String getColorName(){
 		return color+name+ChatColor.WHITE;
 	}
-	public j2Group getGroup(){
+	public String getGroup(){
 		return group;
 	}
-	public boolean hasFlag(Flag flag){
-		if(group.hasFlag(flag))
-			return true;
-		for(Flag i:extraFlags){
-			if(i.equals(flag))
-				return true;
-		}
-		return false;
-	}
-	public ArrayList<Flag> getFlags(){
-		ArrayList<Flag> allFlags = new ArrayList<Flag>();
-		allFlags.addAll(group.getFlags());
-		allFlags.addAll(extraFlags);
-		return allFlags;
+	public ArrayList<Flag> getUserFlags(){
+		return extraFlags;
 	}
 	public boolean addFlag(Flag flag){
 		if(!extraFlags.contains(flag)){
@@ -66,6 +54,5 @@ public class j2User {
 	private ArrayList<Flag> extraFlags;
 	private String name;
 	private ChatColor color;
-	private j2Group group;
-	
+	private String group;
 }

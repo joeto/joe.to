@@ -101,7 +101,7 @@ public class ircBot extends PircBot {
 			return;
 		}
 		if (!ircMsg){
-			doMsg(channel,sender,message);
+			doMsg(channel,sender," "+message);
 		}
 
 	}

@@ -31,11 +31,8 @@ public class J2PlugKickBan {
 		}
 		Player toBan=toBanCandidates.get(0);
 		String banReason="";
-		//long banTime=Long.parseLong(split[2]);
-		//tempbans
 		long banTime=0;
-		if(split.length>3)
-			banReason=j2.combineSplit(3, split, " ");
+		banReason=j2.combineSplit(2, split, " ");
 		if (toBan != null) {
 			String name = toBan.getName();
 			j2.mysql.ban(name,banReason,banTime,adminName);
@@ -53,7 +50,6 @@ public class J2PlugKickBan {
 				j2.getChat().msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned");
 				j2.getIRC().ircMsg(name + " banned");
 			}
-			j2.getIRC().ircMsg(name+" has left the server");
 		} else {
 			if(!adminName.equalsIgnoreCase("console")){
 				j2.getServer().getPlayer(adminName).sendMessage(ChatColor.RED+"Error:"+split[1]+" does not exist or fits multiple players");
@@ -63,10 +59,8 @@ public class J2PlugKickBan {
 	public void callAddBan(String adminName, String[] split)
 	{
 		String banReason="";
-		//long banTime=Long.parseLong(split[2]);
-		//tempbans
 		long banTime=0;
-		banReason=j2.combineSplit(3, split, " ");
+		banReason=j2.combineSplit(2, split, " ");
 		String name=split[1];
 		j2.mysql.ban(name,banReason,banTime,adminName);
 		forceKick(name,"Banned: "+banReason);
@@ -102,7 +96,6 @@ public class J2PlugKickBan {
 				j2.getChat().msgByFlagless(Flag.ADMIN,ChatColor.RED + name + "kicked");
 				j2.getIRC().ircMsg(name + " kicked");
 			}
-			j2.getIRC().ircMsg(name+" has left the server");
 		} else {
 			if(!admin.equalsIgnoreCase("console"))
 				j2.getServer().getPlayer(admin).sendMessage(ChatColor.RED+"Error:"+pname+" does not exist or fits multiple players");

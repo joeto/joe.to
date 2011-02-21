@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -21,6 +22,7 @@ public class MySQLTools {
 		db=DB;
 		serverNumber=ServerNumber;
 		j2=J2;
+		
 	}
 	public String user(){
 		return user;
@@ -31,11 +33,20 @@ public class MySQLTools {
 	public String db(){
 		return db;
 	}
+	public int servnum(){
+		return serverNumber;
+	}
 	public Connection getConnection() {
 		try {
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+			} catch (ClassNotFoundException ex) {
+				j2.log.severe(ex.getMessage());
+			}
 			return DriverManager.getConnection(db + "?autoReconnect=true&user=" + user + "&password=" + pass);
 		} catch (SQLException ex) {
-
+			j2.log.severe("Well that's no good");
+			j2.log.severe(ex.getMessage());
 		}
 		return null;
 	}
@@ -51,7 +62,9 @@ public class MySQLTools {
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT * FROM j2users WHERE name\""+ name +"\"");
+			String state="SELECT * FROM j2users WHERE name=\""+ name +"\"";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			if(rs.next()){
 				String Flags=rs.getString("flags");
@@ -59,12 +72,17 @@ public class MySQLTools {
 				for(int x=0;x<Flags.length();x++){
 					flags.add(Flag.byChar(Flags.charAt(x)));
 				}
-				return new j2User(name, ChatColor.getByCode(rs.getInt("color")), j2.users.getGroup(rs.getString("group")), flags);
+				if(j2.debug)j2.log.info("User "+name+" in "+rs.getString("group")+" with "+ Flags);
+				return new j2User(name, ChatColor.getByCode(rs.getInt("color")), rs.getString("group"), flags);
 			}
 			else{
-				ps = conn.prepareStatement("INSERT INTO j2users (`name`,`group`,`color`,`flags`) values (\""+name+"\",\"regular\",0xF,\"\"");
+				String state2="INSERT INTO j2users (`name`,`group`,`color`,`flags`) values (\""+name+"\",\"regular\",15,\"n\")";
+				if(j2.debug)j2.log.info("Query: "+state2);
+				ps = conn.prepareStatement(state2);
 				ps.executeUpdate();
-				return new j2User(name, ChatColor.WHITE, j2.users.getGroup("regular"), new ArrayList<Flag>());
+				ArrayList<Flag> f=new ArrayList<Flag>();
+				f.add(Flag.NEW);
+				return new j2User(name, ChatColor.WHITE, "regular", f);
 			}
 		} catch (SQLException ex) {
 			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
@@ -97,7 +115,9 @@ public class MySQLTools {
 		}
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("UPDATE j2users SET flags=\""+ flaglist +"\" WHERE name=\""+ name +"\"");
+			String state="UPDATE j2users SET flags=\""+ flaglist +"\" WHERE name=\""+ name +"\"";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
 			ps.executeUpdate();
 		} catch (SQLException ex) {
 
@@ -120,7 +140,9 @@ public class MySQLTools {
 		group=stringClean(group);
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("UPDATE j2users SET group=\""+ group +"\" WHERE name=\""+ name +"\"");
+			String state="UPDATE j2users SET group=\""+ group +"\" WHERE name=\""+ name +"\"";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
 			ps.executeUpdate();
 		} catch (SQLException ex) {
 
@@ -148,8 +170,9 @@ public class MySQLTools {
 				unBanTime=0;
 			else
 				unBanTime=timeNow+(60*time);
-
-			ps = conn.prepareStatement("INSERT INTO j2bans (name,reason,admin,unbantime,timeofban) VALUES (?,?,?,?,?)");
+			String state="INSERT INTO j2bans (name,reason,admin,unbantime,timeofban) VALUES (?,?,?,?,?)";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
 			ps.setString(1, stringClean(name.toLowerCase()));
 			ps.setString(2, stringClean(reason));
 			ps.setString(3, stringClean(admin));
@@ -194,8 +217,10 @@ public class MySQLTools {
 			PreparedStatement ps = null;
 			ResultSet rs = null;
 			try {
-				conn = j2.mysql.getConnection();
-				ps = conn.prepareStatement("SELECT name,reason,unbantime FROM j2bans WHERE unbanned=0 and name=\""+user+"\"");
+				conn = getConnection();
+				String state="SELECT name,reason,unbantime FROM j2bans WHERE unbanned=0 and name=\""+user+"\"";
+				if(j2.debug)j2.log.info("Query: "+state);
+				ps = conn.prepareStatement(state);
 				rs = ps.executeQuery();
 				while (rs.next()) {
 					reason=rs.getString("reason");
@@ -234,7 +259,9 @@ public class MySQLTools {
 					ban.unBan();
 				}
 			}
-			ps = conn.prepareStatement("UPDATE j2bans SET unbanned=1 WHERE name=\""+ name.toLowerCase() +"\"");
+			String state="UPDATE j2bans SET unbanned=1 WHERE name=\""+ name.toLowerCase() +"\"";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
 			ps.executeUpdate();
 		} catch (SQLException ex) {
 
@@ -255,22 +282,26 @@ public class MySQLTools {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		ArrayList<j2Group> groups;
+		HashMap<String, ArrayList<Flag>> groups;
 		try {
 			conn = getConnection();
-			groups = new ArrayList<j2Group>();
-			ps = conn.prepareStatement("SELECT * FROM j2groups_" + serverNumber);
+			groups = new HashMap<String, ArrayList<Flag>>();
+			String state="SELECT name,flags FROM j2groups where server=" + serverNumber;
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				String name=rs.getString("name");
+				
 				String Flags=rs.getString("flags");
+				if(j2.debug)j2.log.info("Group: "+name+" with flags "+Flags);
 				ArrayList<Flag> flags=new ArrayList<Flag>();
 				for(int x=0;x<Flags.length();x++){
 					flags.add(Flag.byChar(Flags.charAt(x)));
 				}
-				j2Group group=new j2Group(name, null);
-				groups.add(group);
+				groups.put(name, flags);
 			}
+			if(j2.debug)j2.log.info("Loaded "+groups.size()+ " groups");
 			j2.users.setGroups(groups);
 		} catch (SQLException ex) {
 			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);

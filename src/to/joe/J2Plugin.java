@@ -74,16 +74,22 @@ public class J2Plugin extends JavaPlugin {
 		log=Logger.getLogger("Minecraft");
 		protectedUsers=new ArrayList<String>();
 		loadData();
+		if(debug)log.info("Data loaded");
+		
 		//irc start
 		if(ircEnable)getIRC().prepIRC();
+		if(debug)log.info("IRC up (or disabled)");
 		//irc end
 		loadTips();
+		if(debug)log.info("Tips loaded");
 		startTipsTimer();
+		if(debug)log.info("Tips timer started");
 		
 		//Initialize BlockLogger
-		this.blogger = new BlockLogger(this.mysql.getConnection());
-		this.blogger.run();
-
+		this.blogger = new BlockLogger(this.mysql.getConnection(),this.mysql.servnum());
+		if(debug)log.info("Blogger init");
+		new Thread(blogger).start();
+		if(debug)log.info("Blogger is go");
 		// Register our events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_COMMAND, plrlisCommands, Priority.Normal, this);
@@ -94,10 +100,13 @@ public class J2Plugin extends JavaPlugin {
 		pm.registerEvent(Event.Type.BLOCK_DAMAGED, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_IGNITE, blockListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.BLOCK_RIGHTCLICKED, blockListener, Priority.Normal, this);
 		//pm.registerEvent(Event.Type.ENTITY_EXPLODE, playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, plrlisJoinQuit, Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, plrlisJoinQuit, Priority.Normal, this);
-		
+		pm.registerEvent(Event.Type.PLAYER_KICK, plrlisJoinQuit, Priority.Normal, this);
+		if(debug)log.info("Events registered");
 		PluginDescriptionFile pdfFile = this.getDescription();
 		System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
 	}
@@ -115,29 +124,25 @@ public class J2Plugin extends JavaPlugin {
 	}
 
 	public void loadData(){
-		//mysql start
-		PropFile properties = new PropFile("mysql.properties");
-		String mysql_driver = properties.getString("driver", "com.mysql.jdbc.Driver");
-		String mysql_username = properties.getString("user", "root");
-		String mysql_password = properties.getString("pass", "root");
-		String mysql_db = properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
-		//chatTable = properties.getString("chat","chat");
-		int mysql_server = properties.getInt("server-number", 1);
-		try {
-			Class.forName(mysql_driver);
-		} catch (ClassNotFoundException ex) {
-
-		}
-		mysql = new MySQLTools(mysql_username,mysql_password,mysql_db, mysql_server, this);
-		mysql.loadMySQLData();
-		//mysql end
+		
 		
 		rules=readDaFile("rules.txt");
 		blacklist=readDaFile("blacklistinfo.txt");
 		intro=readDaFile("intro.txt");		
 		PropFile j2properties = new PropFile("j2.properties");
 		try { 
-			playerLimit=j2properties.getInt("max-players");
+			debug = j2properties.getBoolean("debug",false);
+			//mysql start
+			String mysql_username = j2properties.getString("user", "root");
+			String mysql_password = j2properties.getString("pass", "root");
+			String mysql_db = j2properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
+			//chatTable = properties.getString("chat","chat");
+			int mysql_server = j2properties.getInt("server-number", 1);
+			mysql = new MySQLTools(mysql_username,mysql_password,mysql_db, mysql_server, this);
+			mysql.loadMySQLData();
+			//mysql end
+			
+			playerLimit=j2properties.getInt("max-players",20);
 			tips_delay = j2properties.getInt("tip-delay", 120);
 			tips_prefix = j2properties.getString("tip-prefix","");
 			tips_color = "\u00A7"+j2properties.getString("tip-color", "b");
@@ -375,13 +380,13 @@ public class J2Plugin extends JavaPlugin {
 	
 	public boolean hasFlag(Player player, Flag flag){
 		j2User user=users.getOnlineUser(player);
-		if(user!=null && user.hasFlag(flag)){
+		if(user!=null && (user.getUserFlags().contains(flag) || users.groupHasFlag(user.getGroup(), flag))){
 			return true;
 		}
 		return false;
 	}
 	
-
+	public boolean debug;
 	public Logger log;
 	public MySQLTools mysql;
 	public ArrayList<String> protectedUsers;

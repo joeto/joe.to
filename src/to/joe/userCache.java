@@ -1,6 +1,7 @@
 package to.joe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 
@@ -10,7 +11,7 @@ public class userCache {
 	public userCache(J2Plugin J2){
 		j2=J2;
 		users=new ArrayList<j2User>();
-		groups=new ArrayList<j2Group>();
+		groups=new HashMap<String, ArrayList<Flag>>();
 	}
 	public j2User getOnlineUser(String name){
 		synchronized (lock){
@@ -49,7 +50,7 @@ public class userCache {
 			for(j2User user:users){
 				if(user.getName().equalsIgnoreCase(name)){
 					user.addFlag(flag);
-					j2.mysql.setFlags(name, user.getFlags());
+					j2.mysql.setFlags(name, user.getUserFlags());
 				}
 			}
 		}
@@ -59,24 +60,33 @@ public class userCache {
 			for(j2User user:users){
 				if(user.getName().equalsIgnoreCase(name)){
 					user.dropFlag(flag);
-					j2.mysql.setFlags(name, user.getFlags());
+					j2.mysql.setFlags(name, user.getUserFlags());
 				}
 			}
 		}
 	}
-	public void setGroups(ArrayList<j2Group> Groups){
+	public void setGroups(HashMap<String, ArrayList<Flag>> Groups){
 		groups=Groups;
 	}
-	public j2Group getGroup(String groupname){
-		for(j2Group g:groups){
-			if(g.getName().equalsIgnoreCase(groupname)){
-				return g;
-			}
-		}
-		return null;
+	
+	public boolean groupHasFlag(String group, Flag flag){
+		 return groups.get(group).contains(flag);
+	}
+	
+	public ArrayList<Flag> getGroupFlags(String groupname){
+		return groups.get(groupname);
 	}
 
+	public ArrayList<Flag> getAllFlags(Player player){
+		ArrayList<Flag> all=new ArrayList<Flag>();
+		j2User user=getOnlineUser(player);
+		all.addAll(user.getUserFlags());
+		all.addAll(getGroupFlags(user.getGroup()));
+		return all;
+		
+	}
+	
 	private ArrayList<j2User> users;
-	private ArrayList<j2Group> groups;
-	private Object lock;
+	private HashMap<String, ArrayList<Flag>> groups;
+	private Object lock= new Object();
 }

@@ -20,11 +20,10 @@ public class J2PlrCommands extends PlayerListener {
 	public void onPlayerCommand(PlayerChatEvent event) {
 		String[] split = event.getMessage().split(" ");
 		Player player = event.getPlayer();
-		j2User user = j2.users.getOnlineUser(player);
 
-		if(user.hasFlag(Flag.JAILED)){
+		if(j2.hasFlag(player,Flag.JAILED)){
 			if(split[0].equalsIgnoreCase("/confess")){
-				user.dropFlag(Flag.JAILED);
+				j2.users.getOnlineUser(player).dropFlag(Flag.JAILED);
 			}
 			event.setCancelled(true);
 			return;
@@ -260,10 +259,9 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 		if(split[0].equalsIgnoreCase("/ban") && j2.hasFlag(player, Flag.ADMIN)){
-			if(split.length < 4){
-				player.sendMessage(ChatColor.RED+"Usage: /ban playername time-in-minutes reason");
-				player.sendMessage(ChatColor.RED+"        do time as 0 for permaban");
-				player.sendMessage(ChatColor.RED+"        reason can have spaces in it");
+			if(split.length < 3){
+				player.sendMessage(ChatColor.RED+"Usage: /ban playername reason");
+				player.sendMessage(ChatColor.RED+"       reason can have spaces in it");
 				event.setCancelled(true);
 				return;
 			}
@@ -284,9 +282,8 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 		if(split[0].equalsIgnoreCase("/addban") && j2.hasFlag(player, Flag.ADMIN)){
-			if(split.length < 4){
-				player.sendMessage(ChatColor.RED+"Usage: /addban playername time-in-minutes reason");
-				player.sendMessage(ChatColor.RED+"        do time as 0 for permaban");
+			if(split.length < 3){
+				player.sendMessage(ChatColor.RED+"Usage: /addban playername reason");
 				player.sendMessage(ChatColor.RED+"        reason can have spaces in it");
 				event.setCancelled(true);
 				return;
@@ -338,9 +335,9 @@ public class J2PlrCommands extends PlayerListener {
 				event.setCancelled(true);
 				return;
 			}
-			j2User who = j2.users.getOnlineUser(match.get(0)); 
-			String message="Player "+who.getName()+": ";
-			for(Flag f: who.getFlags()){
+			
+			String message="Player "+match.get(0).getName()+": ";
+			for(Flag f: j2.users.getAllFlags(match.get(0))){
 				message+=f.getDescription()+", ";
 			}
 			player.sendMessage(message);

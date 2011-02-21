@@ -7,6 +7,7 @@ public enum Flag {
 	DONOR('d',"Donor"),
 	FUN('f',"Fun commands"),
 	JAILED('j', "Jailed"),
+	NEW('n',"New"),
 	SRSTAFF('s', "Senior Staff"),
 	TRUSTED('t', "Trusted");
 	private char flag;

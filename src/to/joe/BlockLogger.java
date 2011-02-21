@@ -23,7 +23,8 @@ public class BlockLogger implements Runnable // start
 	public static LinkedBlockingQueue<BlockRow> bqueue = new LinkedBlockingQueue<BlockRow>();
 	private boolean stop = false;
 	private Connection conn;
-	BlockLogger(Connection db) { stop = false; conn=db;}
+	private int servnum;
+	BlockLogger(Connection db, int sn) { stop = false; conn=db; servnum=sn;}
 	public void stop() { stop = true; }
 	public void run()
 	{
@@ -38,7 +39,7 @@ public class BlockLogger implements Runnable // start
 			long start = System.currentTimeMillis()/1000L;
 			int count = 0;
 			try {
-				ps = conn.prepareStatement("INSERT INTO blocks (date, player, replaced, type, x, y, z) VALUES (now(),?,?,?,?,?,?)");
+				ps = conn.prepareStatement("INSERT INTO blocks_? (date, player, replaced, type, x, y, z) VALUES (now(),?,?,?,?,?,?)");
 				while(count < 100 && start+delay > (System.currentTimeMillis()/1000L))
 				{
 					/*if(count == 0)
@@ -49,12 +50,13 @@ public class BlockLogger implements Runnable // start
 					if(b==null)
 						continue;
 					
-					ps.setString(1, b.name);
-					ps.setInt(2, b.replaced);
-					ps.setInt(3, b.type);
-					ps.setInt(4, b.x);
-					ps.setInt(5, b.y);
-					ps.setInt(6, b.z);
+					ps.setInt(1, servnum);
+					ps.setString(2, b.name);
+					ps.setInt(3, b.replaced);
+					ps.setInt(4, b.type);
+					ps.setInt(5, b.x);
+					ps.setInt(6, b.y);
+					ps.setInt(7, b.z);
 					ps.addBatch();
 					count++;
 				}
@@ -85,10 +87,12 @@ public class BlockLogger implements Runnable // start
 		try {
 			//conn = getConnection();
 			//conn.setAutoCommit(false);
-			ps = this.conn.prepareStatement("SELECT * from blocks left join extra using (id) where y = ? and x = ? and z = ? order by date desc limit 10");
-			ps.setInt(1, b.getY());
-			ps.setInt(2, b.getX());
-			ps.setInt(3, b.getZ());
+			System.out.println("At "+b.getX()+" "+b.getY()+" "+b.getZ());
+			ps = this.conn.prepareStatement("SELECT * from blocks_? where y = ? and x = ? and z = ? order by date desc limit 10");
+			ps.setInt(1, servnum);
+			ps.setInt(2, b.getY());
+			ps.setInt(3, b.getX());
+			ps.setInt(4, b.getZ());
 			rs = ps.executeQuery();
 			while (rs.next())
 			{

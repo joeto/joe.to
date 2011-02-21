@@ -24,22 +24,23 @@ public class J2PlrJoinQuit extends PlayerListener {
 
 	@Override
 	public void onPlayerKick(PlayerKickEvent event){
-		j2.users.delUser(event.getPlayer());
-		if(j2.ircEnable){
-			j2.getIRC().ircMsg(event.getPlayer().getName()+" has logged in");
-			j2.getIRC().adminChannel();
-		}
+		
 	}
 	
 	@Override
 	public void onPlayerQuit(PlayerEvent event) {
-		if(j2.ircEnable){
-			j2.getIRC().ircMsg(event.getPlayer().getName()+" has left the server");
+		Player player=event.getPlayer();
+		if(j2.users.getOnlineUser(player)!=null){
+			j2.users.delUser(player);
+			if(j2.ircEnable){
+				j2.getIRC().ircMsg(event.getPlayer().getName()+" has left the server");
+			}
 		}
 	}
 
 	@Override
 	public void onPlayerLogin(PlayerLoginEvent event) {
+		if(j2.debug)j2.log.info("Incoming player: "+event.getPlayer().getName());
 		String reason=j2.mysql.checkBans(event.getPlayer().getName());
 		Player player=event.getPlayer();
 		boolean isAdmin=j2.hasFlag(player, Flag.ADMIN);
@@ -55,8 +56,9 @@ public class J2PlrJoinQuit extends PlayerListener {
 			return;
 		}
 		if(j2.users.getOnlineUser(player)!=null){
-			event.setKickMessage("Already logged in");
-			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Already logged in");
+			//event.setKickMessage("Already logged in");
+			//event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Already logged in");
+			j2.getKickBan().callKick(player.getName(), "CONSOLE", "Logged in on another Minecraft");
 			return;
 		}
 		if(!isAdmin && !j2.hasFlag(player, Flag.DONOR) && j2.getServer().getOnlinePlayers().length >= j2.playerLimit){
@@ -66,5 +68,6 @@ public class J2PlrJoinQuit extends PlayerListener {
 		}
 		j2.users.addUser(event.getPlayer().getName());
 		event.allow();
+		if(j2.debug)j2.log.info("Player "+event.getPlayer().getName()+" allowed in");
 	}
 }
