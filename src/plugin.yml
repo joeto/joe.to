@@ -1,3 +1,3 @@
 name: j2Plugin
-main: com.mbaxter.bukkit.J2.J2Plugin
-version: 0.1.1
+main: to.joe.J2Plugin
+version: 0.1.2
