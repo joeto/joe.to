@@ -99,15 +99,16 @@ public class J2BlockListener extends BlockListener {
     public void onBlockRightClick(BlockRightClickEvent event)
 	{
     	Player player = event.getPlayer();
-    	if(j2.debug)j2.log.info(player.getName()+" stick");
 		if(event.getItemInHand().getTypeId() == 284 && j2.hasFlag(player, Flag.ADMIN))
 		{
 			if(j2.debug)j2.log.info(player.getName()+ "used gold shovel");
 			this.j2.blogger.showBlockHistory(event.getPlayer(), event.getBlock());
 		}
 		if(event.getItemInHand().getTypeId() == 280 && j2.hasFlag(player, Flag.ADMIN)){
-			event.getBlock().setTypeId(0);
+			
 			if(j2.debug)j2.log.info(player.getName()+" used a stick");
+			BlockLogger.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ()));
+			event.getBlock().setTypeId(0);
 		}
 		//System.out.println("Item type id ="+event.getItemInHand().getTypeId() );
 		
