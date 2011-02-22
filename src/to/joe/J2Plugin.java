@@ -165,21 +165,21 @@ public class J2Plugin extends JavaPlugin {
 			ircOnJoin = j2properties.getString("irc-onjoin","");
 			gsAuth = j2properties.getString("gs-auth","");
 			gsPass = j2properties.getString("gs-pass","");
-			String[] superBlacklist = j2properties.getString("superblacklist", "").split(",");
-			String[] regBlacklist = j2properties.getString("regblacklist", "").split(",");
 			ircLevel2 = j2properties.getString("irc-level2","").split(",");
-			superblacklist=new ArrayList<Integer>();
-			itemblacklist=new ArrayList<Integer>();
 			mc2=j2properties.getBoolean("mc2",false);
 			maintenance = j2properties.getBoolean("maintenance",false);
 			fun=j2properties.getBoolean("funmode",false);
 			randomcolor=j2properties.getBoolean("randcolor",false);
-			for(String s:superBlacklist){
+			String superBlacklist = j2properties.getString("superblacklist", "0");				
+			String regBlacklist = j2properties.getString("regblacklist", "0");
+			superblacklist=new ArrayList<Integer>();
+			itemblacklist=new ArrayList<Integer>();
+			for(String s:superBlacklist.split(",")){
 				if(s!=null){
 					superblacklist.add(Integer.valueOf(s));
 				}
 			}
-			for(String s:regBlacklist){
+			for(String s:regBlacklist.split(",")){
 				if(s!=null){
 					itemblacklist.add(Integer.valueOf(s));
 				}
@@ -193,6 +193,13 @@ public class J2Plugin extends JavaPlugin {
 
 	public String[] readDaFile(String filename)
 	{
+		if(!(new File("filename")).exists()){
+			String[] oops=new String[1];
+			oops[0]="";
+			log.info("File "+filename+" does not exist. Make it!");
+			return oops;
+		}
+		
 		FileReader fileReader = null;
 		try {
 			fileReader = new FileReader(filename);

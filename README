@@ -8,10 +8,9 @@ There is a file of code from hmod that hasn't been transitioned as it isn't supp
 
 
 
-You need bukkit (not craftbukkit) and pircbot on your build path. 
+You need bukkit (not craftbukkit) and on your build path,
+and you need the mysql connector bin. 
 
-Latest bukkit at: http://bamboo.lukegb.com/
-Go to a build of Bukkit-main, such as BUKKIT-BUKKITMAIN-58
+Latest bukkit at: http://ci.lukegb.com/
+Go to a build of Bukkit-main
 Under the artifacts tab, download the .jar file
-
-For pircbot: http://www.jibble.org/files/pircbot-1.5.0.zip
