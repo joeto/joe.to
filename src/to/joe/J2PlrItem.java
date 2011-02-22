@@ -18,7 +18,11 @@ public class J2PlrItem extends PlayerListener {
 	public void onPlayerItem(PlayerItemEvent event){
 		Player player = event.getPlayer();
 		int type=event.getMaterial().getId();
-
+		if(!j2.hasFlag(player, Flag.MODWORLD)){
+			player.sendMessage("You don't have permission to do that");
+			event.setCancelled(true);
+			return;
+		}
 		if(j2.hasFlag(player, Flag.TRUSTED) && !j2.hasFlag(player,Flag.ADMIN) && j2.isOnSuperBlacklist(type)){
 			player.sendMessage(ChatColor.RED+"Even trusted have limits. Can't place that.");
 			event.setCancelled(true);

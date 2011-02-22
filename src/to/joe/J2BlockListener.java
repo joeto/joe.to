@@ -5,7 +5,6 @@ package to.joe;
 import org.bukkit.entity.*;
 import org.bukkit.ChatColor;
 import org.bukkit.block.*;
-import org.bukkit.Material;
 import org.bukkit.event.block.*;
 
 
@@ -27,17 +26,23 @@ public class J2BlockListener extends BlockListener {
 
     @Override
     public void onBlockCanBuild(BlockCanBuildEvent event) {
-        Material mat = event.getMaterial();
-
-        if (mat.equals(Material.CACTUS)) {
-            event.setBuildable(true);
-        }
+        //Material mat = event.getMaterial();
+        
+        //CACTUS EVERYWHERE
+        //if (mat.equals(Material.CACTUS)) {
+        //    event.setBuildable(true);
+        //}
     }
     
     @Override
     public void onBlockDamage(BlockDamageEvent event){
-    	
-    	if(event.getPlayer().equals(j2.OneByOne)){
+    	Player player=event.getPlayer();
+    	if(!j2.hasFlag(player, Flag.MODWORLD)){
+			player.sendMessage("You don't have permission to do that");
+			event.setCancelled(true);
+			return;
+		}
+    	if(player.equals(j2.OneByOne)){
             j2.OneByOne=null;
             event.getPlayer().sendMessage("Boom");
             int x=event.getBlock().getX();
@@ -53,7 +58,6 @@ public class J2BlockListener extends BlockListener {
 		{
 			BlockRow changed;
 			Block smacked = event.getBlock();
-			Player player = event.getPlayer();
 			changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ());
 			//if(!event.isCancelled())
 			
@@ -67,6 +71,12 @@ public class J2BlockListener extends BlockListener {
     	Player player=event.getPlayer();
     	Block blockPlaced=event.getBlockPlaced();
     	int type=blockPlaced.getTypeId();
+    	
+    	if(!j2.hasFlag(player, Flag.MODWORLD)){
+			player.sendMessage("You don't have permission to do that");
+			event.setCancelled(true);
+			return;
+		}
     	
     	BlockRow test;
 		
@@ -99,6 +109,7 @@ public class J2BlockListener extends BlockListener {
     public void onBlockRightClick(BlockRightClickEvent event)
 	{
     	Player player = event.getPlayer();
+    	
 		if(event.getItemInHand().getTypeId() == 284 && j2.hasFlag(player, Flag.ADMIN))
 		{
 			if(j2.debug)j2.log.info(player.getName()+ "used gold shovel");
