@@ -55,6 +55,7 @@ public class J2Plugin extends JavaPlugin {
 	private final J2PlugIRC func_irc = new J2PlugIRC(this);
 	private final J2PlugKickBan func_kickban = new J2PlugKickBan(this);
 	public final userCache users = new userCache(this);
+	public final reportManager reports = new reportManager();
 	public BlockLogger blogger;
 
 	public J2Plugin(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
@@ -290,7 +291,7 @@ public class J2Plugin extends JavaPlugin {
 			stopTimer();
 		}
 	}
-
+	
 	//end tips
 
 	public boolean isOnSuperBlacklist(int id) {

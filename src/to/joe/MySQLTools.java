@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 
 public class MySQLTools {
 	private String user,pass,db;
@@ -303,6 +304,18 @@ public class MySQLTools {
 			}
 			if(j2.debug)j2.log.info("Loaded "+groups.size()+ " groups");
 			j2.users.setGroups(groups);
+			String state2="SELECT user,x,y,z,rotx,roty,message,world from reports where server="+serverNumber;
+			ps = conn.prepareStatement(state2);
+			if(j2.debug)j2.log.info("Query: "+state2);
+			rs = ps.executeQuery();
+			while (rs.next()){
+				String user=rs.getString("user");
+				Location loc=new Location(j2.getServer().getWorld(rs.getString("world")), rs.getInt("x"), rs.getInt("y"), rs.getInt("z"), rs.getLong("rotx"), rs.getLong("roty"));
+				j2.reports.addReport(new report(rs.getInt("id"), loc, user, rs.getString("message")));
+				if(j2.debug)j2.log.info("Adding new report to list, user "+user);
+				
+			}
+			
 		} catch (SQLException ex) {
 			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
 			j2.maintenance=true;
@@ -321,5 +334,42 @@ public class MySQLTools {
 			}
 		}
 	}
+	
+	public void addReport(report report){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getConnection();
+			long time=new Date().getTime()/1000;
+			String state="INSERT INTO reports (user,message,x,y,z,rotx,roty,server,world,time) VALUES (?,?,?,?,?,?,?,?,?,?)";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
+			ps.setString(1, stringClean(report.getUser()));
+			ps.setString(2, stringClean(report.getMessage()));
+			Location loc=report.getLocation();
+			ps.setDouble(3, loc.getX());
+			ps.setDouble(4, loc.getY());
+			ps.setDouble(5, loc.getZ());
+			ps.setFloat(6, loc.getPitch());
+			ps.setFloat(7, loc.getPitch());
+			ps.setInt(8, serverNumber);
+			ps.setString(9, loc.getWorld().getName());
+			ps.setLong(10, time);
+			ps.executeUpdate();
+		} catch (SQLException ex) {
+
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+	}
+	
 
 }
