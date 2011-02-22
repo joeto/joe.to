@@ -127,7 +127,7 @@ public class J2PlrCommands extends PlayerListener {
 			return;
 		}
 
-		if(split[0].equalsIgnoreCase("/item") || split[0].equalsIgnoreCase("/i") && j2.hasFlag(player, Flag.FUN)){
+		if((split[0].equalsIgnoreCase("/item") || split[0].equalsIgnoreCase("/i")) && j2.hasFlag(player, Flag.FUN)){
 			if (split.length < 2) {
 				player.sendMessage(ChatColor.RED+"Correct usage is: /i [item] (amount)");
 				event.setCancelled(true);
