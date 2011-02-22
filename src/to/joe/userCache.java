@@ -13,7 +13,7 @@ public class userCache {
 		users=new ArrayList<j2User>();
 		groups=new HashMap<String, ArrayList<Flag>>();
 	}
-	public j2User getOnlineUser(String name){
+	public j2User getUser(String name){
 		synchronized (lock){
 			for(j2User u:users){
 				if(u.getName().equalsIgnoreCase(name))
@@ -22,11 +22,8 @@ public class userCache {
 			return null;
 		}
 	}
-	public j2User getOnlineUser(Player player){
-		return getOnlineUser(player.getName());
-	}
-	public j2User getOfflineUser(String name){
-		return null;
+	public j2User getUser(Player player){
+		return getUser(player.getName());
 	}
 	public void addUser(String player){
 		synchronized (lock){
@@ -79,7 +76,7 @@ public class userCache {
 
 	public ArrayList<Flag> getAllFlags(Player player){
 		ArrayList<Flag> all=new ArrayList<Flag>();
-		j2User user=getOnlineUser(player);
+		j2User user=getUser(player);
 		all.addAll(user.getUserFlags());
 		all.addAll(getGroupFlags(user.getGroup()));
 		return all;

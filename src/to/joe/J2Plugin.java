@@ -379,7 +379,7 @@ public class J2Plugin extends JavaPlugin {
 	}
 	
 	public boolean hasFlag(Player player, Flag flag){
-		j2User user=users.getOnlineUser(player);
+		j2User user=users.getUser(player);
 		if(user!=null && (user.getUserFlags().contains(flag) || users.groupHasFlag(user.getGroup(), flag))){
 			return true;
 		}

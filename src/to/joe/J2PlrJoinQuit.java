@@ -30,7 +30,7 @@ public class J2PlrJoinQuit extends PlayerListener {
 	@Override
 	public void onPlayerQuit(PlayerEvent event) {
 		Player player=event.getPlayer();
-		if(j2.users.getOnlineUser(player)!=null){
+		if(j2.users.getUser(player)!=null){
 			j2.users.delUser(player);
 			if(j2.ircEnable){
 				j2.getIRC().ircMsg(event.getPlayer().getName()+" has left the server");
@@ -55,7 +55,7 @@ public class J2PlrJoinQuit extends PlayerListener {
 			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, reason);
 			return;
 		}
-		if(j2.users.getOnlineUser(player)!=null){
+		if(j2.users.getUser(player)!=null){
 			//event.setKickMessage("Already logged in");
 			//event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Already logged in");
 			j2.getKickBan().callKick(player.getName(), "CONSOLE", "Logged in on another Minecraft");

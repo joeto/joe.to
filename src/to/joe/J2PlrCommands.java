@@ -23,7 +23,7 @@ public class J2PlrCommands extends PlayerListener {
 
 		if(j2.hasFlag(player,Flag.JAILED)){
 			if(split[0].equalsIgnoreCase("/confess")){
-				j2.users.getOnlineUser(player).dropFlag(Flag.JAILED);
+				j2.users.getUser(player).dropFlag(Flag.JAILED);
 			}
 			event.setCancelled(true);
 			return;
@@ -119,6 +119,7 @@ public class J2PlrCommands extends PlayerListener {
 				Player inquestion=inquest.get(0);
 				player.sendMessage("(MSG) <"+player.getName()+"> "+j2.combineSplit(2, split, " "));
 				inquestion.sendMessage("(MSG) <"+player.getName()+"> "+j2.combineSplit(2, split, " "));
+				j2.log.info("Msg to "+inquestion.getName()+": <"+player.getName()+"> "+j2.combineSplit(2, split, " "));
 			}
 			else{
 				player.sendMessage(ChatColor.RED+"Could not find player");
@@ -237,6 +238,7 @@ public class J2PlrCommands extends PlayerListener {
 				String ircmessage="Report from "+playerName+": "+report;
 				j2.getChat().msgByFlag(Flag.ADMIN, message);
 				j2.getIRC().ircAdminMsg(ircmessage);
+				j2.log.info(ircmessage);
 				player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
 			}
 			else {
@@ -244,6 +246,7 @@ public class J2PlrCommands extends PlayerListener {
 				player.sendMessage(ChatColor.RED+"Where MESSAGE is what you want to tell them");
 			}
 			event.setCancelled(true);	
+			return;
 		}
 		if(split[0].equalsIgnoreCase("/g") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length<2){
@@ -335,12 +338,13 @@ public class J2PlrCommands extends PlayerListener {
 				event.setCancelled(true);
 				return;
 			}
-			
+			Player who=match.get(0);
 			String message="Player "+match.get(0).getName()+": ";
-			for(Flag f: j2.users.getAllFlags(match.get(0))){
+			for(Flag f: j2.users.getAllFlags(who)){
 				message+=f.getDescription()+", ";
 			}
 			player.sendMessage(message);
+			j2.log.info(player.getName()+" looked up "+ who.getName());
 			event.setCancelled(true);
 			return;
 		}
@@ -390,7 +394,8 @@ public class J2PlrCommands extends PlayerListener {
 		}*/
 		if(split[0].equalsIgnoreCase("/ircrefresh") && j2.hasFlag(player, Flag.SRSTAFF)){
 			j2.getIRC().loadIRCAdmins();
-			player.sendMessage(ChatColor.RED+"IRC admins reloaded");
+			j2.getChat().msgByFlag(Flag.SRSTAFF, ChatColor.RED+"IRC admins reloaded by "+player.getName());
+			j2.log.info(player.getName()+ " reloaded irc admins");
 			event.setCancelled(true);
 			return;
 		}
@@ -413,10 +418,11 @@ public class J2PlrCommands extends PlayerListener {
 						p.kickPlayer("Server entering maintenance mode");
 					}
 				}
-
+				j2.getChat().msgByFlag(Flag.ADMIN, "Mainenance mode on, by "+player.getName());
 			}
 			else{
 				j2.log.info(player.getName()+" has turned off maintenance mode");
+				j2.getChat().msgByFlag(Flag.ADMIN, "Mainenance mode off, by "+player.getName());
 				j2.maintenance=false;
 			}
 			event.setCancelled(true);
@@ -425,10 +431,36 @@ public class J2PlrCommands extends PlayerListener {
 
 		if(split[0].equalsIgnoreCase("/1x1") && j2.hasFlag(player, Flag.ADMIN)){
 			player.sendMessage("Next block you break (not by stick), everything above it goes byebye");
+			j2.log.info(player.getName()+" is gonna break a 1x1 tower");
 			j2.OneByOne=player;
 			event.setCancelled(true);
 			return;
 		}
-
+		
+		if(split[0].equalsIgnoreCase("/flags") && j2.hasFlag(player, Flag.SRSTAFF)){
+			String action=split[2];
+			if(split.length<4 || !(action.equalsIgnoreCase("add") || action.equalsIgnoreCase("drop"))){
+				player.sendMessage(ChatColor.RED+"Usage: /flags player add/drop flag");
+				event.setCancelled(true);
+				return;
+			}
+			String name=split[1];
+			char flag=split[3].charAt(0);
+			j2User user=j2.users.getUser(name);
+			if(user==null){
+				user=j2.mysql.getUser(name);
+			}
+			if(action.equalsIgnoreCase("add")){
+				user.addFlag(Flag.byChar(flag));
+			}
+			else {
+				user.dropFlag(Flag.byChar(flag));
+			}
+			String log=ChatColor.RED+player.getName()+" changed flags: "+name + " "+ action +" flag "+ Flag.byChar(flag).getDescription();
+			j2.getChat().msgByFlag(Flag.ADMIN, log);
+			j2.log.info(log);
+			event.setCancelled(true);
+			return;
+		}
 	}
 }
