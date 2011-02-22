@@ -193,18 +193,13 @@ public class J2Plugin extends JavaPlugin {
 
 	public String[] readDaFile(String filename)
 	{
-		if(!(new File("filename")).exists()){
-			String[] oops=new String[1];
-			oops[0]="";
-			log.info("File "+filename+" does not exist. Make it!");
-			return oops;
-		}
-		
+			
 		FileReader fileReader = null;
 		try {
 			fileReader = new FileReader(filename);
 		} catch (FileNotFoundException e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			log.severe("File not found: "+filename);
 			String[] uhOh=new String[1];
 			uhOh[0]="";
 			return uhOh;
