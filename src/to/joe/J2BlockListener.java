@@ -37,11 +37,7 @@ public class J2BlockListener extends BlockListener {
     @Override
     public void onBlockDamage(BlockDamageEvent event){
     	Player player=event.getPlayer();
-    	if(!j2.hasFlag(player, Flag.MODWORLD)){
-			player.sendMessage("You don't have permission to do that");
-			event.setCancelled(true);
-			return;
-		}
+    	
     	if(player.equals(j2.OneByOne)){
             j2.OneByOne=null;
             event.getPlayer().sendMessage("Boom");
@@ -54,16 +50,24 @@ public class J2BlockListener extends BlockListener {
             }
     	}
     	
-    	if (event.getDamageLevel()==BlockDamageLevel.BROKEN)
-		{
-			BlockRow changed;
-			Block smacked = event.getBlock();
-			changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ());
-			//if(!event.isCancelled())
-			
-			BlockLogger.bqueue.offer(changed);
-		}
     	
+    	
+    }
+    
+    @Override
+    public void onBlockBreak(BlockBreakEvent event){
+    	Player player=event.getPlayer();
+    	if(!j2.hasFlag(player, Flag.MODWORLD)){
+			player.sendMessage("You don't have permission to do that");
+			event.setCancelled(true);
+			return;
+		}
+    	BlockRow changed;
+		Block smacked = event.getBlock();
+		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ());
+		//if(!event.isCancelled())
+		
+		BlockLogger.bqueue.offer(changed);
     }
     
     @Override
