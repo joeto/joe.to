@@ -6,11 +6,11 @@ package to.joe;
  * Classy bans for the classy gentleman
  */
 
-public class j2Ban {
+public class Ban {
 	private String name, reason;
 	private boolean unbanned, temp;
 	private long timeOfUnban,timeLoaded;
-	public j2Ban(String n, String r, long t,long tl){
+	public Ban(String n, String r, long t,long tl){
 		name=n;
 		reason=r;
 		if(reason==null || reason==""){

@@ -16,10 +16,10 @@ import org.bukkit.event.block.*;
  * J2 block listener
  * @author mbaxter
  */
-public class J2BlockListener extends BlockListener {
+public class listenBlock extends BlockListener {
     private final J2Plugin j2;
 
-    public J2BlockListener(final J2Plugin plugin) {
+    public listenBlock(final J2Plugin plugin) {
         this.j2 = plugin;
     }
 
@@ -67,7 +67,7 @@ public class J2BlockListener extends BlockListener {
 		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ());
 		//if(!event.isCancelled())
 		
-		BlockLogger.bqueue.offer(changed);
+		managerBlockLog.bqueue.offer(changed);
     }
     
     @Override
@@ -85,7 +85,7 @@ public class J2BlockListener extends BlockListener {
     	BlockRow test;
 		
 		test = new BlockRow(player.getDisplayName(),0,type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ());
-		BlockLogger.bqueue.offer(test);
+		managerBlockLog.bqueue.offer(test);
     	
     	if(j2.hasFlag(player, Flag.TRUSTED) && !j2.hasFlag(player, Flag.ADMIN) && j2.isOnSuperBlacklist(type)){
     		player.sendMessage(ChatColor.RED+"Even trusted have limits. Can't place that block type");
@@ -102,7 +102,7 @@ public class J2BlockListener extends BlockListener {
         double z = player.getLocation().getZ() - (blockPlaced.getZ() + 0.5D);
         double dist = x*x + y*y + z*z;
         if(dist>400.0D) {
-            j2.getChat().msgByFlag(Flag.ADMIN, player.getName()+" placed a block over 20 away. *thwump*");
+            j2.chat.msgByFlag(Flag.ADMIN, player.getName()+" placed a block over 20 away. *thwump*");
             j2.log.info(player.getName() + " placed a block too far away");
             player.kickPlayer("Detected as using a hack. Just rejoin if you aren't :)");
             event.setCancelled(true);
@@ -122,7 +122,7 @@ public class J2BlockListener extends BlockListener {
 		if(event.getItemInHand().getTypeId() == 280 && j2.hasFlag(player, Flag.ADMIN)){
 			
 			if(j2.debug)j2.log.info(player.getName()+" used a stick");
-			BlockLogger.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ()));
+			managerBlockLog.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ()));
 			event.getBlock().setTypeId(0);
 		}
 		//System.out.println("Item type id ="+event.getItemInHand().getTypeId() );

@@ -4,19 +4,20 @@ package to.joe;
 import java.util.List;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.ItemStack;
 
-public class J2PlrCommands extends PlayerListener {
-	
+public class listenPlrCommands extends PlayerListener {
+
 	private final J2Plugin j2;
 
-	public J2PlrCommands(J2Plugin instance) {
+	public listenPlrCommands(J2Plugin instance) {
 		j2 = instance;
 	}
-	
+
 	@Override
 	public void onPlayerCommand(PlayerChatEvent event) {
 		String[] split = event.getMessage().split(" ");
@@ -29,7 +30,7 @@ public class J2PlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		if (split[0].equalsIgnoreCase("/rules")){
 			for(String line : j2.rules){
 				player.sendMessage(line);
@@ -226,7 +227,7 @@ public class J2PlrCommands extends PlayerListener {
 			}
 			String playerName = player.getName();
 			String message=j2.combineSplit(1, split, " ");
-			j2.getChat().aMsg(playerName,message);
+			j2.chat.aMsg(playerName,message);
 			event.setCancelled(true);
 			return;
 		}
@@ -237,8 +238,8 @@ public class J2PlrCommands extends PlayerListener {
 				String report=j2.combineSplit(1, split, " ");
 				String message="Report: <§d"+playerName+"§f>"+report;
 				String ircmessage="Report from "+playerName+": "+report;
-				j2.getChat().msgByFlag(Flag.ADMIN, message);
-				j2.getIRC().ircAdminMsg(ircmessage);
+				j2.chat.msgByFlag(Flag.ADMIN, message);
+				j2.irc.ircAdminMsg(ircmessage);
 				j2.log.info(ircmessage);
 				player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
 			}
@@ -249,6 +250,9 @@ public class J2PlrCommands extends PlayerListener {
 			event.setCancelled(true);	
 			return;
 		}
+		if(split[0].equalsIgnoreCase("/r") && j2.hasFlag(player, Flag.ADMIN)){
+			
+		}
 		if(split[0].equalsIgnoreCase("/g") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length<2){
 				event.getPlayer().sendMessage(ChatColor.RED+"Usage: /g Message");
@@ -258,7 +262,7 @@ public class J2PlrCommands extends PlayerListener {
 			String playerName = player.getName();
 			String text = "";
 			text+=j2.combineSplit(1, split, " ");
-			j2.getChat().gMsg(playerName,text);
+			j2.chat.gMsg(playerName,text);
 			event.setCancelled(true);	
 			return;
 		}
@@ -270,7 +274,7 @@ public class J2PlrCommands extends PlayerListener {
 				return;
 			}
 			String adminName = player.getName();
-			j2.getKickBan().callBan(adminName,split);
+			j2.kickbans.callBan(adminName,split);
 			event.setCancelled(true);
 			return;
 		}
@@ -281,7 +285,7 @@ public class J2PlrCommands extends PlayerListener {
 				return;
 			}
 			String adminName = player.getName();
-			j2.getKickBan().callKick(split[1],adminName,j2.combineSplit(2, split, " "));
+			j2.kickbans.callKick(split[1],adminName,j2.combineSplit(2, split, " "));
 			event.setCancelled(true);
 			return;
 		}
@@ -293,7 +297,7 @@ public class J2PlrCommands extends PlayerListener {
 				return;
 			}
 			String adminName = player.getName();
-			j2.getKickBan().callAddBan(adminName,split);
+			j2.kickbans.callAddBan(adminName,split);
 			event.setCancelled(true);
 			return;
 		}
@@ -308,7 +312,7 @@ public class J2PlrCommands extends PlayerListener {
 			String adminName=player.getName();
 			j2.mysql.unban(name);
 			j2.log.log(Level.INFO, "Unbanning " + name + " by " + adminName);
-			j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Unbanning " + name + " by " + adminName);
+			j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Unbanning " + name + " by " + adminName);
 			event.setCancelled(true);
 			return;
 		}
@@ -354,8 +358,8 @@ public class J2PlrCommands extends PlayerListener {
 		{
 			String message = "";
 			message+=j2.combineSplit(1, split, " ");
-			j2.getChat().addChat(player.getName(), message);
-			j2.getIRC().ircMsg("* "+ player.getName()+" "+message);
+			j2.chat.addChat(player.getName(), message);
+			j2.irc.ircMsg("* "+ player.getName()+" "+message);
 			//don't cancel this after reading it. 
 			//TODO: /ignore code will also be here
 		}
@@ -372,10 +376,10 @@ public class J2PlrCommands extends PlayerListener {
 			String admin=player.getName();
 			if(split.length>2)
 				reason=j2.combineSplit(2, split, " ");
-			j2.getKickBan().forceKick(name,reason);
+			j2.kickbans.forceKick(name,reason);
 			j2.log.log(Level.INFO, "Kicking " + name + " by " + admin + ": " + reason);
-			j2.getChat().msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
-			j2.getChat().msgByFlagless(Flag.ADMIN,ChatColor.RED + name+" kicked ("+reason+")");
+			j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
+			j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name+" kicked ("+reason+")");
 			event.setCancelled(true);
 			return;
 		}
@@ -394,8 +398,8 @@ public class J2PlrCommands extends PlayerListener {
 			return true;
 		}*/
 		if(split[0].equalsIgnoreCase("/ircrefresh") && j2.hasFlag(player, Flag.SRSTAFF)){
-			j2.getIRC().loadIRCAdmins();
-			j2.getChat().msgByFlag(Flag.SRSTAFF, ChatColor.RED+"IRC admins reloaded by "+player.getName());
+			j2.irc.loadIRCAdmins();
+			j2.chat.msgByFlag(Flag.SRSTAFF, ChatColor.RED+"IRC admins reloaded by "+player.getName());
 			j2.log.info(player.getName()+ " reloaded irc admins");
 			event.setCancelled(true);
 			return;
@@ -403,7 +407,7 @@ public class J2PlrCommands extends PlayerListener {
 
 		if(split[0].equalsIgnoreCase("/j2reload") && j2.hasFlag(player, Flag.SRSTAFF)){
 			j2.loadData();
-			j2.getChat().msgByFlag(Flag.SRSTAFF, "j2 data reloaded by "+player.getName());
+			j2.chat.msgByFlag(Flag.SRSTAFF, "j2 data reloaded by "+player.getName());
 			j2.log.info("j2 data reloaded by "+player.getName());
 			event.setCancelled(true);
 			return;
@@ -419,11 +423,11 @@ public class J2PlrCommands extends PlayerListener {
 						p.kickPlayer("Server entering maintenance mode");
 					}
 				}
-				j2.getChat().msgByFlag(Flag.ADMIN, "Mainenance mode on, by "+player.getName());
+				j2.chat.msgByFlag(Flag.ADMIN, "Mainenance mode on, by "+player.getName());
 			}
 			else{
 				j2.log.info(player.getName()+" has turned off maintenance mode");
-				j2.getChat().msgByFlag(Flag.ADMIN, "Mainenance mode off, by "+player.getName());
+				j2.chat.msgByFlag(Flag.ADMIN, "Mainenance mode off, by "+player.getName());
 				j2.maintenance=false;
 			}
 			event.setCancelled(true);
@@ -437,7 +441,7 @@ public class J2PlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		if(split[0].equalsIgnoreCase("/flags") && j2.hasFlag(player, Flag.SRSTAFF)){
 			String action=split[2];
 			if(split.length<4 || !(action.equalsIgnoreCase("add") || action.equalsIgnoreCase("drop"))){
@@ -447,7 +451,7 @@ public class J2PlrCommands extends PlayerListener {
 			}
 			String name=split[1];
 			char flag=split[3].charAt(0);
-			j2User user=j2.users.getUser(name);
+			User user=j2.users.getUser(name);
 			if(user==null){
 				user=j2.mysql.getUser(name);
 			}
@@ -458,13 +462,163 @@ public class J2PlrCommands extends PlayerListener {
 				user.dropFlag(Flag.byChar(flag));
 			}
 			String log=ChatColor.RED+player.getName()+" changed flags: "+name + " "+ action +" flag "+ Flag.byChar(flag).getDescription();
-			j2.getChat().msgByFlag(Flag.ADMIN, log);
+			j2.chat.msgByFlag(Flag.ADMIN, log);
 			j2.log.info(log);
 			event.setCancelled(true);
 			return;
 		}
-		
-		
-		
+		if(split[0].equalsIgnoreCase("/loc")) {
+			Location p_loc = event.getPlayer().getLocation();
+			event.getPlayer().sendMessage("You are located at X:"+p_loc.getBlockX()+" Y:"+p_loc.getBlockY()+" Z:"+p_loc.getBlockZ());
+		}
+		if(split[0].equalsIgnoreCase("/warp") && j2.hasFlag(player, Flag.FUN)) {
+			if(split.length==1){
+				String warps_s=j2.warps.listWarps(player);
+				if(warps_s.equalsIgnoreCase("")){
+					player.sendMessage(ChatColor.RED+"Warp locations: "+ChatColor.WHITE+warps_s);
+					player.sendMessage(ChatColor.RED+"To go to a warp, say /warp warpname");
+
+				}else{
+					player.sendMessage("The are no warps available.");
+				}
+			}
+			else{
+				Warp warp=j2.warps.getPublicWarp(split[1]);
+				if(warp!=null && j2.hasFlag(player, warp.getFlag())){
+					player.sendMessage(ChatColor.RED+"Whoosh!");
+					player.teleportTo(warp.getLocation());
+				}
+				else {
+					player.sendMessage(ChatColor.RED+"Warp does not exist. For a list, say /warp");
+				}
+
+			}
+			event.setCancelled(true);
+			return;
+		}
+
+		if(split[0].equalsIgnoreCase("/home") && j2.hasFlag(player, Flag.FUN)) {
+			if(split.length==1){
+				String homes_s=j2.warps.listHomes(player.getName());
+				if(!homes_s.equalsIgnoreCase("")){
+					player.sendMessage(ChatColor.RED+"Homes: "+ChatColor.WHITE+homes_s);
+					player.sendMessage(ChatColor.RED+"To go to a home, say /home homename");
+
+				}else{
+					player.sendMessage(ChatColor.RED+"You have no homes available.");
+					player.sendMessage(ChatColor.RED+"Use the command /sethome");
+				}
+			}
+			else{
+				Warp home=j2.warps.getUserWarp(player.getName(),split[1]);
+				if(home!=null){
+					player.sendMessage(ChatColor.RED+"Whoosh!");
+					player.teleportTo(home.getLocation());
+				}
+				else {
+					player.sendMessage(ChatColor.RED+"That home does not exist. For a list, say /home");
+				}
+
+			}
+			event.setCancelled(true);
+			return;
+		}
+		if(split[0].equalsIgnoreCase("/setwarp") && j2.hasFlag(player, Flag.ADMIN)){
+			if(split.length==1){
+				player.sendMessage(ChatColor.RED+"Usage: /setwarp warpname");
+				player.sendMessage(ChatColor.RED+"optional: /setwarp warpname flag");
+				player.sendMessage(ChatColor.RED+"Admin flag is a, trusted is t");
+			}
+			else{
+				Flag flag=null;
+				if(split.length>2){
+					flag=Flag.byChar(split[2].charAt(0));
+				}
+				Warp newWarp=new Warp(split[1], player.getName(), player.getLocation(), flag);
+				j2.warps.addWarp(newWarp);
+				player.sendMessage(ChatColor.RED+"Warp created");
+			}
+			event.setCancelled(true);
+			return;
+		}
+		if(split[0].equalsIgnoreCase("/sethome") && j2.hasFlag(player, Flag.ADMIN)){
+			if(split.length==1){
+				player.sendMessage(ChatColor.RED+"Usage: /sethome name");
+			}
+			else{
+				Warp newWarp=new Warp(split[1], player.getName(), player.getLocation(), Flag.byChar('0'));
+				j2.warps.addWarp(newWarp);
+				player.sendMessage(ChatColor.RED+"Home created");
+			}
+			event.setCancelled(true);
+			return;
+		}
+		if(split[0].equalsIgnoreCase("/removewarp") && j2.hasFlag(player, Flag.ADMIN) && split.length>1){
+			String toRemove=split[1];
+			player.sendMessage(ChatColor.RED+"Removing warp "+toRemove);
+			j2.warps.killWarp(j2.warps.getPublicWarp(toRemove));
+			event.setCancelled(true);
+			return;
+		}
+		if(split[0].equalsIgnoreCase("/removehome") && j2.hasFlag(player,Flag.FUN)){
+			if(split.length==1){
+				player.sendMessage(ChatColor.RED+"Usage: /removehome homename");
+				if(j2.hasFlag(player, Flag.ADMIN)){
+					player.sendMessage(ChatColor.RED+"Or: /removehome homename playername");
+				}
+			}
+			if(split.length==2){
+				String toRemove=split[1];
+				player.sendMessage(ChatColor.RED+"Removing home "+toRemove);
+				j2.warps.killWarp(j2.warps.getUserWarp(player.getName(), toRemove));
+			}
+			if(split.length==3 && j2.hasFlag(player, Flag.ADMIN)){
+				String toRemove=split[1];
+				String plr=split[2];
+				player.sendMessage(ChatColor.RED+"Removing home "+toRemove+" of player "+plr);
+				j2.warps.killWarp(j2.warps.getUserWarp(plr, toRemove));
+			}
+			event.setCancelled(true);
+			return;
+		}
+		if(split[0].equalsIgnoreCase("/homeinvasion") && j2.hasFlag(player,Flag.ADMIN)){
+			if(split.length==1){
+				player.sendMessage(ChatColor.RED+"Usage: /homeinvasion player");
+				player.sendMessage(ChatColor.RED+"      to get a list");
+				player.sendMessage(ChatColor.RED+"       /homeinvasion player homename");
+				player.sendMessage(ChatColor.RED+"      to visit a specific home");
+			}
+			if(split.length==2){
+				String target=split[1];
+				boolean isOnline=j2.users.isOnline(target);
+				if(!isOnline){
+					j2.warps.loadPlayer(target);
+				}
+				player.sendMessage(ChatColor.RED+target+" warps: "+ChatColor.WHITE+j2.warps.listHomes(target));
+				if(!isOnline){
+					j2.warps.dropPlayer(target);
+				}
+			}
+			if(split.length==3){
+				String target=split[1];
+				boolean isOnline=j2.users.isOnline(target);
+				if(!isOnline){
+					j2.warps.loadPlayer(target);
+				}
+				Warp warptarget=j2.warps.getUserWarp(target, split[2]);
+				if(warptarget!=null){
+					player.sendMessage(ChatColor.RED+"Whooooosh!  *crash*");
+					player.teleportTo(warptarget.getLocation());
+				}
+				else {
+					player.sendMessage(ChatColor.RED+"No such home");
+				}
+				if(!isOnline){
+					j2.warps.dropPlayer(target);
+				}
+			}
+			event.setCancelled(true);
+			return;
+		}
 	}
 }

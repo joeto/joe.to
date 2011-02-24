@@ -8,10 +8,10 @@ import org.bukkit.event.player.PlayerItemEvent;
 import org.bukkit.event.player.PlayerListener;
 
 
-public class J2PlrItem extends PlayerListener {
+public class listenPlrItem extends PlayerListener {
 	private final J2Plugin j2;
 
-	public J2PlrItem(J2Plugin instance) {
+	public listenPlrItem(J2Plugin instance) {
 		j2 = instance;
 	}
 	@Override

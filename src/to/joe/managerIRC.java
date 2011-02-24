@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 
-public class J2PlugIRC {
+public class managerIRC {
 	private J2Plugin j2;
 	private ircBot bot;
 	private Object adminsLock = new Object();
 	private ArrayList<ircAdmin> admins;
 
 	
-	public J2PlugIRC(J2Plugin j2p){
+	public managerIRC(J2Plugin j2p){
 		this.j2=j2p;
 		loadIRCAdmins();
 		

@@ -5,10 +5,10 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class J2PlugChat {
+public class managerChat {
 	private String[] colorlist;
 	private J2Plugin j2;
-	public J2PlugChat(J2Plugin j2p){
+	public managerChat(J2Plugin j2p){
 		j2=j2p;
 		
 		//colorslist, minus lightblue white and purple
@@ -73,7 +73,7 @@ public class J2PlugChat {
 		}
 		j2.log.log(Level.INFO, "GOD: <"+name+"> "+message);
 		addChat(name,message);
-		j2.getIRC().ircMsg(pmessage);
+		j2.irc.ircMsg(pmessage);
 	}
 	
 	public void addChat(String name, String message) {

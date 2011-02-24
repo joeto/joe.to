@@ -45,18 +45,19 @@ import java.util.logging.Logger;
  * @author mbaxter
  */
 public class J2Plugin extends JavaPlugin {
-	private final J2PlrChat plrlisChat = new J2PlrChat(this);
-	private final J2PlrCommands plrlisCommands = new J2PlrCommands(this);
-	private final J2PlrItem plrlisItem = new J2PlrItem(this);
-	private final J2PlrJoinQuit plrlisJoinQuit = new J2PlrJoinQuit(this);
-	private final J2BlockListener blockListener = new J2BlockListener(this);
+	private final listenPlrChat plrlisChat = new listenPlrChat(this);
+	private final listenPlrCommands plrlisCommands = new listenPlrCommands(this);
+	private final listenPlrItem plrlisItem = new listenPlrItem(this);
+	private final listenPlrJoinQuit plrlisJoinQuit = new listenPlrJoinQuit(this);
+	private final listenBlock blockListener = new listenBlock(this);
 	private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
-	private final J2PlugChat func_chat = new J2PlugChat(this);
-	private final J2PlugIRC func_irc = new J2PlugIRC(this);
-	private final J2PlugKickBan func_kickban = new J2PlugKickBan(this);
-	public final userCache users = new userCache(this);
-	public final reportManager reports = new reportManager();
-	public BlockLogger blogger;
+	public final managerChat chat = new managerChat(this);
+	public final managerIRC irc = new managerIRC(this);
+	public final managerKickBan kickbans = new managerKickBan(this);
+	public final managerUsers users = new managerUsers(this);
+	public final managerReport reports = new managerReport();
+	public final managerWarps warps = new managerWarps(this);
+	public managerBlockLog blogger;
 
 	public J2Plugin(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
 		super(pluginLoader, instance, desc, folder, plugin, cLoader);
@@ -65,7 +66,7 @@ public class J2Plugin extends JavaPlugin {
 
 	public void onDisable() {
 
-		getIRC().kill();
+		irc.kill();
 		stopTimer();
 		// NOTE: All registered events are automatically unregistered when a plugin is disabled
 
@@ -78,7 +79,7 @@ public class J2Plugin extends JavaPlugin {
 		if(debug)log.info("Data loaded");
 		
 		//irc start
-		if(ircEnable)getIRC().prepIRC();
+		if(ircEnable)irc.prepIRC();
 		if(debug)log.info("IRC up (or disabled)");
 		//irc end
 		loadTips();
@@ -87,7 +88,7 @@ public class J2Plugin extends JavaPlugin {
 		if(debug)log.info("Tips timer started");
 		
 		//Initialize BlockLogger
-		this.blogger = new BlockLogger(this.mysql.getConnection(),this.mysql.servnum());
+		this.blogger = new managerBlockLog(this.mysql.getConnection(),this.mysql.servnum());
 		if(debug)log.info("Blogger init");
 		new Thread(blogger).start();
 		if(debug)log.info("Blogger is go");
@@ -140,7 +141,7 @@ public class J2Plugin extends JavaPlugin {
 			String mysql_db = j2properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
 			//chatTable = properties.getString("chat","chat");
 			int mysql_server = j2properties.getInt("server-number", 1);
-			mysql = new MySQLTools(mysql_username,mysql_password,mysql_db, mysql_server, this);
+			mysql = new managerMySQL(mysql_username,mysql_password,mysql_db, mysql_server, this);
 			mysql.loadMySQLData();
 			//mysql end
 			
@@ -370,20 +371,10 @@ public class J2Plugin extends JavaPlugin {
 		return builder.toString();
 	}
 
-	public J2PlugChat getChat(){
-		return func_chat;
-	}
-
-	public J2PlugIRC getIRC(){
-		return func_irc;
-	}
 	
-	public J2PlugKickBan getKickBan(){
-		return func_kickban;
-	}
 	
 	public boolean hasFlag(Player player, Flag flag){
-		j2User user=users.getUser(player);
+		User user=users.getUser(player);
 		if(user!=null && (user.getUserFlags().contains(flag) || users.groupHasFlag(user.getGroup(), flag))){
 			return true;
 		}
@@ -392,7 +383,7 @@ public class J2Plugin extends JavaPlugin {
 	
 	public boolean debug;
 	public Logger log;
-	public MySQLTools mysql;
+	public managerMySQL mysql;
 	public ArrayList<String> protectedUsers;
 	public String[] rules, blacklist, intro;
 

@@ -15,8 +15,8 @@ import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 
-public class j2User {
-	public j2User(String Name, ChatColor Color, String Group,  ArrayList<Flag> ExtraFlags){
+public class User {
+	public User(String Name, ChatColor Color, String Group,  ArrayList<Flag> ExtraFlags){
 		name=Name;
 		color=Color;
 		group=Group;

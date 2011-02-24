@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `blocks_0` (
   KEY `type` (`type`),
   KEY `replaced` (`replaced`),
   KEY `player` (`player`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=282 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -61,3 +61,23 @@ CREATE TABLE IF NOT EXISTS `j2users` (
   `flags` varchar(26) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE IF NOT EXISTS `warps` (
+  `IDX` int(11) NOT NULL AUTO_INCREMENT,
+  `player` varchar(30) NOT NULL,
+  `flag` varchar(1) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `x` int(11) NOT NULL,
+  `y` int(11) NOT NULL,
+  `z` int(11) NOT NULL,
+  `pitch` long NOT NULL,
+  `yaw` long NOT NULL,
+  `world` varchar(30) NOT NULL,
+  `server` tinyint(1) NOT NULL,
+  `public` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`IDX`),
+  KEY `player` (`player`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+ 

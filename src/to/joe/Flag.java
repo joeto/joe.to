@@ -10,7 +10,9 @@ public enum Flag {
 	MODWORLD('m',"Can Modify"),
 	NEW('n',"New"),
 	SRSTAFF('s', "Senior Staff"),
-	TRUSTED('t', "Trusted");
+	TRUSTED('t', "Trusted"),
+	//Numbers are reserved for internal programming that's convenient.
+	Z_HOME_DESIGNATION('0',"DO NOT USE");
 	private char flag;
 	private String description;
 	 private final static HashMap<Character, Flag> flags = new HashMap<Character, Flag>();

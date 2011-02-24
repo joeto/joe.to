@@ -11,8 +11,8 @@ import org.jibble.pircbot.*;
 
 public class ircBot extends PircBot {
 
-	private J2PlugIRC plug;
-	public ircBot(String mah_name,boolean msgenabled,int charlim,String usercolor,boolean echo,String[] sep,J2PlugIRC j) {
+	private managerIRC plug;
+	public ircBot(String mah_name,boolean msgenabled,int charlim,String usercolor,boolean echo,String[] sep,managerIRC j) {
 		this.setName(mah_name);
 		this.setAutoNickChange(true);
 		ircMsg=msgenabled;
@@ -139,7 +139,7 @@ public class ircBot extends PircBot {
 		else
 		{
 			plug.getJ2().log.info("IRC:<"+theuser+"> "+thenewmsg);
-			plug.getJ2().getChat().addChat("[irc]"+theuser, thenewmsg);
+			plug.getJ2().chat.addChat("[irc]"+theuser, thenewmsg);
 			for (Player p : plug.getJ2().getServer().getOnlinePlayers()) {
 				if (p != null) {
 					p.sendMessage(combined);
@@ -159,7 +159,7 @@ public class ircBot extends PircBot {
 		else
 		{
 			plug.getJ2().log.info("IRC: * "+theuser+thenewmsg);
-			plug.getJ2().getChat().addChat("[irc]* "+theuser, thenewmsg);
+			plug.getJ2().chat.addChat("[irc]* "+theuser, thenewmsg);
 			for (Player p : plug.getJ2().getServer().getOnlinePlayers()) {
 				if (p != null) {
 					p.sendMessage(combined);

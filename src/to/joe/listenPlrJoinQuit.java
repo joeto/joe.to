@@ -6,20 +6,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 
 
-public class J2PlrJoinQuit extends PlayerListener {
+public class listenPlrJoinQuit extends PlayerListener {
 	
 	private final J2Plugin j2;
 
-	public J2PlrJoinQuit(J2Plugin instance) {
+	public listenPlrJoinQuit(J2Plugin instance) {
 		j2 = instance;
 	}
 	
 	@Override
 	public void onPlayerJoin(PlayerEvent event) {
+		Player player=event.getPlayer();
 		if(j2.ircEnable){
-			j2.getIRC().ircMsg(event.getPlayer().getName()+" has logged in");
-			j2.getIRC().adminChannel();
+			j2.irc.ircMsg(player.getName()+" has logged in");
+			j2.irc.adminChannel();
 		}
+		j2.warps.loadPlayer(player.getName());
 	}
 
 	@Override
@@ -32,8 +34,9 @@ public class J2PlrJoinQuit extends PlayerListener {
 		Player player=event.getPlayer();
 		if(j2.users.getUser(player)!=null){
 			j2.users.delUser(player);
+			j2.warps.dropPlayer(player.getName());
 			if(j2.ircEnable){
-				j2.getIRC().ircMsg(event.getPlayer().getName()+" has left the server");
+				j2.irc.ircMsg(event.getPlayer().getName()+" has left the server");
 			}
 		}
 	}
@@ -58,7 +61,7 @@ public class J2PlrJoinQuit extends PlayerListener {
 		if(j2.users.getUser(player)!=null){
 			//event.setKickMessage("Already logged in");
 			//event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Already logged in");
-			j2.getKickBan().callKick(player.getName(), "CONSOLE", "Logged in on another Minecraft");
+			j2.kickbans.callKick(player.getName(), "CONSOLE", "Logged in on another Minecraft");
 			return;
 		}
 		if(!isAdmin && !j2.hasFlag(player, Flag.DONOR) && j2.getServer().getOnlinePlayers().length >= j2.playerLimit){

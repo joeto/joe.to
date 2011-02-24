@@ -18,13 +18,13 @@ import org.bukkit.entity.Player;
 
 
 
-public class BlockLogger implements Runnable // start
+public class managerBlockLog implements Runnable // start
 {
 	public static LinkedBlockingQueue<BlockRow> bqueue = new LinkedBlockingQueue<BlockRow>();
 	private boolean stop = false;
 	private Connection conn;
 	private int servnum;
-	BlockLogger(Connection db, int sn) { stop = false; conn=db; servnum=sn;}
+	managerBlockLog(Connection db, int sn) { stop = false; conn=db; servnum=sn;}
 	public void stop() { stop = true; }
 	public void run()
 	{
