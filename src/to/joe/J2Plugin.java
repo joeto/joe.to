@@ -18,11 +18,9 @@ import java.io.File;
 import java.util.HashMap;
 import org.bukkit.entity.*;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.ChatColor;
@@ -60,11 +58,7 @@ public class J2Plugin extends JavaPlugin {
 	public managerBlockLog blogger;
 	public managerMySQL mysql;
 
-	public J2Plugin(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
-		super(pluginLoader, instance, desc, folder, plugin, cLoader);
-		//Don't add anything here
-	}
-
+	
 	public void onDisable() {
 
 		irc.kill();
