@@ -325,13 +325,13 @@ public class managerMySQL {
 			j2.users.setGroups(groups);
 			
 			//reports
-			String state2="SELECT id,user,x,y,z,rotx,roty,message,world from reports where server="+serverNumber+" and closed=0";
+			String state2="SELECT id,user,x,y,z,pitch,yaw,message,world from reports where server="+serverNumber+" and closed=0";
 			ps = conn.prepareStatement(state2);
 			if(j2.debug)j2.log.info("Query: "+state2);
 			rs = ps.executeQuery();
 			while (rs.next()){
 				String user=rs.getString("user");
-				Location loc=new Location(j2.getServer().getWorld(rs.getString("world")), rs.getInt("x"), rs.getInt("y"), rs.getInt("z"), rs.getLong("rotx"), rs.getLong("roty"));
+				Location loc=new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
 				j2.reports.addReport(new Report(rs.getInt("id"), loc, user, rs.getString("message"),rs.getLong("time")));
 				if(j2.debug)j2.log.info("Adding new report to list, user "+user);
 				
@@ -379,7 +379,7 @@ public class managerMySQL {
 		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
-			String state="INSERT INTO reports (user,message,x,y,z,rotx,roty,server,world,time) VALUES (?,?,?,?,?,?,?,?,?,?)";
+			String state="INSERT INTO reports (user,message,x,y,z,pitch,yaw,server,world,time) VALUES (?,?,?,?,?,?,?,?,?,?)";
 			if(j2.debug)j2.log.info("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setString(1, stringClean(report.getUser()));
@@ -389,7 +389,7 @@ public class managerMySQL {
 			ps.setDouble(4, loc.getY());
 			ps.setDouble(5, loc.getZ());
 			ps.setFloat(6, loc.getPitch());
-			ps.setFloat(7, loc.getPitch());
+			ps.setFloat(7, loc.getYaw());
 			ps.setInt(8, serverNumber);
 			ps.setString(9, loc.getWorld().getName());
 			long time=report.getTime();
@@ -513,4 +513,40 @@ public class managerMySQL {
 			}
 		}
 	}
+	public void addWarp(Warp warp){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getConnection();
+			String state="INSERT INTO warps (name,player,server,flag,world,x,y,z,pitch,yaw) VALUES (?,?,?,?,?,?,?,?,?,?)";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
+			ps.setString(1, stringClean(warp.getName()));
+			ps.setString(2, stringClean(warp.getPlayer()));
+			ps.setInt(3, serverNumber);
+			ps.setString(4, String.valueOf(warp.getFlag().getChar()));
+			Location loc=warp.getLocation();
+			ps.setString(5,loc.getWorld().getName());
+			ps.setDouble(6, loc.getX());
+			ps.setDouble(7, loc.getY());
+			ps.setDouble(8, loc.getZ());
+			ps.setFloat(9, loc.getPitch());
+			ps.setFloat(10, loc.getPitch());
+			ps.executeUpdate();
+		} catch (SQLException ex) {
+
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+	}
+	
+
 }

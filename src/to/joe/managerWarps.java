@@ -11,6 +11,7 @@ public class managerWarps {
 		this.j2=J2;
 	}
 	public void addWarp(Warp warp){
+		j2.mysql.addWarp(warp);
 		if(warp.getFlag().equals(Flag.Z_HOME_DESIGNATION)){
 			this.homes.add(warp);
 		}
