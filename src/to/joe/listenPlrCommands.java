@@ -80,6 +80,7 @@ public class listenPlrCommands extends PlayerListener {
 				}
 				else {
 					player.teleportTo(inquestion.getLocation());
+					player.sendMessage("OH GOD I'M FLYING AAAAAAAAH");
 					j2.log.info("Teleport: " + player.getName() + " teleported to "+inquestion.getName());
 				}
 			}
@@ -99,7 +100,7 @@ public class listenPlrCommands extends PlayerListener {
 					player.sendMessage(ChatColor.RED+"Can't teleport yourself to yourself. Derp.");
 				}
 				else {
-					player.teleportTo(inquestion.getLocation());
+					inquestion.teleportTo(player.getLocation());
 					inquestion.sendMessage("You've been teleported");
 					player.sendMessage("Grabbing "+inquestion.getName());
 					j2.log.info("Teleport: " + player.getName() + " pulled "+inquestion.getName()+" to self");
@@ -244,7 +245,7 @@ public class listenPlrCommands extends PlayerListener {
 				j2.irc.ircAdminMsg(ircmessage);
 				j2.log.info(ircmessage);
 				Report report=new Report(0, player.getLocation(), player.getName(), theReport, (new Date().getTime())/1000);
-				j2.mysql.addReport(report);
+				j2.reports.addReport(report);
 				player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
 			}
 			else {
@@ -548,7 +549,7 @@ public class listenPlrCommands extends PlayerListener {
 				player.sendMessage(ChatColor.RED+"Admin flag is a, trusted is t");
 			}
 			else{
-				Flag flag=null;
+				Flag flag=Flag.Z_SPAREWARP_DESIGNATION;
 				if(split.length>2){
 					flag=Flag.byChar(split[2].charAt(0));
 				}
