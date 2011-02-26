@@ -55,9 +55,10 @@ public class J2Plugin extends JavaPlugin {
 	public final managerIRC irc = new managerIRC(this);
 	public final managerKickBan kickbans = new managerKickBan(this);
 	public final managerUsers users = new managerUsers(this);
-	public final managerReport reports = new managerReport();
+	public final managerReport reports = new managerReport(this);
 	public final managerWarps warps = new managerWarps(this);
 	public managerBlockLog blogger;
+	public managerMySQL mysql;
 
 	public J2Plugin(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
 		super(pluginLoader, instance, desc, folder, plugin, cLoader);
@@ -383,7 +384,7 @@ public class J2Plugin extends JavaPlugin {
 	
 	public boolean debug;
 	public Logger log;
-	public managerMySQL mysql;
+	
 	public ArrayList<String> protectedUsers;
 	public String[] rules, blacklist, intro;
 

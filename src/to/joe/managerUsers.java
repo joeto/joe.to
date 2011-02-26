@@ -9,13 +9,13 @@ import org.bukkit.entity.Player;
 public class managerUsers {
 	private J2Plugin j2;
 	public managerUsers(J2Plugin J2){
-		j2=J2;
-		users=new ArrayList<User>();
-		groups=new HashMap<String, ArrayList<Flag>>();
+		this.j2=J2;
+		this.users=new ArrayList<User>();
+		this.groups=new HashMap<String, ArrayList<Flag>>();
 	}
 	public User getUser(String name){
-		synchronized (lock){
-			for(User u:users){
+		synchronized (this.lock){
+			for(User u:this.users){
 				if(u.getName().equalsIgnoreCase(name))
 					return u;
 			}
@@ -23,7 +23,7 @@ public class managerUsers {
 		}
 	}
 	public boolean isOnline(String playername){
-		for(User u:users){
+		for(User u:this.users){
 			if(u.getName().equalsIgnoreCase(playername)){
 				return true;
 			}
@@ -34,52 +34,52 @@ public class managerUsers {
 		return getUser(player.getName());
 	}
 	public void addUser(String player){
-		synchronized (lock){
-			User user=j2.mysql.getUser(player);
-			users.add(user);
+		synchronized (this.lock){
+			User user=this.j2.mysql.getUser(player);
+			this.users.add(user);
 		}
 	}
 	public void delUser(Player player){
-		synchronized (lock){
+		synchronized (this.lock){
 			User toremove=null;
-			for(User user : users){
+			for(User user : this.users){
 				if(user.getName().equalsIgnoreCase(player.getName()))
 					toremove=user;
 			}
 			if(toremove!=null)
-				users.remove(toremove);
+				this.users.remove(toremove);
 		}
 	}
 	public void addFlag(String name, Flag flag){
-		synchronized (lock){
-			for(User user:users){
+		synchronized (this.lock){
+			for(User user:this.users){
 				if(user.getName().equalsIgnoreCase(name)){
 					user.addFlag(flag);
-					j2.mysql.setFlags(name, user.getUserFlags());
+					this.j2.mysql.setFlags(name, user.getUserFlags());
 				}
 			}
 		}
 	}
 	public void dropFlag(String name, Flag flag){
-		synchronized (lock){
-			for(User user:users){
+		synchronized (this.lock){
+			for(User user:this.users){
 				if(user.getName().equalsIgnoreCase(name)){
 					user.dropFlag(flag);
-					j2.mysql.setFlags(name, user.getUserFlags());
+					this.j2.mysql.setFlags(name, user.getUserFlags());
 				}
 			}
 		}
 	}
 	public void setGroups(HashMap<String, ArrayList<Flag>> Groups){
-		groups=Groups;
+		this.groups=Groups;
 	}
 	
 	public boolean groupHasFlag(String group, Flag flag){
-		 return groups.get(group).contains(flag);
+		 return this.groups.get(group).contains(flag);
 	}
 	
 	public ArrayList<Flag> getGroupFlags(String groupname){
-		return groups.get(groupname);
+		return this.groups.get(groupname);
 	}
 
 	public ArrayList<Flag> getAllFlags(Player player){

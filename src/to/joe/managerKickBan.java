@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class managerKickBan {
@@ -20,7 +21,7 @@ public class managerKickBan {
 	
 	
 
-	public void callBan(String adminName, String[] split)
+	public void callBan(String adminName, String[] split, Location location)
 	{
 		List<Player> toBanCandidates = j2.getServer().matchPlayer(split[1]);
 		if(toBanCandidates.size()!=1){
@@ -35,7 +36,7 @@ public class managerKickBan {
 		banReason=j2.combineSplit(2, split, " ");
 		if (toBan != null) {
 			String name = toBan.getName();
-			j2.mysql.ban(name,banReason,banTime,adminName);
+			j2.mysql.ban(name,banReason,banTime,adminName,location);
 			if (split.length > 2) {
 				toBan.kickPlayer("Banned: " + banReason);
 				
@@ -56,13 +57,13 @@ public class managerKickBan {
 			}
 		}
 	}
-	public void callAddBan(String adminName, String[] split)
+	public void callAddBan(String adminName, String[] split,Location location)
 	{
 		String banReason="";
 		long banTime=0;
 		banReason=j2.combineSplit(2, split, " ");
 		String name=split[1];
-		j2.mysql.ban(name,banReason,banTime,adminName);
+		j2.mysql.ban(name,banReason,banTime,adminName,location);
 		forceKick(name,"Banned: "+banReason);
 		if (split.length > 2) {
 			j2.log.log(Level.INFO, "Banning " + name + " by " + adminName + ": " + banReason);

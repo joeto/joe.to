@@ -1,6 +1,8 @@
 
 package to.joe;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
@@ -235,12 +237,14 @@ public class listenPlrCommands extends PlayerListener {
 		if(split[0].equalsIgnoreCase("/report")){
 			if(split.length>1){
 				String playerName = player.getName();
-				String report=j2.combineSplit(1, split, " ");
-				String message="Report: <§d"+playerName+"§f>"+report;
-				String ircmessage="Report from "+playerName+": "+report;
+				String theReport=j2.combineSplit(1, split, " ");
+				String message="Report: <§d"+playerName+"§f>"+theReport;
+				String ircmessage="Report from "+playerName+": "+theReport;
 				j2.chat.msgByFlag(Flag.ADMIN, message);
 				j2.irc.ircAdminMsg(ircmessage);
 				j2.log.info(ircmessage);
+				Report report=new Report(0, player.getLocation(), player.getName(), theReport, (new Date().getTime())/1000);
+				j2.mysql.addReport(report);
 				player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
 			}
 			else {
@@ -251,7 +255,21 @@ public class listenPlrCommands extends PlayerListener {
 			return;
 		}
 		if(split[0].equalsIgnoreCase("/r") && j2.hasFlag(player, Flag.ADMIN)){
-			
+			ArrayList<Report> reps=j2.reports.getReports();
+			int size=reps.size();
+			if(size==0){
+				player.sendMessage(ChatColor.RED+"No reports. Hurray!");
+				event.setCancelled(true);
+				return;
+			}
+			player.sendMessage(ChatColor.DARK_PURPLE+"Found "+size+" reports:");
+			for(Report r:reps){
+					player.sendMessage(ChatColor.DARK_PURPLE+"["+r.getID()+"]<"
+							+ChatColor.WHITE+r.getUser()+ChatColor.DARK_PURPLE+"> "+ChatColor.WHITE
+							+r.getMessage());
+			}
+			event.setCancelled(true);
+			return;
 		}
 		if(split[0].equalsIgnoreCase("/g") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length<2){
@@ -274,7 +292,7 @@ public class listenPlrCommands extends PlayerListener {
 				return;
 			}
 			String adminName = player.getName();
-			j2.kickbans.callBan(adminName,split);
+			j2.kickbans.callBan(adminName,split,player.getLocation());
 			event.setCancelled(true);
 			return;
 		}
@@ -297,7 +315,7 @@ public class listenPlrCommands extends PlayerListener {
 				return;
 			}
 			String adminName = player.getName();
-			j2.kickbans.callAddBan(adminName,split);
+			j2.kickbans.callAddBan(adminName,split,player.getLocation());
 			event.setCancelled(true);
 			return;
 		}

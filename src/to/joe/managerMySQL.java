@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,13 +18,13 @@ public class managerMySQL {
 	private String user,pass,db;
 	private int serverNumber;
 	private J2Plugin j2;
+	private SimpleDateFormat formatter = new SimpleDateFormat("MM-dd hh:mm");
 	public managerMySQL(String User,String Pass, String DB, int ServerNumber, J2Plugin J2){
 		user=User;
 		pass=Pass;
 		db=DB;
 		serverNumber=ServerNumber;
 		j2=J2;
-		
 	}
 	public String user(){
 		return user;
@@ -159,9 +160,20 @@ public class managerMySQL {
 			}
 		}
 	}
-	public void ban(String name,String reason, long time, String admin){
+	public void ban(String name,String reason, long time, String admin,Location location){
 		Connection conn = null;
 		PreparedStatement ps = null;
+		double x=0,y=0,z=0;
+		float pitch=0,yaw=0;
+		String world="";
+		if(location!=null){
+			x=location.getX();
+			y=location.getY();
+			z=location.getZ();
+			pitch=location.getPitch();
+			yaw=location.getYaw();
+			world=location.getWorld().getName();
+		}
 		try {
 			conn = getConnection();
 			Date curTime=new Date();
@@ -171,7 +183,7 @@ public class managerMySQL {
 				unBanTime=0;
 			else
 				unBanTime=timeNow+(60*time);
-			String state="INSERT INTO j2bans (name,reason,admin,unbantime,timeofban) VALUES (?,?,?,?,?)";
+			String state="INSERT INTO j2bans (name,reason,admin,unbantime,timeofban,x,y,z,pitch,yaw,world) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 			if(j2.debug)j2.log.info("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setString(1, stringClean(name.toLowerCase()));
@@ -179,9 +191,16 @@ public class managerMySQL {
 			ps.setString(3, stringClean(admin));
 			ps.setLong(4, unBanTime);
 			ps.setLong(5, timeNow);
+			ps.setDouble(6, x);
+			ps.setDouble(7,y);
+			ps.setDouble(8,z);
+			ps.setFloat(9,pitch);
+			ps.setFloat(10, yaw);
+			ps.setString(11, world);
 			ps.executeUpdate();
 			Ban newban=new Ban(name.toLowerCase(),reason,unBanTime,timeNow);
 			j2.kickbans.bans.add(newban);
+			
 		} catch (SQLException ex) {
 
 		} finally {
@@ -306,7 +325,7 @@ public class managerMySQL {
 			j2.users.setGroups(groups);
 			
 			//reports
-			String state2="SELECT user,x,y,z,rotx,roty,message,world from reports where server="+serverNumber;
+			String state2="SELECT id,user,x,y,z,rotx,roty,message,world from reports where server="+serverNumber+" and closed=0";
 			ps = conn.prepareStatement(state2);
 			if(j2.debug)j2.log.info("Query: "+state2);
 			rs = ps.executeQuery();
@@ -360,7 +379,6 @@ public class managerMySQL {
 		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
-			long time=new Date().getTime()/1000;
 			String state="INSERT INTO reports (user,message,x,y,z,rotx,roty,server,world,time) VALUES (?,?,?,?,?,?,?,?,?,?)";
 			if(j2.debug)j2.log.info("Query: "+state);
 			ps = conn.prepareStatement(state);
@@ -374,6 +392,7 @@ public class managerMySQL {
 			ps.setFloat(7, loc.getPitch());
 			ps.setInt(8, serverNumber);
 			ps.setString(9, loc.getWorld().getName());
+			long time=report.getTime();
 			ps.setLong(10, time);
 			ps.executeUpdate();
 			ps = conn.prepareStatement("SELECT id FROM reports where time=? and message=?");
@@ -398,7 +417,30 @@ public class managerMySQL {
 	}
 	
 	public void closeReport(int id, String admin, String reason){
-		
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getConnection();
+			String state="UPDATE reports SET closed=1,admin=?,reason where id=?";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
+			ps.setString(1, admin);
+			ps.setString(2,reason);
+			ps.executeUpdate();
+			j2.log.info("Report "+id+" closed by "+admin);
+		} catch (SQLException ex) {
+
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
 	}
 	
 	public ArrayList<Warp> getHomes(String playername){

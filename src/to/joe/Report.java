@@ -15,13 +15,13 @@ public class Report {
 		this.time=time;
 	}
 	public int getID(){
-		return id;
+		return this.id;
 	}
 	public Location getLocation(){
-		return location;
+		return this.location;
 	}
 	public String getUser(){
-		return user;
+		return this.user;
 	}
 	public long getTime(){
 		return this.time;
@@ -30,6 +30,6 @@ public class Report {
 		this.id=id;
 	}
 	public String getMessage(){
-		return message;
+		return this.message;
 	}
 }

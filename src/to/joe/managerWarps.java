@@ -12,31 +12,31 @@ public class managerWarps {
 	}
 	public void addWarp(Warp warp){
 		if(warp.getFlag().equals(Flag.Z_HOME_DESIGNATION)){
-			homes.add(warp);
+			this.homes.add(warp);
 		}
 		else{
-			warps.add(warp);
+			this.warps.add(warp);
 		}
 	}
 	public void killWarp(Warp warp){
 		if(warp.getFlag().equals(Flag.Z_HOME_DESIGNATION)){
-			homes.remove(warp);
+			this.homes.remove(warp);
 		}
 		else{
-			warps.remove(warp);
+			this.warps.remove(warp);
 		}
-		j2.mysql.removeWarp(warp);
+		this.j2.mysql.removeWarp(warp);
 	}
 	public void loadPlayer(String playername){
-		ArrayList<Warp> playerhomes=j2.mysql.getHomes(playername);
+		ArrayList<Warp> playerhomes=this.j2.mysql.getHomes(playername);
 		if(playerhomes!=null)
-			homes.addAll(playerhomes);
+			this.homes.addAll(playerhomes);
 	}
 
 	public void dropPlayer(String playername){
 		for(Warp home:this.homes){
 			if(home.getPlayer().equalsIgnoreCase(playername)){
-				homes.remove(home);
+				this.homes.remove(home);
 			}
 		}
 	}
