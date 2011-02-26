@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ public class managerMySQL {
 	private String user,pass,db;
 	private int serverNumber;
 	private J2Plugin j2;
-	private SimpleDateFormat formatter = new SimpleDateFormat("MM-dd hh:mm");
+	//private SimpleDateFormat formatter = new SimpleDateFormat("MM-dd hh:mm");
 	public managerMySQL(String User,String Pass, String DB, int ServerNumber, J2Plugin J2){
 		user=User;
 		pass=Pass;
@@ -347,7 +347,7 @@ public class managerMySQL {
 			while (rs.next()) {
 				j2.warps.addWarp(new Warp(rs.getString("name"), rs.getString("player"), 
 						new Location(j2.getServer().getWorld(rs.getString("world")),
-								rs.getDouble("x"), rs.getDouble("x"), rs.getDouble("x"),
+								rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"),
 								rs.getFloat("pitch"), rs.getFloat("yaw")),
 						Flag.byChar(rs.getString("flag").charAt(0))));
 				count++;
@@ -460,7 +460,7 @@ public class managerMySQL {
 			while (rs.next()) {
 				homes.add(new Warp(rs.getString("name"), rs.getString("player"), 
 						new Location(j2.getServer().getWorld(rs.getString("world")),
-								rs.getDouble("x"), rs.getDouble("x"), rs.getDouble("x"),
+								rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"),
 								rs.getFloat("pitch"), rs.getFloat("yaw")),
 						Flag.byChar(rs.getString("flag").charAt(0))));
 			}
