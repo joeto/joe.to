@@ -7,19 +7,21 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 
+import org.bukkit.Location;
+
 public class managerIRC {
 	private J2Plugin j2;
 	private ircBot bot;
 	private Object adminsLock = new Object();
 	private ArrayList<ircAdmin> admins;
 
-	
+
 	public managerIRC(J2Plugin j2p){
 		this.j2=j2p;
 		loadIRCAdmins();
-		
+
 	}
-	
+
 	public void prepIRC(){
 
 		bot=new ircBot(j2.ircName,j2.ircMsg,j2.ircCharLim,j2.ircUserColor,j2.ircEcho,j2.ircSeparator,this);
@@ -40,21 +42,21 @@ public class managerIRC {
 		if(j2.ircOnJoin!="")bot.sendMessage(j2.ircChannel,j2.ircOnJoin);
 
 	}
-	
+
 	public void kill(){
 		if(bot!=null)bot.disconnect();
 	}
-	
+
 	public ircBot getBot(){
 		return bot;
 	}
-	
+
 	public void adminChannel(){
 		if(bot.getChannels().length==1){
 			bot.joinChannel(j2.ircAdminChannel);
 		}
 	}
-	
+
 	public boolean isIRCAuth(String hostname){
 		synchronized(adminsLock){
 			for(ircAdmin admin:admins){
@@ -65,7 +67,7 @@ public class managerIRC {
 		}
 		return false;
 	}
-	
+
 	public boolean ircLevel2(String command) {
 		for (String str : j2.ircLevel2) {
 			if (command.equalsIgnoreCase(str)) {
@@ -79,9 +81,9 @@ public class managerIRC {
 		if(j2.ircEnable)
 			bot.sendMessage(to, message);
 	}
-	
+
 	public boolean ircCommand(String host,String nick,String[] command){
-		/*if(!ircEnable)
+		if(!j2.ircEnable)
 			return false;
 		int lvl=0;
 		String adminName="";
@@ -99,17 +101,43 @@ public class managerIRC {
 		if(lvl==0 || (lvl==2 && !ircLevel2(command[0])  )  ){
 			return false;
 		}
-		String commands=combineSplit(0, command, " ");
-		if(etc.getInstance().parseConsoleCommand(commands, etc.getMCServer())){
-			log.log(Level.INFO,"IRC admin "+adminName+"("+nick+"@"+host+") used command: "+commands);
-			return true;
+		String commands=j2.combineSplit(0, command, " ");
+		String com=command[0];
+		boolean done=false;
+		if(com.equalsIgnoreCase("kick")&&command.length>2){
+			j2.kickbans.forceKick(command[1], j2.combineSplit(2,command," "));
+			done=true;
 		}
-		etc.getServer().useConsoleCommand(commands);
-		log.log(Level.INFO,"IRC admin "+adminName+"("+nick+"@"+host+") used command: "+commands);
-		 */
-		return true;
+		if(com.equalsIgnoreCase("ban")&&command.length>2){
+			j2.kickbans.callBan(adminName, command, new Location(j2.getServer().getWorlds().get(0), 0,0,0,0,0));
+			done=true;
+		}
+		if(com.equalsIgnoreCase("g")&&command.length>1){
+			j2.chat.gMsg(adminName, j2.combineSplit(1, command, " "));
+			done=true;
+		}
+		if(com.equalsIgnoreCase("a")&&command.length>1){
+			j2.chat.aMsg(adminName, j2.combineSplit(1, command, " "));
+			done=true;
+		}
+		if(com.equalsIgnoreCase("addban")&&command.length>2){
+			j2.kickbans.callAddBan(adminName, command, new Location(j2.getServer().getWorlds().get(0), 0,0,0,0,0));
+			done=true;
+		}
+		if(com.equalsIgnoreCase("unban")&&command.length>1){
+			j2.kickbans.unban(adminName, command[1]);
+			done=true;
+		}
+		if(done){
+			j2.log.log(Level.INFO,"IRC admin "+adminName+"("+nick+"@"+host+") used command: "+commands);
+		}
+		else {
+			j2.log.log(Level.INFO,"IRC admin "+adminName+"("+nick+"@"+host+") tried: "+commands);
+		}
+
+		return done;
 	}
-	
+
 	public void loadIRCAdmins(){
 		String location="ircAdmins.txt";
 		if (!new File(location).exists()) {
@@ -155,7 +183,7 @@ public class managerIRC {
 			}
 		}
 	}
-	
+
 	public void ircMsg(String message){
 		if(j2.ircEnable)
 			bot.sendMessage(j2.ircChannel,message);
@@ -165,7 +193,7 @@ public class managerIRC {
 		if(j2.ircEnable)
 			bot.sendMessage(j2.ircAdminChannel,message);
 	}
-	
+
 	public J2Plugin getJ2(){
 		return j2;
 	}

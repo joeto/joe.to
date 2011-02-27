@@ -369,9 +369,7 @@ public class listenPlrCommands extends PlayerListener {
 			}
 			String name=split[1];
 			String adminName=player.getName();
-			j2.mysql.unban(name);
-			j2.log.log(Level.INFO, "Unbanning " + name + " by " + adminName);
-			j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Unbanning " + name + " by " + adminName);
+			j2.kickbans.unban(adminName, name);
 			event.setCancelled(true);
 			return;
 		}
@@ -600,7 +598,7 @@ public class listenPlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/sethome") && j2.hasFlag(player, Flag.ADMIN)){
+		if(split[0].equalsIgnoreCase("/sethome") && j2.hasFlag(player, Flag.FUN)){
 			if(split.length==1){
 				player.sendMessage(ChatColor.RED+"Usage: /sethome name");
 			}
@@ -675,6 +673,37 @@ public class listenPlrCommands extends PlayerListener {
 				if(!isOnline){
 					j2.warps.dropPlayer(target);
 				}
+			}
+			event.setCancelled(true);
+			return;
+		}
+		if(split[0].equalsIgnoreCase("/clearinventory")){
+			if(!j2.hasFlag(player, Flag.ADMIN)||split.length==1){
+				player.getInventory().clear();
+				player.sendMessage(ChatColor.RED+"Inventory emptied");
+				j2.log.info(player.getName()+" emptied inventory");
+			}
+			else {
+				List<Player> targets=j2.getServer().matchPlayer(split[1]);
+				if(targets.size()==1){
+					Player target=targets.get(0);
+					target.getInventory().clear();
+					target.sendMessage(ChatColor.RED+"Your inventory has been cleared by an admin");
+					j2.log.info(player.getName()+" emptied inventory of "+target.getName());
+				}
+				else {
+					player.sendMessage(ChatColor.RED+"Found "+targets.size()+" matches. Try again");
+				}
+			}
+			event.setCancelled(true);
+			return;
+		}
+		if(split[0].equalsIgnoreCase("/mobhere")&&j2.hasFlag(player, Flag.SRSTAFF)){
+			if(split.length==1){
+				player.sendMessage(ChatColor.RED+"/mobhere mobname");
+			}
+			else {
+				player.getLocation().getWorld().spawnCreature(player.getLocation(), CreatureType.valueOf(split[1]));
 			}
 			event.setCancelled(true);
 			return;

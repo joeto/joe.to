@@ -36,7 +36,13 @@ public class listenBlock extends BlockListener {
     
     @Override
     public void onBlockIgnite(BlockIgniteEvent event){
-    	if(j2.safemode && !event.getCause().equals(IgniteCause.FLINT_AND_STEEL)){
+    	if(j2.safemode && !(event.getCause().equals(IgniteCause.FLINT_AND_STEEL))){
+    		event.setCancelled(true);
+    	}
+    }
+    @Override
+    public void onBlockBurn(BlockBurnEvent event) {
+    	if(j2.safemode){
     		event.setCancelled(true);
     	}
     }

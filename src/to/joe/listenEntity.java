@@ -1,5 +1,6 @@
 package to.joe;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
@@ -17,7 +18,7 @@ public class listenEntity extends EntityListener {
 	}
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
-		if(j2.safemode){
+		if(j2.safemode && event.getEntity()!=null && event.getEntity() instanceof Player){
 			event.setCancelled(true);
 		}
 	}

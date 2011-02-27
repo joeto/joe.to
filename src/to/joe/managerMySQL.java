@@ -105,7 +105,7 @@ public class managerMySQL {
 				ps.executeUpdate();
 				ArrayList<Flag> f=new ArrayList<Flag>();
 				f.add(Flag.NEW);
-				return new User(name, ChatColor.WHITE, "regular", f);
+				return new User(name, ChatColor.GREEN, "regular", f);
 			}
 		} catch (SQLException ex) {
 			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);

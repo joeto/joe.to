@@ -99,6 +99,7 @@ public class J2Plugin extends JavaPlugin {
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_IGNITE, blockListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.BLOCK_BURN, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_RIGHTCLICKED, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.SIGN_CHANGE, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
@@ -379,6 +380,12 @@ public class J2Plugin extends JavaPlugin {
 			return true;
 		}
 		return false;
+	}
+	
+	public void jailMsg(Player player){
+		player.sendMessage(ChatColor.RED+"You are "+ChatColor.DARK_RED+"IN JAIL");
+		player.sendMessage(ChatColor.RED+"for violation of our server rules");
+		player.sendMessage(ChatColor.RED+"Look around you for info on freedom");
 	}
 	
 	public boolean debug;

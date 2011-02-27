@@ -96,7 +96,10 @@ public class ircBot extends PircBot {
 				sendMessage(channel,"Done :)");
 			}
 			else{
-				sendMessage(channel,"You don't have access to that command :(");
+				if (!ircMsg){
+					doMsg(channel,sender," "+message);
+				}
+				//sendMessage(channel,"You don't have access to that command :(");
 			}
 			return;
 		}

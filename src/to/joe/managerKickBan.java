@@ -88,13 +88,13 @@ public class managerKickBan {
 				toKick.kickPlayer("Kicked: " + reason);
 				j2.log.log(Level.INFO, "Kicking " + name + " by " + admin + ": " + reason);
 				j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
-				j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + "kicked ("+reason+")");
+				j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " kicked ("+reason+")");
 				j2.irc.ircMsg(name + " kicked ("+reason+")");
 			} else {
 				toKick.kickPlayer("Kicked.");
 				j2.log.log(Level.INFO, "Kicking " + name + " by " + admin);
 				j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin);
-				j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + "kicked");
+				j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " kicked");
 				j2.irc.ircMsg(name + " kicked");
 			}
 		} else {
@@ -131,5 +131,9 @@ public class managerKickBan {
 		}
 	}
 	
-	
+	public void unban(String adminName,String name){
+		j2.mysql.unban(name);
+		j2.log.log(Level.INFO, "Unbanning " + name + " by " + adminName);
+		j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Unbanning " + name + " by " + adminName);
+	}
 }
