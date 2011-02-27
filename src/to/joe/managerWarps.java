@@ -19,6 +19,14 @@ public class managerWarps {
 			this.warps.add(warp);
 		}
 	}
+	public void addWarpViaMysql(Warp warp){
+		if(warp.getFlag().equals(Flag.Z_HOME_DESIGNATION)){
+			this.homes.add(warp);
+		}
+		else{
+			this.warps.add(warp);
+		}
+	}
 	public void killWarp(Warp warp){
 		if(warp.getFlag().equals(Flag.Z_HOME_DESIGNATION)){
 			this.homes.remove(warp);

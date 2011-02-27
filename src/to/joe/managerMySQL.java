@@ -345,7 +345,7 @@ public class managerMySQL {
 			rs = ps.executeQuery();
 			int count=0;
 			while (rs.next()) {
-				j2.warps.addWarp(new Warp(rs.getString("name"), rs.getString("player"), 
+				j2.warps.addWarpViaMysql(new Warp(rs.getString("name"), rs.getString("player"), 
 						new Location(j2.getServer().getWorld(rs.getString("world")),
 								rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"),
 								rs.getFloat("pitch"), rs.getFloat("yaw")),
