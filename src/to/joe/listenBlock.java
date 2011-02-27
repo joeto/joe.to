@@ -6,6 +6,7 @@ import org.bukkit.entity.*;
 import org.bukkit.ChatColor;
 import org.bukkit.block.*;
 import org.bukkit.event.block.*;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 
 
 
@@ -24,6 +25,13 @@ public class listenBlock extends BlockListener {
     }
 
 
+    @Override
+    public void onBlockIgnite(BlockIgniteEvent event){
+    	if(j2.safemode && !event.getCause().equals(IgniteCause.FLINT_AND_STEEL)){
+    		event.setCancelled(true);
+    	}
+    }
+    
     @Override
     public void onBlockCanBuild(BlockCanBuildEvent event) {
         //Material mat = event.getMaterial();

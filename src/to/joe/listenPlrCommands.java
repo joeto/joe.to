@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -112,6 +113,24 @@ public class listenPlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
+		
+		if(split[0].equalsIgnoreCase("/spawn") && j2.hasFlag(player, Flag.FUN)){
+			if(!j2.hasFlag(player, Flag.ADMIN)|| split.length<3){
+				player.sendMessage(ChatColor.RED+"WHEEEEEEEEEEEEEEE");
+				player.teleportTo(player.getWorld().getSpawnLocation());
+			}
+			else {
+				List<Player> inquest = j2.getServer().matchPlayer(split[1]);
+				if(inquest.size()==1){
+					Player inquestion=inquest.get(0);
+					inquestion.teleportTo(inquestion.getWorld().getSpawnLocation());
+					inquestion.sendMessage(ChatColor.RED+"OH GOD I'M BEING PULLED TO SPAWN OH GOD");
+				}
+				else {
+					player.sendMessage(ChatColor.RED+"No such player, or matches multiple");
+				}
+			}
+		}
 
 		if(split[0].equalsIgnoreCase("/msg")){
 			if(split.length<3){
@@ -139,7 +158,7 @@ public class listenPlrCommands extends PlayerListener {
 				event.setCancelled(true);
 				return;
 			}
-			int item = 0;
+			String item = "0";
 			int amount = 1;
 			int dataType = -1;
 			try {
@@ -152,9 +171,9 @@ public class listenPlrCommands extends PlayerListener {
 						dataType = -1;
 					}
 
-					item = Integer.valueOf(data[0]);
+					item = data[0];
 				} else {
-					item = Integer.valueOf(split[1]);
+					item = split[1];
 				}
 				if(split.length>2){
 					amount = Integer.valueOf(split[2]);
@@ -166,17 +185,24 @@ public class listenPlrCommands extends PlayerListener {
 				player.sendMessage(ChatColor.RED+"Command fail.");
 				return;
 			}
-			if((new ItemStack(item)).getType() == null || item == 0) {
+			Material toDrop=Material.matchMaterial(item);
+			int itemid=0;
+			if(toDrop!=null){
+				itemid=toDrop.getId();
+			}
+			else{
 				player.sendMessage(ChatColor.RED+"Invalid item.");
 				event.setCancelled(true);
 				return;
 			}
+			
 			if(dataType != -1) {
-				player.getWorld().dropItem(player.getLocation(), new ItemStack(item, amount, ((byte)dataType)));
+				player.getInventory().addItem(new ItemStack(itemid, amount, ((byte)dataType)));
 			} else {
-				player.getWorld().dropItem(player.getLocation(), new ItemStack(item, amount));
+				player.getInventory().addItem(new ItemStack(itemid, amount));
 			}
 			player.sendMessage(ChatColor.RED+"Here you go!");
+			j2.log.info("Giving "+player.getName()+" "+amount+" of "+toDrop.toString());
 			event.setCancelled(true);
 			return;
 		}

@@ -48,6 +48,7 @@ public class J2Plugin extends JavaPlugin {
 	private final listenPlrItem plrlisItem = new listenPlrItem(this);
 	private final listenPlrJoinQuit plrlisJoinQuit = new listenPlrJoinQuit(this);
 	private final listenBlock blockListener = new listenBlock(this);
+	private final listenEntity entityListener = new listenEntity(this);
 	private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 	public final managerChat chat = new managerChat(this);
 	public final managerIRC irc = new managerIRC(this);
@@ -99,7 +100,8 @@ public class J2Plugin extends JavaPlugin {
 		pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_IGNITE, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_RIGHTCLICKED, blockListener, Priority.Normal, this);
-		//pm.registerEvent(Event.Type.ENTITY_EXPLODE, playerListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, plrlisJoinQuit, Priority.Normal, this);
@@ -164,7 +166,7 @@ public class J2Plugin extends JavaPlugin {
 			gsAuth = j2properties.getString("gs-auth","");
 			gsPass = j2properties.getString("gs-pass","");
 			ircLevel2 = j2properties.getString("irc-level2","").split(",");
-			mc2=j2properties.getBoolean("mc2",false);
+			safemode=j2properties.getBoolean("safemode",false);
 			maintenance = j2properties.getBoolean("maintenance",false);
 			fun=j2properties.getBoolean("funmode",false);
 			randomcolor=j2properties.getBoolean("randcolor",false);
@@ -398,7 +400,7 @@ public class J2Plugin extends JavaPlugin {
 	private ArrayList<Integer> itemblacklist,superblacklist;
 	//private int natureXmin,natureXmax,natureZmin,natureZmax;
 	public boolean maintenance=false;
-	public boolean mc2;
+	public boolean safemode;
 	public PropFile tpProtect=new PropFile("tpProtect.list");
 	public Player OneByOne = null;
 	public boolean fun,randomcolor;
