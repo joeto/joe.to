@@ -124,7 +124,7 @@ public class listenBlock extends BlockListener {
     	
 		if(event.getItemInHand().getTypeId() == 284 && j2.hasFlag(player, Flag.ADMIN))
 		{
-			if(j2.debug)j2.log.info(player.getName()+ "used gold shovel");
+			if(j2.debug)j2.log.info(player.getName()+ " used gold shovel");
 			this.j2.blogger.showBlockHistory(event.getPlayer(), event.getBlock());
 		}
 		if(event.getItemInHand().getTypeId() == 280 && j2.hasFlag(player, Flag.ADMIN)){

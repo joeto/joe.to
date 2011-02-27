@@ -4,6 +4,7 @@ package to.joe;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerItemEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -35,8 +36,12 @@ public class listenPlrItem extends PlayerListener {
 			return;
 		}
 		BlockRow changed;
-		Block smacked = event.getBlockClicked().getFace(event.getBlockFace());
-		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ(),(System.currentTimeMillis()/1000L));
+		Block clicked = event.getBlockClicked();
+		BlockFace face=event.getBlockFace();
+		int x=clicked.getX()+face.getModX();
+		int y=clicked.getY()+face.getModY();
+		int z=clicked.getZ()+face.getModZ();
+		changed = new BlockRow(player.getDisplayName(),event.getItem().getTypeId(),0,x,y,z,(System.currentTimeMillis()/1000L));
 		managerBlockLog.bqueue.offer(changed);
 	}
 }
