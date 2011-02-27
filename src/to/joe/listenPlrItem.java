@@ -41,7 +41,10 @@ public class listenPlrItem extends PlayerListener {
 		int x=clicked.getX()+face.getModX();
 		int y=clicked.getY()+face.getModY();
 		int z=clicked.getZ()+face.getModZ();
-		changed = new BlockRow(player.getDisplayName(),event.getItem().getTypeId(),0,x,y,z,(System.currentTimeMillis()/1000L));
-		managerBlockLog.bqueue.offer(changed);
+		
+		if(type!=323){
+			changed = new BlockRow(player.getDisplayName(),0,type,x,y,z,(System.currentTimeMillis()/1000L),null);
+			managerBlockLog.bqueue.offer(changed);
+		}
 	}
 }

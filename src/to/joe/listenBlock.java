@@ -24,7 +24,16 @@ public class listenBlock extends BlockListener {
         this.j2 = plugin;
     }
 
-
+    @Override
+    public void onSignChange(SignChangeEvent event){
+    	String[] lines=event.getLines();
+    	String text="["+lines[0]+"]["+lines[1]+"]["+lines[2]+"]["+lines[3]+"]";
+    	Block block=event.getBlock();
+    	BlockRow sign;
+		sign = new BlockRow(event.getPlayer().getName(),0,323,block.getX(),block.getY(),block.getZ(),(System.currentTimeMillis()/1000L),text);
+		managerBlockLog.bqueue.offer(sign);
+    }
+    
     @Override
     public void onBlockIgnite(BlockIgniteEvent event){
     	if(j2.safemode && !event.getCause().equals(IgniteCause.FLINT_AND_STEEL)){
@@ -72,7 +81,7 @@ public class listenBlock extends BlockListener {
 		}
     	BlockRow changed;
 		Block smacked = event.getBlock();
-		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ(),(System.currentTimeMillis()/1000L));
+		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ(),(System.currentTimeMillis()/1000L),null);
 		//if(!event.isCancelled())
 		
 		managerBlockLog.bqueue.offer(changed);
@@ -92,7 +101,7 @@ public class listenBlock extends BlockListener {
     	
     	BlockRow test;
 		
-		test = new BlockRow(player.getDisplayName(),0,type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ(),(System.currentTimeMillis()/1000L));
+		test = new BlockRow(player.getDisplayName(),0,type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ(),(System.currentTimeMillis()/1000L),null);
 		managerBlockLog.bqueue.offer(test);
     	
     	if(j2.hasFlag(player, Flag.TRUSTED) && !j2.hasFlag(player, Flag.ADMIN) && j2.isOnSuperBlacklist(type)){
@@ -130,7 +139,7 @@ public class listenBlock extends BlockListener {
 		if(event.getItemInHand().getTypeId() == 280 && j2.hasFlag(player, Flag.ADMIN)){
 			
 			if(j2.debug)j2.log.info(player.getName()+" used a stick");
-			managerBlockLog.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ(),(System.currentTimeMillis()/1000L)));
+			managerBlockLog.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ(),(System.currentTimeMillis()/1000L),null));
 			event.getBlock().setTypeId(0);
 		}
 		//System.out.println("Item type id ="+event.getItemInHand().getTypeId() );

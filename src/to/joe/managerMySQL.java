@@ -52,7 +52,28 @@ public class managerMySQL {
 		}
 		return null;
 	}
-
+	
+	public ChatColor toColor(int input){
+		switch(input){
+		case 0: return ChatColor.BLACK;
+		case 1: return ChatColor.DARK_BLUE;
+		case 2: return ChatColor.DARK_GREEN;
+		case 3: return ChatColor.DARK_AQUA;
+		case 4: return ChatColor.DARK_RED;
+		case 5: return ChatColor.DARK_PURPLE;
+		case 6: return ChatColor.GOLD;
+		case 7: return ChatColor.GRAY;
+		case 8: return ChatColor.DARK_GRAY;
+		case 9: return ChatColor.BLUE;
+		case 10: return ChatColor.GREEN;
+		case 11: return ChatColor.AQUA;
+		case 12: return ChatColor.RED;
+		case 13: return ChatColor.LIGHT_PURPLE;
+		case 14: return ChatColor.YELLOW;
+		case 15: return ChatColor.WHITE;
+		}
+		return null;
+	}
 
 	public String stringClean(String toClean){
 		return toClean.replace('\"', '_').replace('\'', '_').replace(';', '_');
@@ -75,10 +96,10 @@ public class managerMySQL {
 					flags.add(Flag.byChar(Flags.charAt(x)));
 				}
 				if(j2.debug)j2.log.info("User "+name+" in "+rs.getString("group")+" with "+ Flags);
-				return new User(name, ChatColor.getByCode(rs.getInt("color")), rs.getString("group"), flags);
+				return new User(name, toColor(rs.getInt("color")), rs.getString("group"), flags);
 			}
 			else{
-				String state2="INSERT INTO j2users (`name`,`group`,`color`,`flags`) values (\""+name+"\",\"regular\",15,\"n\")";
+				String state2="INSERT INTO j2users (`name`,`group`,`color`,`flags`) values (\""+name+"\",\"regular\",10,\"n\")";
 				if(j2.debug)j2.log.info("Query: "+state2);
 				ps = conn.prepareStatement(state2);
 				ps.executeUpdate();
@@ -105,6 +126,9 @@ public class managerMySQL {
 		}
 		return null;
 	}
+	
+	
+	
 	public void setFlags(String name, ArrayList<Flag> flags){
 		Connection conn = null;
 		PreparedStatement ps = null;

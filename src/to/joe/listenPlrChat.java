@@ -21,7 +21,7 @@ public class listenPlrChat extends PlayerListener {
 		String message=event.getMessage();
 		j2.chat.addChat(name, message);
 		j2.irc.ircMsg("<"+name+"> "+message);
-		if(!j2.randomcolor){
+		/*if(!j2.randomcolor){
 			return;
 		}
 		String[] colorlist=j2.chat.getColorlist();
@@ -36,7 +36,8 @@ public class listenPlrChat extends PlayerListener {
 				name+=colorlist[j2.random.nextInt(12)]+name.charAt(x);
 			}
 			j2.chat.msgAll(ChatColor.WHITE+"<"+name+ChatColor.WHITE+"> "+message);
-		}
+		}*/
+		j2.chat.msgAll(ChatColor.WHITE+"<"+j2.users.getUser(event.getPlayer()).getColorName()+ChatColor.WHITE+"> "+message);
 		event.setCancelled(true);
 	}
 }
