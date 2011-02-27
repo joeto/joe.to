@@ -22,6 +22,9 @@ public class listenPlrJoinQuit extends PlayerListener {
 			j2.irc.adminChannel();
 		}
 		j2.warps.loadPlayer(player.getName());
+		for(String line : j2.motd){
+			player.sendMessage(line);
+		}
 	}
 
 	@Override

@@ -12,20 +12,18 @@ public class managerChat {
 		j2=j2p;
 		
 		//colorslist, minus lightblue white and purple
-		colorlist=new String[13];
-		colorlist[0]=ChatColor.BLACK.toString();
-		colorlist[1]=ChatColor.BLUE.toString();
-		colorlist[2]=ChatColor.DARK_PURPLE.toString();
-		colorlist[3]=ChatColor.GOLD.toString();
-		colorlist[4]=ChatColor.GRAY.toString();
-		colorlist[5]=ChatColor.GREEN.toString();
-		colorlist[6]=ChatColor.DARK_GRAY.toString();
-		colorlist[7]=ChatColor.DARK_GREEN.toString();
-		colorlist[8]=ChatColor.DARK_AQUA.toString();
-		colorlist[9]=ChatColor.DARK_RED.toString();
-		colorlist[10]=ChatColor.RED.toString();
-		colorlist[11]=ChatColor.YELLOW.toString();
-		colorlist[12]=ChatColor.DARK_BLUE.toString();
+		colorlist=new String[11];
+		colorlist[0]=ChatColor.BLUE.toString();
+		colorlist[1]=ChatColor.DARK_PURPLE.toString();
+		colorlist[2]=ChatColor.GOLD.toString();
+		colorlist[3]=ChatColor.GRAY.toString();
+		colorlist[4]=ChatColor.GREEN.toString();
+		colorlist[5]=ChatColor.DARK_GRAY.toString();
+		colorlist[6]=ChatColor.DARK_GREEN.toString();
+		colorlist[7]=ChatColor.DARK_AQUA.toString();
+		colorlist[8]=ChatColor.DARK_RED.toString();
+		colorlist[9]=ChatColor.RED.toString();
+		colorlist[10]=ChatColor.DARK_BLUE.toString();
 	}
 	
 	public String[] getColorlist(){

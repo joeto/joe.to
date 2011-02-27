@@ -129,7 +129,9 @@ public class J2Plugin extends JavaPlugin {
 		
 		rules=readDaFile("rules.txt");
 		blacklist=readDaFile("blacklistinfo.txt");
-		intro=readDaFile("intro.txt");		
+		intro=readDaFile("intro.txt");
+		motd=readDaFile("motd.txt");
+		help=readDaFile("help.txt");
 		PropFile j2properties = new PropFile("j2.properties");
 		try { 
 			debug = j2properties.getBoolean("debug",false);
@@ -383,7 +385,7 @@ public class J2Plugin extends JavaPlugin {
 	public Logger log;
 	
 	public ArrayList<String> protectedUsers;
-	public String[] rules, blacklist, intro;
+	public String[] rules, blacklist, intro, motd, help;
 
 	public String ircName,ircHost,ircChannel,ircUserColor,ircOnJoin,gsAuth,gsPass,ircAdminChannel;
 	public boolean ircMsg,ircEcho,ircDebug;

@@ -41,6 +41,20 @@ public class listenPlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
+		if (split[0].equalsIgnoreCase("/help")){
+			for(String line : j2.help){
+				player.sendMessage(line);
+			}
+			event.setCancelled(true);
+			return;
+		}
+		if (split[0].equalsIgnoreCase("/motd")){
+			for(String line : j2.motd){
+				player.sendMessage(line);
+			}
+			event.setCancelled(true);
+			return;
+		}
 		if (split[0].equalsIgnoreCase("/blacklist")){
 			for(String line : j2.blacklist){
 				player.sendMessage(line);
@@ -519,7 +533,7 @@ public class listenPlrCommands extends PlayerListener {
 		if(split[0].equalsIgnoreCase("/warp") && j2.hasFlag(player, Flag.FUN)) {
 			if(split.length==1){
 				String warps_s=j2.warps.listWarps(player);
-				if(warps_s.equalsIgnoreCase("")){
+				if(!warps_s.equalsIgnoreCase("")){
 					player.sendMessage(ChatColor.RED+"Warp locations: "+ChatColor.WHITE+warps_s);
 					player.sendMessage(ChatColor.RED+"To go to a warp, say /warp warpname");
 
@@ -529,7 +543,7 @@ public class listenPlrCommands extends PlayerListener {
 			}
 			else{
 				Warp warp=j2.warps.getPublicWarp(split[1]);
-				if(warp!=null && j2.hasFlag(player, warp.getFlag())){
+				if(warp!=null && (j2.hasFlag(player, warp.getFlag())||warp.getFlag().equals(Flag.Z_SPAREWARP_DESIGNATION))){
 					player.sendMessage(ChatColor.RED+"Whoosh!");
 					player.teleportTo(warp.getLocation());
 				}

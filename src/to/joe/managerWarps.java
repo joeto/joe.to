@@ -96,18 +96,22 @@ public class managerWarps {
 	}
 
 	public String listWarps(Player player){
-		ArrayList<Warp> warps_u=getUserWarps(player.getName());
+		ArrayList<Warp> warps_u=this.getPublicWarps();
+		
 		String warps_s = "";
 		if(warps_u!=null){
-
+			j2.log.info("Found "+warps_u.size()+"warps");
 			for(Warp warp_i:warps_u){
-				if(warp_i!=null && j2.hasFlag(player, warp_i.getFlag())){
+				Flag flag=warp_i.getFlag();
+				j2.log.info(warp_i.getName()+" has flag "+warp_i.getFlag().getChar());
+				if(warp_i!=null && (j2.hasFlag(player, flag)||flag.equals(Flag.Z_SPAREWARP_DESIGNATION))){
 					warps_s+=", "+warp_i.getName();
 				}
 			}
 			if(!warps_s.equalsIgnoreCase("")){
 				warps_s=warps_s.substring(2);//remove the first comma/space
 			}
+			j2.log.info("Sending back warps: "+warps_s);
 		}
 		return warps_s;
 	}
