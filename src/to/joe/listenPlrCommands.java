@@ -115,7 +115,7 @@ public class listenPlrCommands extends PlayerListener {
 		}
 		
 		if(split[0].equalsIgnoreCase("/spawn") && j2.hasFlag(player, Flag.FUN)){
-			if(!j2.hasFlag(player, Flag.ADMIN)|| split.length<3){
+			if(!j2.hasFlag(player, Flag.ADMIN)|| split.length<2){
 				player.sendMessage(ChatColor.RED+"WHEEEEEEEEEEEEEEE");
 				player.teleportTo(player.getWorld().getSpawnLocation());
 			}

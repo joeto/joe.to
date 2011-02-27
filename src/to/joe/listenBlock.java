@@ -72,7 +72,7 @@ public class listenBlock extends BlockListener {
 		}
     	BlockRow changed;
 		Block smacked = event.getBlock();
-		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ());
+		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ(),(System.currentTimeMillis()/1000L));
 		//if(!event.isCancelled())
 		
 		managerBlockLog.bqueue.offer(changed);
@@ -92,7 +92,7 @@ public class listenBlock extends BlockListener {
     	
     	BlockRow test;
 		
-		test = new BlockRow(player.getDisplayName(),0,type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ());
+		test = new BlockRow(player.getDisplayName(),0,type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ(),(System.currentTimeMillis()/1000L));
 		managerBlockLog.bqueue.offer(test);
     	
     	if(j2.hasFlag(player, Flag.TRUSTED) && !j2.hasFlag(player, Flag.ADMIN) && j2.isOnSuperBlacklist(type)){
@@ -130,7 +130,7 @@ public class listenBlock extends BlockListener {
 		if(event.getItemInHand().getTypeId() == 280 && j2.hasFlag(player, Flag.ADMIN)){
 			
 			if(j2.debug)j2.log.info(player.getName()+" used a stick");
-			managerBlockLog.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ()));
+			managerBlockLog.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ(),(System.currentTimeMillis()/1000L)));
 			event.getBlock().setTypeId(0);
 		}
 		//System.out.println("Item type id ="+event.getItemInHand().getTypeId() );

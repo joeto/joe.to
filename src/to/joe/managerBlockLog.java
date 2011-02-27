@@ -39,7 +39,7 @@ public class managerBlockLog implements Runnable // start
 			long start = System.currentTimeMillis()/1000L;
 			int count = 0;
 			try {
-				ps = conn.prepareStatement("INSERT INTO blocks_? (date, player, replaced, type, x, y, z) VALUES (now(),?,?,?,?,?,?)");
+				ps = conn.prepareStatement("INSERT INTO blocks_? (date, player, replaced, type, x, y, z) VALUES (?,?,?,?,?,?,?)");
 				while(count < 100 && start+delay > (System.currentTimeMillis()/1000L))
 				{
 					/*if(count == 0)
@@ -49,14 +49,14 @@ public class managerBlockLog implements Runnable // start
 
 					if(b==null)
 						continue;
-					
 					ps.setInt(1, servnum);
-					ps.setString(2, b.name);
-					ps.setInt(3, b.replaced);
-					ps.setInt(4, b.type);
-					ps.setInt(5, b.x);
-					ps.setInt(6, b.y);
-					ps.setInt(7, b.z);
+					ps.setTimestamp(2, new Timestamp(b.timestamp));
+					ps.setString(3, b.name);
+					ps.setInt(4, b.replaced);
+					ps.setInt(5, b.type);
+					ps.setInt(6, b.x);
+					ps.setInt(7, b.y);
+					ps.setInt(8, b.z);
 					ps.addBatch();
 					count++;
 				}

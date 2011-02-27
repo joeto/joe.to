@@ -8,9 +8,10 @@ public class BlockRow // start
 	public String name;
 	public int replaced, type;
 	public int x, y, z;
+	public long timestamp;
 	public String extra;
 
-	BlockRow(String name, int replaced, int type, int x, int y, int z)
+	BlockRow(String name, int replaced, int type, int x, int y, int z, long timestamp)
 	{
 		this.name = name;
 		this.replaced = replaced;
@@ -19,6 +20,7 @@ public class BlockRow // start
 		this.y = y;
 		this.z = z;
 		this.extra = null;
+		this.timestamp=timestamp;
 	}
 
 	public void addExtra(String extra)

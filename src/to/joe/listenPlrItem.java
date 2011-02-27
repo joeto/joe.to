@@ -3,6 +3,7 @@ package to.joe;
 
 
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerItemEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -33,5 +34,9 @@ public class listenPlrItem extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
+		BlockRow changed;
+		Block smacked = event.getBlockClicked().getFace(event.getBlockFace());
+		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ(),(System.currentTimeMillis()/1000L));
+		managerBlockLog.bqueue.offer(changed);
 	}
 }
