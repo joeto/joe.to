@@ -708,5 +708,24 @@ public class listenPlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
+		if(split[0].equalsIgnoreCase("/over9000")&&j2.hasFlag(player, Flag.ADMIN)){
+			String name=player.getName();
+			j2.chat.msgAll(ChatColor.RED+"!!! "+ChatColor.DARK_RED+name+" is ON FIRE !!!");
+			j2.chat.msgAll(ChatColor.RED+"    Also, "+name+" is an admin. Pay attention to "+name);
+			j2.users.getUser(name).tempSetColor(ChatColor.DARK_RED);
+			player.getInventory().setHelmet(new ItemStack(51));
+			j2.log.info(name+" set mode to SUPERSAIYAN");
+			event.setCancelled(true);
+			return;
+		}
+		if(split[0].equalsIgnoreCase("/under9000")&&j2.hasFlag(player, Flag.ADMIN)){
+			String name=player.getName();
+			player.sendMessage(ChatColor.RED+"You fizzle out");
+			j2.users.getUser(name).restoreColor();
+			player.getInventory().setHelmet(new ItemStack(2));
+			j2.log.info(name+" set mode to NOT-SO-SAIYAN");
+			event.setCancelled(true);
+			return;
+		}
 	}
 }

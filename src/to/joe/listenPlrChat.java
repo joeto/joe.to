@@ -41,7 +41,8 @@ public class listenPlrChat extends PlayerListener {
 			}
 			j2.chat.msgAll(ChatColor.WHITE+"<"+name+ChatColor.WHITE+"> "+message);
 		}*/
-		if(player.getName().equalsIgnoreCase("mbaxter")){
+		
+		/*if(player.getName().equalsIgnoreCase("mbaxter")){
 			String[] colorlist=j2.chat.getColorlist();
 			String dname="";
 			int size=colorlist.length;
@@ -51,7 +52,7 @@ public class listenPlrChat extends PlayerListener {
 			j2.chat.msgAll(ChatColor.WHITE+"<"+dname+ChatColor.WHITE+"> "+message);
 			event.setCancelled(true);
 			return;
-		}
+		}*/
 		
 		j2.chat.msgAll(ChatColor.WHITE+"<"+j2.users.getUser(player).getColorName()+ChatColor.WHITE+"> "+message);
 		event.setCancelled(true);

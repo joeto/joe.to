@@ -172,6 +172,7 @@ public class J2Plugin extends JavaPlugin {
 			ircLevel2 = j2properties.getString("irc-level2","").split(",");
 			safemode=j2properties.getBoolean("safemode",false);
 			maintenance = j2properties.getBoolean("maintenance",false);
+			maintmessage = j2properties.getString("maintmessage","Server offline for maintenance");
 			fun=j2properties.getBoolean("funmode",false);
 			randomcolor=j2properties.getBoolean("randcolor",false);
 			String superBlacklist = j2properties.getString("superblacklist", "0");				
@@ -410,6 +411,7 @@ public class J2Plugin extends JavaPlugin {
 	private ArrayList<Integer> itemblacklist,superblacklist;
 	//private int natureXmin,natureXmax,natureZmin,natureZmax;
 	public boolean maintenance=false;
+	public String maintmessage;
 	public boolean safemode;
 	public PropFile tpProtect=new PropFile("tpProtect.list");
 	public Player OneByOne = null;

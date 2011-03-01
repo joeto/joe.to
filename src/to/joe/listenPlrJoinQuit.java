@@ -56,7 +56,7 @@ public class listenPlrJoinQuit extends PlayerListener {
 			return;
 		}
 		if(j2.maintenance && !isAdmin){
-			reason="Server offline for maintenance";
+			reason=j2.maintmessage;
 			event.setKickMessage(reason);
 			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, reason);
 			return;

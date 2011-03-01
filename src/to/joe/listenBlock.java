@@ -9,10 +9,6 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 
 
-
-
-
-
 /**
  * J2 block listener
  * @author mbaxter
@@ -97,6 +93,7 @@ public class listenBlock extends BlockListener {
     public void onBlockPlace(BlockPlaceEvent event) {
     	Player player=event.getPlayer();
     	Block blockPlaced=event.getBlockPlaced();
+    	BlockState old=event.getBlockReplacedState();
     	int type=blockPlaced.getTypeId();
     	
     	if(!j2.hasFlag(player, Flag.MODWORLD)){
@@ -107,7 +104,7 @@ public class listenBlock extends BlockListener {
     	
     	BlockRow test;
 		
-		test = new BlockRow(player.getDisplayName(),0,type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ(),(System.currentTimeMillis()/1000L),null);
+		test = new BlockRow(player.getDisplayName(),old.getTypeId(),type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ(),(System.currentTimeMillis()/1000L),null);
 		managerBlockLog.bqueue.offer(test);
     	
     	if(j2.hasFlag(player, Flag.TRUSTED) && !j2.hasFlag(player, Flag.ADMIN) && j2.isOnSuperBlacklist(type)){

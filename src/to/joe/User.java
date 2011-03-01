@@ -19,11 +19,18 @@ public class User {
 	public User(String Name, ChatColor Color, String Group,  ArrayList<Flag> ExtraFlags){
 		name=Name;
 		color=Color;
+		backup=color;
 		group=Group;
 		extraFlags=ExtraFlags;
 	}
 	public void setGroup(String Group){
 		group=Group;
+	}
+	public void tempSetColor(ChatColor clr){
+		this.color=clr;
+	}
+	public void restoreColor(){
+		this.color=backup;
 	}
 	public String getName(){
 		return name;
@@ -53,6 +60,6 @@ public class User {
 	}
 	private ArrayList<Flag> extraFlags;
 	private String name;
-	private ChatColor color;
+	private ChatColor color,backup;
 	private String group;
 }
