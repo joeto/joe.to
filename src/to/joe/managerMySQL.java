@@ -378,6 +378,18 @@ public class managerMySQL {
 			}
 			if(j2.debug)j2.log.info("Loaded "+count+ " warps");
 			
+			//jailing
+			
+			String state4="SELECT user,reason from jail where server="+serverNumber+" and free=0";
+			ps = conn.prepareStatement(state4);
+			if(j2.debug)j2.log.info("Query: "+state4);
+			rs = ps.executeQuery();
+			HashMap<String,String> tempjail=new HashMap<String,String>();
+			while (rs.next()){
+				tempjail.put(rs.getString("user"), rs.getString("reason"));				
+			}
+			j2.log.info("Loaded "+tempjail.size()+" jailings");
+			j2.users.jailSet(tempjail);
 			
 		} catch (SQLException ex) {
 			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);

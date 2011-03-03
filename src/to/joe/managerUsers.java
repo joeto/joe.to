@@ -3,6 +3,7 @@ package to.joe;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 
@@ -14,7 +15,7 @@ public class managerUsers {
 		this.groups=new HashMap<String, ArrayList<Flag>>();
 	}
 	public User getUser(String name){
-		synchronized (this.lock){
+		synchronized (this.userlock){
 			for(User u:this.users){
 				if(u.getName().equalsIgnoreCase(name))
 					return u;
@@ -23,9 +24,11 @@ public class managerUsers {
 		}
 	}
 	public boolean isOnline(String playername){
-		for(User u:this.users){
-			if(u.getName().equalsIgnoreCase(playername)){
-				return true;
+		synchronized (this.userlock){
+			for(User u:this.users){
+				if(u.getName().equalsIgnoreCase(playername)){
+					return true;
+				}
 			}
 		}
 		return false;
@@ -34,16 +37,16 @@ public class managerUsers {
 		return getUser(player.getName());
 	}
 	public void addUser(String player){
-		synchronized (this.lock){
+		synchronized (this.userlock){
 			User user=this.j2.mysql.getUser(player);
 			this.users.add(user);
 		}
 	}
-	public void delUser(Player player){
-		synchronized (this.lock){
+	public void delUser(String name){
+		synchronized (this.userlock){
 			User toremove=null;
 			for(User user : this.users){
-				if(user.getName().equalsIgnoreCase(player.getName()))
+				if(user.getName().equalsIgnoreCase(name))
 					toremove=user;
 			}
 			if(toremove!=null)
@@ -51,7 +54,7 @@ public class managerUsers {
 		}
 	}
 	public void addFlag(String name, Flag flag){
-		synchronized (this.lock){
+		synchronized (this.userlock){
 			for(User user:this.users){
 				if(user.getName().equalsIgnoreCase(name)){
 					user.addFlag(flag);
@@ -61,7 +64,7 @@ public class managerUsers {
 		}
 	}
 	public void dropFlag(String name, Flag flag){
-		synchronized (this.lock){
+		synchronized (this.userlock){
 			for(User user:this.users){
 				if(user.getName().equalsIgnoreCase(name)){
 					user.dropFlag(flag);
@@ -73,11 +76,11 @@ public class managerUsers {
 	public void setGroups(HashMap<String, ArrayList<Flag>> Groups){
 		this.groups=Groups;
 	}
-	
+
 	public boolean groupHasFlag(String group, Flag flag){
-		 return this.groups.get(group).contains(flag);
+		return this.groups.get(group).contains(flag);
 	}
-	
+
 	public ArrayList<Flag> getGroupFlags(String groupname){
 		return this.groups.get(groupname);
 	}
@@ -88,10 +91,51 @@ public class managerUsers {
 		all.addAll(user.getUserFlags());
 		all.addAll(getGroupFlags(user.getGroup()));
 		return all;
-		
+
+	}
+
+	public void jail(String name, String reason){
+		if(isOnline(name)){
+			addFlag(name,Flag.JAILED);
+		}
+		else {
+			j2.mysql.getUser(name);
+			addFlag(name,Flag.JAILED);
+			delUser(name);
+		}
+		synchronized(jaillock){
+			jailReasons.put(name, reason);
+		}
+		j2.mysql.jail(name,reason,admin);
 	}
 	
+	public void unJail(String name){
+		if(isOnline(name)){
+			dropFlag(name,Flag.JAILED);
+		}
+		else {
+			j2.mysql.getUser(name);
+			dropFlag(name,Flag.JAILED);
+			delUser(name);
+		}
+		synchronized(jaillock){
+			jailReasons.remove(name);
+		}
+		j2.mysql.unJail(name);
+	}
+	
+	public String getJailReason(String name){
+		return jailReasons.get(name);
+	}
+
+	public void jailSet(HashMap<String,String> incoming){
+		jailReasons=incoming;
+	}
+	
+	
+	public Location jail;
 	private ArrayList<User> users;
 	private HashMap<String, ArrayList<Flag>> groups;
-	private Object lock= new Object();
+	private Object userlock= new Object(),jaillock=new Object();
+	private HashMap<String, String> jailReasons;
 }

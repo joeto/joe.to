@@ -34,6 +34,19 @@ public class listenPlrCommands extends PlayerListener {
 			return;
 		}
 
+		if (split[0].equalsIgnoreCase("/jail") && j2.hasFlag(player, Flag.ADMIN)){
+			if(split.length<3){
+				player.sendMessage(ChatColor.RED+"Usage: /jail <playername> <reason>");
+			}
+			else {
+				String name=split[1];
+				String adminName=player.getName();
+				String reason=j2.combineSplit(2, split, " ");
+				j2.users.jail(name,reason);
+				j2.log.info("Jail: "+adminName+" jailed "+name+": "+reason);
+			}
+		}
+
 		if (split[0].equalsIgnoreCase("/rules")){
 			for(String line : j2.rules){
 				player.sendMessage(line);
@@ -127,7 +140,7 @@ public class listenPlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		if(split[0].equalsIgnoreCase("/spawn") && j2.hasFlag(player, Flag.FUN)){
 			if(!j2.hasFlag(player, Flag.ADMIN)|| split.length<2){
 				player.sendMessage(ChatColor.RED+"WHEEEEEEEEEEEEEEE");
@@ -209,7 +222,7 @@ public class listenPlrCommands extends PlayerListener {
 				event.setCancelled(true);
 				return;
 			}
-			
+
 			if(dataType != -1) {
 				player.getInventory().addItem(new ItemStack(itemid, amount, ((byte)dataType)));
 			} else {
@@ -305,9 +318,9 @@ public class listenPlrCommands extends PlayerListener {
 			}
 			player.sendMessage(ChatColor.DARK_PURPLE+"Found "+size+" reports:");
 			for(Report r:reps){
-					player.sendMessage(ChatColor.DARK_PURPLE+"["+r.getID()+"]<"
-							+ChatColor.WHITE+r.getUser()+ChatColor.DARK_PURPLE+"> "+ChatColor.WHITE
-							+r.getMessage());
+				player.sendMessage(ChatColor.DARK_PURPLE+"["+r.getID()+"]<"
+						+ChatColor.WHITE+r.getUser()+ChatColor.DARK_PURPLE+"> "+ChatColor.WHITE
+						+r.getMessage());
 			}
 			event.setCancelled(true);
 			return;
