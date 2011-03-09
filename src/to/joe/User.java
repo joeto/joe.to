@@ -16,12 +16,13 @@ import java.util.ArrayList;
 import org.bukkit.ChatColor;
 
 public class User {
-	public User(String Name, ChatColor Color, String Group,  ArrayList<Flag> ExtraFlags){
-		name=Name;
-		color=Color;
-		backup=color;
-		group=Group;
-		extraFlags=ExtraFlags;
+	public User(String name, ChatColor color, String group,  ArrayList<Flag> extraFlags, int channel){
+		this.name=name;
+		this.color=color;
+		this.backup=color;
+		this.group=group;
+		this.extraFlags=extraFlags;
+		this.channel=channel;
 	}
 	public void setGroup(String Group){
 		group=Group;
@@ -58,7 +59,11 @@ public class User {
 		}
 		return false;
 	}
+	public int getChannels(){
+		return channel;
+	}
 	private ArrayList<Flag> extraFlags;
+	private int channel;
 	private String name;
 	private ChatColor color,backup;
 	private String group;

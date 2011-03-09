@@ -453,20 +453,6 @@ public class listenPlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		/*if(split[0].equalsIgnoreCase("/invasion") && j2.getPerm().isAtOrAbove(2, player)){
-			if(split.length==1){
-				player.sendMessage(ChatColor.RED + "Usage: /homeinvasion playername");
-				return true;
-			}
-			Warp home = etc.getDataSource().getHome(split[1]);
-			if (home != null) {
-				player.teleportTo(home.Location);
-				player.sendMessage(ChatColor.RED + "Wheeee!");
-			} else {
-				player.sendMessage(ChatColor.RED + "That player home does not exist");
-			}
-			return true;
-		}*/
 		if(split[0].equalsIgnoreCase("/ircrefresh") && j2.hasFlag(player, Flag.SRSTAFF)){
 			j2.irc.loadIRCAdmins();
 			j2.chat.msgByFlag(Flag.SRSTAFF, ChatColor.RED+"IRC admins reloaded by "+player.getName());
@@ -651,7 +637,10 @@ public class listenPlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/homeinvasion") && j2.hasFlag(player,Flag.ADMIN)){
+		if((split[0].equalsIgnoreCase("/homeinvasion")||
+				split[0].equalsIgnoreCase("/invasion")||
+				split[0].equalsIgnoreCase("/hi"))
+				&& j2.hasFlag(player,Flag.ADMIN)){
 			if(split.length==1){
 				player.sendMessage(ChatColor.RED+"Usage: /homeinvasion player");
 				player.sendMessage(ChatColor.RED+"      to get a list");
@@ -711,7 +700,8 @@ public class listenPlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/mobhere")&&j2.hasFlag(player, Flag.SRSTAFF)){
+		if(split[0].equalsIgnoreCase("/mobhere")
+				&&j2.hasFlag(player, Flag.SRSTAFF)){
 			if(split.length==1){
 				player.sendMessage(ChatColor.RED+"/mobhere mobname");
 			}
@@ -721,7 +711,8 @@ public class listenPlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/over9000")&&j2.hasFlag(player, Flag.ADMIN)){
+		if(split[0].equalsIgnoreCase("/over9000")
+				&&j2.hasFlag(player, Flag.ADMIN)){
 			String name=player.getName();
 			j2.chat.msgAll(ChatColor.RED+"!!! "+ChatColor.DARK_RED+name+" is ON FIRE !!!");
 			j2.chat.msgAll(ChatColor.RED+"    Also, "+name+" is an admin. Pay attention to "+name);
@@ -731,12 +722,44 @@ public class listenPlrCommands extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(split[0].equalsIgnoreCase("/under9000")&&j2.hasFlag(player, Flag.ADMIN)){
+		if(split[0].equalsIgnoreCase("/under9000")
+				&&j2.hasFlag(player, Flag.ADMIN)){
 			String name=player.getName();
 			player.sendMessage(ChatColor.RED+"You fizzle out");
 			j2.users.getUser(name).restoreColor();
 			player.getInventory().setHelmet(new ItemStack(2));
 			j2.log.info(name+" set mode to NOT-SO-SAIYAN");
+			event.setCancelled(true);
+			return;
+		}
+		if((split[0].equalsIgnoreCase("/coo")||
+				split[0].equalsIgnoreCase("/xyz"))
+				&&j2.hasFlag(player, Flag.ADMIN)){
+			if(split.length<4){
+				player.sendMessage(ChatColor.RED+"You did not specify an X, Y, and Z");
+			}
+			else {
+				player.teleportTo(new Location(player.getWorld(),Double.valueOf(split[1]),Double.valueOf(split[2]),Double.valueOf(split[3]),0,0));
+				player.sendMessage(ChatColor.RED+"WHEEEEE I HOPE THIS ISN'T UNDERGROUND");
+			}
+			event.setCancelled(true);
+			return;
+		}
+		if(split[0].equalsIgnoreCase("/whereis") && j2.hasFlag(player,Flag.ADMIN)){
+			if(split.length==1){
+				player.sendMessage(ChatColor.RED+"/whereis player");
+			}
+			else {
+				List<Player> possible=j2.getServer().matchPlayer(split[1]);
+				if(possible.size()==1){
+					Player who=possible.get(0);
+					Location loc=who.getLocation();
+					player.sendMessage(ChatColor.RED+who.getName()+": "+loc.getX()+" "+loc.getY()+" "+loc.getZ());
+				}
+				else {
+					player.sendMessage(ChatColor.RED+split[1]+" does not work. Either 0 or 2+ matches.");
+				}
+			}
 			event.setCancelled(true);
 			return;
 		}
