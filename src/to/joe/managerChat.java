@@ -79,7 +79,8 @@ public class managerChat {
 		String name=player.getName();
 
 		addChat(name, chat);
-		j2.irc.ircMsg("<"+name+"> "+chat);
+		//j2.irc.ircMsg("<"+name+"> "+chat);
+		j2.irc.chatQueue.offer("<"+name+"> "+chat);
 		j2.log.info("<"+name+"> "+chat);
 
 		/* method to madness here.
@@ -105,7 +106,7 @@ public class managerChat {
 				message=ChatColor.WHITE+"<"+name+ChatColor.WHITE+"> "+chat;
 			}
 		}
-		
+		msgAll(message);
 
 		/*if(player.getName().equalsIgnoreCase("mbaxter")){
 		String[] colorlist=j2.chat.getColorlist();
