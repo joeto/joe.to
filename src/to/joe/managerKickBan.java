@@ -17,10 +17,6 @@ public class managerKickBan {
 		bans = new ArrayList<Ban>();
 	}
 	
-	
-	
-	
-
 	public void callBan(String adminName, String[] split, Location location)
 	{
 		List<Player> toBanCandidates = j2.getServer().matchPlayer(split[1]);
@@ -110,9 +106,9 @@ public class managerKickBan {
 				p.kickPlayer(reason);
 				if(!msged){
 					if(reason!="")
-						j2.irc.ircMsg(name+"kicked");
+						j2.irc.ircMsg(name+" kicked");
 					else 
-						j2.irc.ircMsg(name+"kicked ("+reason+")");
+						j2.irc.ircMsg(name+" kicked ("+reason+")");
 					msged=!msged;
 				}
 			}

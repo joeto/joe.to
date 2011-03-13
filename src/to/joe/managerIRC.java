@@ -109,7 +109,8 @@ public class managerIRC {
 		String com=command[0];
 		boolean done=false;
 		if(com.equalsIgnoreCase("kick")&&command.length>2){
-			j2.kickbans.forceKick(command[1], j2.combineSplit(2,command," "));
+			j2.kickbans.callKick(command[1], adminName, j2.combineSplit(2,command," "));
+			//j2.kickbans.forceKick(command[1], j2.combineSplit(2,command," "));
 			done=true;
 		}
 		if(com.equalsIgnoreCase("ban")&&command.length>2){

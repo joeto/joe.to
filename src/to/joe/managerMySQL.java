@@ -76,7 +76,7 @@ public class managerMySQL {
 	}
 
 	public String stringClean(String toClean){
-		return toClean.replace('\"', '_').replace('\'', '_').replace(';', '_');
+		return toClean.replace('\"', '_').replace('\'', '_').replace(';', '_').replace(',', '_');
 	}
 
 	public User getUser(String name){
@@ -415,12 +415,18 @@ public class managerMySQL {
 		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
-			String state="INSERT INTO reports (user,message,x,y,z,pitch,yaw,server,world,time) VALUES (?,?,?,?,?,?,?,?,?,?)";
-			if(j2.debug)j2.log.info("Query: "+state);
-			ps = conn.prepareStatement(state);
-			ps.setString(1, stringClean(report.getUser()));
-			ps.setString(2, stringClean(report.getMessage()));
 			Location loc=report.getLocation();
+			long time=report.getTime();
+			//String state="INSERT INTO reports (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('?','?',?,?,?,?,?,?,'?',?)";
+			String state="INSERT INTO reports (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('"+stringClean(report.getUser())+"','"+stringClean(report.getMessage())+"',"+loc.getX()+","+loc.getY()+","+loc.getZ()+","+loc.getPitch()+","+loc.getYaw()+","+serverNumber+",'"+loc.getWorld().getName()+"',"+time+")";
+			if(j2.debug)j2.log.info("Query: INSERT INTO reports (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('"+stringClean(report.getUser())+"','"+stringClean(report.getMessage())+"',"+loc.getX()+","+loc.getY()+","+loc.getZ()+","+loc.getPitch()+","+loc.getYaw()+","+serverNumber+",'"+loc.getWorld().getName()+"',"+time+")");
+			ps = conn.prepareStatement(state);
+			//j2.log.info(report.getUser());
+			//String cleanUser=stringClean(report.getUser());
+			//j2.log.info(cleanUser);
+			//String cleanMessage=stringClean(report.getMessage());
+			/*ps.setString(1, cleanUser);
+			ps.setString(2, cleanMessage);
 			ps.setDouble(3, loc.getX());
 			ps.setDouble(4, loc.getY());
 			ps.setDouble(5, loc.getZ());
@@ -428,10 +434,9 @@ public class managerMySQL {
 			ps.setFloat(7, loc.getYaw());
 			ps.setInt(8, serverNumber);
 			ps.setString(9, loc.getWorld().getName());
-			long time=report.getTime();
-			ps.setLong(10, time);
+			ps.setLong(10, time);*/
 			ps.executeUpdate();
-			ps = conn.prepareStatement("SELECT id FROM reports where time=? and message=?");
+			ps = conn.prepareStatement("SELECT id FROM reports where `time`=? and `message`=?");
 			ps.setLong(1, time);
 			ps.setString(2, report.getMessage());
 			ResultSet rs=ps.executeQuery();

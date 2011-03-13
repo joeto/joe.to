@@ -58,6 +58,7 @@ public class listenPlrJoinQuit extends PlayerListener {
 		Player player=event.getPlayer();
 		boolean isAdmin=j2.hasFlag(player, Flag.ADMIN);
 		if(reason!=null){
+			reason="Visit http://forums.joe.to for unban";
 			event.setKickMessage(reason);
 			event.disallow(PlayerLoginEvent.Result.KICK_BANNED, reason);
 			return;
