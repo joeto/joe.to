@@ -418,8 +418,8 @@ public class managerMySQL {
 			Location loc=report.getLocation();
 			long time=report.getTime();
 			//String state="INSERT INTO reports (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('?','?',?,?,?,?,?,?,'?',?)";
-			String state="INSERT INTO reports (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('"+stringClean(report.getUser())+"','"+stringClean(report.getMessage())+"',"+loc.getX()+","+loc.getY()+","+loc.getZ()+","+loc.getPitch()+","+loc.getYaw()+","+serverNumber+",'"+loc.getWorld().getName()+"',"+time+")";
-			if(j2.debug)j2.log.info("Query: INSERT INTO reports (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('"+stringClean(report.getUser())+"','"+stringClean(report.getMessage())+"',"+loc.getX()+","+loc.getY()+","+loc.getZ()+","+loc.getPitch()+","+loc.getYaw()+","+serverNumber+",'"+loc.getWorld().getName()+"',"+time+")");
+			String state="INSERT INTO `reports` (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('"+stringClean(report.getUser())+"','"+stringClean(report.getMessage())+"',"+loc.getX()+","+loc.getY()+","+loc.getZ()+","+loc.getPitch()+","+loc.getYaw()+","+serverNumber+",'"+loc.getWorld().getName()+"',"+time+");";
+			if(j2.debug)j2.log.info("Query: "+state);
 			ps = conn.prepareStatement(state);
 			//j2.log.info(report.getUser());
 			//String cleanUser=stringClean(report.getUser());
