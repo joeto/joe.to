@@ -34,7 +34,7 @@ public class listenPlrCommands extends PlayerListener {
 			return;
 		}
 
-		if (split[0].equalsIgnoreCase("/jail") && j2.hasFlag(player, Flag.ADMIN)){
+		/*if (split[0].equalsIgnoreCase("/jail") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length<3){
 				player.sendMessage(ChatColor.RED+"Usage: /jail <playername> <reason>");
 			}
@@ -42,10 +42,10 @@ public class listenPlrCommands extends PlayerListener {
 				String name=split[1];
 				String adminName=player.getName();
 				String reason=j2.combineSplit(2, split, " ");
-				j2.users.jail(name,reason);
+				j2.users.jail(name,reason,player.getName());
 				j2.log.info("Jail: "+adminName+" jailed "+name+": "+reason);
 			}
-		}
+		}*/
 
 		if (split[0].equalsIgnoreCase("/rules")){
 			for(String line : j2.rules){
@@ -388,18 +388,30 @@ public class listenPlrCommands extends PlayerListener {
 		}
 
 
-		/*if(split[0].equalsIgnoreCase("/trust") && player.canUseCommand("/trust")){
-			if(split.length < 2){
-				player.sendMessage(ChatColor.RED+"Usage: /trust playername");
-				return true;
+		if(split[0].equalsIgnoreCase("/trust") && j2.hasFlag(player, Flag.ADMIN)){
+			String action=split[1];
+			if(split.length<4 || !(action.equalsIgnoreCase("add") || action.equalsIgnoreCase("drop"))){
+				player.sendMessage(ChatColor.RED+"Usage: /trust add/drop player");
+				event.setCancelled(true);
+				return;
 			}
-			String playername=split[1];
-			String adminName=player.getName();
-			j2.trust(playername);
-			j2.log.log(Level.INFO, "Trusting " + playername + " by " + adminName);
-            j2.msgByCmd("/trust",ChatColor.RED + "Trusting " + playername + " by " + adminName);
-			return true;
-		}*/
+			String name=split[2];
+			User user=j2.users.getUser(name);
+			if(user==null){
+				user=j2.mysql.getUser(name);
+			}
+			if(action.equalsIgnoreCase("add")){
+				user.addFlag(Flag.TRUSTED);
+			}
+			else {
+				user.dropFlag(Flag.TRUSTED);
+			}
+			String log=ChatColor.RED+player.getName()+" changed flags: "+name + " "+ action +" flag "+ Flag.TRUSTED.getDescription();
+			j2.chat.msgByFlag(Flag.ADMIN, log);
+			j2.log.info(log);
+			event.setCancelled(true);
+			return;
+		}
 
 		if(split[0].equalsIgnoreCase("/getgroup") && j2.hasFlag(player, Flag.ADMIN)){
 			if(split.length==1){

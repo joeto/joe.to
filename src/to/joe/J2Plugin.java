@@ -76,7 +76,7 @@ public class J2Plugin extends JavaPlugin {
 		
 		//irc start
 		if(ircEnable)irc.prepIRC();
-		if(ircEnable)irc.startIRCTimer();
+		//if(ircEnable)irc.startIRCTimer();
 		if(debug)log.info("IRC up (or disabled)");
 		//irc end
 		loadTips();

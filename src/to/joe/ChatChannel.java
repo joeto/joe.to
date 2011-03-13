@@ -6,13 +6,13 @@ public class ChatChannel {
 	private String chanName;
 	private HashMap<String,Integer> userlist;
 	private int id;
-	private J2Plugin j2;
+	//private J2Plugin j2;
 	private boolean isPrivate;
 	public ChatChannel(int id,String name, HashMap<String,Integer> userlist, boolean isPrivate, J2Plugin j2){
 		this.id=id;
 		this.chanName=name;
 		this.userlist=userlist;
-		this.j2=j2;
+		//this.j2=j2;
 		this.isPrivate=isPrivate;
 	}
 	public void addPerm(String player,int level){
@@ -22,7 +22,7 @@ public class ChatChannel {
 		}
 		userlist.put(player, Integer.valueOf(level));
 
-		j2.mysql.chanPerm(chanName,player,Integer.valueOf(level));
+		//j2.mysql.chanPerm(chanName,player,Integer.valueOf(level));
 	}
 	public int getID(){
 		return this.id;

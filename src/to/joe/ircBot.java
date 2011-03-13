@@ -6,12 +6,14 @@ package to.joe;
  * 
  */
 
+import java.io.IOException;
+
 import org.bukkit.entity.*;
 import org.jibble.pircbot.*;
 
 public class ircBot extends PircBot {
 
-	private managerIRC plug;
+	private managerIRC ircman;
 	public ircBot(String mah_name,boolean msgenabled,int charlim,String usercolor,boolean echo,String[] sep,managerIRC j) {
 		this.setName(mah_name);
 		this.setAutoNickChange(true);
@@ -20,9 +22,25 @@ public class ircBot extends PircBot {
 		ircUserColor = usercolor;
 		ircEcho = echo;
 		ircSeparator=sep;
-		plug=j;
+		ircman=j;
+		this.setMessageDelay(1100);
 	}
-
+	public void onDisconnect(){
+		if(ircman.getJ2().ircEnable){
+			try{
+				this.reconnect();
+			}
+			catch(NickAlreadyInUseException e){
+				e.printStackTrace();
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			} 
+			catch (IrcException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	public void onMessage(String channel, String sender,
 			String login, String hostname, String message) {
 		if(message.charAt(0)=='!'){
@@ -33,7 +51,7 @@ public class ircBot extends PircBot {
 			else if (message.equalsIgnoreCase("!players") || message.equalsIgnoreCase("!playerlist")) {
 				String curPlayers = "";
 				int cPlayers=0;
-				for (Player p : plug.getJ2().getServer().getOnlinePlayers()) {
+				for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
 					if (p != null) {
 						if(curPlayers==""){
 							curPlayers+=p.getName();
@@ -48,15 +66,15 @@ public class ircBot extends PircBot {
 					sendMessage(channel,"No players online.");
 				else{
 					if(message.equalsIgnoreCase("!players"))
-						sendMessage(channel,"Currently "+ cPlayers +" of "+ plug.getJ2().playerLimit +" on the server");
+						sendMessage(channel,"Currently "+ cPlayers +" of "+ ircman.getJ2().playerLimit +" on the server");
 					else
-						sendMessage(channel,"Players ("+ cPlayers +" of "+ plug.getJ2().playerLimit + "):" + curPlayers);
+						sendMessage(channel,"Players ("+ cPlayers +" of "+ ircman.getJ2().playerLimit + "):" + curPlayers);
 				}
 			}
 			else if (message.equalsIgnoreCase("!admins")) {
 				String curAdmins = "Admins: ";
-				for (Player p : plug.getJ2().getServer().getOnlinePlayers()) {
-					if (p != null && (plug.getJ2().hasFlag(p,Flag.ADMIN))) {
+				for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
+					if (p != null && (ircman.getJ2().hasFlag(p,Flag.ADMIN))) {
 						if(curAdmins=="Admins: "){
 							curAdmins+=p.getName();
 						}
@@ -67,7 +85,7 @@ public class ircBot extends PircBot {
 				}
 				if(curAdmins=="Admins: ")
 					sendMessage(channel,"No admins online. Find one on #joe.to or #minecraft");
-				else if(channel.equalsIgnoreCase(plug.getJ2().ircAdminChannel))
+				else if(channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel))
 					sendMessage(channel,curAdmins);
 				else
 					sendMessage(channel,"There are admins online!");
@@ -90,10 +108,10 @@ public class ircBot extends PircBot {
 			}
 			return;
 		}
-		if(message.charAt(0)=='.' && channel.equalsIgnoreCase(plug.getJ2().ircChannel)){
+		if(message.charAt(0)=='.' && channel.equalsIgnoreCase(ircman.getJ2().ircChannel)){
 			String[] parts=message.split(" ");
-			if(plug.ircCommand(hostname,sender, parts)){
-				sendMessage(channel,"Done :)");
+			if(ircman.ircCommand(hostname,sender, parts)){
+				sendMessage(sender,"Done :)");
 			}
 			else{
 				if (!ircMsg){
@@ -141,9 +159,9 @@ public class ircBot extends PircBot {
 		}
 		else
 		{
-			plug.getJ2().log.info("IRC:<"+theuser+"> "+thenewmsg);
-			plug.getJ2().chat.addChat("[irc]"+theuser, thenewmsg);
-			for (Player p : plug.getJ2().getServer().getOnlinePlayers()) {
+			ircman.getJ2().log.info("IRC:<"+theuser+"> "+thenewmsg);
+			ircman.getJ2().chat.addChat("[irc]"+theuser, thenewmsg);
+			for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
 				if (p != null) {
 					p.sendMessage(combined);
 				}
@@ -161,9 +179,9 @@ public class ircBot extends PircBot {
 		}
 		else
 		{
-			plug.getJ2().log.info("IRC: * "+theuser+thenewmsg);
-			plug.getJ2().chat.addChat("[irc]* "+theuser, thenewmsg);
-			for (Player p : plug.getJ2().getServer().getOnlinePlayers()) {
+			ircman.getJ2().log.info("IRC: * "+theuser+thenewmsg);
+			ircman.getJ2().chat.addChat("[irc]* "+theuser, thenewmsg);
+			for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
 				if (p != null) {
 					p.sendMessage(combined);
 				}
@@ -173,7 +191,7 @@ public class ircBot extends PircBot {
 
 	}
 	protected void onPrivateMessage(String sender,String login,String hostname,String message){
-		if(plug.ircCommand(hostname,sender,message.split(" "))){
+		if(ircman.ircCommand(hostname,sender,message.split(" "))){
 			sendMessage(sender,"Done :)");
 		}
 		else{

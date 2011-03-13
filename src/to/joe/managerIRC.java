@@ -5,8 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
+//import java.util.Timer;
+//import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 
@@ -18,7 +18,7 @@ public class managerIRC {
 	private Object adminsLock = new Object();
 	private ArrayList<ircAdmin> admins;
 	public LinkedBlockingQueue<String> chatQueue = new LinkedBlockingQueue<String>();
-	private boolean stop = false;
+	//private boolean stop = false;
 
 	public managerIRC(J2Plugin j2p){
 		this.j2=j2p;
@@ -201,7 +201,8 @@ public class managerIRC {
 	public J2Plugin getJ2(){
 		return j2;
 	}
-	public void startIRCTimer() {
+	
+	/*public void startIRCTimer() {
 		stop = false;
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -222,5 +223,5 @@ public class managerIRC {
 		String curline=chatQueue.poll();
 		if(curline!=null)
 			j2.irc.ircMsg(curline);
-	}
+	}*/
 }

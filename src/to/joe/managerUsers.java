@@ -94,7 +94,7 @@ public class managerUsers {
 
 	}
 
-	public void jail(String name, String reason){
+	public void jail(String name, String reason, String admin){
 		if(isOnline(name)){
 			addFlag(name,Flag.JAILED);
 		}
@@ -106,7 +106,7 @@ public class managerUsers {
 		synchronized(jaillock){
 			jailReasons.put(name, reason);
 		}
-		j2.mysql.jail(name,reason,admin);
+		//j2.mysql.jail(name,reason,admin);
 	}
 	
 	public void unJail(String name){
@@ -121,7 +121,7 @@ public class managerUsers {
 		synchronized(jaillock){
 			jailReasons.remove(name);
 		}
-		j2.mysql.unJail(name);
+		//j2.mysql.unJail(name);
 	}
 	
 	public String getJailReason(String name){

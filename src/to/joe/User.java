@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import org.bukkit.ChatColor;
 
 public class User {
-	public User(String name, ChatColor color, String group,  ArrayList<Flag> extraFlags, int channel){
+	public User(String name, ChatColor color, String group,  ArrayList<Flag> extraFlags/*, int channel*/){
 		this.name=name;
 		this.color=color;
 		this.backup=color;
 		this.group=group;
 		this.extraFlags=extraFlags;
-		this.channel=channel;
+		//this.channel=channel;
 	}
 	public void setGroup(String Group){
 		group=Group;

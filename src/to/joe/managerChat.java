@@ -79,8 +79,8 @@ public class managerChat {
 		String name=player.getName();
 
 		addChat(name, chat);
-		//j2.irc.ircMsg("<"+name+"> "+chat);
-		j2.irc.chatQueue.offer("<"+name+"> "+chat);
+		j2.irc.ircMsg("<"+name+"> "+chat);
+		//j2.irc.chatQueue.offer("<"+name+"> "+chat);
 		j2.log.info("<"+name+"> "+chat);
 
 		/* method to madness here.
@@ -121,11 +121,11 @@ public class managerChat {
 
 	private HashMap<Integer,ChatChannel> channels;
 	public void addChannel(ChatChannel chan){
-		j2.mysql.chanAdd(chan);
+		//j2.mysql.chanAdd(chan);
 		channels.put(chan.getID(),chan);
 	}
 	public void dropChannel(int id){
-		j2.mysql.chanDrop(id);
+		//j2.mysql.chanDrop(id);
 		if(channels.containsKey(id)){
 			channels.remove(id);
 		}
