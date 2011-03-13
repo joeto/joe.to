@@ -78,7 +78,7 @@ public class managerUsers {
 	}
 
 	public boolean groupHasFlag(String group, Flag flag){
-		return this.groups.get(group).contains(flag);
+		return (this.groups.get(group) != null ? this.groups.get(group).contains(flag) : false);
 	}
 
 	public ArrayList<Flag> getGroupFlags(String groupname){
@@ -108,7 +108,7 @@ public class managerUsers {
 		}
 		//j2.mysql.jail(name,reason,admin);
 	}
-	
+
 	public void unJail(String name){
 		if(isOnline(name)){
 			dropFlag(name,Flag.JAILED);
@@ -123,7 +123,7 @@ public class managerUsers {
 		}
 		//j2.mysql.unJail(name);
 	}
-	
+
 	public String getJailReason(String name){
 		return jailReasons.get(name);
 	}
@@ -131,8 +131,8 @@ public class managerUsers {
 	public void jailSet(HashMap<String,String> incoming){
 		jailReasons=incoming;
 	}
-	
-	
+
+
 	public Location jail;
 	private ArrayList<User> users;
 	private HashMap<String, ArrayList<Flag>> groups;
