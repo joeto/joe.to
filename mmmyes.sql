@@ -1,3 +1,17 @@
+-- Generation Time: Mar 14, 2011 at 12:30 PM
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Database: `bukkit`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `blocks_0`
+--
+
 CREATE TABLE IF NOT EXISTS `blocks_0` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -29,10 +43,17 @@ CREATE TABLE IF NOT EXISTS `j2bans` (
   `unbantime` bigint(20) DEFAULT '0',
   `timeofban` bigint(20) DEFAULT '0',
   `unbanned` tinyint(1) DEFAULT '0',
+  `x` double NOT NULL,
+  `y` double NOT NULL,
+  `z` double NOT NULL,
+  `pitch` float NOT NULL,
+  `yaw` float NOT NULL,
+  `world` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
+
 
 --
 -- Table structure for table `j2groups`
@@ -44,8 +65,13 @@ CREATE TABLE IF NOT EXISTS `j2groups` (
   `flags` varchar(26) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `j2groups`
+--
+
 INSERT INTO `j2groups` (`server`, `name`, `flags`) VALUES
-(0, 'regular', 'f');
+(0, 'regular', 'fm'),
+(0, 'srstaff', 'asftm');
 
 -- --------------------------------------------------------
 
@@ -62,32 +88,19 @@ CREATE TABLE IF NOT EXISTS `j2users` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `warps` (
-  `IDX` int(11) NOT NULL AUTO_INCREMENT,
-  `player` varchar(30) NOT NULL,
-  `flag` varchar(1) NOT NULL,
-  `name` varchar(30) NOT NULL,
-  `x` int(11) NOT NULL,
-  `y` int(11) NOT NULL,
-  `z` int(11) NOT NULL,
-  `pitch` long NOT NULL,
-  `yaw` long NOT NULL,
-  `world` varchar(30) NOT NULL,
-  `server` tinyint(1) NOT NULL,
-  `public` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`IDX`),
-  KEY `player` (`player`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+--
+-- Table structure for table `reports`
+--
 
- CREATE TABLE IF NOT EXISTS `reports` (
+CREATE TABLE IF NOT EXISTS `reports` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `user` varchar(32) COLLATE utf8_bin NOT NULL,
   `message` text COLLATE utf8_bin NOT NULL,
   `closed` tinyint(1) NOT NULL DEFAULT '0',
   `admin` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT '""',
-  `reason` text COLLATE utf8_bin NOT NULL,
+  `reason` text COLLATE utf8_bin,
   `world` varchar(32) COLLATE utf8_bin NOT NULL,
   `x` double NOT NULL,
   `y` double NOT NULL,
@@ -95,6 +108,27 @@ CREATE TABLE IF NOT EXISTS `warps` (
   `pitch` float NOT NULL,
   `yaw` float NOT NULL,
   `server` tinyint(1) NOT NULL,
+  `time` int(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `warps`
+--
+
+CREATE TABLE IF NOT EXISTS `warps` (
+  `name` varchar(16) NOT NULL,
+  `player` varchar(32) NOT NULL,
+  `server` tinyint(1) NOT NULL,
+  `flag` varchar(1) NOT NULL,
+  `world` varchar(32) NOT NULL,
+  `x` double NOT NULL,
+  `y` double NOT NULL,
+  `z` double NOT NULL,
+  `pitch` float NOT NULL,
+  `yaw` float NOT NULL,
+  KEY `server` (`server`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
