@@ -349,7 +349,7 @@ public class managerMySQL {
 			j2.users.setGroups(groups);
 			
 			//reports
-			String state2="SELECT id,user,x,y,z,pitch,yaw,message,world from reports where server="+serverNumber+" and closed=0";
+			String state2="SELECT id,user,x,y,z,pitch,yaw,message,world,time from reports where server="+serverNumber+" and closed=0";
 			ps = conn.prepareStatement(state2);
 			if(j2.debug)j2.log.info("Query: "+state2);
 			rs = ps.executeQuery();
@@ -358,7 +358,6 @@ public class managerMySQL {
 				Location loc=new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
 				j2.reports.addReport(new Report(rs.getInt("id"), loc, user, rs.getString("message"),rs.getLong("time")));
 				if(j2.debug)j2.log.info("Adding new report to list, user "+user);
-				
 			}
 			
 			//warps
@@ -380,7 +379,7 @@ public class managerMySQL {
 			
 			//jailing
 			
-			String state4="SELECT user,reason from jail where server="+serverNumber+" and free=0";
+			/*String state4="SELECT user,reason from jail where server="+serverNumber+" and free=0";
 			ps = conn.prepareStatement(state4);
 			if(j2.debug)j2.log.info("Query: "+state4);
 			rs = ps.executeQuery();
@@ -389,7 +388,7 @@ public class managerMySQL {
 				tempjail.put(rs.getString("user"), rs.getString("reason"));				
 			}
 			j2.log.info("Loaded "+tempjail.size()+" jailings");
-			j2.users.jailSet(tempjail);
+			j2.users.jailSet(tempjail);*/
 			
 		} catch (SQLException ex) {
 			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);

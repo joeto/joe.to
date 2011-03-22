@@ -60,7 +60,7 @@ public class J2Plugin extends JavaPlugin {
 	public final managerUsers users = new managerUsers(this);
 	public final managerReport reports = new managerReport(this);
 	public final managerWarps warps = new managerWarps(this);
-	public managerBlockLog blogger;
+	//public managerBlockLog blogger;
 	public managerMySQL mysql;
 
 	
@@ -89,10 +89,10 @@ public class J2Plugin extends JavaPlugin {
 		if(debug)log.info("Tips timer started");
 		
 		//Initialize BlockLogger
-		this.blogger = new managerBlockLog(this.mysql.getConnection(),this.mysql.servnum());
-		if(debug)log.info("Blogger init");
-		new Thread(blogger).start();
-		if(debug)log.info("Blogger is go");
+		//this.blogger = new managerBlockLog(this.mysql.getConnection(),this.mysql.servnum());
+		//if(debug)log.info("Blogger init");
+		//new Thread(blogger).start();
+		//if(debug)log.info("Blogger is go");
 		// Register our events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_CHAT, plrlisChat, Priority.Normal, this);
@@ -538,6 +538,7 @@ public class J2Plugin extends JavaPlugin {
 					Player inquestion=inquest.get(0);
 					inquestion.teleportTo(inquestion.getWorld().getSpawnLocation());
 					inquestion.sendMessage(ChatColor.RED+"OH GOD I'M BEING PULLED TO SPAWN OH GOD");
+					msg(player,"Pulled "+inquestion.getName()+" to spawn");
 				}
 				else {
 					msg(player,"No such player, or matches multiple");
@@ -568,57 +569,50 @@ public class J2Plugin extends JavaPlugin {
 
 		if(isPlayer && (commandName.equals("item") || commandName.equals("i")) && hasFlag(player, Flag.FUN)){
 			if (args.length < 1) {
-				player.sendMessage(ChatColor.RED+"Correct usage is: /i [item] (amount)");
-				
-				return true;
-			}
-			String item = "0";
-			int amount = 1;
-			int dataType = -1;
-			try {
-				if(args[0].contains(":")) {
-					String[] data = args[0].split(":");
-
-					try {
-						dataType = Integer.valueOf(data[1]);
-					} catch (NumberFormatException e) {
-						dataType = -1;
-					}
-
-					item = data[0];
-				} else {
-					item = args[0];
-				}
-				if(args.length>1){
-					amount = Integer.valueOf(args[1]);
-				}
-				else{
-					amount = 1;
-				}
-			} catch(NumberFormatException e) {
-				player.sendMessage(ChatColor.RED+"Command fail.");
-				return true;
-			}
-			Material toDrop=Material.matchMaterial(item);
-			int itemid=0;
-			if(toDrop!=null){
-				itemid=toDrop.getId();
-			}
-			else{
-				player.sendMessage(ChatColor.RED+"Invalid item.");
-				
+				player.sendMessage(ChatColor.RED+"Correct usage is: /i [item](:damage) (amount)");
 				return true;
 			}
 
-			if(dataType != -1) {
-				player.getInventory().addItem(new ItemStack(itemid, amount, ((byte)dataType)));
-			} else {
-				player.getInventory().addItem(new ItemStack(itemid, amount));
-			}
-			player.sendMessage(ChatColor.RED+"Here you go!");
-			log.info("Giving "+player.getName()+" "+amount+" of "+toDrop.toString());
-			
-			return true;
+	        Player playerFor = null;
+	        Material material = null;
+	        int count = 1;
+	        String[] gData = null;
+	        Byte bytedata = null;
+	        if (args.length >= 1) {
+	            gData = args[0].split(":");
+	            material = Material.matchMaterial(gData[0]);
+	            if (gData.length == 2) {
+	                bytedata = Byte.valueOf(gData[1]);
+	            }
+	        }
+	        if (args.length >= 2) {
+	            try {
+	                count = Integer.parseInt(args[1]);
+	            } catch (NumberFormatException ex) {
+	                player.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a number!");
+	                return false;
+	            }
+	        }
+	        if (args.length == 3) {
+	            playerFor = getServer().getPlayer(args[2]);
+	            if (playerFor == null) {
+	                player.sendMessage(ChatColor.RED + "'" + args[2] + "' is not a valid player!");
+	                return false;
+	            }
+	        } else{
+	        	playerFor=player;
+	        }
+	        if (material == null) {
+	            player.sendMessage(ChatColor.RED + "Unknown item");
+	            return false;
+	        }
+	        if (bytedata != null) {
+	            playerFor.getInventory().addItem(new ItemStack(material, count, (short) 0, bytedata));
+	        } else {
+	            playerFor.getInventory().addItem(new ItemStack(material, count));
+	        }
+	        player.sendMessage("Given " + playerFor.getDisplayName() + " " + count + " " + material.toString());
+	        return true;
 		}
 
 		if(commandName.equals("time") && (!isPlayer ||hasFlag(player, Flag.ADMIN))){
@@ -716,7 +710,7 @@ public class J2Plugin extends JavaPlugin {
 			chat.gMsg(playerName,text);
 			return true;
 		}
-		if(commandName.equals("ban") && (!isPlayer || hasFlag(player, Flag.ADMIN))){
+		if((commandName.equals("ban")||commandName.equals("b")) && (!isPlayer || hasFlag(player, Flag.ADMIN))){
 			if(args.length < 2){
 				msg(player,"Usage: /ban playername reason");
 				msg(player,"       reason can have spaces in it");
@@ -726,7 +720,7 @@ public class J2Plugin extends JavaPlugin {
 			
 			return true;
 		}
-		if(commandName.equals("kick") && (!isPlayer || hasFlag(player, Flag.ADMIN))){
+		if((commandName.equals("kick")||commandName.equals("k")) && (!isPlayer || hasFlag(player, Flag.ADMIN))){
 			if(args.length < 2){
 				msg(player,"Usage: /kick playername reason");
 				return true;
@@ -877,11 +871,17 @@ public class J2Plugin extends JavaPlugin {
 		}
 
 		if(commandName.equals("flags") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
-			String action=args[1];
-			if(args.length<3 || !(action.equalsIgnoreCase("add") || action.equalsIgnoreCase("drop"))){
+			
+			if(args.length<3){
 				msg(player,"Usage: /flags player add/drop flag");
 				return true;
 			}
+			String action=args[1];
+			if(!(action.equalsIgnoreCase("add") || action.equalsIgnoreCase("drop"))){
+				msg(player,"Usage: /flags player add/drop flag");
+				return true;
+			}
+			
 			String name=args[0];
 			char flag=args[2].charAt(0);
 			User user=users.getUser(name);

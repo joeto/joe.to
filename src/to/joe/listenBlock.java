@@ -20,7 +20,7 @@ public class listenBlock extends BlockListener {
         this.j2 = plugin;
     }
 
-    @Override
+    /*@Override
     public void onSignChange(SignChangeEvent event){
     	String[] lines=event.getLines();
     	String text="["+lines[0]+"]["+lines[1]+"]["+lines[2]+"]["+lines[3]+"]";
@@ -28,7 +28,7 @@ public class listenBlock extends BlockListener {
     	BlockRow sign;
 		sign = new BlockRow(event.getPlayer().getName(),0,323,block.getX(),block.getY(),block.getZ(),(System.currentTimeMillis()/1000L),text);
 		managerBlockLog.bqueue.offer(sign);
-    }
+    }*/
     
     @Override
     public void onBlockIgnite(BlockIgniteEvent event){
@@ -43,7 +43,7 @@ public class listenBlock extends BlockListener {
     	}
     }
     
-    @Override
+    /*@Override
     public void onBlockCanBuild(BlockCanBuildEvent event) {
         //Material mat = event.getMaterial();
         
@@ -51,7 +51,7 @@ public class listenBlock extends BlockListener {
         //if (mat.equals(Material.CACTUS)) {
         //    event.setBuildable(true);
         //}
-    }
+    }*/
     
     @Override
     public void onBlockDamage(BlockDamageEvent event){
@@ -81,19 +81,19 @@ public class listenBlock extends BlockListener {
 			event.setCancelled(true);
 			return;
 		}
-    	BlockRow changed;
+    	/*BlockRow changed;
 		Block smacked = event.getBlock();
 		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ(),(System.currentTimeMillis()/1000L),null);
 		//if(!event.isCancelled())
 		
-		managerBlockLog.bqueue.offer(changed);
+		managerBlockLog.bqueue.offer(changed);*/
     }
     
     @Override
     public void onBlockPlace(BlockPlaceEvent event) {
     	Player player=event.getPlayer();
     	Block blockPlaced=event.getBlockPlaced();
-    	BlockState old=event.getBlockReplacedState();
+    	//BlockState old=event.getBlockReplacedState();
     	int type=blockPlaced.getTypeId();
     	
     	if(!j2.hasFlag(player, Flag.MODWORLD)){
@@ -102,10 +102,10 @@ public class listenBlock extends BlockListener {
 			return;
 		}
     	
-    	BlockRow test;
+    	/*BlockRow test;
 		
 		test = new BlockRow(player.getDisplayName(),old.getTypeId(),type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ(),(System.currentTimeMillis()/1000L),null);
-		managerBlockLog.bqueue.offer(test);
+		managerBlockLog.bqueue.offer(test);*/
     	
     	if(j2.hasFlag(player, Flag.TRUSTED) && !j2.hasFlag(player, Flag.ADMIN) && j2.isOnSuperBlacklist(type)){
     		player.sendMessage(ChatColor.RED+"Even trusted have limits. Can't place that block type");
@@ -134,11 +134,11 @@ public class listenBlock extends BlockListener {
 	{
     	Player player = event.getPlayer();
     	
-		if(event.getItemInHand().getTypeId() == 284 && j2.hasFlag(player, Flag.ADMIN))
+		/*if(event.getItemInHand().getTypeId() == 284 && j2.hasFlag(player, Flag.ADMIN))
 		{
 			if(j2.debug)j2.log.info(player.getName()+ " used gold shovel");
 			this.j2.blogger.showBlockHistory(event.getPlayer(), event.getBlock());
-		}
+		}*/
 		if(event.getItemInHand().getTypeId() == 280 && j2.hasFlag(player, Flag.ADMIN)){
 			
 			if(j2.debug)j2.log.info(player.getName()+" used a stick");

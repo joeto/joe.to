@@ -5,3 +5,200 @@ website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
              The joe.to comprehensive plugin.
+commands:
+  rules:
+    description: Get a listing of the rules
+    usage: |
+            /rules
+  motd:
+    description: Repeat the server's motd
+    usage: |
+            /motd
+  blacklist:
+    description: Get information on our blacklist
+    usage: |
+            /blacklist
+  intro:
+    description: Vital server information for newbies
+    usage: |
+            /intro
+  protectme:
+    description: Protect yourself from teleportation. Trusted only.
+    usage: |
+            /protectme
+  tp:
+    description: Teleport to a player
+    usage: |
+            /tp [player]
+  tphere:
+    description: Yoink! Grab a player.
+    usage: |
+            /tphere [player]
+  spawn:
+    description: Go back to spawn. 
+    usage: |
+            /spawn
+  msg:
+    description: Send a message to a user
+    usage: |
+            /msg [player] [message]
+  item:
+    description: Acquire an item
+    usage: |
+            /item [id]<:damage> <amount>
+  i:
+    description: Acquire an item
+    usage: |
+            /i [id]<:damage> <amount>
+  time:
+    description: Set time
+    usage: |
+            /time day/night
+  who:
+    description: Who's on the server? I don't know. Third base!
+    usage: |
+            /who
+  playerlist:
+    description: Who's on the server? I don't know. Third base!
+    usage: |
+            /playerlist
+  a:
+    description: 
+    usage: |
+            /derp
+  g:
+    description: Admin message
+    usage: |
+            /a <message>
+  report:
+    description: Send a report
+    usage: |
+            /report <message>
+  r:
+    description: Get reports
+    usage: |
+            /r
+  ban:
+    description: Ban a dude
+    usage: |
+            /ban <player> <reason>
+  b:
+    description: Ban a dude
+    usage: |
+            /b <player> <reason>
+  kick:
+    description: Kick a dude
+    usage: |
+            /kick <player> <reason>
+  k:
+    description: Kick a dude
+    usage: |
+            /k <player> <reason>
+  addban:
+    description: Add a ban for offline users
+    usage: |
+            /addban <player> <reason>
+  unban:
+    description: Unban a player
+    usage: |
+            /unban <playername>
+  pardon:
+    description: Unban a player
+    usage: |
+            /pardon <playername>
+  trust:
+    description: Trust a player
+    usage: |
+            /trust <playername>
+  getgroup:
+    description: Find out a player's group
+    usage: |
+            /getgroup <playername>
+  me:
+    description: /me
+    usage: |
+            /me <message>
+  ircrefresh:
+    description: refresh irc admins
+    usage: |
+            /ircrefresh
+  j2reload:
+    description: refresh config
+    usage: |
+            /j2reload
+  maintenance:
+    description: Go into maintenance
+    usage: |
+            /maintenance <kickreason>
+  1x1:
+    description: Boom!
+    usage: |
+            /1x1
+  flags:
+    description: Modify a user's flags
+    usage: |
+            /flags <player> add/drop <flag>
+  loc:
+    description: Where am I?
+    usage: |
+            /loc
+  warp:
+    description: Warp commands
+    usage: |
+            /warp
+  home:
+    description: Home commands
+    usage: |
+            /home
+  setwarp:
+    description: Set a warp
+    usage: |
+            /setwarp <warpname>
+  sethome:
+    description: Set a home
+    usage: |
+            /sethome <homename>
+  removewarp:
+    description: Kill! kill!
+    usage: |
+            /removewarp <warpname>
+  removehome:
+    description: Kill! kill!
+    usage: |
+            /removehome <homename>
+  homeinvasion:
+    description: Hehehehehe
+    usage: |
+            /homeinvasion <playername>
+  hi:
+    description: Hehehehehe
+    usage: |
+            /hi <playername>
+  invasion:
+    description: Hehehehehe
+    usage: |
+            /invasion <playername>
+  clearinventory:
+    description: Clear your inventory
+    usage: |
+            /clearinventory
+  mobhere:
+    description: Drop a mob here of defined type
+    usage: |
+            /mobhere <mob>
+  over9000:
+    description: What's his power level?
+    usage: |
+            /over9000
+  under9000:
+    description: Fizzle
+    usage: |
+            /under9000
+  coo:
+    description: Whoosh!
+    usage: |
+            /coo x y z
+  whereis:
+    description: Where is he?
+    usage: |
+            /whereis <player>
