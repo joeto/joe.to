@@ -16,19 +16,24 @@ package to.joe;
 
 import java.io.File;
 import java.util.HashMap;
+
+import org.bukkit.command.*;
 import org.bukkit.entity.*;
 import org.bukkit.Location;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -44,7 +49,6 @@ import java.util.logging.Logger;
  */
 public class J2Plugin extends JavaPlugin {
 	private final listenPlrChat plrlisChat = new listenPlrChat(this);
-	private final listenPlrCommands plrlisCommands = new listenPlrCommands(this);
 	private final listenPlrItem plrlisItem = new listenPlrItem(this);
 	private final listenPlrJoinQuit plrlisJoinQuit = new listenPlrJoinQuit(this);
 	private final listenBlock blockListener = new listenBlock(this);
@@ -91,7 +95,6 @@ public class J2Plugin extends JavaPlugin {
 		if(debug)log.info("Blogger is go");
 		// Register our events
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Event.Type.PLAYER_COMMAND, plrlisCommands, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_CHAT, plrlisChat, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_ITEM, plrlisItem, Priority.Normal, this);
@@ -388,6 +391,756 @@ public class J2Plugin extends JavaPlugin {
 		player.sendMessage(ChatColor.RED+"You are "+ChatColor.DARK_RED+"IN JAIL");
 		player.sendMessage(ChatColor.RED+"for violation of our server rules");
 		player.sendMessage(ChatColor.RED+"Look around you for info on freedom");
+	}
+	
+	public void msg(Player player, String message){
+		if(player!=null){
+			player.sendMessage(ChatColor.RED+message);
+		}
+		else
+		{
+			System.out.println("J2:" + message);
+		}
+	}
+	
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
+		String commandName = command.getName().toLowerCase();
+        Player player=null;
+        String playerName="Console";
+        boolean isPlayer=(sender instanceof Player);
+        if(isPlayer){
+        	player=(Player)sender;
+        	playerName=player.getName();
+        }
+		if(isPlayer && hasFlag(player,Flag.JAILED)){
+			if(commandName.equals("confess")){
+				users.getUser(player).dropFlag(Flag.JAILED);
+			}
+			
+			return true;
+		}
+
+		/*if (commandName.equals("jail") && hasFlag(player, Flag.ADMIN)){
+			if(args.length<2){
+				player.sendMessage(ChatColor.RED+"Usage: /jail <playername> <reason>");
+			}
+			else {
+				String name=args[0];
+				String adminName=player.getName();
+				String reason=combineSplit(1, args, " ");
+				users.jail(name,reason,player.getName());
+				log.info("Jail: "+adminName+" jailed "+name+": "+reason);
+			}
+		}*/
+
+		if (isPlayer && commandName.equals("rules")){
+			for(String line : rules){
+				player.sendMessage(line);
+			}
+			
+			return true;
+		}
+		/*if (isPlayer && commandName.equals("help")){
+			for(String line : help){
+				player.sendMessage(line);
+			}
+			
+			return true;
+		}*/
+		if (isPlayer && commandName.equals("motd")){
+			for(String line : motd){
+				player.sendMessage(line);
+			}
+			
+			return true;
+		}
+		if (isPlayer && commandName.equals("blacklist")){
+			for(String line : blacklist){
+				player.sendMessage(line);
+			}
+			
+			return true;
+		}
+		if (isPlayer && commandName.equals("intro")){
+			for(String line : intro){
+				player.sendMessage(line);
+			}
+			
+			return true;
+		}
+		if(isPlayer && commandName.equals("protectme") && hasFlag(player, Flag.TRUSTED)){
+			String playersName = player.getName().toLowerCase();
+			if(tpProtect.getBoolean(playersName,false)){
+				tpProtect.setBoolean(playersName, false);
+				player.sendMessage(ChatColor.RED + "You are now no longer protected from teleportation");
+			}
+			else{
+				tpProtect.setBoolean(playersName, true);
+				player.sendMessage(ChatColor.RED + "You are protected from teleportation");
+			}
+			
+			return true;
+		}
+
+		if(isPlayer && commandName.equals("tp") && (hasFlag(player, Flag.FUN))){
+			List<Player> inquest = getServer().matchPlayer(args[0]);
+			if(inquest.size()==1){
+				Player inquestion=inquest.get(0);
+				if(!hasFlag(player, Flag.ADMIN) && inquestion!=null && (hasFlag(inquestion, Flag.TRUSTED)) && tpProtect.getBoolean(inquestion.getName().toLowerCase(), false)){
+					player.sendMessage(ChatColor.RED + "Cannot teleport to protected player.");
+				}
+				else if(inquestion.getName().equalsIgnoreCase(player.getName())){
+					player.sendMessage(ChatColor.RED+"Can't teleport to yourself");
+				}
+				else {
+					player.teleportTo(inquestion.getLocation());
+					player.sendMessage("OH GOD I'M FLYING AAAAAAAAH");
+					log.info("Teleport: " + player.getName() + " teleported to "+inquestion.getName());
+				}
+			}
+			else{
+				player.sendMessage(ChatColor.RED+"No such player, or matches multiple");
+			}
+			
+			return true;
+		}
+
+		if(isPlayer && commandName.equals("tphere") && hasFlag(player, Flag.ADMIN)){
+			List<Player> inquest = getServer().matchPlayer(args[0]);
+			if(inquest.size()==1){
+				Player inquestion=inquest.get(0);
+
+				if(inquestion.getName().equalsIgnoreCase(player.getName())){
+					player.sendMessage(ChatColor.RED+"Can't teleport yourself to yourself. Derp.");
+				}
+				else {
+					inquestion.teleportTo(player.getLocation());
+					inquestion.sendMessage("You've been teleported");
+					player.sendMessage("Grabbing "+inquestion.getName());
+					log.info("Teleport: " + player.getName() + " pulled "+inquestion.getName()+" to self");
+				}
+			}
+			else{
+				player.sendMessage(ChatColor.RED+"No such player, or matches multiple");
+			}
+			
+			return true;
+		}
+
+		if(commandName.equals("spawn") && (!isPlayer ||hasFlag(player, Flag.FUN))){
+			if(isPlayer && (!hasFlag(player, Flag.ADMIN)|| args.length<1)){
+				player.sendMessage(ChatColor.RED+"WHEEEEEEEEEEEEEEE");
+				player.teleportTo(player.getWorld().getSpawnLocation());
+			}
+			else if (args.length ==1){
+				List<Player> inquest = getServer().matchPlayer(args[0]);
+				if(inquest.size()==1){
+					Player inquestion=inquest.get(0);
+					inquestion.teleportTo(inquestion.getWorld().getSpawnLocation());
+					inquestion.sendMessage(ChatColor.RED+"OH GOD I'M BEING PULLED TO SPAWN OH GOD");
+				}
+				else {
+					msg(player,"No such player, or matches multiple");
+				}
+			}
+			return true;
+		}
+
+		if(isPlayer && commandName.equals("msg")){
+			if(args.length<2){
+				player.sendMessage(ChatColor.RED+"Correct usage: /msg player message");
+				
+				return true;
+			}
+			List<Player> inquest = getServer().matchPlayer(args[0]);
+			if(inquest.size()==1){
+				Player inquestion=inquest.get(0);
+				player.sendMessage("(MSG) <"+player.getName()+"> "+combineSplit(1, args, " "));
+				inquestion.sendMessage("(MSG) <"+player.getName()+"> "+combineSplit(1, args, " "));
+				log.info("Msg to "+inquestion.getName()+": <"+player.getName()+"> "+combineSplit(1, args, " "));
+			}
+			else{
+				player.sendMessage(ChatColor.RED+"Could not find player");
+			}
+			
+			return true;
+		}
+
+		if(isPlayer && (commandName.equals("item") || commandName.equals("i")) && hasFlag(player, Flag.FUN)){
+			if (args.length < 1) {
+				player.sendMessage(ChatColor.RED+"Correct usage is: /i [item] (amount)");
+				
+				return true;
+			}
+			String item = "0";
+			int amount = 1;
+			int dataType = -1;
+			try {
+				if(args[0].contains(":")) {
+					String[] data = args[0].split(":");
+
+					try {
+						dataType = Integer.valueOf(data[1]);
+					} catch (NumberFormatException e) {
+						dataType = -1;
+					}
+
+					item = data[0];
+				} else {
+					item = args[0];
+				}
+				if(args.length>1){
+					amount = Integer.valueOf(args[1]);
+				}
+				else{
+					amount = 1;
+				}
+			} catch(NumberFormatException e) {
+				player.sendMessage(ChatColor.RED+"Command fail.");
+				return true;
+			}
+			Material toDrop=Material.matchMaterial(item);
+			int itemid=0;
+			if(toDrop!=null){
+				itemid=toDrop.getId();
+			}
+			else{
+				player.sendMessage(ChatColor.RED+"Invalid item.");
+				
+				return true;
+			}
+
+			if(dataType != -1) {
+				player.getInventory().addItem(new ItemStack(itemid, amount, ((byte)dataType)));
+			} else {
+				player.getInventory().addItem(new ItemStack(itemid, amount));
+			}
+			player.sendMessage(ChatColor.RED+"Here you go!");
+			log.info("Giving "+player.getName()+" "+amount+" of "+toDrop.toString());
+			
+			return true;
+		}
+
+		if(commandName.equals("time") && (!isPlayer ||hasFlag(player, Flag.ADMIN))){
+			if(args.length!=1){
+				msg(player,"Usage: /time day|night");
+				return true;
+			}
+			long desired;
+			if(args[0].equalsIgnoreCase("day")){
+				desired=0;
+			}
+			else if(args[0].equalsIgnoreCase("night")){
+				desired=13000;
+			}
+			else{
+				msg(player,"Usage: /time day|night");
+				return true;
+			}
+
+			long curTime=getServer().getWorlds().get(0).getTime();
+			long margin = (desired-curTime) % 24000;
+			if (margin < 0) {
+				margin += 24000;
+			}
+			getServer().getWorlds().get(0).setTime(curTime+margin);
+			msg(player,"Time changed");
+			
+			return true;
+		}
+
+		if(isPlayer && (commandName.equals("who") || commandName.equals("playerlist"))){
+			Player[] players=getServer().getOnlinePlayers();
+			String msg="Players ("+players.length+"):";
+			for(Player p: players){
+				msg+=" "+p.getName();
+			}
+			player.sendMessage(msg);
+			
+			return true;
+		}
+
+		if(commandName.equals("a") && (!isPlayer ||hasFlag(player, Flag.ADMIN))){
+			if(args.length<1){
+				msg(player,"Usage: /a Message");
+				return true;
+			}
+			String message=combineSplit(0, args, " ");
+			chat.aMsg(playerName,message);
+			return true;
+		}
+
+		if(isPlayer && commandName.equals("report")){
+			if(args.length>0){
+				String theReport=combineSplit(0, args, " ");
+				String message="Report: <§d"+playerName+"§f>"+theReport;
+				String ircmessage="Report from "+playerName+": "+theReport;
+				chat.msgByFlag(Flag.ADMIN, message);
+				irc.ircAdminMsg(ircmessage);
+				log.info(ircmessage);
+				Report report=new Report(0, player.getLocation(), player.getName(), theReport, (new Date().getTime())/1000);
+				reports.addReport(report);
+				player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
+			}
+			else {
+				player.sendMessage(ChatColor.RED+"To report to the admins, say /report MESSAGE");
+				player.sendMessage(ChatColor.RED+"Where MESSAGE is what you want to tell them");
+			}
+				
+			return true;
+		}
+		if(isPlayer && commandName.equals("r") && hasFlag(player, Flag.ADMIN)){
+			ArrayList<Report> reps=reports.getReports();
+			int size=reps.size();
+			if(size==0){
+				player.sendMessage(ChatColor.RED+"No reports. Hurray!");
+				
+				return true;
+			}
+			player.sendMessage(ChatColor.DARK_PURPLE+"Found "+size+" reports:");
+			for(Report r:reps){
+				player.sendMessage(ChatColor.DARK_PURPLE+"["+r.getID()+"]<"
+						+ChatColor.WHITE+r.getUser()+ChatColor.DARK_PURPLE+"> "+ChatColor.WHITE
+						+r.getMessage());
+			}
+			
+			return true;
+		}
+		if(commandName.equals("g") && (!isPlayer ||hasFlag(player, Flag.ADMIN))){
+			if(args.length<1){
+				msg(player,"Usage: /g Message");
+				return true;
+			}
+			String text = "";
+			text+=combineSplit(0, args, " ");
+			chat.gMsg(playerName,text);
+			return true;
+		}
+		if(commandName.equals("ban") && (!isPlayer || hasFlag(player, Flag.ADMIN))){
+			if(args.length < 2){
+				msg(player,"Usage: /ban playername reason");
+				msg(player,"       reason can have spaces in it");
+				return true;
+			}
+			kickbans.callBan(playerName,args,player.getLocation());
+			
+			return true;
+		}
+		if(commandName.equals("kick") && (!isPlayer || hasFlag(player, Flag.ADMIN))){
+			if(args.length < 2){
+				msg(player,"Usage: /kick playername reason");
+				return true;
+			}
+			kickbans.callKick(args[0],playerName,combineSplit(1, args, " "));
+			return true;
+		}
+		if(commandName.equals("addban") && (!isPlayer || hasFlag(player, Flag.ADMIN))){
+			if(args.length < 2){
+				msg(player,"Usage: /addban playername reason");
+				msg(player,"        reason can have spaces in it");
+				return true;
+			}
+			kickbans.callAddBan(playerName,args,player.getLocation());
+			
+			return true;
+		}
+
+		if((commandName.equals("unban") || commandName.equals("pardon")) && (!isPlayer || hasFlag(player, Flag.ADMIN))){
+			if(args.length < 1){
+				msg(player,"Usage: /unban playername");
+				return true;
+			}
+			String name=args[0];
+			kickbans.unban(playerName, name);
+			return true;
+		}
+
+
+		if(isPlayer && commandName.equals("trust") && hasFlag(player, Flag.ADMIN)){
+			String action=args[0];
+			if(args.length<3 || !(action.equalsIgnoreCase("add") || action.equalsIgnoreCase("drop"))){
+				player.sendMessage(ChatColor.RED+"Usage: /trust add/drop player");
+				
+				return true;
+			}
+			String name=args[1];
+			User user=users.getUser(name);
+			if(user==null){
+				user=mysql.getUser(name);
+			}
+			if(action.equalsIgnoreCase("add")){
+				user.addFlag(Flag.TRUSTED);
+			}
+			else {
+				user.dropFlag(Flag.TRUSTED);
+			}
+			String tolog=ChatColor.RED+player.getName()+" changed flags: "+name + " "+ action +" flag "+ Flag.TRUSTED.getDescription();
+			chat.msgByFlag(Flag.ADMIN, tolog);
+			log.info(tolog);
+			
+			return true;
+		}
+
+		if(commandName.equals("getgroup") && (!isPlayer || hasFlag(player, Flag.ADMIN))){
+			if(args.length==0){
+				msg(player,"/getgroup playername");
+				return true;
+			}
+			List<Player> match = getServer().matchPlayer(args[0]);
+			if(match.size()!=1 || match.get(0)==null){
+				msg(player,"Player not found");
+				
+				return true;
+			}
+			Player who=match.get(0);
+			String message="Player "+match.get(0).getName()+": ";
+			for(Flag f: users.getAllFlags(who)){
+				message+=f.getDescription()+", ";
+			}
+			msg(player,message);
+			log.info(playerName+" looked up "+ who.getName());
+			return true;
+		}
+
+		if (isPlayer && commandName.equals("me") && args.length>0)
+		{
+			String message = "";
+			message+=combineSplit(0, args, " ");
+			chat.addChat(player.getName(), message);
+			irc.ircMsg("* "+ player.getName()+" "+message);
+			//don't cancel this after reading it. 
+			//TODO: /ignore code will also be here
+		}
+
+		/*if (commandName.equals("forcekick") && hasFlag(player, Flag.ADMIN)){
+			if(args.length==0){
+				player.sendMessage(ChatColor.RED+"Usage: /forcekick playername");
+				player.sendMessage(ChatColor.RED+"       Requires full name");
+				
+				return true;
+			}
+			String name=args[0];
+			String reason="";
+			String admin=player.getName();
+			if(args.length>1)
+				reason=combineSplit(1, args, " ");
+			kickbans.forceKick(name,reason);
+			log.log(Level.INFO, "Kicking " + name + " by " + admin + ": " + reason);
+			chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
+			chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name+" kicked ("+reason+")");
+			
+			return true;
+		}*/
+		if(commandName.equals("ircrefresh") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
+			irc.loadIRCAdmins();
+			chat.msgByFlag(Flag.SRSTAFF, ChatColor.RED+"IRC admins reloaded by "+playerName);
+			log.info(playerName+ " reloaded irc admins");
+			
+			return true;
+		}
+
+		if(commandName.equals("j2reload") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
+			loadData();
+			chat.msgByFlag(Flag.SRSTAFF, "j2 data reloaded by "+playerName);
+			log.info("j2 data reloaded by "+playerName);
+			
+			return true;
+		}
+
+		if(commandName.equals("maintenance") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
+			if(!maintenance){
+				log.info(playerName+" has turned on maintenance mode");
+				maintenance=true;
+				for (Player p : getServer().getOnlinePlayers()) {
+					if (p != null && !hasFlag(player, Flag.ADMIN)) {
+						p.sendMessage("Server entering maintenance mode");
+						p.kickPlayer("Server entering maintenance mode");
+					}
+				}
+				chat.msgByFlag(Flag.ADMIN, "Mainenance mode on, by "+playerName);
+			}
+			else{
+				log.info(playerName+" has turned off maintenance mode");
+				chat.msgByFlag(Flag.ADMIN, "Mainenance mode off, by "+playerName);
+				maintenance=false;
+			}
+			
+			return true;
+		}
+
+		if(isPlayer && commandName.equals("1x1") && hasFlag(player, Flag.ADMIN)){
+			player.sendMessage("Next block you break (not by stick), everything above it goes byebye");
+			log.info(player.getName()+" is gonna break a 1x1 tower");
+			OneByOne=player;
+			
+			return true;
+		}
+
+		if(commandName.equals("flags") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
+			String action=args[1];
+			if(args.length<3 || !(action.equalsIgnoreCase("add") || action.equalsIgnoreCase("drop"))){
+				msg(player,"Usage: /flags player add/drop flag");
+				return true;
+			}
+			String name=args[0];
+			char flag=args[2].charAt(0);
+			User user=users.getUser(name);
+			if(user==null){
+				user=mysql.getUser(name);
+			}
+			if(action.equalsIgnoreCase("add")){
+				user.addFlag(Flag.byChar(flag));
+			}
+			else {
+				user.dropFlag(Flag.byChar(flag));
+			}
+			String tolog=ChatColor.RED+playerName+" changed flags: "+name + " "+ action +" flag "+ Flag.byChar(flag).getDescription();
+			chat.msgByFlag(Flag.ADMIN, tolog);
+			log.info(tolog);
+			
+			return true;
+		}
+		if(isPlayer && commandName.equals("loc")) {
+			Location p_loc = player.getLocation();
+			player.sendMessage("You are located at X:"+p_loc.getBlockX()+" Y:"+p_loc.getBlockY()+" Z:"+p_loc.getBlockZ());
+		}
+		if(isPlayer && commandName.equals("warp") && hasFlag(player, Flag.FUN)) {
+			if(args.length==0){
+				String warps_s=warps.listWarps(player);
+				if(!warps_s.equalsIgnoreCase("")){
+					player.sendMessage(ChatColor.RED+"Warp locations: "+ChatColor.WHITE+warps_s);
+					player.sendMessage(ChatColor.RED+"To go to a warp, say /warp warpname");
+
+				}else{
+					player.sendMessage("The are no warps available.");
+				}
+			}
+			else{
+				Warp warp=warps.getPublicWarp(args[0]);
+				if(warp!=null && (hasFlag(player, warp.getFlag())||warp.getFlag().equals(Flag.Z_SPAREWARP_DESIGNATION))){
+					player.sendMessage(ChatColor.RED+"Whoosh!");
+					player.teleportTo(warp.getLocation());
+				}
+				else {
+					player.sendMessage(ChatColor.RED+"Warp does not exist. For a list, say /warp");
+				}
+
+			}
+			
+			return true;
+		}
+
+		if(isPlayer && commandName.equals("home") && hasFlag(player, Flag.FUN)) {
+			if(args.length==0){
+				String homes_s=warps.listHomes(player.getName());
+				if(!homes_s.equalsIgnoreCase("")){
+					player.sendMessage(ChatColor.RED+"Homes: "+ChatColor.WHITE+homes_s);
+					player.sendMessage(ChatColor.RED+"To go to a home, say /home homename");
+
+				}else{
+					player.sendMessage(ChatColor.RED+"You have no homes available.");
+					player.sendMessage(ChatColor.RED+"Use the command /sethome");
+				}
+			}
+			else{
+				Warp home=warps.getUserWarp(player.getName(),args[0]);
+				if(home!=null){
+					player.sendMessage(ChatColor.RED+"Whoosh!");
+					player.teleportTo(home.getLocation());
+				}
+				else {
+					player.sendMessage(ChatColor.RED+"That home does not exist. For a list, say /home");
+				}
+
+			}
+			
+			return true;
+		}
+		if(isPlayer && commandName.equals("setwarp") && hasFlag(player, Flag.ADMIN)){
+			if(args.length==0){
+				player.sendMessage(ChatColor.RED+"Usage: /setwarp warpname");
+				player.sendMessage(ChatColor.RED+"optional: /setwarp warpname flag");
+				player.sendMessage(ChatColor.RED+"Admin flag is a, trusted is t");
+			}
+			else{
+				Flag flag=Flag.Z_SPAREWARP_DESIGNATION;
+				if(args.length>1){
+					flag=Flag.byChar(args[1].charAt(0));
+				}
+				Warp newWarp=new Warp(args[0], player.getName(), player.getLocation(), flag);
+				warps.addWarp(newWarp);
+				player.sendMessage(ChatColor.RED+"Warp created");
+			}
+			
+			return true;
+		}
+		if(isPlayer && commandName.equals("sethome") && hasFlag(player, Flag.FUN)){
+			if(args.length==0){
+				player.sendMessage(ChatColor.RED+"Usage: /sethome name");
+			}
+			else{
+				Warp newWarp=new Warp(args[0], player.getName(), player.getLocation(), Flag.byChar('0'));
+				warps.addWarp(newWarp);
+				player.sendMessage(ChatColor.RED+"Home created");
+			}
+			
+			return true;
+		}
+		if(isPlayer && commandName.equals("removewarp") && hasFlag(player, Flag.ADMIN) && args.length>0){
+			String toRemove=args[0];
+			player.sendMessage(ChatColor.RED+"Removing warp "+toRemove);
+			warps.killWarp(warps.getPublicWarp(toRemove));
+			
+			return true;
+		}
+		if(isPlayer && commandName.equals("removehome") && hasFlag(player,Flag.FUN)){
+			if(args.length==0){
+				player.sendMessage(ChatColor.RED+"Usage: /removehome homename");
+				if(hasFlag(player, Flag.ADMIN)){
+					player.sendMessage(ChatColor.RED+"Or: /removehome homename playername");
+				}
+			}
+			if(args.length==1){
+				String toRemove=args[0];
+				player.sendMessage(ChatColor.RED+"Removing home "+toRemove);
+				warps.killWarp(warps.getUserWarp(player.getName(), toRemove));
+			}
+			if(args.length==2 && hasFlag(player, Flag.ADMIN)){
+				String toRemove=args[0];
+				String plr=args[1];
+				player.sendMessage(ChatColor.RED+"Removing home "+toRemove+" of player "+plr);
+				warps.killWarp(warps.getUserWarp(plr, toRemove));
+			}
+			
+			return true;
+		}
+		if(isPlayer && (commandName.equals("homeinvasion")||
+				commandName.equals("invasion")||
+				commandName.equals("hi"))
+				&& hasFlag(player,Flag.ADMIN)){
+			if(args.length==0){
+				player.sendMessage(ChatColor.RED+"Usage: /homeinvasion player");
+				player.sendMessage(ChatColor.RED+"      to get a list");
+				player.sendMessage(ChatColor.RED+"       /homeinvasion player homename");
+				player.sendMessage(ChatColor.RED+"      to visit a specific home");
+			}
+			if(args.length==1){
+				String target=args[0];
+				boolean isOnline=users.isOnline(target);
+				if(!isOnline){
+					warps.loadPlayer(target);
+				}
+				player.sendMessage(ChatColor.RED+target+" warps: "+ChatColor.WHITE+warps.listHomes(target));
+				if(!isOnline){
+					warps.dropPlayer(target);
+				}
+			}
+			if(args.length==2){
+				String target=args[0];
+				boolean isOnline=users.isOnline(target);
+				if(!isOnline){
+					warps.loadPlayer(target);
+				}
+				Warp warptarget=warps.getUserWarp(target, args[1]);
+				if(warptarget!=null){
+					player.sendMessage(ChatColor.RED+"Whooooosh!  *crash*");
+					player.teleportTo(warptarget.getLocation());
+				}
+				else {
+					player.sendMessage(ChatColor.RED+"No such home");
+				}
+				if(!isOnline){
+					warps.dropPlayer(target);
+				}
+			}
+			
+			return true;
+		}
+		if(commandName.equals("clearinventory")){
+			if(isPlayer && args.length==0){
+				player.getInventory().clear();
+				player.sendMessage(ChatColor.RED+"Inventory emptied");
+				log.info(player.getName()+" emptied inventory");
+			}
+			else if(args.length==1 && (!isPlayer||hasFlag(player,Flag.ADMIN))){
+				List<Player> targets=getServer().matchPlayer(args[0]);
+				if(targets.size()==1){
+					Player target=targets.get(0);
+					target.getInventory().clear();
+					target.sendMessage(ChatColor.RED+"Your inventory has been cleared by an admin");
+					log.info(playerName+" emptied inventory of "+target.getName());
+				}
+				else {
+					msg(player,"Found "+targets.size()+" matches. Try again");
+				}
+			}
+			
+			return true;
+		}
+		if(isPlayer && commandName.equals("mobhere") && hasFlag(player, Flag.SRSTAFF)){
+			if(args.length==0){
+				player.sendMessage(ChatColor.RED+"/mobhere mobname");
+			}
+			else {
+				player.getLocation().getWorld().spawnCreature(player.getLocation(), CreatureType.valueOf(args[0]));
+			}
+			
+			return true;
+		}
+		if(isPlayer && commandName.equals("over9000")
+				&&hasFlag(player, Flag.ADMIN)){
+			String name=player.getName();
+			chat.msgAll(ChatColor.RED+"!!! "+ChatColor.DARK_RED+name+" is ON FIRE !!!");
+			chat.msgAll(ChatColor.RED+"    Also, "+name+" is an admin. Pay attention to "+name);
+			users.getUser(name).tempSetColor(ChatColor.DARK_RED);
+			player.getInventory().setHelmet(new ItemStack(51));
+			log.info(name+" set mode to SUPERSAIYAN");
+			
+			return true;
+		}
+		if(isPlayer && commandName.equals("under9000")
+				&&hasFlag(player, Flag.ADMIN)){
+			String name=player.getName();
+			player.sendMessage(ChatColor.RED+"You fizzle out");
+			users.getUser(name).restoreColor();
+			player.getInventory().setHelmet(new ItemStack(2));
+			log.info(name+" set mode to NOT-SO-SAIYAN");
+			
+			return true;
+		}
+		if(isPlayer && (commandName.equals("coo")||
+				commandName.equals("xyz"))
+				&&hasFlag(player, Flag.ADMIN)){
+			if(args.length<3){
+				player.sendMessage(ChatColor.RED+"You did not specify an X, Y, and Z");
+			}
+			else {
+				player.teleportTo(new Location(player.getWorld(),Double.valueOf(args[0]),Double.valueOf(args[1]),Double.valueOf(args[2]),0,0));
+				player.sendMessage(ChatColor.RED+"WHEEEEE I HOPE THIS ISN'T UNDERGROUND");
+			}
+			
+			return true;
+		}
+		if(commandName.equals("whereis") && (!isPlayer ||hasFlag(player,Flag.ADMIN))){
+			if(args.length==0){
+				msg(player,"/whereis player");
+			}
+			else {
+				List<Player> possible=getServer().matchPlayer(args[0]);
+				if(possible.size()==1){
+					Player who=possible.get(0);
+					Location loc=who.getLocation();
+					msg(player,who.getName()+": "+loc.getX()+" "+loc.getY()+" "+loc.getZ());
+				}
+				else {
+					msg(player,args[0]+" does not work. Either 0 or 2+ matches.");
+				}
+			}
+			
+			return true;
+		}
+	
+		return false;
 	}
 	
 	public boolean debug;
