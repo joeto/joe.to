@@ -356,7 +356,7 @@ public class managerMySQL {
 			while (rs.next()){
 				String user=rs.getString("user");
 				Location loc=new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
-				j2.reports.addReport(new Report(rs.getInt("id"), loc, user, rs.getString("message"),rs.getLong("time")));
+				j2.reports.addReportViaSQL(new Report(rs.getInt("id"), loc, user, rs.getString("message"),rs.getLong("time")));
 				if(j2.debug)j2.log.info("Adding new report to list, user "+user);
 			}
 			

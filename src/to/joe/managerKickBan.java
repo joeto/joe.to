@@ -11,45 +11,45 @@ import org.bukkit.entity.Player;
 public class managerKickBan {
 	private J2Plugin j2;
 	public ArrayList<Ban> bans;
-	
+
 	public managerKickBan(J2Plugin j2p){
 		j2=j2p;
 		bans = new ArrayList<Ban>();
 	}
-	
+
 	public void callBan(String adminName, String[] split, Location location)
 	{
-		List<Player> toBanCandidates = j2.getServer().matchPlayer(split[1]);
+		List<Player> toBanCandidates = j2.getServer().matchPlayer(split[0]);
 		if(toBanCandidates.size()!=1){
 			if(!adminName.equalsIgnoreCase("console")){
-				j2.getServer().getPlayer(adminName).sendMessage(ChatColor.RED+"Error:"+split[1]+" does not exist or fits multiple players");
+				j2.getServer().getPlayer(adminName).sendMessage(ChatColor.RED+"Error:"+split[0]+" does not exist or fits multiple players");
 			}
 			return;
 		}
 		Player toBan=toBanCandidates.get(0);
 		String banReason="";
 		long banTime=0;
-		banReason=j2.combineSplit(2, split, " ");
+		banReason=j2.combineSplit(1, split, " ");
 		if (toBan != null) {
 			String name = toBan.getName();
 			j2.mysql.ban(name,banReason,banTime,adminName,location);
-			if (split.length > 2) {
-				toBan.kickPlayer("Banned: " + banReason);
-				
-				j2.log.log(Level.INFO, "Banning " + name + " by " + adminName + ": " + banReason);
-				j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
-				j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned (" + banReason+")");
-				j2.irc.ircMsg(name + " banned (" + banReason+")");
-			} else {
+			//if (split.length > 1) {
+			toBan.kickPlayer("Banned: " + banReason);
+
+			j2.log.log(Level.INFO, "Banning " + name + " by " + adminName + ": " + banReason);
+			j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
+			j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned (" + banReason+")");
+			j2.irc.ircMsg(name + " banned (" + banReason+")");
+			/*} else {
 				toBan.kickPlayer("Banned.");
 				j2.log.log(Level.INFO, "Banning " + name + " by " + adminName);
 				j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName);
 				j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned");
 				j2.irc.ircMsg(name + " banned");
-			}
+			}*/
 		} else {
 			if(!adminName.equalsIgnoreCase("console")){
-				j2.getServer().getPlayer(adminName).sendMessage(ChatColor.RED+"Error:"+split[1]+" does not exist or fits multiple players");
+				j2.getServer().getPlayer(adminName).sendMessage(ChatColor.RED+"Error:"+split[0]+" does not exist or fits multiple players");
 			}
 		}
 	}
@@ -57,19 +57,19 @@ public class managerKickBan {
 	{
 		String banReason="";
 		long banTime=0;
-		banReason=j2.combineSplit(2, split, " ");
-		String name=split[1];
+		banReason=j2.combineSplit(1, split, " ");
+		String name=split[0];
 		j2.mysql.ban(name,banReason,banTime,adminName,location);
 		forceKick(name,"Banned: "+banReason);
-		if (split.length > 2) {
-			j2.log.log(Level.INFO, "Banning " + name + " by " + adminName + ": " + banReason);
-			j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
-		} else {
+		//if (split.length > 1) {
+		j2.log.log(Level.INFO, "Banning " + name + " by " + adminName + ": " + banReason);
+		j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
+		/*} else {
 			j2.log.log(Level.INFO, "Banning " + name + " by " + adminName);
 			j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName);
-		}
+		}*/
 	}
-	
+
 
 	public void callKick(String pname,String admin,String reason){
 		List<Player> toKickCandidates = j2.getServer().matchPlayer(pname);
@@ -114,7 +114,7 @@ public class managerKickBan {
 			}
 		}
 	}
-	
+
 	public void kickAll(String reason){
 		j2.log.info("Kicking all players: "+reason);
 		if(reason.equalsIgnoreCase("")){
@@ -126,7 +126,7 @@ public class managerKickBan {
 			}
 		}
 	}
-	
+
 	public void unban(String adminName,String name){
 		j2.mysql.unban(name);
 		j2.log.log(Level.INFO, "Unbanning " + name + " by " + adminName);

@@ -1,8 +1,6 @@
 package to.joe;
 
 
-
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 
@@ -26,12 +24,12 @@ public class listenPlrJoinQuit extends PlayerListener {
 		for(String line : j2.motd){
 			player.sendMessage(line);
 		}
-		if(j2.hasFlag(player,Flag.JAILED)){
+		/*if(j2.hasFlag(player,Flag.JAILED)){
 			player.teleportTo(j2.users.jail);
 			player.sendMessage(ChatColor.RED+"You are in "+ChatColor.DARK_RED+"JAIL");
 			player.sendMessage(ChatColor.RED+"To get out, talk to the jailer");
 			player.sendMessage(ChatColor.RED+"You need to punch him");
-		}
+		}*/
 	}
 
 	@Override

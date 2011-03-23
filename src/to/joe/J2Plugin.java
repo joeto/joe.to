@@ -804,6 +804,8 @@ public class J2Plugin extends JavaPlugin {
 			irc.ircMsg("* "+ player.getName()+" "+message);
 			//don't cancel this after reading it. 
 			//TODO: /ignore code will also be here
+			chat.msgAll("* "+users.getUser(playerName).getColorName()+" "+message);
+			return true;
 		}
 
 		/*if (commandName.equals("forcekick") && hasFlag(player, Flag.ADMIN)){

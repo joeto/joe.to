@@ -13,6 +13,9 @@ public class managerReport {
 		this.j2.mysql.addReport(newReport);
 		this.reports.add(newReport);
 	}
+	public void addReportViaSQL(Report newReport){
+		this.reports.add(newReport);
+	}
 	public void reportID(long time,int id){
 		for(Report r:this.reports){
 			if(r.getTime()==time){
