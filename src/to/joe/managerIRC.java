@@ -5,11 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-//import java.util.Timer;
-//import java.util.TimerTask;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
-
 import org.bukkit.Location;
 
 public class managerIRC {
@@ -33,7 +32,7 @@ public class managerIRC {
 		if(j2.ircDebug)bot.setVerbose(true);
 		System.out.println("Connecting to "+j2.ircChannel+" on "+j2.ircHost+":"+j2.ircPort+" as "+j2.ircName);
 		try {
-			bot.connect(j2.ircHost,j2.ircPort);
+			bot.connect(j2.ircHost,j2.ircPort,j2.getServer().getIp());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -202,8 +201,10 @@ public class managerIRC {
 	public J2Plugin getJ2(){
 		return j2;
 	}
-	
-	/*public void startIRCTimer() {
+
+	private boolean stop;
+	public boolean restart = false;
+	public void startIRCTimer() {
 		stop = false;
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -213,16 +214,17 @@ public class managerIRC {
 					timer.cancel();
 					return;
 				}
-				tryMsg();
+				checkStatus();
 			}
-		}, 3000, 500);
+		}, 1000, 10000);
 	}
 
+	private void checkStatus(){
+		if(!j2.ircEnable&&restart){
+			prepIRC();
+			restart=false;
+			j2.ircEnable=true;
+		}
+	}
 
-	public void tryMsg()
-	{
-		String curline=chatQueue.poll();
-		if(curline!=null)
-			j2.irc.ircMsg(curline);
-	}*/
 }

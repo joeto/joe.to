@@ -6,8 +6,6 @@ package to.joe;
  * 
  */
 
-import java.io.IOException;
-
 import org.bukkit.entity.*;
 import org.jibble.pircbot.*;
 
@@ -27,18 +25,9 @@ public class ircBot extends PircBot {
 	}
 	public void onDisconnect(){
 		if(ircman.getJ2().ircEnable){
-			try{
-				this.reconnect();
-			}
-			catch(NickAlreadyInUseException e){
-				e.printStackTrace();
-			} 
-			catch (IOException e) {
-				e.printStackTrace();
-			} 
-			catch (IrcException e) {
-				e.printStackTrace();
-			}
+			ircman.restart=true;
+			ircman.getJ2().ircEnable=false;
+			this.dispose();
 		}
 	}
 	public void onMessage(String channel, String sender,

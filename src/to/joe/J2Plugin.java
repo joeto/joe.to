@@ -63,7 +63,7 @@ public class J2Plugin extends JavaPlugin {
 	//public managerBlockLog blogger;
 	public managerMySQL mysql;
 
-	
+
 	public void onDisable() {
 
 		irc.kill();
@@ -77,9 +77,10 @@ public class J2Plugin extends JavaPlugin {
 		protectedUsers=new ArrayList<String>();
 		loadData();
 		if(debug)log.info("Data loaded");
-		
+
 		//irc start
 		if(ircEnable)irc.prepIRC();
+		irc.startIRCTimer();
 		//if(ircEnable)irc.startIRCTimer();
 		if(debug)log.info("IRC up (or disabled)");
 		//irc end
@@ -87,7 +88,7 @@ public class J2Plugin extends JavaPlugin {
 		if(debug)log.info("Tips loaded");
 		startTipsTimer();
 		if(debug)log.info("Tips timer started");
-		
+
 		//Initialize BlockLogger
 		//this.blogger = new managerBlockLog(this.mysql.getConnection(),this.mysql.servnum());
 		//if(debug)log.info("Blogger init");
@@ -130,8 +131,8 @@ public class J2Plugin extends JavaPlugin {
 	}
 
 	public void loadData(){
-		
-		
+
+
 		rules=readDaFile("rules.txt");
 		blacklist=readDaFile("blacklistinfo.txt");
 		intro=readDaFile("intro.txt");
@@ -149,7 +150,7 @@ public class J2Plugin extends JavaPlugin {
 			mysql = new managerMySQL(mysql_username,mysql_password,mysql_db, mysql_server, this);
 			mysql.loadMySQLData();
 			//mysql end
-			
+
 			playerLimit=j2properties.getInt("max-players",20);
 			tips_delay = j2properties.getInt("tip-delay", 120);
 			tips_prefix = j2properties.getString("tip-prefix","");
@@ -198,11 +199,11 @@ public class J2Plugin extends JavaPlugin {
 		}
 	}
 
-	
+
 
 	public String[] readDaFile(String filename)
 	{
-			
+
 		FileReader fileReader = null;
 		try {
 			fileReader = new FileReader(filename);
@@ -231,9 +232,9 @@ public class J2Plugin extends JavaPlugin {
 		return fileLines.toArray(new String[fileLines.size()]);
 	}
 
-	
 
-	
+
+
 
 	//tips
 	private void startTipsTimer() {
@@ -299,7 +300,7 @@ public class J2Plugin extends JavaPlugin {
 			stopTimer();
 		}
 	}
-	
+
 	//end tips
 
 	public boolean isOnSuperBlacklist(int id) {
@@ -377,8 +378,8 @@ public class J2Plugin extends JavaPlugin {
 		return builder.toString();
 	}
 
-	
-	
+
+
 	public boolean hasFlag(Player player, Flag flag){
 		User user=users.getUser(player);
 		if(user!=null && (user.getUserFlags().contains(flag) || users.groupHasFlag(user.getGroup(), flag))){
@@ -386,13 +387,13 @@ public class J2Plugin extends JavaPlugin {
 		}
 		return false;
 	}
-	
+
 	public void jailMsg(Player player){
 		player.sendMessage(ChatColor.RED+"You are "+ChatColor.DARK_RED+"IN JAIL");
 		player.sendMessage(ChatColor.RED+"for violation of our server rules");
 		player.sendMessage(ChatColor.RED+"Look around you for info on freedom");
 	}
-	
+
 	public void msg(Player player, String message){
 		if(player!=null){
 			player.sendMessage(ChatColor.RED+message);
@@ -402,21 +403,45 @@ public class J2Plugin extends JavaPlugin {
 			System.out.println("J2:" + message);
 		}
 	}
-	
+
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		String commandName = command.getName().toLowerCase();
-        Player player=null;
-        String playerName="Console";
-        boolean isPlayer=(sender instanceof Player);
-        if(isPlayer){
-        	player=(Player)sender;
-        	playerName=player.getName();
-        }
+		Player player=null;
+		String playerName="Console";
+		boolean isPlayer=(sender instanceof Player);
+		if(isPlayer){
+			player=(Player)sender;
+			playerName=player.getName();
+		}
+
+
+
+		if(commandName.equals("kickall")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))&&args.length>0){
+			Player[] list=getServer().getOnlinePlayers();
+			String reason=combineSplit(0,args," ");
+			if(list!=null){
+				for(int x=0;x<list.length;x++){
+					if(list[x]!=null)
+						list[x].kickPlayer(reason);
+				}
+			}
+			log.info(playerName+" kicked all: "+reason);
+			return true;
+		}
+		
+		if(commandName.equals("smackirc")){
+			irc.getBot().quitServer("Back in a moment <3");
+			irc.restart=true;
+			return true;
+		}
+
+
+
 		if(isPlayer && hasFlag(player,Flag.JAILED)){
 			if(commandName.equals("confess")){
 				users.getUser(player).dropFlag(Flag.JAILED);
 			}
-			
+
 			return true;
 		}
 
@@ -437,35 +462,35 @@ public class J2Plugin extends JavaPlugin {
 			for(String line : rules){
 				player.sendMessage(line);
 			}
-			
+
 			return true;
 		}
 		/*if (isPlayer && commandName.equals("help")){
 			for(String line : help){
 				player.sendMessage(line);
 			}
-			
+
 			return true;
 		}*/
 		if (isPlayer && commandName.equals("motd")){
 			for(String line : motd){
 				player.sendMessage(line);
 			}
-			
+
 			return true;
 		}
 		if (isPlayer && commandName.equals("blacklist")){
 			for(String line : blacklist){
 				player.sendMessage(line);
 			}
-			
+
 			return true;
 		}
 		if (isPlayer && commandName.equals("intro")){
 			for(String line : intro){
 				player.sendMessage(line);
 			}
-			
+
 			return true;
 		}
 		if(isPlayer && commandName.equals("protectme") && hasFlag(player, Flag.TRUSTED)){
@@ -478,7 +503,7 @@ public class J2Plugin extends JavaPlugin {
 				tpProtect.setBoolean(playersName, true);
 				player.sendMessage(ChatColor.RED + "You are protected from teleportation");
 			}
-			
+
 			return true;
 		}
 
@@ -501,7 +526,7 @@ public class J2Plugin extends JavaPlugin {
 			else{
 				player.sendMessage(ChatColor.RED+"No such player, or matches multiple");
 			}
-			
+
 			return true;
 		}
 
@@ -523,7 +548,7 @@ public class J2Plugin extends JavaPlugin {
 			else{
 				player.sendMessage(ChatColor.RED+"No such player, or matches multiple");
 			}
-			
+
 			return true;
 		}
 
@@ -550,7 +575,7 @@ public class J2Plugin extends JavaPlugin {
 		if(isPlayer && commandName.equals("msg")){
 			if(args.length<2){
 				player.sendMessage(ChatColor.RED+"Correct usage: /msg player message");
-				
+
 				return true;
 			}
 			List<Player> inquest = getServer().matchPlayer(args[0]);
@@ -563,7 +588,7 @@ public class J2Plugin extends JavaPlugin {
 			else{
 				player.sendMessage(ChatColor.RED+"Could not find player");
 			}
-			
+
 			return true;
 		}
 
@@ -573,46 +598,51 @@ public class J2Plugin extends JavaPlugin {
 				return true;
 			}
 
-	        Player playerFor = null;
-	        Material material = null;
-	        int count = 1;
-	        String[] gData = null;
-	        Byte bytedata = null;
-	        if (args.length >= 1) {
-	            gData = args[0].split(":");
-	            material = Material.matchMaterial(gData[0]);
-	            if (gData.length == 2) {
-	                bytedata = Byte.valueOf(gData[1]);
-	            }
-	        }
-	        if (args.length >= 2) {
-	            try {
-	                count = Integer.parseInt(args[1]);
-	            } catch (NumberFormatException ex) {
-	                player.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a number!");
-	                return false;
-	            }
-	        }
-	        if (args.length == 3) {
-	            playerFor = getServer().getPlayer(args[2]);
-	            if (playerFor == null) {
-	                player.sendMessage(ChatColor.RED + "'" + args[2] + "' is not a valid player!");
-	                return false;
-	            }
-	        } else{
-	        	playerFor=player;
-	        }
-	        if (material == null) {
-	            player.sendMessage(ChatColor.RED + "Unknown item");
-	            return false;
-	        }
-	        if (bytedata != null) {
-	            playerFor.getInventory().addItem(new ItemStack(material, count, (short) 0, bytedata));
-	        } else {
-	            playerFor.getInventory().addItem(new ItemStack(material, count));
-	        }
-	        player.sendMessage("Given " + playerFor.getDisplayName() + " " + count + " " + material.toString());
-	        return true;
+			Player playerFor = null;
+			Material material = null;
+			int count = 1;
+			String[] gData = null;
+			Byte bytedata = null;
+			if (args.length >= 1) {
+				gData = args[0].split(":");
+				material = Material.matchMaterial(gData[0]);
+				if (gData.length == 2) {
+					try{
+						bytedata = Byte.valueOf(gData[1]);
+					}
+					catch(NumberFormatException e){
+						player.sendMessage("No such damage value. Giving you damage=0");
+					}
+				}
+			}
+			if (args.length >= 2) {
+				try {
+					count = Integer.parseInt(args[1]);
+				} catch (NumberFormatException ex) {
+					player.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a number!");
+					return false;
+				}
+			}
+			if (args.length == 3) {
+				playerFor = getServer().getPlayer(args[2]);
+				if (playerFor == null) {
+					player.sendMessage(ChatColor.RED + "'" + args[2] + "' is not a valid player!");
+					return false;
+				}
+			} else{
+				playerFor=player;
+			}
+			if (material == null) {
+				player.sendMessage(ChatColor.RED + "Unknown item");
+				return false;
+			}
+			if (bytedata != null) {
+				playerFor.getInventory().addItem(new ItemStack(material, count, (short) 0, bytedata));
+			} else {
+				playerFor.getInventory().addItem(new ItemStack(material, count));
+			}
+			player.sendMessage("Given " + playerFor.getDisplayName() + " " + count + " " + material.toString());
+			return true;
 		}
 
 		if(commandName.equals("time") && (!isPlayer ||hasFlag(player, Flag.ADMIN))){
@@ -639,7 +669,7 @@ public class J2Plugin extends JavaPlugin {
 			}
 			getServer().getWorlds().get(0).setTime(curTime+margin);
 			msg(player,"Time changed");
-			
+
 			return true;
 		}
 
@@ -650,7 +680,7 @@ public class J2Plugin extends JavaPlugin {
 				msg+=" "+p.getName();
 			}
 			player.sendMessage(msg);
-			
+
 			return true;
 		}
 
@@ -680,7 +710,7 @@ public class J2Plugin extends JavaPlugin {
 				player.sendMessage(ChatColor.RED+"To report to the admins, say /report MESSAGE");
 				player.sendMessage(ChatColor.RED+"Where MESSAGE is what you want to tell them");
 			}
-				
+
 			return true;
 		}
 		if(isPlayer && commandName.equals("r") && hasFlag(player, Flag.ADMIN)){
@@ -688,7 +718,7 @@ public class J2Plugin extends JavaPlugin {
 			int size=reps.size();
 			if(size==0){
 				player.sendMessage(ChatColor.RED+"No reports. Hurray!");
-				
+
 				return true;
 			}
 			player.sendMessage(ChatColor.DARK_PURPLE+"Found "+size+" reports:");
@@ -697,7 +727,7 @@ public class J2Plugin extends JavaPlugin {
 						+ChatColor.WHITE+r.getUser()+ChatColor.DARK_PURPLE+"> "+ChatColor.WHITE
 						+r.getMessage());
 			}
-			
+
 			return true;
 		}
 		if(commandName.equals("g") && (!isPlayer ||hasFlag(player, Flag.ADMIN))){
@@ -717,7 +747,7 @@ public class J2Plugin extends JavaPlugin {
 				return true;
 			}
 			kickbans.callBan(playerName,args,player.getLocation());
-			
+
 			return true;
 		}
 		if((commandName.equals("kick")||commandName.equals("k")) && (!isPlayer || hasFlag(player, Flag.ADMIN))){
@@ -735,7 +765,7 @@ public class J2Plugin extends JavaPlugin {
 				return true;
 			}
 			kickbans.callAddBan(playerName,args,player.getLocation());
-			
+
 			return true;
 		}
 
@@ -752,26 +782,21 @@ public class J2Plugin extends JavaPlugin {
 
 		if(isPlayer && commandName.equals("trust") && hasFlag(player, Flag.ADMIN)){
 			String action=args[0];
-			if(args.length<3 || !(action.equalsIgnoreCase("add") || action.equalsIgnoreCase("drop"))){
+			if(args.length<2 || !(action.equalsIgnoreCase("add") || action.equalsIgnoreCase("drop"))){
 				player.sendMessage(ChatColor.RED+"Usage: /trust add/drop player");
-				
 				return true;
 			}
 			String name=args[1];
-			User user=users.getUser(name);
-			if(user==null){
-				user=mysql.getUser(name);
-			}
 			if(action.equalsIgnoreCase("add")){
-				user.addFlag(Flag.TRUSTED);
+				users.addFlag(name,Flag.TRUSTED);
 			}
 			else {
-				user.dropFlag(Flag.TRUSTED);
+				users.dropFlag(name,Flag.TRUSTED);
 			}
 			String tolog=ChatColor.RED+player.getName()+" changed flags: "+name + " "+ action +" flag "+ Flag.TRUSTED.getDescription();
 			chat.msgByFlag(Flag.ADMIN, tolog);
 			log.info(tolog);
-			
+
 			return true;
 		}
 
@@ -783,7 +808,7 @@ public class J2Plugin extends JavaPlugin {
 			List<Player> match = getServer().matchPlayer(args[0]);
 			if(match.size()!=1 || match.get(0)==null){
 				msg(player,"Player not found");
-				
+
 				return true;
 			}
 			Player who=match.get(0);
@@ -812,7 +837,7 @@ public class J2Plugin extends JavaPlugin {
 			if(args.length==0){
 				player.sendMessage(ChatColor.RED+"Usage: /forcekick playername");
 				player.sendMessage(ChatColor.RED+"       Requires full name");
-				
+
 				return true;
 			}
 			String name=args[0];
@@ -824,14 +849,14 @@ public class J2Plugin extends JavaPlugin {
 			log.log(Level.INFO, "Kicking " + name + " by " + admin + ": " + reason);
 			chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
 			chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name+" kicked ("+reason+")");
-			
+
 			return true;
 		}*/
 		if(commandName.equals("ircrefresh") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
 			irc.loadIRCAdmins();
 			chat.msgByFlag(Flag.SRSTAFF, ChatColor.RED+"IRC admins reloaded by "+playerName);
 			log.info(playerName+ " reloaded irc admins");
-			
+
 			return true;
 		}
 
@@ -839,7 +864,7 @@ public class J2Plugin extends JavaPlugin {
 			loadData();
 			chat.msgByFlag(Flag.SRSTAFF, "j2 data reloaded by "+playerName);
 			log.info("j2 data reloaded by "+playerName);
-			
+
 			return true;
 		}
 
@@ -860,7 +885,7 @@ public class J2Plugin extends JavaPlugin {
 				chat.msgByFlag(Flag.ADMIN, "Mainenance mode off, by "+playerName);
 				maintenance=false;
 			}
-			
+
 			return true;
 		}
 
@@ -868,12 +893,12 @@ public class J2Plugin extends JavaPlugin {
 			player.sendMessage("Next block you break (not by stick), everything above it goes byebye");
 			log.info(player.getName()+" is gonna break a 1x1 tower");
 			OneByOne=player;
-			
+
 			return true;
 		}
 
 		if(commandName.equals("flags") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
-			
+
 			if(args.length<3){
 				msg(player,"Usage: /flags player add/drop flag");
 				return true;
@@ -883,7 +908,7 @@ public class J2Plugin extends JavaPlugin {
 				msg(player,"Usage: /flags player add/drop flag");
 				return true;
 			}
-			
+
 			String name=args[0];
 			char flag=args[2].charAt(0);
 			User user=users.getUser(name);
@@ -899,7 +924,7 @@ public class J2Plugin extends JavaPlugin {
 			String tolog=ChatColor.RED+playerName+" changed flags: "+name + " "+ action +" flag "+ Flag.byChar(flag).getDescription();
 			chat.msgByFlag(Flag.ADMIN, tolog);
 			log.info(tolog);
-			
+
 			return true;
 		}
 		if(isPlayer && commandName.equals("loc")) {
@@ -928,7 +953,7 @@ public class J2Plugin extends JavaPlugin {
 				}
 
 			}
-			
+
 			return true;
 		}
 
@@ -955,7 +980,7 @@ public class J2Plugin extends JavaPlugin {
 				}
 
 			}
-			
+
 			return true;
 		}
 		if(isPlayer && commandName.equals("setwarp") && hasFlag(player, Flag.ADMIN)){
@@ -973,7 +998,7 @@ public class J2Plugin extends JavaPlugin {
 				warps.addWarp(newWarp);
 				player.sendMessage(ChatColor.RED+"Warp created");
 			}
-			
+
 			return true;
 		}
 		if(isPlayer && commandName.equals("sethome") && hasFlag(player, Flag.FUN)){
@@ -985,14 +1010,14 @@ public class J2Plugin extends JavaPlugin {
 				warps.addWarp(newWarp);
 				player.sendMessage(ChatColor.RED+"Home created");
 			}
-			
+
 			return true;
 		}
 		if(isPlayer && commandName.equals("removewarp") && hasFlag(player, Flag.ADMIN) && args.length>0){
 			String toRemove=args[0];
 			player.sendMessage(ChatColor.RED+"Removing warp "+toRemove);
 			warps.killWarp(warps.getPublicWarp(toRemove));
-			
+
 			return true;
 		}
 		if(isPlayer && commandName.equals("removehome") && hasFlag(player,Flag.FUN)){
@@ -1013,7 +1038,7 @@ public class J2Plugin extends JavaPlugin {
 				player.sendMessage(ChatColor.RED+"Removing home "+toRemove+" of player "+plr);
 				warps.killWarp(warps.getUserWarp(plr, toRemove));
 			}
-			
+
 			return true;
 		}
 		if(isPlayer && (commandName.equals("homeinvasion")||
@@ -1055,7 +1080,7 @@ public class J2Plugin extends JavaPlugin {
 					warps.dropPlayer(target);
 				}
 			}
-			
+
 			return true;
 		}
 		if(commandName.equals("clearinventory")){
@@ -1076,7 +1101,7 @@ public class J2Plugin extends JavaPlugin {
 					msg(player,"Found "+targets.size()+" matches. Try again");
 				}
 			}
-			
+
 			return true;
 		}
 		if(isPlayer && commandName.equals("mobhere") && hasFlag(player, Flag.SRSTAFF)){
@@ -1086,7 +1111,7 @@ public class J2Plugin extends JavaPlugin {
 			else {
 				player.getLocation().getWorld().spawnCreature(player.getLocation(), CreatureType.valueOf(args[0]));
 			}
-			
+
 			return true;
 		}
 		if(isPlayer && commandName.equals("over9000")
@@ -1097,7 +1122,7 @@ public class J2Plugin extends JavaPlugin {
 			users.getUser(name).tempSetColor(ChatColor.DARK_RED);
 			player.getInventory().setHelmet(new ItemStack(51));
 			log.info(name+" set mode to SUPERSAIYAN");
-			
+
 			return true;
 		}
 		if(isPlayer && commandName.equals("under9000")
@@ -1107,7 +1132,7 @@ public class J2Plugin extends JavaPlugin {
 			users.getUser(name).restoreColor();
 			player.getInventory().setHelmet(new ItemStack(2));
 			log.info(name+" set mode to NOT-SO-SAIYAN");
-			
+
 			return true;
 		}
 		if(isPlayer && (commandName.equals("coo")||
@@ -1120,7 +1145,7 @@ public class J2Plugin extends JavaPlugin {
 				player.teleportTo(new Location(player.getWorld(),Double.valueOf(args[0]),Double.valueOf(args[1]),Double.valueOf(args[2]),0,0));
 				player.sendMessage(ChatColor.RED+"WHEEEEE I HOPE THIS ISN'T UNDERGROUND");
 			}
-			
+
 			return true;
 		}
 		if(commandName.equals("whereis") && (!isPlayer ||hasFlag(player,Flag.ADMIN))){
@@ -1138,16 +1163,16 @@ public class J2Plugin extends JavaPlugin {
 					msg(player,args[0]+" does not work. Either 0 or 2+ matches.");
 				}
 			}
-			
+
 			return true;
 		}
-	
+
 		return false;
 	}
-	
+
 	public boolean debug;
 	public Logger log;
-	
+
 	public ArrayList<String> protectedUsers;
 	public String[] rules, blacklist, intro, motd, help;
 

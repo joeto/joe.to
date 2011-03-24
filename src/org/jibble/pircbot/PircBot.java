@@ -87,9 +87,9 @@ public abstract class PircBot implements ReplyConstants {
      * @throws IrcException if the server would not let us join it.
      * @throws NickAlreadyInUseException if our nick is already in use on the server.
      */
-    public final synchronized void connect(String hostname) throws IOException, IrcException, NickAlreadyInUseException {
-        this.connect(hostname, 6667, null);
-    }
+    //public final synchronized void connect(String hostname) throws IOException, IrcException, NickAlreadyInUseException {
+    //    this.connect(hostname, 6667, null);
+    //}
 
 
     /**
@@ -103,9 +103,9 @@ public abstract class PircBot implements ReplyConstants {
      * @throws IrcException if the server would not let us join it.
      * @throws NickAlreadyInUseException if our nick is already in use on the server.
      */
-    public final synchronized void connect(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
-        this.connect(hostname, port, null);
-    }
+    //public final synchronized void connect(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
+    //    this.connect(hostname, port, null);
+    //}
     
     
     /**
@@ -121,11 +121,16 @@ public abstract class PircBot implements ReplyConstants {
      * @throws IrcException if the server would not let us join it.
      * @throws NickAlreadyInUseException if our nick is already in use on the server.
      */
-    public final synchronized void connect(String hostname, int port, String password) throws IOException, IrcException, NickAlreadyInUseException {
-
+    public final synchronized void connect(String hostname, int port, String localip) throws IOException, IrcException, NickAlreadyInUseException {
+    	//laziest fix ever ^_^
+    	String password=null;
+    	
         _server = hostname;
         _port = port;
         _password = password;
+        
+        
+        InetAddress self=InetAddress.getByName(localip);
         
         if (isConnected()) {
             throw new IOException("The PircBot is already connected to an IRC server.  Disconnect first.");
@@ -137,7 +142,7 @@ public abstract class PircBot implements ReplyConstants {
         this.removeAllChannels();
         
         // Connect to the server.
-        Socket socket =  new Socket(hostname, port);
+        Socket socket =  new Socket(hostname, port, self, port);
         this.log("*** Connected to server.");
         
         _inetAddress = socket.getLocalAddress();

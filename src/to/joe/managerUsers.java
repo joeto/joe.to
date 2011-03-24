@@ -36,9 +36,9 @@ public class managerUsers {
 	public User getUser(Player player){
 		return getUser(player.getName());
 	}
-	public void addUser(String player){
+	public void addUser(String playerName){
 		synchronized (this.userlock){
-			User user=this.j2.mysql.getUser(player);
+			User user=this.j2.mysql.getUser(playerName);
 			this.users.add(user);
 		}
 	}
@@ -54,24 +54,24 @@ public class managerUsers {
 		}
 	}
 	public void addFlag(String name, Flag flag){
-		synchronized (this.userlock){
-			for(User user:this.users){
-				if(user.getName().equalsIgnoreCase(name)){
-					user.addFlag(flag);
-					this.j2.mysql.setFlags(name, user.getUserFlags());
-				}
-			}
+		User user=getUser(name);
+		if(user==null){
+			user=this.j2.mysql.getUser(name);
 		}
+		user.addFlag(flag);
+		if(j2.debug)
+			j2.log.info("Adding flag "+flag.getChar()+" for "+name);
+		this.j2.mysql.setFlags(name, user.getUserFlags());
 	}
 	public void dropFlag(String name, Flag flag){
-		synchronized (this.userlock){
-			for(User user:this.users){
-				if(user.getName().equalsIgnoreCase(name)){
-					user.dropFlag(flag);
-					this.j2.mysql.setFlags(name, user.getUserFlags());
-				}
-			}
+		User user=getUser(name);
+		if(user==null){
+			user=this.j2.mysql.getUser(name);
 		}
+		user.dropFlag(flag);
+		if(j2.debug)
+			j2.log.info("Dropping flag "+flag.getChar()+" for "+name);
+		this.j2.mysql.setFlags(name, user.getUserFlags());
 	}
 	public void setGroups(HashMap<String, ArrayList<Flag>> Groups){
 		this.groups=Groups;

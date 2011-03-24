@@ -130,6 +130,8 @@ public class managerMySQL {
 	
 	
 	public void setFlags(String name, ArrayList<Flag> flags){
+		if(j2.debug)
+			j2.log.info("Calling setFlags");
 		Connection conn = null;
 		PreparedStatement ps = null;
 		name=stringClean(name);

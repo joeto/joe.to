@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2Plugin
-version: 0.2.0
+version: 0.3.0
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -65,11 +65,11 @@ commands:
   a:
     description: 
     usage: |
-            /derp
+            /a <message>
   g:
     description: Admin message
     usage: |
-            /a <message>
+            /g <message>
   report:
     description: Send a report
     usage: |
@@ -202,3 +202,11 @@ commands:
     description: Where is he?
     usage: |
             /whereis <player>
+  kickall:
+    description: Hehehehehehe
+    usage: |
+            kickall reason
+  smackirc:
+    description: WHABAM
+    usage: |
+            smackirc
