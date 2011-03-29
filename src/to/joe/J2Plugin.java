@@ -404,6 +404,12 @@ public class J2Plugin extends JavaPlugin {
 			System.out.println("J2:" + message);
 		}
 	}
+	
+	public void craftIRC_sendMessageToTag(String message, String tag){
+		if(tag.equalsIgnoreCase("nocheat")){
+			irc.ircAdminMsg(message);
+		}
+	}
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		String commandName = command.getName().toLowerCase();
