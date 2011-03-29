@@ -146,7 +146,7 @@ public class J2Plugin extends JavaPlugin {
 			String mysql_password = j2properties.getString("pass", "root");
 			String mysql_db = j2properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
 			//chatTable = properties.getString("chat","chat");
-			int mysql_server = j2properties.getInt("server-number", 1);
+			int mysql_server = j2properties.getInt("server-number", 0);
 			mysql = new managerMySQL(mysql_username,mysql_password,mysql_db, mysql_server, this);
 			mysql.loadMySQLData();
 			//mysql end
@@ -163,7 +163,8 @@ public class J2Plugin extends JavaPlugin {
 			ircName = j2properties.getString("irc-name","aMinecraftBot");
 			ircChannel = j2properties.getString("irc-channel","#minecraftbot");
 			ircAdminChannel = j2properties.getString("irc-adminchannel","#minecraftbotadmin");
-			ircUserColor = j2properties.getString("irc-usercolor","f");
+			int ircuc = j2properties.getInt("irc-usercolor",15);
+			ircUserColor=mysql.toColor(ircuc);
 			ircSeparator= j2properties.getString("irc-separator","<,>").split(",");
 			ircCharLim = j2properties.getInt("irc-charlimit",390);
 			ircMsg=j2properties.getBoolean("irc-msg-enable",false);
@@ -465,13 +466,13 @@ public class J2Plugin extends JavaPlugin {
 
 			return true;
 		}
-		/*if (isPlayer && commandName.equals("help")){
+		if (isPlayer && commandName.equals("help")){
 			for(String line : help){
 				player.sendMessage(line);
 			}
 
 			return true;
-		}*/
+		}
 		if (isPlayer && commandName.equals("motd")){
 			for(String line : motd){
 				player.sendMessage(line);
@@ -507,7 +508,7 @@ public class J2Plugin extends JavaPlugin {
 			return true;
 		}
 
-		if(isPlayer && commandName.equals("tp") && (hasFlag(player, Flag.FUN))){
+		if(isPlayer && commandName.equals("tp") && (hasFlag(player, Flag.FUN))&& args.length>0){
 			List<Player> inquest = getServer().matchPlayer(args[0]);
 			if(inquest.size()==1){
 				Player inquestion=inquest.get(0);
@@ -581,9 +582,11 @@ public class J2Plugin extends JavaPlugin {
 			List<Player> inquest = getServer().matchPlayer(args[0]);
 			if(inquest.size()==1){
 				Player inquestion=inquest.get(0);
-				player.sendMessage("(MSG) <"+player.getName()+"> "+combineSplit(1, args, " "));
-				inquestion.sendMessage("(MSG) <"+player.getName()+"> "+combineSplit(1, args, " "));
-				log.info("Msg to "+inquestion.getName()+": <"+player.getName()+"> "+combineSplit(1, args, " "));
+				User userTo=users.getUser(inquestion);
+				User userFrom=users.getUser(playerName);
+				player.sendMessage("(MSG) <"+userTo.getColorName()+"> "+combineSplit(1, args, " "));
+				inquestion.sendMessage("(MSG) <"+userFrom.getColorName()+"> "+combineSplit(1, args, " "));
+				log.info("Msg to "+inquestion.getName()+": <"+playerName+"> "+combineSplit(1, args, " "));
 			}
 			else{
 				player.sendMessage(ChatColor.RED+"Could not find player");
@@ -623,6 +626,14 @@ public class J2Plugin extends JavaPlugin {
 					return false;
 				}
 			}
+			/* With this, if i want, I could limit item amounts
+			 * if(!hasFlag(player,Flag.TRUSTED)){
+				if(count>64)
+					count=64;
+				if(count<1){
+					count=1;
+				}
+			}*/
 			if (args.length == 3) {
 				playerFor = getServer().getPlayer(args[2]);
 				if (playerFor == null) {
@@ -641,7 +652,20 @@ public class J2Plugin extends JavaPlugin {
 			} else {
 				playerFor.getInventory().addItem(new ItemStack(material, count));
 			}
+			if(!hasFlag(player,Flag.ADMIN)&& material.equals(Material.IRON_DOOR)||material.equals(Material.WOOD_DOOR)){
+				player.sendMessage(ChatColor.RED+"Can't give that to you right now, sorry.");
+				return false;
+			}
 			player.sendMessage("Given " + playerFor.getDisplayName() + " " + count + " " + material.toString());
+			log.info("Giving "+playerName+" "+count+" "+material.toString());
+			if((material.equals(Material.GOLD_PICKAXE)
+					||material.equals(Material.GOLD_AXE)
+					||material.equals(Material.FURNACE)
+					||material.equals(Material.BURNING_FURNACE)
+					)
+					&&(count>10||count<1)){
+				irc.ircAdminMsg("Detecting summon of "+count+" "+material.toString()+" by "+playerName);
+			}
 			return true;
 		}
 
@@ -1176,7 +1200,8 @@ public class J2Plugin extends JavaPlugin {
 	public ArrayList<String> protectedUsers;
 	public String[] rules, blacklist, intro, motd, help;
 
-	public String ircName,ircHost,ircChannel,ircUserColor,ircOnJoin,gsAuth,gsPass,ircAdminChannel;
+	public String ircName,ircHost,ircChannel,ircOnJoin,gsAuth,gsPass,ircAdminChannel;
+	public ChatColor ircUserColor;
 	public boolean ircMsg,ircEcho,ircDebug;
 	public int ircCharLim,ircPort;
 	public String[] ircSeparator;

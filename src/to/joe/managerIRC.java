@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -55,8 +56,12 @@ public class managerIRC {
 	}
 
 	public void adminChannel(){
-		if(bot.getChannels().length==1){
-			bot.joinChannel(j2.ircAdminChannel);
+		if(!(new ArrayList<String>(Arrays.asList((bot.getChannels()))).contains(j2.ircAdminChannel))){
+			if(j2.gsAuth!=""){
+				bot.sendMessage("authserv@services.gamesurge.net", "auth "+j2.gsAuth+" "+j2.gsPass);
+				bot.sendMessage("ChanServ", "inviteme "+j2.ircAdminChannel);
+				bot.joinChannel(j2.ircAdminChannel);
+			}
 		}
 	}
 
@@ -89,6 +94,8 @@ public class managerIRC {
 		if(!j2.ircEnable)
 			return false;
 		int lvl=0;
+		String[] args=new String[command.length-1];
+		System.arraycopy(command, 1, args, 0, command.length -1);
 		String adminName="";
 		synchronized(adminsLock){
 			for(ircAdmin admin:admins){
@@ -113,7 +120,7 @@ public class managerIRC {
 			done=true;
 		}
 		if(com.equalsIgnoreCase("ban")&&command.length>2){
-			j2.kickbans.callBan(adminName, command, new Location(j2.getServer().getWorlds().get(0), 0,0,0,0,0));
+			j2.kickbans.callBan(adminName, args, new Location(j2.getServer().getWorlds().get(0), 0,0,0,0,0));
 			done=true;
 		}
 		if(com.equalsIgnoreCase("g")&&command.length>1){
@@ -125,7 +132,7 @@ public class managerIRC {
 			done=true;
 		}
 		if(com.equalsIgnoreCase("addban")&&command.length>2){
-			j2.kickbans.callAddBan(adminName, command, new Location(j2.getServer().getWorlds().get(0), 0,0,0,0,0));
+			j2.kickbans.callAddBan(adminName, args, new Location(j2.getServer().getWorlds().get(0), 0,0,0,0,0));
 			done=true;
 		}
 		if(com.equalsIgnoreCase("unban")&&command.length>1){
@@ -224,6 +231,9 @@ public class managerIRC {
 			prepIRC();
 			restart=false;
 			j2.ircEnable=true;
+		}
+		else{
+			this.adminChannel();
 		}
 	}
 

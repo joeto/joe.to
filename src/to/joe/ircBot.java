@@ -6,13 +6,14 @@ package to.joe;
  * 
  */
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.jibble.pircbot.*;
 
 public class ircBot extends PircBot {
 
 	private managerIRC ircman;
-	public ircBot(String mah_name,boolean msgenabled,int charlim,String usercolor,boolean echo,String[] sep,managerIRC j) {
+	public ircBot(String mah_name,boolean msgenabled,int charlim,ChatColor usercolor,boolean echo,String[] sep,managerIRC j) {
 		this.setName(mah_name);
 		this.setAutoNickChange(true);
 		ircMsg=msgenabled;
@@ -28,6 +29,12 @@ public class ircBot extends PircBot {
 			ircman.restart=true;
 			ircman.getJ2().ircEnable=false;
 			this.dispose();
+		}
+	}
+	public void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel)  
+	{
+		if(targetNick.equalsIgnoreCase(this.getNick())&&channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
+			this.joinChannel(channel);
 		}
 	}
 	public void onMessage(String channel, String sender,
@@ -100,7 +107,8 @@ public class ircBot extends PircBot {
 		if(message.charAt(0)=='.' && channel.equalsIgnoreCase(ircman.getJ2().ircChannel)){
 			String[] parts=message.split(" ");
 			if(ircman.ircCommand(hostname,sender, parts)){
-				sendMessage(sender,"Done :)");
+				//sendMessage(sender,"Done :)");
+				sendRawLine("NOTICE "+sender+" :Done");
 			}
 			else{
 				if (!ircMsg){
@@ -141,7 +149,7 @@ public class ircBot extends PircBot {
 	}
 	public boolean addMsg(String thenewmsg,String theuser)
 	{
-		String combined=ircSeparator[0]+"§"+ircUserColor+theuser+"§f"+ircSeparator[1]+thenewmsg;
+		String combined=ircSeparator[0]+ircUserColor+theuser+ChatColor.WHITE+ircSeparator[1]+thenewmsg;
 		if(combined.length() > ircCharLim)
 		{
 			return false;
@@ -161,7 +169,7 @@ public class ircBot extends PircBot {
 	}
 	public boolean addMeMsg(String thenewmsg,String theuser)
 	{
-		String combined="* §"+ircUserColor+theuser+"§f"+thenewmsg;
+		String combined="* "+ircUserColor+theuser+ChatColor.WHITE+thenewmsg;
 		if(combined.length() > ircCharLim)
 		{
 			return false;
@@ -181,10 +189,12 @@ public class ircBot extends PircBot {
 	}
 	protected void onPrivateMessage(String sender,String login,String hostname,String message){
 		if(ircman.ircCommand(hostname,sender,message.split(" "))){
-			sendMessage(sender,"Done :)");
+			//sendMessage(sender,"Done :)");
+			sendRawLine("NOTICE "+sender+" :Done");
 		}
 		else{
-			sendMessage(sender,"You don't have access to that command :(");
+			//sendMessage(sender,"You don't have access to that command :(");
+			sendRawLine("NOTICE "+sender+" :No access to that command");
 		}
 	}
 	
@@ -192,6 +202,6 @@ public class ircBot extends PircBot {
 	private boolean ircMsg;
 	private boolean ircEcho;
 	private int ircCharLim;
-	private String ircUserColor;
+	private ChatColor ircUserColor;
 	private String[] ircSeparator;
 }

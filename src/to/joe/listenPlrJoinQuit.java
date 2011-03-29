@@ -16,7 +16,7 @@ public class listenPlrJoinQuit extends PlayerListener {
 	@Override
 	public void onPlayerJoin(PlayerEvent event) {
 		Player player=event.getPlayer();
-		if(j2.ircEnable){
+		if(j2.ircEnable && j2.getServer().getOnlinePlayers().length<10){
 			j2.irc.ircMsg(player.getName()+" has logged in");
 			j2.irc.adminChannel();
 		}
@@ -43,7 +43,7 @@ public class listenPlrJoinQuit extends PlayerListener {
 		if(j2.users.getUser(player)!=null){
 			j2.users.delUser(player.getName());
 			j2.warps.dropPlayer(player.getName());
-			if(j2.ircEnable){
+			if(j2.ircEnable && j2.getServer().getOnlinePlayers().length<10){
 				j2.irc.ircMsg(event.getPlayer().getName()+" has left the server");
 			}
 		}
@@ -54,7 +54,10 @@ public class listenPlrJoinQuit extends PlayerListener {
 		if(j2.debug)j2.log.info("Incoming player: "+event.getPlayer().getName());
 		String reason=j2.mysql.checkBans(event.getPlayer().getName());
 		Player player=event.getPlayer();
-		boolean isAdmin=j2.hasFlag(player, Flag.ADMIN);
+		String name=player.getName();
+		User user=j2.mysql.getUser(name);
+		boolean isAdmin=(user.getUserFlags().contains(Flag.ADMIN)||j2.users.groupHasFlag(user.getGroup(), Flag.ADMIN));
+		boolean isDonor=(user.getUserFlags().contains(Flag.DONOR)||j2.users.groupHasFlag(user.getGroup(), Flag.DONOR));
 		if(reason!=null){
 			reason="Visit http://forums.joe.to for unban";
 			event.setKickMessage(reason);
@@ -65,20 +68,22 @@ public class listenPlrJoinQuit extends PlayerListener {
 			reason=j2.maintmessage;
 			event.setKickMessage(reason);
 			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, reason);
+			j2.users.delUser(name);
 			return;
 		}
 		if(j2.users.getUser(player)!=null){
-			//event.setKickMessage("Already logged in");
-			//event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Already logged in");
-			j2.kickbans.callKick(player.getName(), "CONSOLE", "Logged in on another Minecraft");
+			event.setKickMessage("Already logged in");
+			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Already logged in");
+			//j2.kickbans.callKick(player.getName(), "CONSOLE", "Logged in on another Minecraft");
 			return;
 		}
-		if(!isAdmin && !j2.hasFlag(player, Flag.DONOR) && j2.getServer().getOnlinePlayers().length >= j2.playerLimit){
+		if(!isAdmin && !isDonor && j2.getServer().getOnlinePlayers().length >= j2.playerLimit){
 			event.setKickMessage("Server Full");
 			event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server full");
+			j2.users.delUser(name);
 			return;
 		}
-		j2.users.addUser(event.getPlayer().getName());
+		j2.users.addUser(name);
 		event.allow();
 		if(j2.debug)j2.log.info("Player "+event.getPlayer().getName()+" allowed in");
 	}
