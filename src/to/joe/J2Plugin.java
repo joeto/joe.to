@@ -647,14 +647,14 @@ public class J2Plugin extends JavaPlugin {
 				player.sendMessage(ChatColor.RED + "Unknown item");
 				return false;
 			}
+			if(!hasFlag(player,Flag.ADMIN)&& material.equals(Material.IRON_DOOR)||material.equals(Material.WOOD_DOOR)){
+				player.sendMessage(ChatColor.RED+"Can't give that to you right now, sorry.");
+				return true;
+			}
 			if (bytedata != null) {
 				playerFor.getInventory().addItem(new ItemStack(material, count, (short) 0, bytedata));
 			} else {
 				playerFor.getInventory().addItem(new ItemStack(material, count));
-			}
-			if(!hasFlag(player,Flag.ADMIN)&& material.equals(Material.IRON_DOOR)||material.equals(Material.WOOD_DOOR)){
-				player.sendMessage(ChatColor.RED+"Can't give that to you right now, sorry.");
-				return false;
 			}
 			player.sendMessage("Given " + playerFor.getDisplayName() + " " + count + " " + material.toString());
 			log.info("Giving "+playerName+" "+count+" "+material.toString());

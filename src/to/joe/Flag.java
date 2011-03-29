@@ -11,6 +11,9 @@ public enum Flag {
 	NEW('n',"New"),
 	SRSTAFF('s', "Senior Staff"),
 	TRUSTED('t', "Trusted"),
+	CUSTOM1('x',"Custom1"),
+	CUSTOM2('y',"Custom2"),
+	CUSTOM3('z',"Custom3"),
 	//Numbers are reserved for internal programming that's convenient.
 	Z_HOME_DESIGNATION('0',"DO NOT USE"),
 	Z_SPAREWARP_DESIGNATION('1',"DO NOT USE");
