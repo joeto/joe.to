@@ -56,7 +56,7 @@ public class managerIRC {
 	}
 
 	public void adminChannel(){
-		if(!(new ArrayList<String>(Arrays.asList((bot.getChannels()))).contains(j2.ircAdminChannel))){
+		if(j2.ircEnable&&!(new ArrayList<String>(Arrays.asList((bot.getChannels()))).contains(j2.ircAdminChannel))){
 			if(j2.gsAuth!=""){
 				bot.sendMessage("authserv@services.gamesurge.net", "auth "+j2.gsAuth+" "+j2.gsPass);
 				bot.sendMessage("ChanServ", "inviteme "+j2.ircAdminChannel);

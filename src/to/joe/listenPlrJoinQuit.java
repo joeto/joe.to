@@ -14,7 +14,7 @@ public class listenPlrJoinQuit extends PlayerListener {
 	}
 	
 	@Override
-	public void onPlayerJoin(PlayerEvent event) {
+	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player=event.getPlayer();
 		if(j2.ircEnable && j2.getServer().getOnlinePlayers().length<10){
 			j2.irc.ircMsg(player.getName()+" has logged in");
@@ -38,7 +38,7 @@ public class listenPlrJoinQuit extends PlayerListener {
 	}
 	
 	@Override
-	public void onPlayerQuit(PlayerEvent event) {
+	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player=event.getPlayer();
 		if(j2.users.getUser(player)!=null){
 			j2.users.delUser(player.getName());

@@ -214,3 +214,8 @@ commands:
     description: WHABAM
     usage: |
             smackirc
+  madagascar:
+    description: hmmm
+    usage: |
+            madagascar
+

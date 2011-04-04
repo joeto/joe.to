@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  */
 public class J2Plugin extends JavaPlugin {
 	private final listenPlrChat plrlisChat = new listenPlrChat(this);
-	private final listenPlrItem plrlisItem = new listenPlrItem(this);
+	private final listenPlrInteract plrlisItem = new listenPlrInteract(this);
 	private final listenPlrJoinQuit plrlisJoinQuit = new listenPlrJoinQuit(this);
 	private final listenBlock blockListener = new listenBlock(this);
 	private final listenEntity entityListener = new listenEntity(this);
@@ -98,21 +98,21 @@ public class J2Plugin extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_CHAT, plrlisChat, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_ITEM, plrlisItem, Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT, plrlisItem, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_CANBUILD, blockListener, Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_DAMAGED, blockListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.BLOCK_DAMAGE, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_IGNITE, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_BURN, blockListener, Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_RIGHTCLICKED, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.SIGN_CHANGE, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
-		pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_KICK, plrlisJoinQuit, Priority.Normal, this);
+		pm.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);
 		if(debug)log.info("Events registered");
 		PluginDescriptionFile pdfFile = this.getDescription();
 		System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
@@ -177,14 +177,19 @@ public class J2Plugin extends JavaPlugin {
 			gsPass = j2properties.getString("gs-pass","");
 			ircLevel2 = j2properties.getString("irc-level2","").split(",");
 			safemode=j2properties.getBoolean("safemode",false);
+			ihatewolves=j2properties.getBoolean("ihatewolves", false);
 			maintenance = j2properties.getBoolean("maintenance",false);
 			maintmessage = j2properties.getString("maintmessage","Server offline for maintenance");
 			fun=j2properties.getBoolean("funmode",false);
 			randomcolor=j2properties.getBoolean("randcolor",false);
 			String superBlacklist = j2properties.getString("superblacklist", "0");				
 			String regBlacklist = j2properties.getString("regblacklist", "0");
+			String watchList = j2properties.getString("watchlist","0");
+			String summonList = j2properties.getString("summonlist","0");
 			superblacklist=new ArrayList<Integer>();
 			itemblacklist=new ArrayList<Integer>();
+			watchlist=new ArrayList<Integer>();
+			summonlist=new ArrayList<Integer>();
 			for(String s:superBlacklist.split(",")){
 				if(s!=null){
 					superblacklist.add(Integer.valueOf(s));
@@ -193,6 +198,16 @@ public class J2Plugin extends JavaPlugin {
 			for(String s:regBlacklist.split(",")){
 				if(s!=null){
 					itemblacklist.add(Integer.valueOf(s));
+				}
+			}
+			for(String s:watchList.split(",")){
+				if(s!=null){
+					watchlist.add(Integer.valueOf(s));
+				}
+			}
+			for(String s:summonList.split(",")){
+				if(s!=null){
+					summonlist.add(Integer.valueOf(s));
 				}
 			}
 		} catch (Exception e) {
@@ -310,7 +325,13 @@ public class J2Plugin extends JavaPlugin {
 	public boolean isOnRegularBlacklist(int id) {
 		return itemblacklist.contains(Integer.valueOf(id));
 	}
-
+	public boolean isOnWatchlist(int id) {
+		return watchlist.contains(Integer.valueOf(id));
+	}
+	public boolean isOnSummonlist(int id) {
+		return summonlist.contains(Integer.valueOf(id));
+	}
+	
 	public void travelLog(String name,int distance){
 
 	}
@@ -366,7 +387,7 @@ public class J2Plugin extends JavaPlugin {
 	}*/
 
 	public void tpToCoord(Player player, double x, double y, double z, float rotation, float pitch){
-		player.teleportTo(new Location(this.getServer().getWorlds().get(0), x, y, z, rotation, pitch));
+		player.teleport(new Location(this.getServer().getWorlds().get(0), x, y, z, rotation, pitch));
 	}
 
 	public String combineSplit(int startIndex, String[] string, String seperator) {
@@ -406,8 +427,14 @@ public class J2Plugin extends JavaPlugin {
 	}
 	
 	public void craftIRC_sendMessageToTag(String message, String tag){
+		if(debug){
+			log.info("J2: Got message, tag \""+tag+"\"");
+		}
 		if(tag.equalsIgnoreCase("nocheat")){
 			irc.ircAdminMsg(message);
+			if(debug){
+				log.info("J2.2: Got message, tag \""+tag+"\"");
+			}
 		}
 	}
 
@@ -525,7 +552,7 @@ public class J2Plugin extends JavaPlugin {
 					player.sendMessage(ChatColor.RED+"Can't teleport to yourself");
 				}
 				else {
-					player.teleportTo(inquestion.getLocation());
+					player.teleport(inquestion.getLocation());
 					player.sendMessage("OH GOD I'M FLYING AAAAAAAAH");
 					log.info("Teleport: " + player.getName() + " teleported to "+inquestion.getName());
 				}
@@ -546,7 +573,7 @@ public class J2Plugin extends JavaPlugin {
 					player.sendMessage(ChatColor.RED+"Can't teleport yourself to yourself. Derp.");
 				}
 				else {
-					inquestion.teleportTo(player.getLocation());
+					inquestion.teleport(player.getLocation());
 					inquestion.sendMessage("You've been teleported");
 					player.sendMessage("Grabbing "+inquestion.getName());
 					log.info("Teleport: " + player.getName() + " pulled "+inquestion.getName()+" to self");
@@ -562,13 +589,13 @@ public class J2Plugin extends JavaPlugin {
 		if(commandName.equals("spawn") && (!isPlayer ||hasFlag(player, Flag.FUN))){
 			if(isPlayer && (!hasFlag(player, Flag.ADMIN)|| args.length<1)){
 				player.sendMessage(ChatColor.RED+"WHEEEEEEEEEEEEEEE");
-				player.teleportTo(player.getWorld().getSpawnLocation());
+				player.teleport(player.getWorld().getSpawnLocation());
 			}
 			else if (args.length ==1){
 				List<Player> inquest = getServer().matchPlayer(args[0]);
 				if(inquest.size()==1){
 					Player inquestion=inquest.get(0);
-					inquestion.teleportTo(inquestion.getWorld().getSpawnLocation());
+					inquestion.teleport(inquestion.getWorld().getSpawnLocation());
 					inquestion.sendMessage(ChatColor.RED+"OH GOD I'M BEING PULLED TO SPAWN OH GOD");
 					msg(player,"Pulled "+inquestion.getName()+" to spawn");
 				}
@@ -653,8 +680,8 @@ public class J2Plugin extends JavaPlugin {
 				player.sendMessage(ChatColor.RED + "Unknown item");
 				return false;
 			}
-			if(!hasFlag(player,Flag.ADMIN)&& material.equals(Material.IRON_DOOR)||material.equals(Material.WOOD_DOOR)){
-				player.sendMessage(ChatColor.RED+"Can't give that to you right now, sorry.");
+			if(!hasFlag(player,Flag.ADMIN)&& isOnSummonlist(material.getId())){
+				player.sendMessage(ChatColor.RED+"Can't give that to you right now");
 				return true;
 			}
 			if (bytedata != null) {
@@ -664,12 +691,7 @@ public class J2Plugin extends JavaPlugin {
 			}
 			player.sendMessage("Given " + playerFor.getDisplayName() + " " + count + " " + material.toString());
 			log.info("Giving "+playerName+" "+count+" "+material.toString());
-			if((material.equals(Material.GOLD_PICKAXE)
-					||material.equals(Material.GOLD_AXE)
-					||material.equals(Material.FURNACE)
-					||material.equals(Material.BURNING_FURNACE)
-					)
-					&&(count>10||count<1)){
+			if((isOnWatchlist(material.getId()))&&(count>10||count<1)){
 				irc.ircAdminMsg("Detecting summon of "+count+" "+material.toString()+" by "+playerName);
 			}
 			return true;
@@ -976,7 +998,7 @@ public class J2Plugin extends JavaPlugin {
 				Warp warp=warps.getPublicWarp(args[0]);
 				if(warp!=null && (hasFlag(player, warp.getFlag())||warp.getFlag().equals(Flag.Z_SPAREWARP_DESIGNATION))){
 					player.sendMessage(ChatColor.RED+"Whoosh!");
-					player.teleportTo(warp.getLocation());
+					player.teleport(warp.getLocation());
 				}
 				else {
 					player.sendMessage(ChatColor.RED+"Warp does not exist. For a list, say /warp");
@@ -1003,7 +1025,7 @@ public class J2Plugin extends JavaPlugin {
 				Warp home=warps.getUserWarp(player.getName(),args[0]);
 				if(home!=null){
 					player.sendMessage(ChatColor.RED+"Whoosh!");
-					player.teleportTo(home.getLocation());
+					player.teleport(home.getLocation());
 				}
 				else {
 					player.sendMessage(ChatColor.RED+"That home does not exist. For a list, say /home");
@@ -1101,7 +1123,7 @@ public class J2Plugin extends JavaPlugin {
 				Warp warptarget=warps.getUserWarp(target, args[1]);
 				if(warptarget!=null){
 					player.sendMessage(ChatColor.RED+"Whooooosh!  *crash*");
-					player.teleportTo(warptarget.getLocation());
+					player.teleport(warptarget.getLocation());
 				}
 				else {
 					player.sendMessage(ChatColor.RED+"No such home");
@@ -1172,7 +1194,7 @@ public class J2Plugin extends JavaPlugin {
 				player.sendMessage(ChatColor.RED+"You did not specify an X, Y, and Z");
 			}
 			else {
-				player.teleportTo(new Location(player.getWorld(),Double.valueOf(args[0]),Double.valueOf(args[1]),Double.valueOf(args[2]),0,0));
+				player.teleport(new Location(player.getWorld(),Double.valueOf(args[0]),Double.valueOf(args[1]),Double.valueOf(args[2]),0,0));
 				player.sendMessage(ChatColor.RED+"WHEEEEE I HOPE THIS ISN'T UNDERGROUND");
 			}
 
@@ -1196,7 +1218,13 @@ public class J2Plugin extends JavaPlugin {
 
 			return true;
 		}
-
+		if(commandName.equals("madagascar")&&isPlayer&&hasFlag(player,Flag.ADMIN)){
+			log.info(playerName+" wants to SHUT. DOWN. EVERYTHING.");
+			ircEnable=false;
+			irc.getBot().quitServer("SHUT. DOWN. EVERYTHING.");
+			kickbans.kickAll("We'll be back after these brief messages");
+			this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
+		}
 		return false;
 	}
 
@@ -1220,11 +1248,12 @@ public class J2Plugin extends JavaPlugin {
 	private int currentTip = 0;
 	public String[] ircLevel2;
 	public boolean ircEnable;
-	private ArrayList<Integer> itemblacklist,superblacklist;
+	private ArrayList<Integer> itemblacklist,superblacklist,watchlist,summonlist;
 	//private int natureXmin,natureXmax,natureZmin,natureZmax;
 	public boolean maintenance=false;
 	public String maintmessage;
 	public boolean safemode;
+	public boolean ihatewolves;
 	public PropFile tpProtect=new PropFile("tpProtect.list");
 	public Player OneByOne = null;
 	public boolean fun,randomcolor;

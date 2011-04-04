@@ -130,24 +130,7 @@ public class listenBlock extends BlockListener {
     }
     
     
-    public void onBlockRightClick(BlockRightClickEvent event)
-	{
-    	Player player = event.getPlayer();
-    	
-		/*if(event.getItemInHand().getTypeId() == 284 && j2.hasFlag(player, Flag.ADMIN))
-		{
-			if(j2.debug)j2.log.info(player.getName()+ " used gold shovel");
-			this.j2.blogger.showBlockHistory(event.getPlayer(), event.getBlock());
-		}*/
-		if(event.getItemInHand().getTypeId() == 280 && j2.hasFlag(player, Flag.ADMIN)){
-			
-			if(j2.debug)j2.log.info(player.getName()+" used a stick");
-			managerBlockLog.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ(),(System.currentTimeMillis()/1000L),null));
-			event.getBlock().setTypeId(0);
-		}
-		//System.out.println("Item type id ="+event.getItemInHand().getTypeId() );
-		
-	}
+    
     
     /*public boolean onBlockBreak(Player player, Block block) {
     	/if(j2.mc2){
