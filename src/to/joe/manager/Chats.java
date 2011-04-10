@@ -59,13 +59,13 @@ public class Chats {
 		}
 	}
 	public void aMsg(String name,String message){
-		String msg="<§d"+name+"§f> "+message;
+		String msg="<"+ChatColor.LIGHT_PURPLE+name+ChatColor.WHITE+"> "+message;
 		msgByFlag(Flag.ADMIN,msg);
 		j2.log.log(Level.INFO, "adminsChat: <"+name+"> "+message);
 	}
 	public void gMsg(String name,String message){
-		String amessage="<"+name+"> "+message;
-		String pmessage="<ADMIN> "+message;
+		String amessage="<"+name+"> "+ChatColor.LIGHT_PURPLE+message;
+		String pmessage="<ADMIN> "+ChatColor.LIGHT_PURPLE+message;
 		for (Player p : j2.getServer().getOnlinePlayers()) {
 			if (p != null && j2.hasFlag(p, Flag.ADMIN)) {
 				p.sendMessage(amessage);

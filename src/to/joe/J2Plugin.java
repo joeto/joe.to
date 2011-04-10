@@ -35,6 +35,7 @@ import to.joe.listener.PlayerListenChat;
 import to.joe.listener.PlayerListenInteract;
 import to.joe.listener.PlayerListenJoinQuit;
 import to.joe.manager.Chats;
+import to.joe.manager.IPTracker;
 import to.joe.manager.IRC;
 import to.joe.manager.KicksBans;
 import to.joe.manager.MySQL;
@@ -80,7 +81,8 @@ public class J2Plugin extends JavaPlugin {
 	public final Users users = new Users(this);
 	public final Reports reports = new Reports(this);
 	public final Warps warps = new Warps(this);
-	public final WebPage update = new WebPage(this);
+	public final WebPage webpage = new WebPage(this);
+	public final IPTracker ip=new IPTracker(this);
 	//public managerBlockLog blogger;
 	public MySQL mysql;
 
@@ -137,7 +139,7 @@ public class J2Plugin extends JavaPlugin {
 		if(debug)log.info("Events registered");
 		PluginDescriptionFile pdfFile = this.getDescription();
 		System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
-		update.go();
+		webpage.go(servernumber);
 	}
 
 	public boolean isDebugging(final Player player) {
@@ -168,8 +170,8 @@ public class J2Plugin extends JavaPlugin {
 			String mysql_password = j2properties.getString("pass", "root");
 			String mysql_db = j2properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
 			//chatTable = properties.getString("chat","chat");
-			int mysql_server = j2properties.getInt("server-number", 0);
-			mysql = new MySQL(mysql_username,mysql_password,mysql_db, mysql_server, this);
+			servernumber = j2properties.getInt("server-number", 0);
+			mysql = new MySQL(mysql_username,mysql_password,mysql_db, servernumber, this);
 			mysql.loadMySQLData();
 			//mysql end
 
@@ -1281,5 +1283,6 @@ public class J2Plugin extends JavaPlugin {
 	public boolean fun,randomcolor;
 	public Random random = new Random();
 	public int playerLimit;
+	public int servernumber;
 	ArrayList<String> srstaffList,adminsList,trustedList;
 }

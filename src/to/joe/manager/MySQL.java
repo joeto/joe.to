@@ -1,6 +1,6 @@
 package to.joe.manager;
 
-import java.net.InetSocketAddress;
+//import java.net.InetSocketAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,6 +26,7 @@ public class MySQL {
 	private String user,pass,db;
 	private int serverNumber;
 	private J2Plugin j2;
+	private String aliasdb="aliastest2";
 	//private SimpleDateFormat formatter = new SimpleDateFormat("MM-dd hh:mm");
 	public MySQL(String User,String Pass, String DB, int ServerNumber, J2Plugin J2){
 		user=User;
@@ -118,7 +119,6 @@ public class MySQL {
 			}
 		} catch (SQLException ex) {
 			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
-			j2.maintenance=true;
 		} finally {
 			try {
 				if (ps != null) {
@@ -519,7 +519,6 @@ public class MySQL {
 
 		} catch (SQLException ex) {
 			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
-			j2.maintenance=true;
 		} finally {
 			try {
 				if (ps != null) {
@@ -599,32 +598,31 @@ public class MySQL {
 		}
 	}
 
-	public void userIP(String name,InetSocketAddress address){
+	public void userIP(String name,String ip){
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			String ip=address.getAddress().getHostAddress();
-			String state="SELECT * FROM alias WHERE Name=\""+ name +"\" and IP=\""+ip+"\"";
+			//String ip=address.getAddress().getHostAddress();
+			String state="SELECT * FROM "+aliasdb+" WHERE Name=\""+ name +"\" and IP=\""+ip+"\"";
 			if(j2.debug)j2.log.info("Query: "+state);
 			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			if(rs.next()){
 				int count = rs.getInt("Logins");
 				count++;
-				ps = conn.prepareStatement("UPDATE alias set Logins="+count+",Time=now() where Name=\""+ name +"\" and IP=\""+ip+"\"");
+				ps = conn.prepareStatement("UPDATE "+aliasdb+" set Logins="+count+",Time=now() where Name=\""+ name +"\" and IP=\""+ip+"\"");
 				ps.executeUpdate();
 			}
 			else{
-				String state2="INSERT INTO aliastest2 (`Name`,`IP`,`Time`,`Logins`) values (\""+name+"\",\""+ip+"\",now(),1)";
+				String state2="INSERT INTO "+aliasdb+" (`Name`,`IP`,`Time`,`Logins`) values (\""+name+"\",\""+ip+"\",now(),1)";
 				if(j2.debug)j2.log.info("Query: "+state2);
 				ps = conn.prepareStatement(state2);
 				ps.executeUpdate();
 			}
 		} catch (SQLException ex) {
 			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
-			j2.maintenance=true;
 		} finally {
 			try {
 				if (ps != null) {
@@ -640,6 +638,71 @@ public class MySQL {
 			}
 		}
 	}
-
+	
+	public ArrayList<String> IPGetIPs(String name){
+		ArrayList<String> IPs=new ArrayList<String>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			String state="SELECT IP FROM "+aliasdb+" WHERE Name=\""+ name +"\"";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				IPs.add(rs.getString("IP"));
+			}
+		} catch (SQLException ex) {
+			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+		return IPs;
+	}
+	
+	public ArrayList<String> IPGetNames(String IP){
+		ArrayList<String> names=new ArrayList<String>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			String state="SELECT Name FROM "+aliasdb+" WHERE IP=\""+ IP +"\"";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				names.add(rs.getString("Name"));
+			}
+		} catch (SQLException ex) {
+			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+		return names;
+	}
 
 }

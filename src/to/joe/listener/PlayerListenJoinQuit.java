@@ -73,8 +73,9 @@ public class PlayerListenJoinQuit extends PlayerListener {
 		String name=player.getName();
 		//j2.mysql.userIP(name,player..getAddress());
 		if(event.getResult().equals(Result.ALLOWED)){
-			j2.mysql.userIP(name,player.getAddress());
+			j2.ip.incoming(name,event.getKickMessage());
 		}
+		if(j2.debug)System.out.println("IP: "+event.getKickMessage());
 		User user=j2.mysql.getUser(name);
 		boolean isAdmin=(user.getUserFlags().contains(Flag.ADMIN)||j2.users.groupHasFlag(user.getGroup(), Flag.ADMIN));
 		boolean isDonor=(user.getUserFlags().contains(Flag.DONOR)||j2.users.groupHasFlag(user.getGroup(), Flag.DONOR));
