@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2Plugin
-version: 0.3.0
+version: 0.4
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -190,14 +190,14 @@ commands:
     description: Drop a mob here of defined type
     usage: |
             /mobhere <mob>
-  over9000:
+  kibbles:
     description: What's his power level?
     usage: |
-            /over9000
-  under9000:
+            /kibbles
+  bits:
     description: Fizzle
     usage: |
-            /under9000
+            /bits
   coo:
     description: Whoosh!
     usage: |

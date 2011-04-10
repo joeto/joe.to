@@ -28,6 +28,26 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+
+import to.joe.listener.BlockListen;
+import to.joe.listener.EntityListen;
+import to.joe.listener.PlayerListenChat;
+import to.joe.listener.PlayerListenInteract;
+import to.joe.listener.PlayerListenJoinQuit;
+import to.joe.manager.Chats;
+import to.joe.manager.IRC;
+import to.joe.manager.KicksBans;
+import to.joe.manager.MySQL;
+import to.joe.manager.Reports;
+import to.joe.manager.WebPage;
+import to.joe.manager.Users;
+import to.joe.manager.Warps;
+import to.joe.util.Flag;
+import to.joe.util.PropFile;
+import to.joe.util.Report;
+import to.joe.util.User;
+import to.joe.util.Warp;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -48,20 +68,21 @@ import java.util.logging.Logger;
  * @author mbaxter
  */
 public class J2Plugin extends JavaPlugin {
-	private final listenPlrChat plrlisChat = new listenPlrChat(this);
-	private final listenPlrInteract plrlisItem = new listenPlrInteract(this);
-	private final listenPlrJoinQuit plrlisJoinQuit = new listenPlrJoinQuit(this);
-	private final listenBlock blockListener = new listenBlock(this);
-	private final listenEntity entityListener = new listenEntity(this);
+	private final PlayerListenChat plrlisChat = new PlayerListenChat(this);
+	private final PlayerListenInteract plrlisItem = new PlayerListenInteract(this);
+	private final PlayerListenJoinQuit plrlisJoinQuit = new PlayerListenJoinQuit(this);
+	private final BlockListen blockListener = new BlockListen(this);
+	private final EntityListen entityListener = new EntityListen(this);
 	private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
-	public final managerChat chat = new managerChat(this);
-	public final managerIRC irc = new managerIRC(this);
-	public final managerKickBan kickbans = new managerKickBan(this);
-	public final managerUsers users = new managerUsers(this);
-	public final managerReport reports = new managerReport(this);
-	public final managerWarps warps = new managerWarps(this);
+	public final Chats chat = new Chats(this);
+	public final IRC irc = new IRC(this);
+	public final KicksBans kickbans = new KicksBans(this);
+	public final Users users = new Users(this);
+	public final Reports reports = new Reports(this);
+	public final Warps warps = new Warps(this);
+	public final WebPage update = new WebPage(this);
 	//public managerBlockLog blogger;
-	public managerMySQL mysql;
+	public MySQL mysql;
 
 
 	public void onDisable() {
@@ -116,6 +137,7 @@ public class J2Plugin extends JavaPlugin {
 		if(debug)log.info("Events registered");
 		PluginDescriptionFile pdfFile = this.getDescription();
 		System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
+		update.go();
 	}
 
 	public boolean isDebugging(final Player player) {
@@ -147,7 +169,7 @@ public class J2Plugin extends JavaPlugin {
 			String mysql_db = j2properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
 			//chatTable = properties.getString("chat","chat");
 			int mysql_server = j2properties.getInt("server-number", 0);
-			mysql = new managerMySQL(mysql_username,mysql_password,mysql_db, mysql_server, this);
+			mysql = new MySQL(mysql_username,mysql_password,mysql_db, mysql_server, this);
 			mysql.loadMySQLData();
 			//mysql end
 
@@ -1166,7 +1188,7 @@ public class J2Plugin extends JavaPlugin {
 
 			return true;
 		}
-		if(isPlayer && commandName.equals("over9000")
+		if(isPlayer && commandName.equals("kibbles")
 				&&hasFlag(player, Flag.ADMIN)){
 			String name=player.getName();
 			chat.msgAll(ChatColor.RED+"!!! "+ChatColor.DARK_RED+name+" is ON FIRE !!!");
@@ -1177,7 +1199,7 @@ public class J2Plugin extends JavaPlugin {
 
 			return true;
 		}
-		if(isPlayer && commandName.equals("under9000")
+		if(isPlayer && commandName.equals("bits")
 				&&hasFlag(player, Flag.ADMIN)){
 			String name=player.getName();
 			player.sendMessage(ChatColor.RED+"You fizzle out");
@@ -1248,7 +1270,7 @@ public class J2Plugin extends JavaPlugin {
 	private int currentTip = 0;
 	public String[] ircLevel2;
 	public boolean ircEnable;
-	private ArrayList<Integer> itemblacklist,superblacklist,watchlist,summonlist;
+	public ArrayList<Integer> itemblacklist,superblacklist,watchlist,summonlist;
 	//private int natureXmin,natureXmax,natureZmin,natureZmax;
 	public boolean maintenance=false;
 	public String maintmessage;
@@ -1257,7 +1279,7 @@ public class J2Plugin extends JavaPlugin {
 	public PropFile tpProtect=new PropFile("tpProtect.list");
 	public Player OneByOne = null;
 	public boolean fun,randomcolor;
-	Random random = new Random();
-	int playerLimit;
+	public Random random = new Random();
+	public int playerLimit;
 	ArrayList<String> srstaffList,adminsList,trustedList;
 }

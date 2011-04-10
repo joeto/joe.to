@@ -1,10 +1,25 @@
--- Generation Time: Mar 14, 2011 at 12:30 PM
+-- Generation Time: Apr 09, 2011 at 07:20 PM
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
 -- Database: `bukkit`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `alias`
+--
+
+CREATE TABLE IF NOT EXISTS `alias` (
+  `Name` varchar(64) NOT NULL,
+  `IP` varchar(64) NOT NULL,
+  `Time` int(11) NOT NULL,
+  `Logins` int(11) NOT NULL,
+  KEY `Name` (`Name`),
+  KEY `IP` (`IP`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -22,12 +37,13 @@ CREATE TABLE IF NOT EXISTS `blocks_0` (
   `y` int(11) NOT NULL DEFAULT '0',
   `z` int(11) NOT NULL DEFAULT '0',
   `extra` varchar(70) DEFAULT NULL,
+  `rolled` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `coords` (`y`,`x`,`z`),
   KEY `type` (`type`),
   KEY `replaced` (`replaced`),
   KEY `player` (`player`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -50,10 +66,9 @@ CREATE TABLE IF NOT EXISTS `j2bans` (
   `yaw` float NOT NULL,
   `world` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
-
 
 --
 -- Table structure for table `j2groups`
@@ -65,14 +80,6 @@ CREATE TABLE IF NOT EXISTS `j2groups` (
   `flags` varchar(26) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `j2groups`
---
-
-INSERT INTO `j2groups` (`server`, `name`, `flags`) VALUES
-(0, 'regular', 'fm'),
-(0, 'srstaff', 'asftm');
-
 -- --------------------------------------------------------
 
 --
@@ -81,12 +88,12 @@ INSERT INTO `j2groups` (`server`, `name`, `flags`) VALUES
 
 CREATE TABLE IF NOT EXISTS `j2users` (
   `id` int(16) NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `group` varchar(16) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `name` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `group` varchar(16) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `color` tinyint(4) NOT NULL,
-  `flags` varchar(26) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `flags` varchar(26) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -96,10 +103,10 @@ CREATE TABLE IF NOT EXISTS `j2users` (
 
 CREATE TABLE IF NOT EXISTS `reports` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
-  `user` varchar(32) COLLATE utf8_bin NOT NULL,
+  `user` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `message` text COLLATE utf8_bin NOT NULL,
   `closed` tinyint(1) NOT NULL DEFAULT '0',
-  `admin` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT '""',
+  `admin` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '""',
   `reason` text COLLATE utf8_bin,
   `world` varchar(32) COLLATE utf8_bin NOT NULL,
   `x` double NOT NULL,
@@ -110,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `server` tinyint(1) NOT NULL,
   `time` int(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -119,6 +126,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
 --
 
 CREATE TABLE IF NOT EXISTS `warps` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(16) NOT NULL,
   `player` varchar(32) NOT NULL,
   `server` tinyint(1) NOT NULL,
@@ -129,6 +137,7 @@ CREATE TABLE IF NOT EXISTS `warps` (
   `z` double NOT NULL,
   `pitch` float NOT NULL,
   `yaw` float NOT NULL,
+  PRIMARY KEY (`id`),
   KEY `server` (`server`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 

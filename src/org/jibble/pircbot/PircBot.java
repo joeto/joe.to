@@ -53,7 +53,7 @@ import java.util.*;
  *          <a href="http://www.jibble.org/">http://www.jibble.org/</a>
  * @version    1.5.0 (Build time: Mon Dec 14 20:07:17 2009)
  */
-public abstract class PircBot implements ReplyConstants {
+public abstract class PircBot implements PircReplyConstants {
 
 
     /**
@@ -165,13 +165,13 @@ public abstract class PircBot implements ReplyConstants {
         
         // Attempt to join the server.
         if (password != null && !password.equals("")) {
-            OutputThread.sendRawLine(this, bwriter, "PASS " + password);
+            PircOutputThread.sendRawLine(this, bwriter, "PASS " + password);
         }
         String nick = this.getName();
-        OutputThread.sendRawLine(this, bwriter, "NICK " + nick);
-        OutputThread.sendRawLine(this, bwriter, "USER " + this.getLogin() + " 8 * :" + this.getVersion());
+        PircOutputThread.sendRawLine(this, bwriter, "NICK " + nick);
+        PircOutputThread.sendRawLine(this, bwriter, "USER " + this.getLogin() + " 8 * :" + this.getVersion());
 
-        _inputThread = new InputThread(this, socket, breader, bwriter);
+        _inputThread = new PircInputThread(this, socket, breader, bwriter);
         
         // Read stuff back from the server to see if we connected.
         String line = null;
@@ -193,7 +193,7 @@ public abstract class PircBot implements ReplyConstants {
                     if (_autoNickChange) {
                         tries++;
                         nick = getName() + tries;
-                        OutputThread.sendRawLine(this, bwriter, "NICK " + nick);
+                        PircOutputThread.sendRawLine(this, bwriter, "NICK " + nick);
                     }
                     else {
                         socket.close();
@@ -225,7 +225,7 @@ public abstract class PircBot implements ReplyConstants {
         
         // Now start the outputThread that will be used to send all messages.
         if (_outputThread == null) {
-            _outputThread = new OutputThread(this, _outQueue);
+            _outputThread = new PircOutputThread(this, _outQueue);
             _outputThread.start();
         }
         
@@ -312,7 +312,7 @@ public abstract class PircBot implements ReplyConstants {
      * @since PircBot 0.9c
      */
     public final void startIdentServer() {
-        new IdentServer(this, getLogin());
+        new PircIdentServer(this, getLogin());
     }
 
     
@@ -427,7 +427,7 @@ public abstract class PircBot implements ReplyConstants {
      * @param target The name of the channel or user nick to send to.
      * @param message The message to send.
      * 
-     * @see Colors
+     * @see PircColors
      */
     public final void sendMessage(String target, String message) {
         _outQueue.add("PRIVMSG " + target + " :" + message);
@@ -440,7 +440,7 @@ public abstract class PircBot implements ReplyConstants {
      * @param target The name of the channel or user nick to send to.
      * @param action The action to send.
      * 
-     * @see Colors
+     * @see PircColors
      */
     public final void sendAction(String target, String action) {
         sendCTCPCommand(target, "ACTION " + action);
@@ -733,11 +733,11 @@ public abstract class PircBot implements ReplyConstants {
      * 
      * @return The DccFileTransfer that can be used to monitor this transfer.
      * 
-     * @see DccFileTransfer
+     * @see PircDccFileTransfer
      * 
      */
-    public final DccFileTransfer dccSendFile(File file, String nick, int timeout) {
-        DccFileTransfer transfer = new DccFileTransfer(this, _dccManager, file, nick, timeout);
+    public final PircDccFileTransfer dccSendFile(File file, String nick, int timeout) {
+        PircDccFileTransfer transfer = new PircDccFileTransfer(this, _dccManager, file, nick, timeout);
         transfer.doSend(true);
         return transfer;
     }
@@ -747,7 +747,7 @@ public abstract class PircBot implements ReplyConstants {
      * Receives a file that is being sent to us by a DCC SEND request.
      * Please use the onIncomingFileTransfer method to receive files.
      * 
-     * @deprecated As of PircBot 1.2.0, use {@link #onIncomingFileTransfer(DccFileTransfer)}
+     * @deprecated As of PircBot 1.2.0, use {@link #onIncomingFileTransfer(PircDccFileTransfer)}
      */
     protected final void dccReceiveFile(File file, long address, int port, int size) {
         throw new RuntimeException("dccReceiveFile is deprecated, please use sendFile");
@@ -776,10 +776,10 @@ public abstract class PircBot implements ReplyConstants {
      * @return a DccChat object that can be used to send and recieve lines of
      *         text.  Returns <b>null</b> if the connection could not be made.
      * 
-     * @see DccChat
+     * @see PircDccChat
      */
-    public final DccChat dccSendChatRequest(String nick, int timeout) {
-        DccChat chat = null;
+    public final PircDccChat dccSendChatRequest(String nick, int timeout) {
+        PircDccChat chat = null;
         try {
             ServerSocket ss = null;
             
@@ -823,7 +823,7 @@ public abstract class PircBot implements ReplyConstants {
             // Close the server socket now that we've finished with it.
             ss.close();
             
-            chat = new DccChat(this, nick, socket);
+            chat = new PircDccChat(this, nick, socket);
         }
         catch (Exception e) {
             // Do nothing.
@@ -836,9 +836,9 @@ public abstract class PircBot implements ReplyConstants {
      * Attempts to accept a DCC CHAT request by a client.
      * Please use the onIncomingChatRequest method to receive files.
      * 
-     * @deprecated As of PircBot 1.2.0, use {@link #onIncomingChatRequest(DccChat)}
+     * @deprecated As of PircBot 1.2.0, use {@link #onIncomingChatRequest(PircDccChat)}
      */
-    protected final DccChat dccAcceptChatRequest(String sourceNick, long address, int port) {
+    protected final PircDccChat dccAcceptChatRequest(String sourceNick, long address, int port) {
         throw new RuntimeException("dccAcceptChatRequest is deprecated, please use onIncomingChatRequest");
     }
 
@@ -1001,7 +1001,7 @@ public abstract class PircBot implements ReplyConstants {
         else if (command.equals("JOIN")) {
             // Someone is joining a channel.
             String channel = target;
-            this.addUser(channel, new User("", sourceNick));
+            this.addUser(channel, new PircUser("", sourceNick));
             this.onJoin(channel, sourceNick, sourceLogin, sourceHostname);
         }
         else if (command.equals("PART")) {
@@ -1188,14 +1188,14 @@ public abstract class PircBot implements ReplyConstants {
                     prefix = ".";
                 }
                 nick = nick.substring(prefix.length());
-                this.addUser(channel, new User(prefix, nick));
+                this.addUser(channel, new PircUser(prefix, nick));
             }
         }
         else if (code == RPL_ENDOFNAMES) {
             // This is the end of a NAMES list, so we know that we've got
             // the full list of users in the channel that we just joined. 
             String channel = response.substring(response.indexOf(' ') + 1, response.indexOf(" :"));
-            User[] users = this.getUsers(channel);
+            PircUser[] users = this.getUsers(channel);
             this.onUserList(channel, users);
         }
         
@@ -1231,7 +1231,7 @@ public abstract class PircBot implements ReplyConstants {
      * @param code The three-digit numerical code for the response.
      * @param response The full response from the IRC server.
      * 
-     * @see ReplyConstants
+     * @see PircReplyConstants
      */
     protected void onServerResponse(int code, String response) {}
     
@@ -1258,9 +1258,9 @@ public abstract class PircBot implements ReplyConstants {
      * @param channel The name of the channel.
      * @param users An array of User objects belonging to this channel.
      * 
-     * @see User
+     * @see PircUser
      */
-    protected void onUserList(String channel, User[] users) {}
+    protected void onUserList(String channel, PircUser[] users) {}
     
     
     /**
@@ -2106,7 +2106,7 @@ public abstract class PircBot implements ReplyConstants {
      * Please use the onIncomingFileTransfer method to receive files, as it
      * has better functionality and supports resuming.
      * 
-     * @deprecated As of PircBot 1.2.0, use {@link #onIncomingFileTransfer(DccFileTransfer)}
+     * @deprecated As of PircBot 1.2.0, use {@link #onIncomingFileTransfer(PircDccFileTransfer)}
      */
     protected void onDccSendRequest(String sourceNick, String sourceLogin, String sourceHostname, String filename, long address, int port, int size) {}
     
@@ -2116,7 +2116,7 @@ public abstract class PircBot implements ReplyConstants {
      * Please use the onIncomingChatRequest method to accept chats, as it
      * has better functionality.
      * 
-     * @deprecated As of PircBot 1.2.0, use {@link #onIncomingChatRequest(DccChat)}
+     * @deprecated As of PircBot 1.2.0, use {@link #onIncomingChatRequest(PircDccChat)}
      */
     protected void onDccChatRequest(String sourceNick, String sourceLogin, String sourceHostname, long address, int port) {}
     
@@ -2161,10 +2161,10 @@ public abstract class PircBot implements ReplyConstants {
      * 
      * @param transfer The DcccFileTransfer that you may accept.
      * 
-     * @see DccFileTransfer
+     * @see PircDccFileTransfer
      * 
      */
-    protected void onIncomingFileTransfer(DccFileTransfer transfer) {}
+    protected void onIncomingFileTransfer(PircDccFileTransfer transfer) {}
     
     
     /**
@@ -2182,10 +2182,10 @@ public abstract class PircBot implements ReplyConstants {
      * @param e null if the file was transfered successfully, otherwise this
      *          will report what went wrong.
      * 
-     * @see DccFileTransfer
+     * @see PircDccFileTransfer
      * 
      */
-    protected void onFileTransferFinished(DccFileTransfer transfer, Exception e) {}
+    protected void onFileTransferFinished(PircDccFileTransfer transfer, Exception e) {}
     
     
     /**
@@ -2227,10 +2227,10 @@ public abstract class PircBot implements ReplyConstants {
      * 
      * @param chat A DccChat object that represents the incoming chat request.
      * 
-     * @see DccChat
+     * @see PircDccChat
      * 
      */
-    protected void onIncomingChatRequest(DccChat chat) {}
+    protected void onIncomingChatRequest(PircDccChat chat) {}
     
     
     /**
@@ -2516,7 +2516,7 @@ public abstract class PircBot implements ReplyConstants {
      * @return The maximum line length (currently fixed at 512)
      */
     public final int getMaxLineLength() {
-        return InputThread.MAX_LINE_LENGTH;
+        return PircInputThread.MAX_LINE_LENGTH;
     }
     
     
@@ -2846,19 +2846,19 @@ public abstract class PircBot implements ReplyConstants {
      * @return An array of User objects. This array is empty if we are not
      *         in the channel.
      * 
-     * @see #onUserList(String,User[]) onUserList
+     * @see #onUserList(String,PircUser[]) onUserList
      */
     @SuppressWarnings("unchecked")
-	public final User[] getUsers(String channel) {
+	public final PircUser[] getUsers(String channel) {
         channel = channel.toLowerCase();
-        User[] userArray = new User[0];
+        PircUser[] userArray = new PircUser[0];
         synchronized (_channels) {
             Hashtable users = (Hashtable) _channels.get(channel);
             if (users != null) {
-                userArray = new User[users.size()];
+                userArray = new PircUser[users.size()];
                 Enumeration enumeration = users.elements();
                 for (int i = 0; i < userArray.length; i++) {
-                    User user = (User) enumeration.nextElement();
+                    PircUser user = (PircUser) enumeration.nextElement();
                     userArray[i] = user;
                 }
             }
@@ -2924,7 +2924,7 @@ public abstract class PircBot implements ReplyConstants {
      * Overwrite the existing entry if it exists.
      */
     @SuppressWarnings("unchecked")
-	private final void addUser(String channel, User user) {
+	private final void addUser(String channel, PircUser user) {
         channel = channel.toLowerCase();
         synchronized (_channels) {
             Hashtable users = (Hashtable) _channels.get(channel);
@@ -2941,13 +2941,13 @@ public abstract class PircBot implements ReplyConstants {
      * Remove a user from the specified channel in our memory.
      */
     @SuppressWarnings("unchecked")
-	private final User removeUser(String channel, String nick) {
+	private final PircUser removeUser(String channel, String nick) {
         channel = channel.toLowerCase();
-        User user = new User("", nick);
+        PircUser user = new PircUser("", nick);
         synchronized (_channels) {
             Hashtable users = (Hashtable) _channels.get(channel);
             if (users != null) {
-                return (User) users.remove(user);
+                return (PircUser) users.remove(user);
             }
         }
         return null;
@@ -2978,9 +2978,9 @@ public abstract class PircBot implements ReplyConstants {
             Enumeration enumeration = _channels.keys();
             while (enumeration.hasMoreElements()) {
                 String channel = (String) enumeration.nextElement();
-                User user = this.removeUser(channel, oldNick);
+                PircUser user = this.removeUser(channel, oldNick);
                 if (user != null) {
-                    user = new User(user.getPrefix(), newNick);
+                    user = new PircUser(user.getPrefix(), newNick);
                     this.addUser(channel, user);
                 }
             }
@@ -3015,42 +3015,42 @@ public abstract class PircBot implements ReplyConstants {
         channel = channel.toLowerCase();
         synchronized (_channels) {
             Hashtable users = (Hashtable) _channels.get(channel);
-            User newUser = null;
+            PircUser newUser = null;
             if (users != null) {
                 Enumeration enumeration = users.elements();
                 while(enumeration.hasMoreElements()) {
-                    User userObj = (User) enumeration.nextElement();
+                    PircUser userObj = (PircUser) enumeration.nextElement();
                     if (userObj.getNick().equalsIgnoreCase(nick)) {
                         if (userMode == OP_ADD) {
                             if (userObj.hasVoice()) {
-                                newUser = new User("@+", nick);
+                                newUser = new PircUser("@+", nick);
                             }
                             else {
-                                newUser = new User("@", nick);
+                                newUser = new PircUser("@", nick);
                             }
                         }
                         else if (userMode == OP_REMOVE) {
                             if(userObj.hasVoice()) {
-                                newUser = new User("+", nick);
+                                newUser = new PircUser("+", nick);
                             }
                             else {
-                                newUser = new User("", nick);
+                                newUser = new PircUser("", nick);
                             }
                         }
                         else if (userMode == VOICE_ADD) {
                             if(userObj.isOp()) {
-                                newUser = new User("@+", nick);
+                                newUser = new PircUser("@+", nick);
                             }
                             else {
-                                newUser = new User("+", nick);
+                                newUser = new PircUser("+", nick);
                             }
                         }
                         else if (userMode == VOICE_REMOVE) {
                             if(userObj.isOp()) {
-                                newUser = new User("@", nick);
+                                newUser = new PircUser("@", nick);
                             }
                             else {
-                                newUser = new User("", nick);
+                                newUser = new PircUser("", nick);
                             }
                         }
                     }
@@ -3061,7 +3061,7 @@ public abstract class PircBot implements ReplyConstants {
             }
             else {
                 // just in case ...
-                newUser = new User("", nick);
+                newUser = new PircUser("", nick);
                 users.put(newUser, newUser);
             }
         }
@@ -3069,8 +3069,8 @@ public abstract class PircBot implements ReplyConstants {
 
 
     // Connection stuff.
-    private InputThread _inputThread = null;
-    private OutputThread _outputThread = null;
+    private PircInputThread _inputThread = null;
+    private PircOutputThread _outputThread = null;
     private String _charset = null;
     private InetAddress _inetAddress = null;
 
@@ -3080,7 +3080,7 @@ public abstract class PircBot implements ReplyConstants {
     private String _password = null;
     
     // Outgoing message stuff.
-    private Queue _outQueue = new Queue();
+    private PircQueue _outQueue = new PircQueue();
     private long _messageDelay = 1000;
     
     // A Hashtable of channels that points to a selfreferential Hashtable of
@@ -3094,7 +3094,7 @@ public abstract class PircBot implements ReplyConstants {
 	private Hashtable _topics = new Hashtable();
     
     // DccManager to process and handle all DCC events.
-    private DccManager _dccManager = new DccManager(this);
+    private PircDccManager _dccManager = new PircDccManager(this);
     private int[] _dccPorts = null;
     private InetAddress _dccInetAddress = null;
     
