@@ -26,7 +26,7 @@ public class MySQL {
 	private String user,pass,db;
 	private int serverNumber;
 	private J2Plugin j2;
-	private String aliasdb="aliastest2";
+	private String aliasdb="alias";
 	//private SimpleDateFormat formatter = new SimpleDateFormat("MM-dd hh:mm");
 	public MySQL(String User,String Pass, String DB, int ServerNumber, J2Plugin J2){
 		user=User;

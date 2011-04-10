@@ -93,6 +93,9 @@ public class WebPage {
 		    }
 		    out.write("</table><br />");
 		    if(!aliaslist.equals("")){
+		    	out.write("If a username below is RED, then that user has been banned</br>" +
+		    			"Otherwise, they are not necessarily a threat.<br>" +
+		    			"Just watch if they're RED, really :)");
 		    	out.write("<table>");
 		    	out.write(aliaslist);
 		    	out.write("</table>");

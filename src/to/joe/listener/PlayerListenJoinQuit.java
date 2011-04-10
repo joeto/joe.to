@@ -1,6 +1,7 @@
 package to.joe.listener;
 
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -30,6 +31,10 @@ public class PlayerListenJoinQuit extends PlayerListener {
 		if(j2.ircEnable && j2.getServer().getOnlinePlayers().length<10){
 			j2.irc.ircMsg(name+" has logged in");
 			j2.irc.adminChannel();
+		}
+		if(j2.ip.badlist.contains(name)){
+			j2.irc.ircAdminMsg("User "+name+" matches banned players. Watch "+name+"");
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches banned players.");
 		}
 		j2.warps.loadPlayer(name);
 		//j2.mysql.userIP(name,player.getAddress());
@@ -79,36 +84,36 @@ public class PlayerListenJoinQuit extends PlayerListener {
 		User user=j2.mysql.getUser(name);
 		boolean isAdmin=(user.getUserFlags().contains(Flag.ADMIN)||j2.users.groupHasFlag(user.getGroup(), Flag.ADMIN));
 		boolean isDonor=(user.getUserFlags().contains(Flag.DONOR)||j2.users.groupHasFlag(user.getGroup(), Flag.DONOR));
-		//boolean incoming=true;
+		boolean incoming=true;
 		if(reason!=null){
 			reason="Visit http://forums.joe.to for unban";
 			event.setKickMessage(reason);
 			event.disallow(PlayerLoginEvent.Result.KICK_BANNED, reason);
-			//incoming=false;
+			incoming=false;
 		}
 		if(j2.maintenance && !isAdmin){
 			reason=j2.maintmessage;
 			event.setKickMessage(reason);
 			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, reason);
 			j2.users.delUser(name);
-			//incoming=false;
+			incoming=false;
 		}
 		if(j2.users.getUser(player)!=null){
 			event.setKickMessage("Already logged in");
 			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Already logged in");
 			//j2.kickbans.callKick(player.getName(), "CONSOLE", "Logged in on another Minecraft");
-			//incoming=false;
+			incoming=false;
 		}
 		if(!isAdmin && !isDonor && j2.getServer().getOnlinePlayers().length >= j2.playerLimit){
 			event.setKickMessage("Server Full");
 			event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server full");
 			j2.users.delUser(name);
-			//incoming=false;
+			incoming=false;
 		}
-		/*if(!incoming){
-			theList.add(name);
+		if(!incoming){
+			//theList.add(name);
 			return;
-		}*/
+		}
 		j2.users.addUser(name);
 		event.allow();
 		if(j2.debug)j2.log.info("Player "+event.getPlayer().getName()+" allowed in");

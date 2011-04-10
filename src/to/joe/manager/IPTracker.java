@@ -3,22 +3,20 @@ package to.joe.manager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-
-import org.bukkit.ChatColor;
-
 import to.joe.J2Plugin;
-import to.joe.util.Flag;
+
 
 public class IPTracker {
 	private J2Plugin j2;
 	private HashMap<String,String> known;
+	public ArrayList<String> badlist;
 
 	public IPTracker(J2Plugin j2){
 		this.j2=j2;
 		this.known=new HashMap<String,String>();
+		this.badlist=new ArrayList<String>();
 	}
-	public void incoming(String name_p, String IP){
-		String name=name_p.toLowerCase();
+	public void incoming(String name, String IP){
 		if(j2.debug)
 			System.out.println("Checking "+name);
 		j2.mysql.userIP(name,IP);
@@ -38,7 +36,7 @@ public class IPTracker {
 			String nameslist="";
 			boolean ohnoes=false;
 			for(String n:names.keySet()){
-				if(!n.equals(name)){
+				if(!n.equalsIgnoreCase(name)){
 					if(j2.mysql.checkBans(n)==null){
 						nameslist+=n+" ";
 					}
@@ -51,8 +49,7 @@ public class IPTracker {
 			String newknown="<tr><td>"+name+"</td><td>"+nameslist+"<br><a href='../alias/detector.php?name="+name+"'>Map</a></td></tr>";
 			known.put(name, newknown);
 			if(ohnoes){
-				j2.irc.ircAdminMsg("User "+name+" matches banned players. Watch "+name+"");
-				j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches banned players.");
+				badlist.add(name);
 			}
 			if(j2.debug)
 				System.out.println("Adding to list");

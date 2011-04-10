@@ -66,6 +66,7 @@ public class Chats {
 	public void gMsg(String name,String message){
 		String amessage="<"+name+"> "+ChatColor.LIGHT_PURPLE+message;
 		String pmessage="<ADMIN> "+ChatColor.LIGHT_PURPLE+message;
+		String imessage="<ADMIN> "+message;
 		for (Player p : j2.getServer().getOnlinePlayers()) {
 			if (p != null && j2.hasFlag(p, Flag.ADMIN)) {
 				p.sendMessage(amessage);
@@ -76,7 +77,7 @@ public class Chats {
 		}
 		j2.log.log(Level.INFO, "GOD: <"+name+"> "+message);
 		addChat(name,message);
-		j2.irc.ircMsg(pmessage);
+		j2.irc.ircMsg(imessage);
 	}
 
 	public void handleChat(Player player,String chat){
