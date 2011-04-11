@@ -29,25 +29,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
-import to.joe.listener.BlockListen;
-import to.joe.listener.EntityListen;
-import to.joe.listener.PlayerListenChat;
-import to.joe.listener.PlayerListenInteract;
-import to.joe.listener.PlayerListenJoinQuit;
-import to.joe.manager.Chats;
-import to.joe.manager.IPTracker;
-import to.joe.manager.IRC;
-import to.joe.manager.KicksBans;
-import to.joe.manager.MySQL;
-import to.joe.manager.Reports;
-import to.joe.manager.WebPage;
-import to.joe.manager.Users;
-import to.joe.manager.Warps;
-import to.joe.util.Flag;
-import to.joe.util.PropFile;
-import to.joe.util.Report;
-import to.joe.util.User;
-import to.joe.util.Warp;
+import to.joe.listener.*;
+import to.joe.manager.*;
+import to.joe.util.*;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -83,6 +67,8 @@ public class J2Plugin extends JavaPlugin {
 	public final Warps warps = new Warps(this);
 	public final WebPage webpage = new WebPage(this);
 	public final IPTracker ip=new IPTracker(this);
+	public final MCBans mcbans=new MCBans(this);
+	public final Damages damage=new Damages(this);
 	//public managerBlockLog blogger;
 	public MySQL mysql;
 
@@ -131,6 +117,7 @@ public class J2Plugin extends JavaPlugin {
 		pm.registerEvent(Event.Type.SIGN_CHANGE, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, plrlisJoinQuit, Priority.Normal, this);
@@ -155,8 +142,6 @@ public class J2Plugin extends JavaPlugin {
 	}
 
 	public void loadData(){
-
-
 		rules=readDaFile("rules.txt");
 		blacklist=readDaFile("blacklistinfo.txt");
 		intro=readDaFile("intro.txt");
@@ -210,6 +195,7 @@ public class J2Plugin extends JavaPlugin {
 			String regBlacklist = j2properties.getString("regblacklist", "0");
 			String watchList = j2properties.getString("watchlist","0");
 			String summonList = j2properties.getString("summonlist","0");
+			mcbansapi=j2properties.getString("mcbans-api", "");
 			superblacklist=new ArrayList<Integer>();
 			itemblacklist=new ArrayList<Integer>();
 			watchlist=new ArrayList<Integer>();
@@ -233,6 +219,18 @@ public class J2Plugin extends JavaPlugin {
 				if(s!=null){
 					summonlist.add(Integer.valueOf(s));
 				}
+			}
+			if(safemode){
+				Player[] online=getServer().getOnlinePlayers();
+				if(online.length>0){
+					for(Player p:online){
+						if(p!=null)
+							damage.protect(p.getName());
+					}
+				}
+			}
+			else {
+				damage.clear();
 			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "Exception while reading from j2.properties", e);
@@ -471,8 +469,6 @@ public class J2Plugin extends JavaPlugin {
 			player=(Player)sender;
 			playerName=player.getName();
 		}
-
-
 
 		if(commandName.equals("kickall")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))&&args.length>0){
 			Player[] list=getServer().getOnlinePlayers();
@@ -1192,13 +1188,15 @@ public class J2Plugin extends JavaPlugin {
 		}
 		if(isPlayer && commandName.equals("kibbles")
 				&&hasFlag(player, Flag.ADMIN)){
-			String name=player.getName();
-			chat.msgAll(ChatColor.RED+"!!! "+ChatColor.DARK_RED+name+" is ON FIRE !!!");
-			chat.msgAll(ChatColor.RED+"    Also, "+name+" is an admin. Pay attention to "+name);
-			users.getUser(name).tempSetColor(ChatColor.DARK_RED);
+			
+			chat.msgByFlag(Flag.ADMIN, ChatColor.RED+playerName+" enabled GODMODE");
+			chat.msgByFlagless(Flag.ADMIN,ChatColor.DARK_RED+"!!! "+ChatColor.RED+playerName+" is ON FIRE "+ChatColor.DARK_RED+"!!!");
+			chat.msgByFlagless(Flag.ADMIN,ChatColor.RED+"    Also, "+playerName+" is an admin. Pay attention to "+playerName);
+			users.getUser(playerName).tempSetColor(ChatColor.DARK_RED);
+			damage.protect(playerName);
+			users.getUser(playerName).tempSetHat(player.getInventory().getHelmet().getType());
 			player.getInventory().setHelmet(new ItemStack(51));
-			log.info(name+" set mode to SUPERSAIYAN");
-
+			log.info(playerName+" set mode to SUPERSAIYAN");
 			return true;
 		}
 		if(isPlayer && commandName.equals("bits")
@@ -1206,9 +1204,12 @@ public class J2Plugin extends JavaPlugin {
 			String name=player.getName();
 			player.sendMessage(ChatColor.RED+"You fizzle out");
 			users.getUser(name).restoreColor();
-			player.getInventory().setHelmet(new ItemStack(2));
+			player.getInventory().setHelmet(new ItemStack(users.getUser(playerName).whatWasHat()));
 			log.info(name+" set mode to NOT-SO-SAIYAN");
-
+			if(!safemode){
+				damage.danger(playerName);
+				player.sendMessage(ChatColor.RED+"You are no longer safe");
+			}
 			return true;
 		}
 		if(isPlayer && (commandName.equals("coo")||
@@ -1248,6 +1249,53 @@ public class J2Plugin extends JavaPlugin {
 			irc.getBot().quitServer("SHUT. DOWN. EVERYTHING.");
 			kickbans.kickAll("We'll be back after these brief messages");
 			this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
+			return true;
+		}
+		if(commandName.equals("lookup")&&isPlayer&&hasFlag(player,Flag.ADMIN)){
+			if(args.length==0){
+				msg(player,"/lookup player");
+				return true;
+			}
+			log.info(playerName+" looked up "+args[0]);
+			mcbans.lookup(args[0], player);
+			return true;
+		}
+		if(commandName.equals("pvpon")&&isPlayer&&(safemode||hasFlag(player,Flag.ADMIN))){
+			if(args.length>0&&hasFlag(player,Flag.ADMIN)){
+				damage.dangerP(args[0]);
+				player.sendMessage(ChatColor.RED+args[0]+" can be smacked by fellow players");
+				log.info(playerName+" enabled PvP on "+args[0]);
+				return true;
+			}
+			damage.dangerP(playerName);
+			player.sendMessage(ChatColor.RED+"You can be smacked by fellow players");
+			log.info(playerName+" enabled PvP on self");
+			return true;
+		}
+		if(commandName.equals("pvpoff")&&isPlayer&&(safemode||hasFlag(player,Flag.ADMIN))){
+			if(args.length>0&&hasFlag(player,Flag.ADMIN)){
+				damage.protectP(args[0]);
+				player.sendMessage(ChatColor.RED+args[0]+" is safe from fellow players");
+				log.info(playerName+" disabled PvP on "+args[0]);
+				return true;
+			}
+			damage.protectP(playerName);
+			player.sendMessage(ChatColor.RED+"You are safe from fellow players");
+			log.info(playerName+" disabled PvP on self");
+			return true;
+		}
+		if(commandName.equals("woof") && (!isPlayer ||hasFlag(player,Flag.ADMIN))){
+			if(args.length==0){
+				msg(player,"/woof player");
+				return true;
+			}
+			if(damage.woof(args[0])){
+				player.sendMessage("Dirty deed done");
+			}
+			else{
+				player.sendMessage("Dirty deed fail");
+			}
+			return true;
 		}
 		return false;
 	}
@@ -1285,4 +1333,5 @@ public class J2Plugin extends JavaPlugin {
 	public int playerLimit;
 	public int servernumber;
 	ArrayList<String> srstaffList,adminsList,trustedList;
+	public String mcbansapi;
 }

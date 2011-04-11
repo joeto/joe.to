@@ -33,13 +33,21 @@ public class PlayerListenJoinQuit extends PlayerListener {
 			j2.irc.adminChannel();
 		}
 		if(j2.ip.badlist.contains(name)){
-			j2.irc.ircAdminMsg("User "+name+" matches banned players. Watch "+name+"");
+			j2.irc.ircAdminMsg("User "+name+" matches banned players.");
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches banned players.");
+		}
+		String[] mcbans=j2.mcbans.checkBansOnline(name);
+		if(Double.valueOf(mcbans[1])<10.0){
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has a lowered mcbans reputation of "+mcbans[1]+"/10");
+			j2.irc.ircAdminMsg("User "+name+" has a lowered reputation of "+mcbans[1]+"/10 on mcbans");
 		}
 		j2.warps.loadPlayer(name);
 		//j2.mysql.userIP(name,player.getAddress());
 		for(String line : j2.motd){
 			player.sendMessage(line);
+		}
+		if(j2.safemode){
+			j2.damage.protect(name);
 		}
 		/*if(j2.hasFlag(player,Flag.JAILED)){
 			player.teleportTo(j2.users.jail);
@@ -56,6 +64,7 @@ public class PlayerListenJoinQuit extends PlayerListener {
 			//j2.mysql.userIP(player.getName(), player.getAddress());
 			//theList.remove(player.getName());
 		//}
+		j2.damage.arf(event.getPlayer().getName());
 	}
 	
 	@Override
@@ -68,6 +77,7 @@ public class PlayerListenJoinQuit extends PlayerListener {
 				j2.irc.ircMsg(event.getPlayer().getName()+" has left the server");
 			}
 		}
+		j2.damage.arf(player.getName());
 	}
 
 	@Override

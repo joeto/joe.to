@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2Plugin
-version: 0.5
+version: 0.6
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -218,4 +218,20 @@ commands:
     description: hmmm
     usage: |
             madagascar
+  lookup:
+    description: Hmmm
+    usage: |
+            lookup
+  pvpon:
+    description: Hmmm
+    usage: |
+            pvpon
+  pvpoff:
+    description: Hmmm
+    usage: |
+            pvpoff
+  woof:
+    description: Hmmm
+    usage: |
+            woof
 

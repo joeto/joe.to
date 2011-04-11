@@ -58,6 +58,7 @@ public class Chats {
 			}
 		}
 	}
+	
 	public void aMsg(String name,String message){
 		String msg="<"+ChatColor.LIGHT_PURPLE+name+ChatColor.WHITE+"> "+message;
 		msgByFlag(Flag.ADMIN,msg);
