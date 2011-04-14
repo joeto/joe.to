@@ -10,10 +10,10 @@ import to.joe.J2Plugin;
 
 
 
-public class PlayerListenChat extends PlayerListener {
+public class PlayerChat extends PlayerListener {
 	private final J2Plugin j2;
 
-	public PlayerListenChat(J2Plugin instance) {
+	public PlayerChat(J2Plugin instance) {
 		j2 = instance;
 	}
 

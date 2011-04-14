@@ -23,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
@@ -53,11 +54,12 @@ import java.util.logging.Logger;
  * @author mbaxter
  */
 public class J2Plugin extends JavaPlugin {
-	private final PlayerListenChat plrlisChat = new PlayerListenChat(this);
-	private final PlayerListenInteract plrlisItem = new PlayerListenInteract(this);
-	private final PlayerListenJoinQuit plrlisJoinQuit = new PlayerListenJoinQuit(this);
-	private final BlockListen blockListener = new BlockListen(this);
-	private final EntityListen entityListener = new EntityListen(this);
+	private final PlayerChat plrlisChat = new PlayerChat(this);
+	private final PlayerInteract plrlisItem = new PlayerInteract(this);
+	private final PlayerJoinQuit plrlisJoinQuit = new PlayerJoinQuit(this);
+	private final BlockAll blockListener = new BlockAll(this);
+	private final EntityAll entityListener = new EntityAll(this);
+	private final PlayerTeleport plrlisTeleport = new PlayerTeleport(this);
 	private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 	public final Chats chat = new Chats(this);
 	public final IRC irc = new IRC(this);
@@ -122,6 +124,7 @@ public class J2Plugin extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_KICK, plrlisJoinQuit, Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_TELEPORT, plrlisTeleport, Priority.Normal, this);
 		pm.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);
 		if(debug)log.info("Events registered");
 		PluginDescriptionFile pdfFile = this.getDescription();
@@ -818,7 +821,14 @@ public class J2Plugin extends JavaPlugin {
 				msg(player,"       reason can have spaces in it");
 				return true;
 			}
-			kickbans.callBan(playerName,args,player.getLocation());
+			Location loc;
+			if(!isPlayer){
+				loc=new Location(getServer().getWorlds().get(0),0,0,0);
+			}
+			else{
+				loc=player.getLocation();
+			}
+			kickbans.callBan(playerName,args,loc);
 
 			return true;
 		}
@@ -836,7 +846,14 @@ public class J2Plugin extends JavaPlugin {
 				msg(player,"        reason can have spaces in it");
 				return true;
 			}
-			kickbans.callAddBan(playerName,args,player.getLocation());
+			Location loc;
+			if(!isPlayer){
+				loc=new Location(getServer().getWorlds().get(0),0,0,0);
+			}
+			else{
+				loc=player.getLocation();
+			}
+			kickbans.callAddBan(playerName,args,loc);
 
 			return true;
 		}
@@ -1165,6 +1182,11 @@ public class J2Plugin extends JavaPlugin {
 				List<Player> targets=getServer().matchPlayer(args[0]);
 				if(targets.size()==1){
 					Player target=targets.get(0);
+					PlayerInventory i=player.getInventory();
+					i.setBoots(new ItemStack(0));
+					i.setChestplate(new ItemStack(0));
+					i.setHelmet(new ItemStack(0));
+					i.setLeggings(new ItemStack(0));
 					target.getInventory().clear();
 					target.sendMessage(ChatColor.RED+"Your inventory has been cleared by an admin");
 					log.info(playerName+" emptied inventory of "+target.getName());
@@ -1176,6 +1198,11 @@ public class J2Plugin extends JavaPlugin {
 
 			return true;
 		}
+		if(isPlayer && commandName.equals("removeitem")){
+			player.getInventory().clear(player.getInventory().getHeldItemSlot());
+			return true;
+		}
+		
 		if(isPlayer && commandName.equals("mobhere") && hasFlag(player, Flag.SRSTAFF)){
 			if(args.length==0){
 				player.sendMessage(ChatColor.RED+"/mobhere mobname");
@@ -1295,6 +1322,28 @@ public class J2Plugin extends JavaPlugin {
 			else{
 				player.sendMessage("Dirty deed fail");
 			}
+			return true;
+		}
+		if(isPlayer && commandName.equals("plugins")){
+			player.sendMessage(ChatColor.GREEN+"Permissions, Pancakes, Waffles, Eggs, Ham, Cornflakes");
+			return true;
+		}
+		if(isPlayer && commandName.equals("version")){
+			player.sendMessage("This server is running "+ChatColor.GREEN+"Craftbukkit"+ChatColor.WHITE+" version "+ChatColor.GREEN+"Breakfast");
+			player.sendMessage("Website: "+ChatColor.GREEN+"www.joe.to");
+			player.sendMessage(ChatColor.GREEN+"Visit our forums for more information!");
+			return true;
+		}
+		if( commandName.equals("reload")){
+			if(isPlayer){
+			player.sendMessage("Can't let you do that, STARFOX");
+			return true;
+			}
+			System.out.println("Can't let you do that, STARFOX");
+			return true;
+		}
+		if(isPlayer && commandName.equals("ixrai12345")){
+			kickbans.callKick(playerName, "BobTheNervous", "Remove your hacks before you rejoin.");
 			return true;
 		}
 		return false;

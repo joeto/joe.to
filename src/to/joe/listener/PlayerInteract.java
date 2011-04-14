@@ -13,10 +13,10 @@ import to.joe.J2Plugin;
 import to.joe.util.Flag;
 
 
-public class PlayerListenInteract extends PlayerListener {
+public class PlayerInteract extends PlayerListener {
 	private final J2Plugin j2;
 
-	public PlayerListenInteract(J2Plugin instance) {
+	public PlayerInteract(J2Plugin instance) {
 		j2 = instance;
 	}
 	

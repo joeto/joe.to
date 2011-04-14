@@ -1,25 +1,20 @@
 package to.joe.listener;
 
-
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-
 import to.joe.J2Plugin;
 import to.joe.util.Flag;
 import to.joe.util.User;
 
-//import java.util.ArrayList;
 
-
-public class PlayerListenJoinQuit extends PlayerListener {
+public class PlayerJoinQuit extends PlayerListener {
 	
 	private final J2Plugin j2;
 	
 	//private ArrayList<String> theList;
 
-	public PlayerListenJoinQuit(J2Plugin instance) {
+	public PlayerJoinQuit(J2Plugin instance) {
 		j2 = instance;
 		//theList=new ArrayList<String>();
 	}
@@ -28,26 +23,13 @@ public class PlayerListenJoinQuit extends PlayerListener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player=event.getPlayer();
 		String name=player.getName();
-		if(j2.ircEnable && j2.getServer().getOnlinePlayers().length<10){
-			j2.irc.ircMsg(name+" has logged in");
-			j2.irc.adminChannel();
-		}
-		if(j2.ip.badlist.contains(name)){
-			j2.irc.ircAdminMsg("User "+name+" matches banned players.");
-			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches banned players.");
-		}
-		String[] mcbans=j2.mcbans.checkBansOnline(name);
-		if(Double.valueOf(mcbans[1])<10.0){
-			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has a lowered mcbans reputation of "+mcbans[1]+"/10");
-			j2.irc.ircAdminMsg("User "+name+" has a lowered reputation of "+mcbans[1]+"/10 on mcbans");
-		}
-		j2.warps.loadPlayer(name);
-		//j2.mysql.userIP(name,player.getAddress());
+		j2.irc.processJoin(name);
+		j2.ip.processJoin(name);
+		j2.mcbans.processJoin(name);
+		j2.warps.processJoin(name);
+		j2.damage.processJoin(name);
 		for(String line : j2.motd){
 			player.sendMessage(line);
-		}
-		if(j2.safemode){
-			j2.damage.protect(name);
 		}
 		/*if(j2.hasFlag(player,Flag.JAILED)){
 			player.teleportTo(j2.users.jail);

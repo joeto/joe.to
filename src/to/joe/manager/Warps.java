@@ -46,6 +46,10 @@ public class Warps {
 			this.j2.mysql.removeWarp(warp);
 		}
 	}
+	public void processJoin(String name){
+		this.loadPlayer(name);
+	}
+	
 	public void loadPlayer(String playername){
 		ArrayList<Warp> playerhomes=this.j2.mysql.getHomes(playername);
 		synchronized(this.lock){

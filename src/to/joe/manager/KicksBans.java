@@ -74,11 +74,16 @@ public class KicksBans {
 		}*/
 	}
 
-
 	public void callKick(String pname,String admin,String reason){
+		this.callKick(pname, admin, reason, false);
+	}
+
+	public void callKick(String pname,String admin,String reason, boolean quiet){
 		List<Player> toKickCandidates = j2.getServer().matchPlayer(pname);
-		if(toKickCandidates.size()!=1 && !admin.equalsIgnoreCase("console")){
-			j2.getServer().getPlayer(admin).sendMessage(ChatColor.RED+"Error:"+pname+" does not exist or fits multiple players");
+		if(toKickCandidates.size()!=1 ){
+			if(!admin.equalsIgnoreCase("console")&&!quiet){
+				j2.getServer().getPlayer(admin).sendMessage(ChatColor.RED+"Error:"+pname+" does not exist or fits multiple players");
+			}
 			return;
 		}
 		Player toKick=toKickCandidates.get(0);
@@ -98,7 +103,7 @@ public class KicksBans {
 				j2.irc.ircMsg(name + " kicked");
 			}
 		} else {
-			if(!admin.equalsIgnoreCase("console"))
+			if(!admin.equalsIgnoreCase("console")&&!quiet)
 				j2.getServer().getPlayer(admin).sendMessage(ChatColor.RED+"Error:"+pname+" does not exist or fits multiple players");
 		}
 	}

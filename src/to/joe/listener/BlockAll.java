@@ -16,10 +16,10 @@ import to.joe.util.Flag;
  * J2 block listener
  * @author mbaxter
  */
-public class BlockListen extends BlockListener {
+public class BlockAll extends BlockListener {
     private final J2Plugin j2;
 
-    public BlockListen(final J2Plugin plugin) {
+    public BlockAll(final J2Plugin plugin) {
         this.j2 = plugin;
     }
 

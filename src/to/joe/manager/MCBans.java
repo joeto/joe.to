@@ -1,4 +1,4 @@
-package to.joe;
+package to.joe.manager;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import to.joe.J2Plugin;
 import to.joe.util.Flag;
 
 public class MCBans {
@@ -25,6 +26,16 @@ public class MCBans {
 		this.j2=j2;
 	}
 
+	public void processJoin(String name){
+		String[] mcbans=j2.mcbans.checkBansOnline(name);
+		Double rep=Double.valueOf(mcbans[1]);
+		if(rep<10.0){
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User"+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has a lowered mcbans reputation of "+rep+"/10");
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"To see the bans: /lookup "+name);
+			j2.irc.ircAdminMsg("User "+name+" has a lowered reputation of "+rep+"/10 on mcbans");
+		}
+	}
+	
 	public void lookup(String PlayerName, Player player){
 		if (j2.hasFlag(player,Flag.ADMIN)) {
 			HashMap<String,String> url_items = new HashMap<String,String>();

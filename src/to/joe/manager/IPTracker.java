@@ -3,17 +3,24 @@ package to.joe.manager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+
+import org.bukkit.ChatColor;
+
 import to.joe.J2Plugin;
+import to.joe.util.Flag;
 
 
 public class IPTracker {
 	private J2Plugin j2;
 	private HashMap<String,String> known;
+	private HashMap<String,Integer> totalcount,bannedcount;
 	public ArrayList<String> badlist;
 
 	public IPTracker(J2Plugin j2){
 		this.j2=j2;
 		this.known=new HashMap<String,String>();
+		this.totalcount=new HashMap<String,Integer>();
+		this.bannedcount=new HashMap<String,Integer>();
 		this.badlist=new ArrayList<String>();
 	}
 	public void incoming(String name, String IP){
@@ -32,9 +39,11 @@ public class IPTracker {
 		ips=getIPs(names,ips);
 		names=getNames(names,ips);
 		known.remove(name);
+		totalcount.remove(name);
+		bannedcount.remove(name);
 		if(names.size()>1){
 			String nameslist="";
-			boolean ohnoes=false;
+			int ohnoes=0;
 			for(String n:names.keySet()){
 				if(!n.equalsIgnoreCase(name)){
 					if(j2.mysql.checkBans(n)==null){
@@ -42,13 +51,15 @@ public class IPTracker {
 					}
 					else{
 						nameslist+="<span style='color:red'>"+n+"</span> ";
-						ohnoes=true;
+						ohnoes++;
 					}
 				}
 			}
-			String newknown="<tr><td>"+name+"</td><td>"+nameslist+"<br><a href='../alias/detector.php?name="+name+"'>Map</a></td></tr>";
+			String newknown="<tr><td><a href='../alias/detector.php?name="+name+"'>"+name+"</a></td><td>"+nameslist+"</td></tr>";
 			known.put(name, newknown);
-			if(ohnoes){
+			totalcount.put(name, names.size());
+			bannedcount.put(name, ohnoes);
+			if(ohnoes>0){
 				badlist.add(name);
 			}
 			if(j2.debug)
@@ -118,5 +129,25 @@ public class IPTracker {
 			return known.get(name);
 		}
 		return "";
+	}
+	public int getTotal(String name){
+		if(totalcount.containsKey(name)){
+			return totalcount.get(name);
+		}
+		return 0;
+	}
+	public int getBanned(String name){
+		if(bannedcount.containsKey(name)){
+			return bannedcount.get(name);
+		}
+		return 0;
+	}
+	public void processJoin(String name){
+		if(badlist.contains(name)){
+			int total=this.getTotal(name)-1;
+			int banned=this.getBanned(name);
+			j2.irc.ircAdminMsg("mc"+j2.servernumber+": "+name+" matches "+total+" others: "+banned+" banned");
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User"+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches "+total+" others: "+banned+" banned");
+		}
 	}
 }
