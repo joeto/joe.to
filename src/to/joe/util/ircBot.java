@@ -159,7 +159,7 @@ public class ircBot extends PircBot {
 		else
 		{
 			ircman.getJ2().log.info("IRC:<"+theuser+"> "+thenewmsg);
-			ircman.getJ2().chat.addChat("[irc]"+theuser, thenewmsg);
+			ircman.getJ2().chat.logChat("[irc]"+theuser, thenewmsg);
 			for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
 				if (p != null) {
 					p.sendMessage(combined);
@@ -179,7 +179,7 @@ public class ircBot extends PircBot {
 		else
 		{
 			ircman.getJ2().log.info("IRC: * "+theuser+thenewmsg);
-			ircman.getJ2().chat.addChat("[irc]* "+theuser, thenewmsg);
+			ircman.getJ2().chat.logChat("[irc]* "+theuser, thenewmsg);
 			for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
 				if (p != null) {
 					p.sendMessage(combined);

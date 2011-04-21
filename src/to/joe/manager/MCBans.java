@@ -9,6 +9,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public class MCBans {
 			j2.irc.ircAdminMsg("User "+name+" has a lowered reputation of "+rep+"/10 on mcbans");
 		}
 	}
-	
+
 	public void lookup(String PlayerName, Player player){
 		if (j2.hasFlag(player,Flag.ADMIN)) {
 			HashMap<String,String> url_items = new HashMap<String,String>();
@@ -131,5 +132,82 @@ public class MCBans {
 			j2.log.info("MCBANS: Retrieval of data failed.");
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public HashMap<String, String> hdl_com(HashMap<String, String> items) {
+		HashMap<String, String> out = new HashMap<String, String>();
+		String url_req = urlparse(items);
+		String json_text = request_from_api(url_req);
+		JSONObject output = get_data(json_text);
+		if (output != null)
+		{
+			Iterator i = output.keys();
+			if (i != null) {
+				while (i.hasNext())
+				{
+					String next = (String)i.next();
+					try {
+						out.put(next, output.getString(next));
+					} catch (JSONException e) {
+						System.out.println("mcbans error");
+					}
+				}
+			}
+		}
+		return out;
+	}
+
+	public void processUnban(String PlayerName){
+		this.unban(PlayerName);
+	}
+
+	private boolean unban(String PlayerName){
+		HashMap<String,String> url_items = new HashMap<String,String>();
+		url_items.put("player", PlayerName);
+		url_items.put("exec", "unban_user");
+		HashMap<String,String> result = hdl_com(url_items);
+		if ((result.get("result")).equalsIgnoreCase("y")){
+			j2.log.info("[mcbans] Unbanned "+PlayerName);
+			return true;
+		}
+		j2.log.info("[mcbans] Failed to unban "+PlayerName);
+		return false;
+	}
+
+	public void processBan(String PlayerName, String Sender, String Reason){
+		String Type="l";
+		String lreason=Reason.toLowerCase();
+		if((lreason.matches("grief")||lreason.matches("hack"))
+				&&!(lreason.matches("fuck")||lreason.matches("shit")||lreason.matches("bitch")
+						||lreason.matches("ray"))){
+			Type="g";
+		}
+		this.ban(PlayerName,Sender,Reason,Type);
+	}
+
+	private boolean ban(String PlayerName, String Sender, String Reason, String Type) {
+		HashMap<String, String> url_items = new HashMap<String, String>();
+		url_items.put("player", PlayerName);
+		url_items.put("admin", Sender);
+		url_items.put("reason", Reason);
+		String ip = j2.mysql.IPGetLast(PlayerName);
+		url_items.put("playerip", ip);
+		url_items.put("duration", "0");
+		if (Type.equalsIgnoreCase("g"))
+			url_items.put("exec", "ban_user");
+		else {
+			url_items.put("exec", "ban_local_user");
+		}
+		HashMap<String, String> result = hdl_com(url_items);
+		if (((String)result.get("result")).equalsIgnoreCase("y")) {
+			j2.log.info("[mcbans] Added "+PlayerName);
+		}
+		else if (((String)result.get("result")).equalsIgnoreCase("a")) {
+			j2.log.info("[mcbans] Player "+PlayerName+" already on list");
+		} else if (((String)result.get("result")).equalsIgnoreCase("n")) {
+			j2.log.info("[mcbans] Could not add "+PlayerName);
+		}
+		return false;
 	}
 }

@@ -12,6 +12,7 @@ package to.joe.util;
  */
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,6 +25,12 @@ public class User {
 		this.backup=color;
 		this.group=group;
 		this.extraFlags=extraFlags;
+		this.lastChat=new ArrayList<Long>();
+		this.lastChat.add(0L);
+		this.lastChat.add(0L);
+		this.lastChat.add(0L);
+		this.lastChat.add(0L);
+		this.lastChat.add(0L);
 		//this.channel=channel;
 	}
 	public void setGroup(String Group){
@@ -70,9 +77,18 @@ public class User {
 	public int getChannels(){
 		return channel;
 	}
+	public boolean canChat(){
+		long cur=(new Date()).getTime();
+		if((this.lastChat.get(0)+5000L)>cur){
+			return false;
+		}
+		this.lastChat.remove((int)0);
+		return true;
+	}
 	private ArrayList<Flag> extraFlags;
 	private int channel;
 	private String name;
 	private ChatColor color,backup;
 	private String group;
+	private ArrayList<Long> lastChat;
 }

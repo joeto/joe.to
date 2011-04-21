@@ -77,14 +77,18 @@ public class Chats {
 			}
 		}
 		j2.log.log(Level.INFO, "GOD: <"+name+"> "+message);
-		addChat(name,message);
+		logChat(name,message);
 		j2.irc.ircMsg(imessage);
 	}
 
 	public void handleChat(Player player,String chat){
 		String name=player.getName();
-
-		addChat(name, chat);
+		if(!(j2.users.getUser(player).canChat()||j2.hasFlag(player, Flag.ADMIN))){
+			player.sendMessage(ChatColor.RED+"Trying to send too many messages too quickly.");
+			player.sendMessage(ChatColor.RED+"Wait 5 seconds and try again");
+		}
+		
+		logChat(name, chat);
 		j2.irc.ircMsg("<"+name+"> "+chat);
 		//j2.irc.chatQueue.offer("<"+name+"> "+chat);
 		j2.log.info("<"+name+"> "+chat);
@@ -143,7 +147,7 @@ public class Chats {
 		channels.put(chan.getID(), chan);
 	}
 	
-	public void addChat(String name, String message) {
+	public void logChat(String name, String message) {
 		/*this is a terrible, horrible idea. Never do it again.
 		 * 
 		 * 

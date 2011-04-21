@@ -25,9 +25,14 @@ public class PlayerJoinQuit extends PlayerListener {
 		String name=player.getName();
 		j2.irc.processJoin(name);
 		j2.ip.processJoin(name);
-		j2.mcbans.processJoin(name);
 		j2.warps.processJoin(name);
 		j2.damage.processJoin(name);
+		try{
+			j2.mcbans.processJoin(name);
+		}
+		catch (Exception e){
+			
+		}
 		for(String line : j2.motd){
 			player.sendMessage(line);
 		}
@@ -63,14 +68,14 @@ public class PlayerJoinQuit extends PlayerListener {
 	}
 
 	@Override
-	public void onPlayerLogin(PlayerLoginEvent event) {
-		if(j2.debug)j2.log.info("Incoming player: "+event.getPlayer().getName());
-		String reason=j2.mysql.checkBans(event.getPlayer().getName());
-		Player player=event.getPlayer();
-		String name=player.getName();
-		//j2.mysql.userIP(name,player..getAddress());
+	public void onPlayerPreLogin(PlayerPreLoginEvent event) {
+		String name=event.getName();
+		String ip=event.getAddress().getHostAddress();
+		if(j2.debug)j2.log.info("Incoming player: "+name);
+		String reason=j2.mysql.checkBans(name);
+		//j2.mysql.userIP(name,player.getAddress().getHostName());
 		if(event.getResult().equals(Result.ALLOWED)){
-			j2.ip.incoming(name,event.getKickMessage());
+			j2.ip.incoming(name,ip);
 		}
 		if(j2.debug)System.out.println("IP: "+event.getKickMessage());
 		User user=j2.mysql.getUser(name);
@@ -80,34 +85,33 @@ public class PlayerJoinQuit extends PlayerListener {
 		if(reason!=null){
 			reason="Visit http://forums.joe.to for unban";
 			event.setKickMessage(reason);
-			event.disallow(PlayerLoginEvent.Result.KICK_BANNED, reason);
+			event.disallow(PlayerPreLoginEvent.Result.KICK_BANNED, reason);
 			incoming=false;
 		}
 		if(j2.maintenance && !isAdmin){
 			reason=j2.maintmessage;
 			event.setKickMessage(reason);
-			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, reason);
+			event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, reason);
 			j2.users.delUser(name);
 			incoming=false;
 		}
-		if(j2.users.getUser(player)!=null){
-			event.setKickMessage("Already logged in");
-			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Already logged in");
+		if(j2.users.getUser(name)!=null){
+			event.setKickMessage("Already logged in. If not, wait a minute and try again.");
+			event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, "Already logged in");
 			//j2.kickbans.callKick(player.getName(), "CONSOLE", "Logged in on another Minecraft");
 			incoming=false;
 		}
 		if(!isAdmin && !isDonor && j2.getServer().getOnlinePlayers().length >= j2.playerLimit){
 			event.setKickMessage("Server Full");
-			event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server full");
+			event.disallow(PlayerPreLoginEvent.Result.KICK_FULL, "Server full");
 			j2.users.delUser(name);
 			incoming=false;
 		}
 		if(!incoming){
-			//theList.add(name);
 			return;
 		}
 		j2.users.addUser(name);
 		event.allow();
-		if(j2.debug)j2.log.info("Player "+event.getPlayer().getName()+" allowed in");
+		if(j2.debug)j2.log.info("Player "+name+" allowed in");
 	}
 }

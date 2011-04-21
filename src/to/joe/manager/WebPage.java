@@ -112,5 +112,12 @@ public class WebPage {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		try {
+		    BufferedWriter out = new BufferedWriter(new FileWriter("/home/minecraft/public_html/"+servernum+"/players.txt"));
+		    out.write(playercount+"/"+j2.playerLimit);
+		    out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -23,11 +23,20 @@ public class IRC {
 	private ArrayList<ircAdmin> admins;
 	public LinkedBlockingQueue<String> chatQueue = new LinkedBlockingQueue<String>();
 	//private boolean stop = false;
+	//private HashMap<String,Long> recent;
 
 	public IRC(J2Plugin j2p){
 		this.j2=j2p;
 		loadIRCAdmins();
-
+		//this.recent=new HashMap<String,Long>();
+	}
+	
+	public boolean goodToGo(String string){
+		if(string.endsWith("banned")||string.endsWith("on mcbans")){
+			
+		}
+		
+		return true;
 	}
 
 	public void processJoin(String name){

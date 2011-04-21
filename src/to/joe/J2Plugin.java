@@ -84,6 +84,7 @@ public class J2Plugin extends JavaPlugin {
 	}
 
 	public void onEnable() {
+		Logger.getLogger("Minecraft").setFilter(new LogFilter());
 		log=Logger.getLogger("Minecraft");
 		protectedUsers=new ArrayList<String>();
 		loadData();
@@ -120,7 +121,7 @@ public class J2Plugin extends JavaPlugin {
 		pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_LOGIN, plrlisJoinQuit, Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_PRELOGIN, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_KICK, plrlisJoinQuit, Priority.Normal, this);
@@ -914,7 +915,7 @@ public class J2Plugin extends JavaPlugin {
 		{
 			String message = "";
 			message+=combineSplit(0, args, " ");
-			chat.addChat(player.getName(), message);
+			chat.logChat(player.getName(), message);
 			irc.ircMsg("* "+ player.getName()+" "+message);
 			//don't cancel this after reading it. 
 			//TODO: /ignore code will also be here

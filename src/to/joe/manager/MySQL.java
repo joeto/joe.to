@@ -196,6 +196,7 @@ public class MySQL {
 		}
 	}
 	public void ban(String name,String reason, long time, String admin,Location location){
+		j2.mcbans.processBan(name, admin, reason);
 		Connection conn = null;
 		PreparedStatement ps = null;
 		double x=0,y=0,z=0;
@@ -303,6 +304,7 @@ public class MySQL {
 		return reason;
 	}
 	public void unban(String aname){
+		j2.mcbans.processUnban(aname);
 		Connection conn = null;
 		PreparedStatement ps = null;
 		String name=stringClean(aname);
@@ -704,5 +706,38 @@ public class MySQL {
 		}
 		return names;
 	}
-
+	
+	public String IPGetLast(String name){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		name=name.split(" ")[0];
+		String result="";
+		try {
+			conn = getConnection();
+			String state="SELECT IP FROM "+aliasdb+" WHERE Name='"+name+"' order by Time desc limit 1";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
+			rs = ps.executeQuery();
+			if(rs.next()){
+				result=rs.getString("IP");
+			}
+		} catch (SQLException ex) {
+			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+		return result;
+	}
 }
