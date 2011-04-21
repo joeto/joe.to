@@ -194,6 +194,7 @@ public class J2Plugin extends JavaPlugin {
 			maintenance = j2properties.getBoolean("maintenance",false);
 			maintmessage = j2properties.getString("maintmessage","Server offline for maintenance");
 			fun=j2properties.getBoolean("funmode",false);
+			trustedonly=j2properties.getBoolean("trustedonly",false);
 			randomcolor=j2properties.getBoolean("randcolor",false);
 			String superBlacklist = j2properties.getString("superblacklist", "0");				
 			String regBlacklist = j2properties.getString("regblacklist", "0");
@@ -1376,6 +1377,7 @@ public class J2Plugin extends JavaPlugin {
 	public String maintmessage;
 	public boolean safemode;
 	public boolean ihatewolves;
+	public boolean trustedonly;
 	public PropFile tpProtect=new PropFile("tpProtect.list");
 	public Player OneByOne = null;
 	public boolean fun,randomcolor;

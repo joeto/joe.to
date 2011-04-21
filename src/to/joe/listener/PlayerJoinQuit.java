@@ -81,6 +81,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		User user=j2.mysql.getUser(name);
 		boolean isAdmin=(user.getUserFlags().contains(Flag.ADMIN)||j2.users.groupHasFlag(user.getGroup(), Flag.ADMIN));
 		boolean isDonor=(user.getUserFlags().contains(Flag.DONOR)||j2.users.groupHasFlag(user.getGroup(), Flag.DONOR));
+		boolean isTrusted=(user.getUserFlags().contains(Flag.TRUSTED)||j2.users.groupHasFlag(user.getGroup(), Flag.TRUSTED));
 		boolean incoming=true;
 		if(reason!=null){
 			reason="Visit http://forums.joe.to for unban";
@@ -92,19 +93,25 @@ public class PlayerJoinQuit extends PlayerListener {
 			reason=j2.maintmessage;
 			event.setKickMessage(reason);
 			event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, reason);
-			j2.users.delUser(name);
+			//j2.users.delUser(name);
+			incoming=false;
+		}
+		if(j2.trustedonly && !isTrusted){
+			reason="Trusted only. http://forums.joe.to";
+			event.setKickMessage(reason);
+			event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, reason);
 			incoming=false;
 		}
 		if(j2.users.getUser(name)!=null){
 			event.setKickMessage("Already logged in. If not, wait a minute and try again.");
-			event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, "Already logged in");
+			event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, "Already logged in.If not, wait a minute and try again.");
 			//j2.kickbans.callKick(player.getName(), "CONSOLE", "Logged in on another Minecraft");
 			incoming=false;
 		}
 		if(!isAdmin && !isDonor && j2.getServer().getOnlinePlayers().length >= j2.playerLimit){
 			event.setKickMessage("Server Full");
 			event.disallow(PlayerPreLoginEvent.Result.KICK_FULL, "Server full");
-			j2.users.delUser(name);
+			//j2.users.delUser(name);
 			incoming=false;
 		}
 		if(!incoming){
