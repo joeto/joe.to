@@ -79,10 +79,11 @@ public class User {
 	}
 	public boolean canChat(){
 		long cur=(new Date()).getTime();
-		if((this.lastChat.get(0)+5000L)>cur){
+		if((this.lastChat.get(0)+10000L)>cur){
 			return false;
 		}
 		this.lastChat.remove((int)0);
+		this.lastChat.add(cur);
 		return true;
 	}
 	private ArrayList<Flag> extraFlags;

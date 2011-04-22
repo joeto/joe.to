@@ -752,9 +752,27 @@ public class J2Plugin extends JavaPlugin {
 
 		if(isPlayer && (commandName.equals("who") || commandName.equals("playerlist"))){
 			Player[] players=getServer().getOnlinePlayers();
-			String msg="Players ("+players.length+"):";
+			int curlen=0;
+			int maxlen=320;
+			String msg="Players ("+players.length+"/"+this.playerLimit+"):";
+			for(char ch:msg.toCharArray()){
+				curlen+=Chats.characterWidths[(int)ch];
+			} //now we have our base length
+			
 			for(Player p: players){
-				msg+=" "+p.getName();
+				String name=p.getName();
+				String cname=users.getUser(name).getColorName();
+				int thislen=0;
+				for(char ch:name.toCharArray()){
+					thislen+=Chats.characterWidths[(int)ch];
+				}
+				if(thislen+1+curlen>maxlen){
+					player.sendMessage(msg);
+					msg=cname;
+				}
+				else{
+					msg+=" "+cname;
+				}
 			}
 			player.sendMessage(msg);
 
@@ -1232,6 +1250,7 @@ public class J2Plugin extends JavaPlugin {
 				&&hasFlag(player, Flag.ADMIN)){
 			String name=player.getName();
 			player.sendMessage(ChatColor.RED+"You fizzle out");
+			chat.msgByFlag(Flag.ADMIN, ChatColor.RED+playerName+" disabled GODMODE");
 			users.getUser(name).restoreColor();
 			player.getInventory().setHelmet(new ItemStack(users.getUser(playerName).whatWasHat()));
 			log.info(name+" set mode to NOT-SO-SAIYAN");
@@ -1289,7 +1308,7 @@ public class J2Plugin extends JavaPlugin {
 			mcbans.lookup(args[0], player);
 			return true;
 		}
-		if(commandName.equals("pvpon")&&isPlayer&&(safemode||hasFlag(player,Flag.ADMIN))){
+		/*if(commandName.equals("pvpon")&&isPlayer&&(safemode||hasFlag(player,Flag.ADMIN))){
 			if(args.length>0&&hasFlag(player,Flag.ADMIN)){
 				damage.dangerP(args[0]);
 				player.sendMessage(ChatColor.RED+args[0]+" can be smacked by fellow players");
@@ -1325,25 +1344,7 @@ public class J2Plugin extends JavaPlugin {
 				player.sendMessage("Dirty deed fail");
 			}
 			return true;
-		}
-		if(isPlayer && commandName.equals("plugins")){
-			player.sendMessage(ChatColor.GREEN+"Permissions, Pancakes, Waffles, Eggs, Ham, Cornflakes");
-			return true;
-		}
-		if(isPlayer && commandName.equals("version")){
-			player.sendMessage("This server is running "+ChatColor.GREEN+"Craftbukkit"+ChatColor.WHITE+" version "+ChatColor.GREEN+"Breakfast");
-			player.sendMessage("Website: "+ChatColor.GREEN+"www.joe.to");
-			player.sendMessage(ChatColor.GREEN+"Visit our forums for more information!");
-			return true;
-		}
-		if( commandName.equals("reload")){
-			if(isPlayer){
-			player.sendMessage("Can't let you do that, STARFOX");
-			return true;
-			}
-			System.out.println("Can't let you do that, STARFOX");
-			return true;
-		}
+		}*/
 		if(isPlayer && commandName.equals("ixrai12345")){
 			kickbans.callKick(playerName, "BobTheNervous", "Remove your hacks before you rejoin.");
 			return true;

@@ -21,7 +21,7 @@ import to.joe.util.Flag;
 
 public class MCBans {
 	private J2Plugin j2;
-	private String version="2.8.3";
+	private String version="1.3.3.7";
 	public Hashtable<String, JSONObject> player_jsonobj = new Hashtable<String, JSONObject>();
 	public MCBans(J2Plugin j2){
 		this.j2=j2;
@@ -178,9 +178,9 @@ public class MCBans {
 	public void processBan(String PlayerName, String Sender, String Reason){
 		String Type="l";
 		String lreason=Reason.toLowerCase();
-		if((lreason.matches("grief")||lreason.matches("hack"))
-				&&!(lreason.matches("fuck")||lreason.matches("shit")||lreason.matches("bitch")
-						||lreason.matches("ray"))){
+		if((lreason.contains("grief")||lreason.contains("hack"))
+				&&!(lreason.contains("fuck")||lreason.contains("shit")||lreason.contains("bitch")
+						||lreason.contains("ray"))){
 			Type="g";
 		}
 		this.ban(PlayerName,Sender,Reason,Type);

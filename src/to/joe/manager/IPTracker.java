@@ -147,7 +147,7 @@ public class IPTracker {
 			int total=this.getTotal(name)-1;
 			int banned=this.getBanned(name);
 			j2.irc.ircAdminMsg("mc"+j2.servernumber+": "+name+" matches "+total+" others: "+banned+" banned");
-			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User"+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches "+total+" others: "+banned+" banned");
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches "+total+" others: "+banned+" banned");
 		}
 	}
 }
