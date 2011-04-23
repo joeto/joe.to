@@ -77,10 +77,12 @@ public class IPTracker {
 		for(String key:keyset){
 			if(!names.get(key)){
 				searched.add(key);
+				//System.out.println("Searching "+key);
 				ArrayList<String> tempips=j2.mysql.IPGetIPs(key);
 				for(String i:tempips){
 					if(!i.equals("")&&!newips.contains(i)&&!keyset.contains(i)){
 						newips.add(i);
+						//System.out.println("Found: "+i);
 					}
 				}
 			}
@@ -104,10 +106,12 @@ public class IPTracker {
 		for(String key:keyset){
 			if(!ips.get(key)){
 				searched.add(key);
+				//System.out.println("Searching "+key);
 				ArrayList<String> tempnames=j2.mysql.IPGetNames(key);
 				for(String i:tempnames){
 					if(!i.equals("")&&!newnames.contains(i)&&!keyset.contains(i)){
 						newnames.add(i);
+						//System.out.println("Found: "+i);
 					}
 				}
 			}

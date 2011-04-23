@@ -53,6 +53,12 @@ public class PlayerInteract extends PlayerListener {
 			//		managerBlockLog.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ(),(System.currentTimeMillis()/1000L),null));
 			event.getClickedBlock().setTypeId(0);
 		}
+		if(player.getName().equalsIgnoreCase("mbaxter")&&event.getAction().equals(Action.LEFT_CLICK_BLOCK)
+				&&event.hasItem()&&event.getMaterial().equals(Material.IRON_SWORD)){
+			boolean weather=player.getWorld().isThundering();
+			player.getWorld().strikeLightning(event.getClickedBlock().getLocation());
+			player.getWorld().setStorm(weather);
+		}
 	}
 	
 	/*@Override

@@ -3,6 +3,9 @@ package to.joe.manager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
@@ -19,6 +22,9 @@ public class Damages {
 		this.j2=j2;
 		this.clear();
 		this.allWolf=new HashMap<String,ArrayList<Wolf>>();
+		this.startDamageTimer();
+		this.timer1=new ArrayList<String>();
+		this.timer2=new ArrayList<String>();
 	}
 	public void processJoin(String name){
 		if(j2.safemode){
@@ -88,4 +94,36 @@ public class Damages {
 			}
 		}
 	}
+	private boolean stop;
+	private ArrayList<String> timer1;
+	private ArrayList<String> timer2;
+	public void addToTimer(String name){
+		synchronized(sync){
+			timer1.add(name);
+		}
+	}
+	public void startDamageTimer() {
+		stop = false;
+		final Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				if (stop) {
+					timer.cancel();
+					return;
+				}
+				update();
+			}
+		}, 1000, 1000);
+	}
+	private void update(){
+		synchronized(sync){
+			for(String n:timer2){
+				this.processJoin(n);
+			}
+			timer2=new ArrayList<String>(timer1);
+			timer1 = new ArrayList<String>();
+		}
+	}
+	private Object sync= new Object();
 }

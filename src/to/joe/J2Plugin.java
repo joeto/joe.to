@@ -1308,6 +1308,48 @@ public class J2Plugin extends JavaPlugin {
 			mcbans.lookup(args[0], player);
 			return true;
 		}
+		if(commandName.equals("smite")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
+			if(args.length==0){
+				player.sendMessage(ChatColor.RED+"/smite player");
+				return true;
+			}
+			List<Player> results=this.getServer().matchPlayer(args[0]);
+			if(results.size()==1){
+				Player target=results.get(0);
+				boolean weather=target.getWorld().isThundering();
+				this.damage.danger(target.getName());
+				this.damage.addToTimer(target.getName());
+				target.getWorld().strikeLightning(target.getLocation());
+				player.sendMessage(ChatColor.RED+"Judgment enacted");
+				target.sendMessage(ChatColor.RED+"You have been judged");
+				//this.damage.processJoin(playerName);
+				target.getWorld().setStorm(weather);
+			}
+			else if(results.size()>1){
+				player.sendMessage(ChatColor.RED+"Matches too many players");
+			}
+			else{
+				player.sendMessage(ChatColor.RED+"Matches no players");
+			}
+			return true;
+		}
+		if(commandName.equals("storm")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
+			if(args.length==0){
+				player.sendMessage(ChatColor.RED+"/storm start/stop");
+				return true;
+			}
+			if(args[0].equalsIgnoreCase("start")){
+				player.getWorld().setStorm(true);
+				this.chat.msgByFlag(Flag.ADMIN, ChatColor.RED+playerName+" starts up a storm");
+				this.chat.msgByFlagless(Flag.ADMIN, ChatColor.RED+"Somebody has started a storm!");
+			}
+			if(args[0].equalsIgnoreCase("stop")){
+				player.getWorld().setStorm(false);
+				this.chat.msgByFlag(Flag.ADMIN, ChatColor.RED+playerName+" stops the storm");
+				this.chat.msgByFlagless(Flag.ADMIN, ChatColor.RED+"Somebody has prevented a storm!");
+			}
+			return true;
+		}
 		/*if(commandName.equals("pvpon")&&isPlayer&&(safemode||hasFlag(player,Flag.ADMIN))){
 			if(args.length>0&&hasFlag(player,Flag.ADMIN)){
 				damage.dangerP(args[0]);

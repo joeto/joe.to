@@ -2,7 +2,6 @@ package to.joe.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 import to.joe.J2Plugin;
 import to.joe.util.Flag;
 import to.joe.util.User;
@@ -71,12 +70,13 @@ public class PlayerJoinQuit extends PlayerListener {
 	public void onPlayerPreLogin(PlayerPreLoginEvent event) {
 		String name=event.getName();
 		String ip=event.getAddress().getHostAddress();
-		if(j2.debug)j2.log.info("Incoming player: "+name);
+		//System.out.println("IP: \""+ip+"\"");
+		if(j2.debug)j2.log.info("Incoming player: "+name+" on "+ip);
 		String reason=j2.mysql.checkBans(name);
 		//j2.mysql.userIP(name,player.getAddress().getHostName());
-		if(event.getResult().equals(Result.ALLOWED)){
+		//if(event.getResult().equals(Result.ALLOWED)){
 			j2.ip.incoming(name,ip);
-		}
+		//}
 		if(j2.debug)System.out.println("IP: "+event.getKickMessage());
 		User user=j2.mysql.getUser(name);
 		boolean isAdmin=(user.getUserFlags().contains(Flag.ADMIN)||j2.users.groupHasFlag(user.getGroup(), Flag.ADMIN));
