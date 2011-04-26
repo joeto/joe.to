@@ -246,3 +246,7 @@ commands:
     description: hmm
     usage: |
             ircmsg name message
+  flex:
+    description: hmm
+    usage: |
+            flex

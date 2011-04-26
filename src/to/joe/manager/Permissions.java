@@ -16,7 +16,28 @@ public class Permissions {
 	}
 	
 	public boolean permCheck(String playername,String permission){
-		return j2.hasFlag(playername,Flag.SRSTAFF)||j2.hasFlag(playername, perms.get(permission));
+		if(j2.hasFlag(playername,Flag.SRSTAFF)){
+			return true;
+		}
+		String[] split=permission.split("\\.");
+		if(split.length==1){
+			return perms.containsKey(permission)&&j2.hasFlag(playername, perms.get(permission));
+		}
+		String setting = "";
+        String node = "";
+
+        for (String next : split) {
+            setting += next + ".";
+            node = setting + "*";
+            if (perms.containsKey(node)&&j2.hasFlag(playername, perms.get(node))) {
+                return true;
+            }
+            else {
+                continue;
+            }
+        }
+		return false;
+		
 	}
 	
 	private J2Plugin j2;

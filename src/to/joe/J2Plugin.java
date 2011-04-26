@@ -1299,7 +1299,7 @@ public class J2Plugin extends JavaPlugin {
 
 			return true;
 		}
-		if(commandName.equals("madagascar")&&isPlayer&&hasFlag(player,Flag.ADMIN)){
+		if(commandName.equals("madagascar")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
 			log.info(playerName+" wants to SHUT. DOWN. EVERYTHING.");
 			ircEnable=false;
 			irc.getBot().quitServer("SHUT. DOWN. EVERYTHING.");
@@ -1407,6 +1407,30 @@ public class J2Plugin extends JavaPlugin {
 				return false;
 			}
 			irc.getBot().sendMessage(args[0], this.combineSplit(1, args, " "));
+			return true;
+		}
+		if(commandName.equals("flex")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF)||playerName.equalsIgnoreCase("MrBlip"))){
+			String message=""+ChatColor.GOLD;
+			switch(this.random.nextInt(5)){
+			case 0:
+				message+="All the ladies watch as "+playerName+" flexes";break;
+			case 1:
+				message+="Everybody stares as "+playerName+" flexes";break;
+			case 2:
+				message+="Sexy party! "+playerName+" flexes and the gods stare";break;
+			case 3:
+				message+=playerName+" is too sexy for this party";break;
+			case 4: 
+				message+=playerName+" knows how to flex";break;
+			}
+			if(playerName.equalsIgnoreCase("MrBlip")&&random.nextBoolean()){
+				if(random.nextBoolean())
+					message=ChatColor.GOLD+"MrBlip shows off his chin";
+				else
+					message=ChatColor.GOLD+"MrBlip shows off his hat";
+			}
+			chat.msgAll(message);
+			log.info(playerName+" flexed.");
 			return true;
 		}
 		return false;
