@@ -135,7 +135,6 @@ public class J2Plugin extends JavaPlugin {
 		intro=readDaFile("intro.txt");
 		motd=readDaFile("motd.txt");
 		help=readDaFile("help.txt");
-		this.perms.load();
 		PropFile j2properties = new PropFile("j2.properties");
 		try { 
 			debug = j2properties.getBoolean("debug",false);
@@ -225,6 +224,7 @@ public class J2Plugin extends JavaPlugin {
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "Exception while reading from j2.properties", e);
 		}
+		this.perms.load();
 	}
 
 
@@ -721,6 +721,7 @@ public class J2Plugin extends JavaPlugin {
 			log.info("Giving "+playerName+" "+count+" "+material.toString());
 			if((isOnWatchlist(material.getId()))&&(count>10||count<1)){
 				irc.ircAdminMsg("Detecting summon of "+count+" "+material.toString()+" by "+playerName);
+				chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"Detecting summon of "+ChatColor.WHITE+count+" "+ChatColor.LIGHT_PURPLE+material.toString()+" by "+ChatColor.WHITE+playerName);
 			}
 			return true;
 		}
@@ -983,7 +984,7 @@ public class J2Plugin extends JavaPlugin {
 
 			return true;
 		}
-
+		
 		if(commandName.equals("maintenance") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
 			if(!maintenance){
 				log.info(playerName+" has turned on maintenance mode");
@@ -1399,6 +1400,13 @@ public class J2Plugin extends JavaPlugin {
 		if(isPlayer && commandName.equals("ixrai12345")){
 			kickbans.callKick(playerName, "BobTheNervous", "Remove your hacks before you rejoin.");
 			log.info("[BOB] Detected /ixrai12345 from "+playerName);
+			return true;
+		}
+		if(commandName.equals("ircmsg")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))){
+			if(args.length<2){
+				return false;
+			}
+			irc.getBot().sendMessage(args[0], this.combineSplit(1, args, " "));
 			return true;
 		}
 		return false;

@@ -219,7 +219,7 @@ public class MySQL {
 				unBanTime=0;
 			else
 				unBanTime=timeNow+(60*time);
-			String state="INSERT INTO j2bans (name,reason,admin,unbantime,timeofban,x,y,z,pitch,yaw,world) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+			String state="INSERT INTO j2bans (name,reason,admin,unbantime,timeofban,x,y,z,pitch,yaw,world,server) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 			if(j2.debug)j2.log.info("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setString(1, stringClean(name.toLowerCase()));
@@ -233,6 +233,7 @@ public class MySQL {
 			ps.setFloat(9,pitch);
 			ps.setFloat(10, yaw);
 			ps.setString(11, world);
+			ps.setInt(12, this.serverNumber);
 			ps.executeUpdate();
 			Ban newban=new Ban(name.toLowerCase(),reason,unBanTime,timeNow);
 			j2.kickbans.bans.add(newban);

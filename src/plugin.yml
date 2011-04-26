@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2Plugin
-version: 0.8
+version: 0.9.1
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -242,3 +242,7 @@ commands:
     description: hmm
     usage: |
             storm
+  ircmsg:
+    description: hmm
+    usage: |
+            ircmsg name message
