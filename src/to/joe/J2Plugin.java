@@ -358,7 +358,7 @@ public class J2Plugin extends JavaPlugin {
 	public boolean isOnSummonlist(int id) {
 		return summonlist.contains(Integer.valueOf(id));
 	}
-	
+
 	public void travelLog(String name,int distance){
 
 	}
@@ -452,7 +452,7 @@ public class J2Plugin extends JavaPlugin {
 			System.out.println("J2:" + message);
 		}
 	}
-	
+
 	public void craftIRC_sendMessageToTag(String message, String tag){
 		if(debug){
 			log.info("J2: Got message, tag \""+tag+"\"");
@@ -487,7 +487,7 @@ public class J2Plugin extends JavaPlugin {
 			log.info(playerName+" kicked all: "+reason);
 			return true;
 		}
-		
+
 		if(commandName.equals("smackirc")){
 			irc.getBot().quitServer("Back in a moment <3");
 			irc.restart=true;
@@ -755,13 +755,17 @@ public class J2Plugin extends JavaPlugin {
 			int curlen=0;
 			int maxlen=320;
 			String msg="Players ("+players.length+"/"+this.playerLimit+"):";
+			boolean isAdmin=hasFlag(player,Flag.ADMIN);
 			for(char ch:msg.toCharArray()){
 				curlen+=Chats.characterWidths[(int)ch];
 			} //now we have our base length
-			
+
 			for(Player p: players){
 				String name=p.getName();
 				String cname=users.getUser(name).getColorName();
+				if(isAdmin&&hasFlag(p,Flag.ADMIN)){
+					cname=ChatColor.RED+p.getName();
+				}
 				int thislen=0;
 				for(char ch:name.toCharArray()){
 					thislen+=Chats.characterWidths[(int)ch];
@@ -1222,7 +1226,7 @@ public class J2Plugin extends JavaPlugin {
 			player.getInventory().clear(player.getInventory().getHeldItemSlot());
 			return true;
 		}
-		
+
 		if(isPlayer && commandName.equals("mobhere") && hasFlag(player, Flag.SRSTAFF)){
 			if(args.length==0){
 				player.sendMessage(ChatColor.RED+"/mobhere mobname");
@@ -1235,7 +1239,7 @@ public class J2Plugin extends JavaPlugin {
 		}
 		if(isPlayer && commandName.equals("kibbles")
 				&&hasFlag(player, Flag.ADMIN)){
-			
+
 			chat.msgByFlag(Flag.ADMIN, ChatColor.RED+playerName+" enabled GODMODE");
 			chat.msgByFlagless(Flag.ADMIN,ChatColor.DARK_RED+"!!! "+ChatColor.RED+playerName+" is ON FIRE "+ChatColor.DARK_RED+"!!!");
 			chat.msgByFlagless(Flag.ADMIN,ChatColor.RED+"    Also, "+playerName+" is an admin. Pay attention to "+playerName);
@@ -1304,7 +1308,7 @@ public class J2Plugin extends JavaPlugin {
 				msg(player,"/lookup player");
 				return true;
 			}
-			log.info(playerName+" looked up "+args[0]);
+			log.info("[mcbans] "+playerName+" looked up "+args[0]);
 			mcbans.lookup(args[0], player);
 			return true;
 		}
@@ -1320,10 +1324,12 @@ public class J2Plugin extends JavaPlugin {
 				this.damage.danger(target.getName());
 				this.damage.addToTimer(target.getName());
 				target.getWorld().strikeLightning(target.getLocation());
-				player.sendMessage(ChatColor.RED+"Judgment enacted");
+				//player.sendMessage(ChatColor.RED+"Judgment enacted");
+				chat.msgByFlag(Flag.ADMIN, ChatColor.RED+playerName+" has zapped "+target.getName());
 				target.sendMessage(ChatColor.RED+"You have been judged");
 				//this.damage.processJoin(playerName);
 				target.getWorld().setStorm(weather);
+				log.info("[zap] "+playerName+" has judged "+target.getName());
 			}
 			else if(results.size()>1){
 				player.sendMessage(ChatColor.RED+"Matches too many players");
@@ -1389,6 +1395,7 @@ public class J2Plugin extends JavaPlugin {
 		}*/
 		if(isPlayer && commandName.equals("ixrai12345")){
 			kickbans.callKick(playerName, "BobTheNervous", "Remove your hacks before you rejoin.");
+			log.info("[BOB] Detected /ixrai12345 from "+playerName);
 			return true;
 		}
 		return false;

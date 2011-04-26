@@ -28,12 +28,26 @@ public class MCBans {
 	}
 
 	public void processJoin(String name){
-		String[] mcbans=j2.mcbans.checkBansOnline(name);
-		Double rep=Double.valueOf(mcbans[1]);
-		if(rep<10.0){
-			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User"+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has a lowered mcbans reputation of "+rep+"/10");
+		HashMap<String,String> mcbans=j2.mcbans.checkBansOnline(name);
+		Double reputation=Double.valueOf(mcbans.get("reputation"));
+		String ban_num=mcbans.get("ban_num");
+		String disputes=mcbans.get("disputes");
+		String ban_status=mcbans.get("ban_status");
+		String is_mcbans_mod=mcbans.get("is_mcbans_mod");
+		if(reputation<10.0){
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User"+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has a lowered mcbans reputation of "+reputation+"/10");
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"To see the bans: /lookup "+name);
-			j2.irc.ircAdminMsg("User "+name+" has a lowered reputation of "+rep+"/10 on mcbans");
+			j2.irc.ircAdminMsg("[MCBANS] "+name+": Rep "+reputation+"/10. Bans: "+ban_num);
+		}
+		if(is_mcbans_mod.equals("y")){
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.RED+"Admins, be polite, "+name+" is an mcbans admin");
+			j2.irc.ircAdminMsg("[MCBANS] "+name+" is an MCBans admin. Nifty.");
+			Player player=j2.getServer().getPlayer(name);
+			if(player!=null){
+				player.sendMessage(ChatColor.GREEN+"Welcome, oh glorious MCBans lord, to joe.to!  "+ChatColor.RED+"I LOVE YOU <3");
+				player.sendMessage(ChatColor.GREEN+"I'll make it pretty quick. You have "+ChatColor.AQUA+disputes+ChatColor.GREEN+" disputes");
+				player.sendMessage(ChatColor.GREEN+"For debug purposes: Rep: "+ChatColor.AQUA+reputation+ChatColor.GREEN+"/10. Bans: "+ChatColor.AQUA+ban_num+ChatColor.GREEN+". Ban Status: "+ChatColor.AQUA+ban_status);
+			}
 		}
 	}
 
@@ -60,21 +74,27 @@ public class MCBans {
 			player.sendMessage(ChatColor.RED + " Insufficient permissions!");
 		}
 	}
-	public String[] checkBansOnline(String player) {
+	public HashMap<String,String> checkBansOnline(String player) {
 		HashMap<String, String> url_items=new HashMap<String, String>();
 		player = player.toLowerCase();
-		String[] toReturn=new String[2];
+		HashMap<String,String> toReturn=new HashMap<String,String>();
 		url_items.put("player", player);
 		url_items.put("version", version);
 		url_items.put("exec", "user_connect");
 		JSONObject result = hdl_jobj(url_items);
 		player_jsonobj.put(player, result);
 		try {
-			toReturn[0]=result.getString("ban_status");
-			toReturn[1]=result.getString("reputation");
+			toReturn.put("ban_status",result.getString("ban_status"));
+			toReturn.put("reputation",result.getString("reputation"));
+			toReturn.put("ban_num",result.getString("ban_num"));
+			toReturn.put("disputes",result.getString("disputes"));
+			toReturn.put("is_mcbans_mod",result.getString("is_mcbans_mod"));
 		} catch (JSONException e) {
-			toReturn[0]="";
-			toReturn[1]="";
+			toReturn.put("ban_status","");
+			toReturn.put("reputation","");
+			toReturn.put("ban_num","");
+			toReturn.put("disputes","");
+			toReturn.put("is_mcbans_mod","");
 		}
 		return toReturn;
 	}
