@@ -59,9 +59,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		if(j2.users.getUser(player)!=null){
 			j2.users.delUser(player.getName());
 			j2.warps.dropPlayer(player.getName());
-			if(j2.ircEnable && j2.getServer().getOnlinePlayers().length<10){
-				j2.irc.ircMsg(event.getPlayer().getName()+" has left the server");
-			}
+			j2.irc.processLeave(player.getName());
 		}
 		j2.damage.arf(player.getName());
 	}

@@ -15,8 +15,6 @@
 package to.joe;
 
 import java.io.File;
-import java.util.HashMap;
-
 import org.bukkit.command.*;
 import org.bukkit.entity.*;
 import org.bukkit.Location;
@@ -29,11 +27,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-
 import to.joe.listener.*;
 import to.joe.manager.*;
 import to.joe.util.*;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -60,7 +56,6 @@ public class J2Plugin extends JavaPlugin {
 	private final BlockAll blockListener = new BlockAll(this);
 	private final EntityAll entityListener = new EntityAll(this);
 	private final PlayerTeleport plrlisTeleport = new PlayerTeleport(this);
-	private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 	public final Chats chat = new Chats(this);
 	public final IRC irc = new IRC(this);
 	public final KicksBans kickbans = new KicksBans(this);
@@ -71,6 +66,7 @@ public class J2Plugin extends JavaPlugin {
 	public final IPTracker ip=new IPTracker(this);
 	public final MCBans mcbans=new MCBans(this);
 	public final Damages damage=new Damages(this);
+	public final Permissions perms=new Permissions(this);
 	//public managerBlockLog blogger;
 	public MySQL mysql;
 
@@ -131,18 +127,6 @@ public class J2Plugin extends JavaPlugin {
 		PluginDescriptionFile pdfFile = this.getDescription();
 		System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
 		webpage.go(servernumber);
-	}
-
-	public boolean isDebugging(final Player player) {
-		if (debugees.containsKey(player)) {
-			return debugees.get(player);
-		} else {
-			return false;
-		}
-	}
-
-	public void setDebugging(final Player player, final boolean value) {
-		debugees.put(player, value);
 	}
 
 	public void loadData(){
@@ -427,14 +411,16 @@ public class J2Plugin extends JavaPlugin {
 		return builder.toString();
 	}
 
-
-
-	public boolean hasFlag(Player player, Flag flag){
-		User user=users.getUser(player);
+	public boolean hasFlag(String playername, Flag flag){
+		User user=users.getUser(playername);
 		if(user!=null && (user.getUserFlags().contains(flag) || users.groupHasFlag(user.getGroup(), flag))){
 			return true;
 		}
 		return false;
+	}
+
+	public boolean hasFlag(Player player, Flag flag){
+		return this.hasFlag(player.getName(), flag);
 	}
 
 	public void jailMsg(Player player){
@@ -463,6 +449,22 @@ public class J2Plugin extends JavaPlugin {
 				log.info("J2.2: Got message, tag \""+tag+"\"");
 			}
 		}
+	}
+	
+	public int playerMatches(String name){
+		List<Player> list=this.getServer().matchPlayer(name);
+		if(list==null){
+			return 0;
+		}
+		return list.size();
+	}
+	
+	public Player getPlayer(String name){
+		List<Player> list=this.getServer().matchPlayer(name);
+		if(list!=null && list.size()==1){
+			return list.get(0);
+		}
+		return null;
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {

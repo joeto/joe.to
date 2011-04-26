@@ -740,4 +740,40 @@ public class MySQL {
 		}
 		return result;
 	}
+	
+	public HashMap<String,Flag> getPerms(){
+		HashMap<String,Flag> perms=new HashMap<String,Flag>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			String state="SELECT permission,flag FROM perms where server=?";
+			if(j2.debug)j2.log.info("Query: "+state);
+			ps = conn.prepareStatement(state);
+			ps.setInt(1, serverNumber);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				perms.put(rs.getString("permission"), Flag.byChar(rs.getString("flag").charAt(0)));
+			}
+			if(j2.debug)j2.log.info("Loaded "+perms.size()+ " permissions");
+
+		} catch (SQLException ex) {
+			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+		return perms;
+	}
 }

@@ -46,6 +46,12 @@ public class IRC {
 		}
 	}
 	
+	public void processLeave(String name){
+		if(j2.ircEnable && j2.getServer().getOnlinePlayers().length<10){
+			//j2.irc.ircMsg(name+" has left the server");
+		}
+	}
+	
 	public void prepIRC(){
 
 		bot=new ircBot(j2.ircName,j2.ircMsg,j2.ircCharLim,j2.ircUserColor,j2.ircEcho,j2.ircSeparator,this);
