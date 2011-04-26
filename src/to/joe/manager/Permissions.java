@@ -9,11 +9,10 @@ public class Permissions {
 	public Permissions(J2Plugin j2){
 		this.j2=j2;
 		perms=new HashMap<String,Flag>();
-		load();
 	}
 	
 	public void load(){
-		
+		perms=j2.mysql.getPerms();
 	}
 	
 	public boolean permCheck(String playername,String permission){

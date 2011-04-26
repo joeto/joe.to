@@ -135,6 +135,7 @@ public class J2Plugin extends JavaPlugin {
 		intro=readDaFile("intro.txt");
 		motd=readDaFile("motd.txt");
 		help=readDaFile("help.txt");
+		this.perms.load();
 		PropFile j2properties = new PropFile("j2.properties");
 		try { 
 			debug = j2properties.getBoolean("debug",false);
