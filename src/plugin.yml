@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2Plugin
-version: 0.9.1
+version: 0.9.2
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -186,10 +186,10 @@ commands:
     description: Clear your inventory
     usage: |
             /clearinventory
-  mobhere:
+  mob:
     description: Drop a mob here of defined type
     usage: |
-            /mobhere <mob>
+            /mob <mob>
   kibbles:
     description: What's his power level?
     usage: |
@@ -249,4 +249,4 @@ commands:
   flex:
     description: hmm
     usage: |
-            flex
+            Error: Not enough muscle mass

@@ -19,10 +19,11 @@ public class Permissions {
 		if(j2.hasFlag(playername,Flag.SRSTAFF)){
 			return true;
 		}
-		String[] split=permission.split("\\.");
-		if(split.length==1){
-			return perms.containsKey(permission)&&j2.hasFlag(playername, perms.get(permission));
+		
+		if(perms.containsKey(permission)&&j2.hasFlag(playername, perms.get(permission))){
+			return true;
 		}
+		String[] split=permission.split("\\.");
 		String setting = "";
         String node = "";
 
@@ -38,6 +39,15 @@ public class Permissions {
         }
 		return false;
 		
+	}
+	
+	public boolean inGroup(String name,String group){
+		if(Flag.isFlagChar(group.charAt(0))){
+			return j2.hasFlag(name, Flag.byChar(group.charAt(0)));
+		}
+		else{
+			return false;
+		}
 	}
 	
 	private J2Plugin j2;

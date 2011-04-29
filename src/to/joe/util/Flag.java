@@ -33,6 +33,10 @@ public enum Flag {
 	public static Flag byChar(final char Char) {
 		return flags.get(Char);
 	}
+	
+	public static boolean isFlagChar(char Char){
+		return flags.containsKey(Char);
+	}
 
 	static {
 		for (Flag f : Flag.values()) {

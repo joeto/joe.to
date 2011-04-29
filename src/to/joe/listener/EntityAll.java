@@ -1,9 +1,11 @@
 package to.joe.listener;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -64,6 +66,19 @@ public class EntityAll extends EntityListener {
 			else{//pve
 				if(j2.damage.PvEsafe.contains(player.getName())){
 					event.setCancelled(true);
+				}
+			}
+		}
+		if(smacked instanceof Wolf){
+			if(event instanceof EntityDamageByEntityEvent){
+				EntityDamageByEntityEvent ev=(EntityDamageByEntityEvent)event;
+				Entity damager=ev.getDamager();
+				if(damager instanceof Player){//YOU MONSTER
+					Location loc=damager.getLocation();
+					int x=(int)loc.getX();
+					int y=(int)loc.getY();
+					int z=(int)loc.getZ();
+					j2.log.info("[WOOF] "+((Player) damager).getName()+" smacked a wolf for "+event.getDamage()+" damage at "+x+" "+y+" "+z);
 				}
 			}
 		}

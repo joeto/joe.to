@@ -15,6 +15,8 @@
 package to.joe;
 
 import java.io.File;
+
+import org.bukkit.block.Block;
 import org.bukkit.command.*;
 import org.bukkit.entity.*;
 import org.bukkit.Location;
@@ -451,7 +453,7 @@ public class J2Plugin extends JavaPlugin {
 			}
 		}
 	}
-	
+
 	public int playerMatches(String name){
 		List<Player> list=this.getServer().matchPlayer(name);
 		if(list==null){
@@ -459,7 +461,7 @@ public class J2Plugin extends JavaPlugin {
 		}
 		return list.size();
 	}
-	
+
 	public Player getPlayer(String name){
 		List<Player> list=this.getServer().matchPlayer(name);
 		if(list!=null && list.size()==1){
@@ -984,7 +986,7 @@ public class J2Plugin extends JavaPlugin {
 
 			return true;
 		}
-		
+
 		if(commandName.equals("maintenance") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
 			if(!maintenance){
 				log.info(playerName+" has turned on maintenance mode");
@@ -1231,14 +1233,23 @@ public class J2Plugin extends JavaPlugin {
 			return true;
 		}
 
-		if(isPlayer && commandName.equals("mobhere") && hasFlag(player, Flag.SRSTAFF)){
+		if(isPlayer && commandName.equals("mob") && hasFlag(player, Flag.SRSTAFF)){
 			if(args.length==0){
-				player.sendMessage(ChatColor.RED+"/mobhere mobname");
+				player.sendMessage(ChatColor.RED+"/mob mobname");
 			}
 			else {
-				player.getLocation().getWorld().spawnCreature(player.getLocation(), CreatureType.valueOf(args[0]));
+				CreatureType creat=CreatureType.fromName(args[0]);
+				if(creat!=null){
+					Block block=player.getTargetBlock(null, 50);
+					if(block!=null){
+						Location bloc=block.getLocation();
+						if(bloc.getY()<126){
+							Location loc=new Location(bloc.getWorld(),bloc.getX(),bloc.getY()+1,bloc.getZ());
+							player.getWorld().spawnCreature(loc, CreatureType.fromName(args[0]));
+						}
+					}
+				}
 			}
-
 			return true;
 		}
 		if(isPlayer && commandName.equals("kibbles")
