@@ -1,8 +1,1 @@
-plugin.yml defines the plugin, for bukkit
-
-You need bukkit (not craftbukkit) on your build path
-and you need the mysql connector bin in your craftbukkit dir. 
-
-Latest bukkit at: http://ci.lukegb.com/
-Go to a build of Bukkit-main
-Under the artifacts tab, download the .jar file
+joe.to plugin

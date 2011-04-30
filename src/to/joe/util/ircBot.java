@@ -1,11 +1,5 @@
 package to.joe.util;
 
-/*
- * mbaxter's irc bot main code for bukkit
- * cannot be distributed as pircbot is under GPL
- * 
- */
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.jibble.pircbot.*;

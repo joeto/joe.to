@@ -1,15 +1,6 @@
 /*
- * The epic j2Plugin
+ * j2Plugin
  * A bunch of fun features, put together for joe.to
- * DO NOT DISTRIBUTE!
- * 
- * Credits:
- * mbaxter
- * 
- * Thanks to;
- * bootswithdefer for Tips code
- * Nijikokun for properties management and the item command
- * 
  */
 
 package to.joe;
@@ -82,8 +73,8 @@ public class J2Plugin extends JavaPlugin {
 	}
 
 	public void onEnable() {
-		Logger.getLogger("Minecraft").setFilter(new LogFilter());
 		log=Logger.getLogger("Minecraft");
+		log.setFilter(new MCLogFilter());
 		protectedUsers=new ArrayList<String>();
 		loadData();
 		if(debug)log.info("Data loaded");
@@ -137,7 +128,7 @@ public class J2Plugin extends JavaPlugin {
 		intro=readDaFile("intro.txt");
 		motd=readDaFile("motd.txt");
 		help=readDaFile("help.txt");
-		PropFile j2properties = new PropFile("j2.properties");
+		Property j2properties = new Property("j2.properties");
 		try { 
 			debug = j2properties.getBoolean("debug",false);
 			//mysql start
@@ -152,12 +143,7 @@ public class J2Plugin extends JavaPlugin {
 
 			playerLimit=j2properties.getInt("max-players",20);
 			tips_delay = j2properties.getInt("tip-delay", 120);
-			tips_prefix = j2properties.getString("tip-prefix","");
 			tips_color = "\u00A7"+j2properties.getString("tip-color", "b");
-			if (tips_prefix == null || tips_prefix.length() == 0)
-				tips_prefix = "";
-			else if (tips_prefix.charAt(tips_prefix.length()-1) != ' ')
-				tips_prefix += " ";
 			ircHost = j2properties.getString("irc-host","localhost");
 			ircName = j2properties.getString("irc-name","aMinecraftBot");
 			ircChannel = j2properties.getString("irc-channel","#minecraftbot");
@@ -289,26 +275,20 @@ public class J2Plugin extends JavaPlugin {
 
 	public void broadcastTip()
 	{
-		broadcastTip(currentTip);
-		if (currentTip >= tips.size())
-			currentTip = 0;
-		else
-			currentTip++;
-	}
-
-	public void broadcastTip(int tipnum)
-	{
 		if (tips.isEmpty())
 			return;
-		if (tipnum < 0 || tipnum >= tips.size())
-			return;
-		String message = tips_color + tips_prefix + tips.get(tipnum);
+		String message = tips_color+tips.get(curTipNum);
 		for (Player p : this.getServer().getOnlinePlayers()) {
 			if (p != null) {
 				p.sendMessage(message);
 			}
 		}
+		if (curTipNum >= tips.size())
+			curTipNum = 0;
+		else
+			curTipNum++;
 	}
+
 
 	public void loadTips() {
 		tips = new ArrayList<String>();
@@ -1471,11 +1451,10 @@ public class J2Plugin extends JavaPlugin {
 	public String[] ircSeparator;
 	private String tips_location = "tips.txt";
 	private String  tips_color = ChatColor.AQUA.toString();
-	private String  tips_prefix = "";
 	private boolean tips_stopTimer = false;
 	private int tips_delay = 120;
 	private ArrayList<String> tips;
-	private int currentTip = 0;
+	private int curTipNum = 0;
 	public String[] ircLevel2;
 	public boolean ircEnable;
 	public ArrayList<Integer> itemblacklist,superblacklist,watchlist,summonlist;
@@ -1485,7 +1464,7 @@ public class J2Plugin extends JavaPlugin {
 	public boolean safemode;
 	public boolean ihatewolves;
 	public boolean trustedonly;
-	public PropFile tpProtect=new PropFile("tpProtect.list");
+	public Property tpProtect=new Property("tpProtect.list");
 	public Player OneByOne = null;
 	public boolean fun,randomcolor;
 	public Random random = new Random();
