@@ -1444,6 +1444,17 @@ public class J2Plugin extends JavaPlugin {
 			log.info(playerName+" flexed.");
 			return true;
 		}
+		//DO NOT USE THIS COMMAND FOR YOUR BENEFIT. IT IS FOR TESTING.
+		if(commandName.equals("thor")&&isPlayer&&hasFlag(player,Flag.ADMIN)){
+			if(hasFlag(player,Flag.CUSTOM_THOR)){
+				player.sendMessage(ChatColor.GOLD+"You lose your mystical powers");
+				users.dropFlag(playerName, Flag.CUSTOM_THOR);
+			}
+			else {
+				player.sendMessage(ChatColor.GOLD+"You gain mystical powers");
+				users.addFlag(playerName, Flag.CUSTOM_THOR);
+			}
+		}
 		return false;
 	}
 

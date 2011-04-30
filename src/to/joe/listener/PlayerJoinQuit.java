@@ -1,5 +1,6 @@
 package to.joe.listener;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 import to.joe.J2Plugin;
@@ -34,6 +35,9 @@ public class PlayerJoinQuit extends PlayerListener {
 		}
 		for(String line : j2.motd){
 			player.sendMessage(line);
+		}
+		if(j2.hasFlag(player, Flag.CUSTOM_THOR)){
+			player.sendMessage(ChatColor.GOLD+"You have mystical powers");
 		}
 		/*if(j2.hasFlag(player,Flag.JAILED)){
 			player.teleportTo(j2.users.jail);

@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import to.joe.util.BlockRow;
 
 
-
+//Note: This is inactive. We use BB instead.
 
 
 public class BlockLogger implements Runnable // start
