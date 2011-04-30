@@ -56,7 +56,7 @@ public class MCBans {
 			HashMap<String,String> url_items = new HashMap<String,String>();
 			url_items.put("player", PlayerName);
 			url_items.put("exec", "lookup_user");
-			JSONObject result = hdl_jobj(url_items);
+			JSONObject result = apiCall(url_items);
 			try {
 				player.sendMessage(PlayerName + " has " + result.getString("ban_num") + " ban(s) .:. " + result.getString("ban_rep") + "/10 Reputation");
 
@@ -81,7 +81,7 @@ public class MCBans {
 		url_items.put("player", player);
 		url_items.put("version", version);
 		url_items.put("exec", "user_connect");
-		JSONObject result = hdl_jobj(url_items);
+		JSONObject result = apiCall(url_items);
 		player_jsonobj.put(player, result);
 		try {
 			toReturn.put("ban_status",result.getString("ban_status"));
@@ -98,10 +98,10 @@ public class MCBans {
 		}
 		return toReturn;
 	}
-	private JSONObject hdl_jobj(HashMap<String, String> items) {
+	private JSONObject apiCall(HashMap<String, String> items) {
 		String url_req = urlparse(items);
-		String json_text = request_from_api(url_req);
-		return get_data(json_text);
+		String json_text = apiRequest(url_req);
+		return JSONParty(json_text);
 	}
 	private String urlparse(HashMap<String, String> items) {
 		String data = "";
@@ -119,7 +119,7 @@ public class MCBans {
 		}
 		return data;
 	}
-	private String request_from_api(String data) {
+	private String apiRequest(String data) {
 		try {
 			URL url = new URL("http://72.10.39.172/" + j2.mcbansapi);
 			URLConnection conn = url.openConnection();
@@ -144,7 +144,7 @@ public class MCBans {
 			System.out.println("mcbans error");
 		}return "";
 	}
-	private JSONObject get_data(String json_text) {
+	private JSONObject JSONParty(String json_text) {
 		try {
 			JSONObject json = new JSONObject(json_text);
 			return json;
@@ -155,11 +155,11 @@ public class MCBans {
 	}
 
 	@SuppressWarnings("unchecked")
-	public HashMap<String, String> hdl_com(HashMap<String, String> items) {
+	public HashMap<String, String> getResponse(HashMap<String, String> items) {
 		HashMap<String, String> out = new HashMap<String, String>();
 		String url_req = urlparse(items);
-		String json_text = request_from_api(url_req);
-		JSONObject output = get_data(json_text);
+		String json_text = apiRequest(url_req);
+		JSONObject output = JSONParty(json_text);
 		if (output != null)
 		{
 			Iterator i = output.keys();
@@ -186,7 +186,7 @@ public class MCBans {
 		HashMap<String,String> url_items = new HashMap<String,String>();
 		url_items.put("player", PlayerName);
 		url_items.put("exec", "unban_user");
-		HashMap<String,String> result = hdl_com(url_items);
+		HashMap<String,String> result = getResponse(url_items);
 		if ((result.get("result")).equalsIgnoreCase("y")){
 			j2.log.info("[mcbans] Unbanned "+PlayerName);
 			return true;
@@ -219,7 +219,7 @@ public class MCBans {
 		else {
 			url_items.put("exec", "ban_local_user");
 		}
-		HashMap<String, String> result = hdl_com(url_items);
+		HashMap<String, String> result = getResponse(url_items);
 		if (((String)result.get("result")).equalsIgnoreCase("y")) {
 			j2.log.info("[mcbans] Added "+PlayerName);
 		}
