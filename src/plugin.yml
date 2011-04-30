@@ -254,3 +254,7 @@ commands:
     description: Removes currently selected item
     usage: |
             removeitem
+  thor:
+    description: KRAK-A-THOOM
+    usage: |
+            ROAR
