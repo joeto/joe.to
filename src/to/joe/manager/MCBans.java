@@ -35,8 +35,8 @@ public class MCBans {
 		String ban_status=mcbans.get("ban_status");
 		String is_mcbans_mod=mcbans.get("is_mcbans_mod");
 		if(reputation<10.0){
-			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User"+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has a lowered mcbans reputation of "+reputation+"/10");
-			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"To see the bans: /lookup "+name);
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"[MCBANS] "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has rep "+ChatColor.WHITE+reputation+ChatColor.LIGHT_PURPLE+"/10, "+ChatColor.WHITE+ban_num+ChatColor.LIGHT_PURPLE+" bans");
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"To see the bans: /lookup "+ChatColor.WHITE+name);
 			j2.irc.ircAdminMsg("[MCBANS] "+name+": Rep "+reputation+"/10. Bans: "+ban_num);
 		}
 		if(is_mcbans_mod.equals("y")){

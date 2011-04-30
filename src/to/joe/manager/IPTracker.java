@@ -12,13 +12,14 @@ import to.joe.util.Flag;
 
 public class IPTracker {
 	private J2Plugin j2;
-	private HashMap<String,String> known;
+	private HashMap<String,String> html,nameslist;
 	private HashMap<String,Integer> totalcount,bannedcount;
 	public ArrayList<String> badlist;
 
 	public IPTracker(J2Plugin j2){
 		this.j2=j2;
-		this.known=new HashMap<String,String>();
+		this.html=new HashMap<String,String>();
+		this.nameslist=new HashMap<String,String>();
 		this.totalcount=new HashMap<String,Integer>();
 		this.bannedcount=new HashMap<String,Integer>();
 		this.badlist=new ArrayList<String>();
@@ -38,25 +39,26 @@ public class IPTracker {
 		names=getNames(names,ips);
 		ips=getIPs(names,ips);
 		names=getNames(names,ips);
-		known.remove(name);
+		html.remove(name);
 		totalcount.remove(name);
 		bannedcount.remove(name);
 		if(names.size()>1){
-			String nameslist="";
+			String nameslist_s="";
 			int ohnoes=0;
 			for(String n:names.keySet()){
 				if(!n.equalsIgnoreCase(name)){
 					if(j2.mysql.checkBans(n)==null){
-						nameslist+=n+" ";
+						nameslist_s+=n+" ";
 					}
 					else{
-						nameslist+="<span style='color:red'>"+n+"</span> ";
+						nameslist_s+="<span style='color:red'>"+n+"</span> ";
 						ohnoes++;
 					}
 				}
 			}
-			String newknown="<tr><td><a href='../alias/detector.php?name="+name+"'>"+name+"</a></td><td>"+nameslist+"</td></tr>";
-			known.put(name, newknown);
+			String newknown="<tr><td><a href='../alias/detector.php?name="+name+"'>"+name+"</a></td><td>"+nameslist_s+"</td></tr>";
+			html.put(name, newknown);
+			this.nameslist.put(name, nameslist_s);
 			totalcount.put(name, names.size());
 			bannedcount.put(name, ohnoes);
 			if(ohnoes>0){
@@ -129,8 +131,8 @@ public class IPTracker {
 	}
 
 	public String getKnown(String name){
-		if(known.containsKey(name)){
-			return known.get(name);
+		if(html.containsKey(name)){
+			return html.get(name);
 		}
 		return "";
 	}
@@ -150,8 +152,8 @@ public class IPTracker {
 		if(badlist.contains(name)){
 			int total=this.getTotal(name)-1;
 			int banned=this.getBanned(name);
-			j2.irc.ircAdminMsg("mc"+j2.servernumber+": "+name+" matches "+total+" others: "+banned+" banned");
-			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"User "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches "+total+" others: "+banned+" banned");
+			j2.irc.ircAdminMsg("[J2BANS] "+name+" matches "+total+" others: "+banned+" banned");
+			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"[J2BANS] "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches "+total+" others: "+banned+" banned");
 		}
 	}
 }

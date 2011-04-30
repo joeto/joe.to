@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,6 +23,7 @@ public class IRC {
 	private ircBot bot;
 	private Object adminsLock = new Object();
 	private ArrayList<ircAdmin> admins;
+	private HashMap<String,Long> msgs;
 	public LinkedBlockingQueue<String> chatQueue = new LinkedBlockingQueue<String>();
 	//private boolean stop = false;
 	//private HashMap<String,Long> recent;
@@ -28,14 +31,28 @@ public class IRC {
 	public IRC(J2Plugin j2p){
 		this.j2=j2p;
 		loadIRCAdmins();
+		this.msgs=new HashMap<String,Long>();
 		//this.recent=new HashMap<String,Long>();
 	}
 	
 	public boolean goodToGo(String string){
-		if(string.endsWith("banned")||string.endsWith("on mcbans")){
-			
+		if(string.startsWith("[J2BANS]")||string.startsWith("[MCBANS]")){
+			long rightNow=(new Date()).getTime();
+			if(this.msgs.containsKey(string)){
+				if((this.msgs.get(string).longValue()+3600000L)<rightNow){
+					this.msgs.remove(string);
+					this.msgs.put(string, rightNow);
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+			else{
+				this.msgs.put(string, rightNow);
+				return true;
+			}
 		}
-		
 		return true;
 	}
 
@@ -227,7 +244,7 @@ public class IRC {
 	}
 
 	public void ircAdminMsg(String message){
-		if(j2.ircEnable)
+		if(j2.ircEnable&&this.goodToGo(message))
 			bot.sendMessage(j2.ircAdminChannel,message);
 	}
 
