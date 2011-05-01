@@ -1,4 +1,5 @@
--- Generation Time: Apr 09, 2011 at 07:20 PM
+--
+-- Generation Time: May 01, 2011 at 02:24 PM
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -15,7 +16,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 CREATE TABLE IF NOT EXISTS `alias` (
   `Name` varchar(64) NOT NULL,
   `IP` varchar(64) NOT NULL,
-  `Time` int(11) NOT NULL,
+  `Time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `Logins` int(11) NOT NULL,
   KEY `Name` (`Name`),
   KEY `IP` (`IP`)
@@ -24,10 +25,10 @@ CREATE TABLE IF NOT EXISTS `alias` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `blocks_0`
+-- Table structure for table `blocks`
 --
 
-CREATE TABLE IF NOT EXISTS `blocks_0` (
+CREATE TABLE IF NOT EXISTS `blocks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `player` varchar(32) NOT NULL DEFAULT '-',
@@ -37,13 +38,12 @@ CREATE TABLE IF NOT EXISTS `blocks_0` (
   `y` int(11) NOT NULL DEFAULT '0',
   `z` int(11) NOT NULL DEFAULT '0',
   `extra` varchar(70) DEFAULT NULL,
-  `rolled` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `coords` (`y`,`x`,`z`),
   KEY `type` (`type`),
   KEY `replaced` (`replaced`),
   KEY `player` (`player`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS `j2bans` (
   `pitch` float NOT NULL,
   `yaw` float NOT NULL,
   `world` varchar(32) NOT NULL,
+  `server` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
@@ -94,6 +95,19 @@ CREATE TABLE IF NOT EXISTS `j2users` (
   `flags` varchar(26) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `perms`
+--
+
+CREATE TABLE IF NOT EXISTS `perms` (
+  `permission` varchar(255) NOT NULL,
+  `flag` char(1) NOT NULL,
+  `server` tinyint(4) NOT NULL,
+  KEY `permission` (`permission`,`flag`,`server`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
