@@ -60,6 +60,7 @@ public class J2Plugin extends JavaPlugin {
 	public final MCBans mcbans=new MCBans(this);
 	public final Damages damage=new Damages(this);
 	public final Permissions perms=new Permissions(this);
+	private final Recipes recipes=new Recipes(this);
 	//public managerBlockLog blogger;
 	public MySQL mysql;
 
@@ -120,6 +121,7 @@ public class J2Plugin extends JavaPlugin {
 		PluginDescriptionFile pdfFile = this.getDescription();
 		System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
 		webpage.go(servernumber);
+		recipes.addRecipes();
 	}
 
 	public void loadData(){
