@@ -36,6 +36,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		for(String line : j2.motd){
 			player.sendMessage(line);
 		}
+		event.setJoinMessage(ChatColor.YELLOW+"Now entering: "+event.getPlayer().getName());
 		if(j2.hasFlag(player, Flag.CUSTOM_THOR)){
 			player.sendMessage(ChatColor.GOLD+"You have mystical powers");
 		}

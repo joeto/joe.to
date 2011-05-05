@@ -15,10 +15,12 @@ import to.joe.util.Flag;
 public class KicksBans {
 	private J2Plugin j2;
 	public ArrayList<Ban> bans;
+	public ArrayList<String> xrayers;
 
 	public KicksBans(J2Plugin j2p){
-		j2=j2p;
-		bans = new ArrayList<Ban>();
+		this.j2=j2p;
+		this.bans = new ArrayList<Ban>();
+		this.xrayers=new ArrayList<String>();
 	}
 
 	public void callBan(String adminName, String[] split, Location location)
@@ -39,7 +41,6 @@ public class KicksBans {
 			j2.mysql.ban(name,banReason,banTime,adminName,location);
 			//if (split.length > 1) {
 			toBan.kickPlayer("Banned: " + banReason);
-
 			j2.log.log(Level.INFO, "Banning " + name + " by " + adminName + ": " + banReason);
 			j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
 			j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned (" + banReason+")");
@@ -140,5 +141,18 @@ public class KicksBans {
 		j2.mysql.unban(name);
 		j2.log.log(Level.INFO, "Unbanning " + name + " by " + adminName);
 		j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Unbanning " + name + " by " + adminName);
+	}
+	
+	public synchronized void ixrai(String name,String commandName){
+		if(this.xrayers.contains(name)){
+			this.callBan("BobTheVigilant", (name+" xray hacking").split(" "), new Location(j2.getServer().getWorld("world"),0,0,0));
+			j2.log.info("[BOB] Detected /"+commandName+" from "+name+" and bant");
+			this.xrayers.remove(name);
+		}
+		else{
+			this.xrayers.add(name);
+			this.callKick(name, "BobTheVigilant", "Remove your hacks, then rejoin :)");
+			j2.log.info("[BOB] Detected /"+commandName+" from "+name+" and kicked");
+		}
 	}
 }
