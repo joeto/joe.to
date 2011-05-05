@@ -1,4 +1,3 @@
-
 package to.joe.listener;
 
 
@@ -47,7 +46,7 @@ public class PlayerInteract extends PlayerListener {
 		}
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)
 				&&event.getMaterial().equals(Material.STICK)
-				&&j2.hasFlag(event.getPlayer(),Flag.ADMIN)
+				&&j2.hasFlag(player,Flag.ADMIN)
 				&&j2.fun){
 			if(j2.debug)j2.log.info(player.getName()+" used a stick");
 			event.setCancelled(true);
