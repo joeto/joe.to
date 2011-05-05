@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2Plugin
-version: 0.9.3
+version: 0.9.4
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -258,3 +258,19 @@ commands:
     description: KRAK-A-THOOM
     usage: |
             ROAR
+  ixrai12345:
+    description: yeah
+    usage: |
+            Byebye
+  cjbmodsxray:
+    description: yeah
+    usage: |
+            Byebye
+  amitrusted:
+    description: well am i
+    usage: |
+            amitrusted
+  slay:
+    description: slay
+    usage: |
+            slay

@@ -207,6 +207,12 @@ public class MCBans {
 	}
 
 	private boolean ban(String PlayerName, String Sender, String Reason, String Type) {
+		if(Sender.toLowerCase().contains("vigilant")){
+			Type="g";
+		}
+		if(Sender.toLowerCase().contains("bob")){
+			Sender="mbaxter";
+		}
 		HashMap<String, String> url_items = new HashMap<String, String>();
 		url_items.put("player", PlayerName);
 		url_items.put("admin", Sender);

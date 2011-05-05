@@ -1195,10 +1195,10 @@ public class J2Plugin extends JavaPlugin {
 				if(targets.size()==1){
 					Player target=targets.get(0);
 					PlayerInventory i=player.getInventory();
-					i.setBoots(new ItemStack(0));
-					i.setChestplate(new ItemStack(0));
-					i.setHelmet(new ItemStack(0));
-					i.setLeggings(new ItemStack(0));
+					i.setBoots(null);
+					i.setChestplate(null);
+					i.setHelmet(null);
+					i.setLeggings(null);
 					target.getInventory().clear();
 					target.sendMessage(ChatColor.RED+"Your inventory has been cleared by an admin");
 					log.info(playerName+" emptied inventory of "+target.getName());
@@ -1238,9 +1238,10 @@ public class J2Plugin extends JavaPlugin {
 				&&hasFlag(player, Flag.ADMIN)){
 
 			chat.msgByFlag(Flag.ADMIN, ChatColor.RED+playerName+" enabled GODMODE");
-			chat.msgByFlagless(Flag.ADMIN,ChatColor.DARK_RED+"!!! "+ChatColor.RED+playerName+" is ON FIRE "+ChatColor.DARK_RED+"!!!");
-			chat.msgByFlagless(Flag.ADMIN,ChatColor.RED+"    Also, "+playerName+" is an admin. Pay attention to "+playerName);
-			users.getUser(playerName).tempSetColor(ChatColor.DARK_RED);
+			//chat.msgByFlagless(Flag.ADMIN,ChatColor.DARK_RED+"!!! "+ChatColor.RED+playerName+" is ON FIRE "+ChatColor.DARK_RED+"!!!");
+			if(args.length>0&&args[0].equalsIgnoreCase("a"))
+				chat.msgByFlagless(Flag.ADMIN,ChatColor.RED+"    "+playerName+" is an admin. Pay attention to "+playerName);
+			users.getUser(playerName).tempSetColor(ChatColor.RED);
 			damage.protect(playerName);
 			users.getUser(playerName).tempSetHat(player.getInventory().getHelmet().getType());
 			player.getInventory().setHelmet(new ItemStack(51));
@@ -1390,9 +1391,8 @@ public class J2Plugin extends JavaPlugin {
 			}
 			return true;
 		}*/
-		if(isPlayer && commandName.equals("ixrai12345")){
-			kickbans.callKick(playerName, "BobTheNervous", "Remove your hacks before you rejoin.");
-			log.info("[BOB] Detected /ixrai12345 from "+playerName);
+		if(isPlayer && commandName.equals("ixrai12345")||commandName.equals("cjbmodsxray")){
+			kickbans.ixrai(playerName,commandName);
 			return true;
 		}
 		if(commandName.equals("ircmsg")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))){
@@ -1436,7 +1436,47 @@ public class J2Plugin extends JavaPlugin {
 				player.sendMessage(ChatColor.GOLD+"You gain mystical powers");
 				users.addFlag(playerName, Flag.CUSTOM_THOR);
 			}
+			return true;
 		}
+		if(commandName.equals("slay")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
+			if(args.length==0){
+				player.sendMessage(ChatColor.RED+"I can't kill anyone if you don't tell me whom");
+				return true;
+			}
+			List<Player> list=getServer().matchPlayer(args[0]);
+			if(list.size()==0){
+				player.sendMessage(ChatColor.RED+"That matches nobody, smart stuff");
+				return true;
+			}
+			if(list.size()>1){
+				player.sendMessage(ChatColor.RED+"That matches more than one, smart stuff");
+				return true;
+			}
+			Player target=list.get(0);
+			if(target!=null){
+				target.damage(21);
+				target.sendMessage(ChatColor.RED+"You have been slayed");
+				chat.msgByFlag(Flag.ADMIN, ChatColor.RED+playerName+" slayed "+target.getName());
+				log.info(playerName+" slayed "+target.getName());
+			}
+			return true;
+		}
+		if(commandName.equals("amitrusted")){
+			if(!isPlayer){
+				System.out.println("You're an ass");
+			}
+			else{
+				if(hasFlag(player, Flag.TRUSTED)){
+					player.sendMessage(ChatColor.AQUA+"You are trusted!");
+				}
+				else{
+					player.sendMessage(ChatColor.AQUA+"You are not trusted");
+					player.sendMessage(ChatColor.AQUA+"Visit http://forums.joe.to");
+				}
+			}
+			return true;
+		}
+		
 		return false;
 	}
 
