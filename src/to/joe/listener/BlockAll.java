@@ -56,25 +56,6 @@ public class BlockAll extends BlockListener {
         //}
     }*/
     
-    @Override
-    public void onBlockDamage(BlockDamageEvent event){
-    	Player player=event.getPlayer();
-    	
-    	if(player.equals(j2.OneByOne)){
-            j2.OneByOne=null;
-            event.getPlayer().sendMessage("Boom");
-            int x=event.getBlock().getX();
-            int z=event.getBlock().getZ();
-            int y=event.getBlock().getY()+1;
-            while(y<128){
-            	event.getBlock().getWorld().getBlockAt(x, y, z).setTypeId(0);
-            	y++;
-            }
-    	}
-    	
-    	
-    	
-    }
     
     @Override
     public void onBlockBreak(BlockBreakEvent event){

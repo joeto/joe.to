@@ -41,6 +41,9 @@ public class PlayerJoinQuit extends PlayerListener {
 		if(j2.hasFlag(player, Flag.CUSTOM_THOR)){
 			player.sendMessage(ChatColor.GOLD+"You have mystical powers");
 		}
+		if(j2.hasFlag(player, Flag.TOOLS)){
+			player.sendMessage(ChatColor.AQUA+"You have tool usage enabled. Be careful");
+		}
 		/*if(j2.hasFlag(player,Flag.JAILED)){
 			player.teleportTo(j2.users.jail);
 			player.sendMessage(ChatColor.RED+"You are in "+ChatColor.DARK_RED+"JAIL");

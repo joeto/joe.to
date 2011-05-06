@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2Plugin
-version: 0.9.5
+version: 0.9.5.1
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -115,9 +115,13 @@ commands:
     usage: |
             /trust <playername>
   getgroup:
-    description: Find out a player's group
+    description: Find out a player's flags
     usage: |
             /getgroup <playername>
+  getflags:
+    description: Find a player's group
+    usage: |
+            /getflags <playername>
   me:
     description: /me
     usage: |
@@ -183,6 +187,10 @@ commands:
     usage: |
             /invasion <playername>
   clearinventory:
+    description: Clear your inventory
+    usage: |
+            /clearinventory
+  ci:
     description: Clear your inventory
     usage: |
             /clearinventory
@@ -278,3 +286,7 @@ commands:
     description: poof
     usage: |
             vanish
+  imatool:
+    description: poof
+    usage: |
+            imatool
