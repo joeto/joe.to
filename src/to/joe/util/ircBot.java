@@ -43,10 +43,15 @@ public class ircBot extends PircBot {
 			else if (message.equalsIgnoreCase("!players") || message.equalsIgnoreCase("!playerlist")) {
 				String curPlayers = "";
 				int cPlayers=0;
-				for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
-					if (p != null&&
-							(!ircman.getJ2().minitrue.invisible(p)
-									||channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel))) {
+				Player[] players;
+				if(channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
+					players=ircman.getJ2().getServer().getOnlinePlayers();
+				}
+				else{
+					players=ircman.getJ2().minitrue.getOnlinePlayers();
+				}
+				for (Player p : players) {
+					if (p != null){
 						if(curPlayers==""){
 							curPlayers+=p.getName();
 						}

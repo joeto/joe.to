@@ -1,5 +1,7 @@
 package to.joe.manager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -115,4 +117,28 @@ public class Minitrue {
 		player.sendMessage(msg);
 	}
 
+	public List<Player> matchPlayer(String name,boolean isAdmin){
+		List<Player> players=j2.getServer().matchPlayer(name);
+		if(!isAdmin){
+			ArrayList<Player> toremove=new ArrayList<Player>();
+			for(Player p:players){
+				if(p!=null&&this.invisible(p)){
+					toremove.add(p);
+				}
+			}
+			players.removeAll(toremove);
+		}
+		return players;
+	}
+
+	public Player[] getOnlinePlayers(){
+		Player[] players=j2.getServer().getOnlinePlayers();
+		ArrayList<Player> toreturn=new ArrayList<Player>();
+		for(Player p:players){
+			if(!this.invisible(p)){
+				toreturn.add(p);
+			}
+		}
+		return (Player[])toreturn.toArray();
+	}
 }

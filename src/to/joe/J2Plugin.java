@@ -104,7 +104,6 @@ public class J2Plugin extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, plrlisItem, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_CANBUILD, blockListener, Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_DAMAGE, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_IGNITE, blockListener, Priority.Normal, this);
@@ -440,20 +439,13 @@ public class J2Plugin extends JavaPlugin {
 	}
 
 	public int playerMatches(String name){
-		List<Player> list=this.getServer().matchPlayer(name);
+		List<Player> list=this.minitrue.matchPlayer(name,true);
 		if(list==null){
 			return 0;
 		}
 		return list.size();
 	}
 
-	public Player getPlayer(String name){
-		List<Player> list=this.getServer().matchPlayer(name);
-		if(list!=null && list.size()==1){
-			return list.get(0);
-		}
-		return null;
-	}
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		String commandName = command.getName().toLowerCase();
@@ -557,9 +549,12 @@ public class J2Plugin extends JavaPlugin {
 		}
 
 		if(isPlayer && commandName.equals("tp") && (hasFlag(player, Flag.FUN))&& args.length>0){
-			List<Player> inquest = getServer().matchPlayer(args[0]);
+			List<Player> inquest = this.minitrue.matchPlayer(args[0],this.hasFlag(player, Flag.ADMIN));
 			if(inquest.size()==1){
 				Player inquestion=inquest.get(0);
+				if(minitrue.invisible(inquestion)&&!hasFlag(player,Flag.ADMIN)){
+					player.sendMessage(ChatColor.RED+"No such player, or matches multiple");
+				}
 				if(!hasFlag(player, Flag.ADMIN) && inquestion!=null && (hasFlag(inquestion, Flag.TRUSTED)) && tpProtect.getBoolean(inquestion.getName().toLowerCase(), false)){
 					player.sendMessage(ChatColor.RED + "Cannot teleport to protected player.");
 				}
@@ -580,7 +575,7 @@ public class J2Plugin extends JavaPlugin {
 		}
 
 		if(isPlayer && commandName.equals("tphere") && hasFlag(player, Flag.ADMIN)){
-			List<Player> inquest = getServer().matchPlayer(args[0]);
+			List<Player> inquest = this.minitrue.matchPlayer(args[0],true);
 			if(inquest.size()==1){
 				Player inquestion=inquest.get(0);
 
@@ -607,7 +602,7 @@ public class J2Plugin extends JavaPlugin {
 				player.teleport(player.getWorld().getSpawnLocation());
 			}
 			else if (args.length ==1){
-				List<Player> inquest = getServer().matchPlayer(args[0]);
+				List<Player> inquest = this.minitrue.matchPlayer(args[0],true);
 				if(inquest.size()==1){
 					Player inquestion=inquest.get(0);
 					inquestion.teleport(inquestion.getWorld().getSpawnLocation());
@@ -627,7 +622,7 @@ public class J2Plugin extends JavaPlugin {
 
 				return true;
 			}
-			List<Player> inquest = getServer().matchPlayer(args[0]);
+			List<Player> inquest = this.minitrue.matchPlayer(args[0],this.hasFlag(player, Flag.ADMIN));
 			if(inquest.size()==1){
 				Player inquestion=inquest.get(0);
 				User userTo=users.getUser(inquestion);
@@ -876,12 +871,12 @@ public class J2Plugin extends JavaPlugin {
 			return true;
 		}
 
-		if(commandName.equals("getgroup") && (!isPlayer || hasFlag(player, Flag.ADMIN))){
+		if(commandName.equals("getflags") && (!isPlayer || hasFlag(player, Flag.ADMIN))){
 			if(args.length==0){
-				msg(player,"/getgroup playername");
+				msg(player,"/getflags playername");
 				return true;
 			}
-			List<Player> match = getServer().matchPlayer(args[0]);
+			List<Player> match = this.minitrue.matchPlayer(args[0],true);
 			if(match.size()!=1 || match.get(0)==null){
 				msg(player,"Player not found");
 
@@ -892,6 +887,23 @@ public class J2Plugin extends JavaPlugin {
 			for(Flag f: users.getAllFlags(who)){
 				message+=f.getDescription()+", ";
 			}
+			msg(player,message);
+			log.info(playerName+" looked up "+ who.getName());
+			return true;
+		}
+
+		if(commandName.equals("getgroup")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
+			if(args.length==0){
+				msg(player,"/getgroup playername");
+				return true;
+			}
+			List<Player> match = this.minitrue.matchPlayer(args[0],true);
+			if(match.size()!=1 || match.get(0)==null){
+				msg(player,"Player not found");
+				return true;
+			}
+			Player who=match.get(0);
+			String message="Player "+match.get(0).getName()+": "+users.getUser(who).getGroup();
 			msg(player,message);
 			log.info(playerName+" looked up "+ who.getName());
 			return true;
@@ -1159,14 +1171,14 @@ public class J2Plugin extends JavaPlugin {
 
 			return true;
 		}
-		if(commandName.equals("clearinventory")){
+		if(commandName.equals("clearinventory")||commandName.equals("ci")&&hasFlag(player,Flag.FUN)){
 			if(isPlayer && args.length==0){
 				player.getInventory().clear();
 				player.sendMessage(ChatColor.RED+"Inventory emptied");
 				log.info(player.getName()+" emptied inventory");
 			}
 			else if(args.length==1 && (!isPlayer||hasFlag(player,Flag.ADMIN))){
-				List<Player> targets=getServer().matchPlayer(args[0]);
+				List<Player> targets=this.minitrue.matchPlayer(args[0],true);
 				if(targets.size()==1){
 					Player target=targets.get(0);
 					PlayerInventory i=player.getInventory();
@@ -1211,7 +1223,6 @@ public class J2Plugin extends JavaPlugin {
 		}
 		if(isPlayer && commandName.equals("kibbles")
 				&&hasFlag(player, Flag.ADMIN)){
-
 			chat.msgByFlag(Flag.ADMIN, ChatColor.RED+playerName+" enabled GODMODE");
 			//chat.msgByFlagless(Flag.ADMIN,ChatColor.DARK_RED+"!!! "+ChatColor.RED+playerName+" is ON FIRE "+ChatColor.DARK_RED+"!!!");
 			if(args.length>0&&args[0].equalsIgnoreCase("a"))
@@ -1255,7 +1266,7 @@ public class J2Plugin extends JavaPlugin {
 				msg(player,"/whereis player");
 			}
 			else {
-				List<Player> possible=getServer().matchPlayer(args[0]);
+				List<Player> possible=this.minitrue.matchPlayer(args[0],true);
 				if(possible.size()==1){
 					Player who=possible.get(0);
 					Location loc=who.getLocation();
@@ -1291,7 +1302,7 @@ public class J2Plugin extends JavaPlugin {
 				player.sendMessage(ChatColor.RED+"/smite player");
 				return true;
 			}
-			List<Player> results=this.getServer().matchPlayer(args[0]);
+			List<Player> results=this.minitrue.matchPlayer(args[0],true);
 			if(results.size()==1){
 				Player target=results.get(0);
 				boolean weather=target.getWorld().isThundering();
@@ -1419,7 +1430,7 @@ public class J2Plugin extends JavaPlugin {
 				player.sendMessage(ChatColor.RED+"I can't kill anyone if you don't tell me whom");
 				return true;
 			}
-			List<Player> list=getServer().matchPlayer(args[0]);
+			List<Player> list=this.minitrue.matchPlayer(args[0],true);
 			if(list.size()==0){
 				player.sendMessage(ChatColor.RED+"That matches nobody, smart stuff");
 				return true;
@@ -1455,6 +1466,17 @@ public class J2Plugin extends JavaPlugin {
 		if(isPlayer&&commandName.equals("vanish")){
 			if(hasFlag(player,Flag.ADMIN))
 				minitrue.vanish(player);
+			return true;
+		}
+		if(isPlayer&&commandName.equals("imatool")&&hasFlag(player,Flag.ADMIN)){
+			if(hasFlag(player,Flag.TOOLS)){
+				player.sendMessage(ChatColor.AQUA+"GOD YOU ARE SUCH A TOOL. Powers gone");
+				users.dropFlag(playerName, Flag.TOOLS);
+			}
+			else {
+				player.sendMessage(ChatColor.AQUA+"Tool use enabled");
+				users.addFlag(playerName, Flag.TOOLS);
+			}
 			return true;
 		}
 
