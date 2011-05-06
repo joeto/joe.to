@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import to.joe.listener.*;
 import to.joe.manager.*;
 import to.joe.util.*;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -61,6 +62,7 @@ public class J2Plugin extends JavaPlugin {
 	public final Damages damage=new Damages(this);
 	public final Permissions perms=new Permissions(this);
 	private final Recipes recipes=new Recipes(this);
+	public final Minitrue minitrue=new Minitrue(this);
 	//public managerBlockLog blogger;
 	public MySQL mysql;
 
@@ -122,6 +124,7 @@ public class J2Plugin extends JavaPlugin {
 		System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
 		webpage.go(servernumber);
 		recipes.addRecipes();
+		minitrue.getToWork();
 	}
 
 	public void loadData(){
@@ -739,35 +742,7 @@ public class J2Plugin extends JavaPlugin {
 		}
 
 		if(isPlayer && (commandName.equals("who") || commandName.equals("playerlist"))){
-			Player[] players=getServer().getOnlinePlayers();
-			int curlen=0;
-			int maxlen=320;
-			String msg="Players ("+players.length+"/"+this.playerLimit+"):";
-			boolean isAdmin=hasFlag(player,Flag.ADMIN);
-			for(char ch:msg.toCharArray()){
-				curlen+=Chats.characterWidths[(int)ch];
-			} //now we have our base length
-
-			for(Player p: players){
-				String name=p.getName();
-				String cname=users.getUser(name).getColorName();
-				if(isAdmin&&hasFlag(p,Flag.ADMIN)){
-					cname=ChatColor.RED+p.getName();
-				}
-				int thislen=0;
-				for(char ch:name.toCharArray()){
-					thislen+=Chats.characterWidths[(int)ch];
-				}
-				if(thislen+1+curlen>maxlen){
-					player.sendMessage(msg);
-					msg=cname;
-				}
-				else{
-					msg+=" "+cname;
-				}
-			}
-			player.sendMessage(msg);
-
+			minitrue.who(player);
 			return true;
 		}
 
@@ -1296,7 +1271,8 @@ public class J2Plugin extends JavaPlugin {
 		if(commandName.equals("madagascar")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
 			log.info(playerName+" wants to SHUT. DOWN. EVERYTHING.");
 			ircEnable=false;
-			irc.getBot().quitServer("SHUT. DOWN. EVERYTHING.");
+			if(this.ircEnable)
+				irc.getBot().quitServer("SHUT. DOWN. EVERYTHING.");
 			kickbans.kickAll("We'll be back after these brief messages");
 			this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
 			return true;
@@ -1476,7 +1452,12 @@ public class J2Plugin extends JavaPlugin {
 			}
 			return true;
 		}
-		
+		if(isPlayer&&commandName.equals("vanish")){
+			if(hasFlag(player,Flag.ADMIN))
+				minitrue.vanish(player);
+			return true;
+		}
+
 		return false;
 	}
 
