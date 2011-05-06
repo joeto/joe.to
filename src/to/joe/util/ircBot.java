@@ -44,7 +44,9 @@ public class ircBot extends PircBot {
 				String curPlayers = "";
 				int cPlayers=0;
 				for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
-					if (p != null) {
+					if (p != null&&
+							(!ircman.getJ2().minitrue.invisible(p)
+									||channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel))) {
 						if(curPlayers==""){
 							curPlayers+=p.getName();
 						}

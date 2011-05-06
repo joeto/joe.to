@@ -36,7 +36,8 @@ public class PlayerJoinQuit extends PlayerListener {
 		for(String line : j2.motd){
 			player.sendMessage(line);
 		}
-		event.setJoinMessage(ChatColor.YELLOW+"Now entering: "+event.getPlayer().getName());
+		event.setJoinMessage(null);
+		j2.minitrue.announceJoin(name);
 		if(j2.hasFlag(player, Flag.CUSTOM_THOR)){
 			player.sendMessage(ChatColor.GOLD+"You have mystical powers");
 		}
@@ -56,17 +57,21 @@ public class PlayerJoinQuit extends PlayerListener {
 			//theList.remove(player.getName());
 		//}
 		j2.damage.arf(event.getPlayer().getName());
+		event.setLeaveMessage(null);
 	}
 	
 	@Override
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player=event.getPlayer();
+		String name=player.getName();
+		j2.minitrue.announceLeave(name);
 		if(j2.users.getUser(player)!=null){
 			j2.users.delUser(player.getName());
 			j2.warps.dropPlayer(player.getName());
 			j2.irc.processLeave(player.getName());
 		}
-		j2.damage.arf(player.getName());
+		event.setQuitMessage(null);
+		j2.damage.arf(name);
 	}
 
 	@Override

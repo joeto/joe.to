@@ -100,6 +100,10 @@ public class Chats {
 	}
 
 	public void handleChat(Player player,String chat){
+		
+		if(j2.minitrue.chat(player, chat)){
+			return;
+		}
 		String name=player.getName();
 		if(!(j2.users.getUser(player).canChat()||j2.hasFlag(player, Flag.ADMIN))){
 			player.sendMessage(ChatColor.RED+"Trying to send too many messages too quickly.");

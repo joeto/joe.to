@@ -49,6 +49,10 @@ public class MCBans {
 				player.sendMessage(ChatColor.GREEN+"For debug purposes: Rep: "+ChatColor.AQUA+reputation+ChatColor.GREEN+"/10. Bans: "+ChatColor.AQUA+ban_num+ChatColor.GREEN+". Ban Status: "+ChatColor.AQUA+ban_status);
 			}
 		}
+		else if((Integer.parseInt(disputes)>0)){
+			Player player=j2.getServer().getPlayer(name);
+			player.sendMessage(ChatColor.GREEN+"[MCBANS] This server has "+ChatColor.AQUA+disputes+ChatColor.GREEN+" active disputes");
+		}
 	}
 
 	public void lookup(String PlayerName, Player player){

@@ -12,6 +12,9 @@ public class Recipes {
 		this.j2=j2;
 	}
 	public void addRecipes(){
+		if(j2.servernumber!=3){
+			return;
+		}
 		ShapedRecipe bob=new ShapedRecipe(new ItemStack(Material.DIAMOND,1));		
 		bob.shape("ABA","BCB","ADA");
 		bob.setIngredient('A', Material.STONE);
