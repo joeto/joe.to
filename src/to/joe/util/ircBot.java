@@ -52,7 +52,7 @@ public class ircBot extends PircBot {
 				}
 				for (Player p : players) {
 					if (p != null){
-						if(curPlayers==""){
+						if(curPlayers.equals("")){
 							curPlayers+=p.getName();
 						}
 						else{
