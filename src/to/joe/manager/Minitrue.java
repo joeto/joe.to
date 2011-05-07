@@ -133,12 +133,14 @@ public class Minitrue {
 
 	public Player[] getOnlinePlayers(){
 		Player[] players=j2.getServer().getOnlinePlayers();
-		ArrayList<Player> toreturn=new ArrayList<Player>();
+		Player[] toreturn=new Player[players.length-this.numinvis()];
+		int cur=0;
 		for(Player p:players){
 			if(!this.invisible(p)){
-				toreturn.add(p);
+				toreturn[cur]=p;
+				cur++;
 			}
 		}
-		return (Player[])toreturn.toArray();
+		return toreturn;
 	}
 }
