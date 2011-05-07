@@ -137,8 +137,7 @@ public class Minitrue {
 		int cur=0;
 		for(Player p:players){
 			if(!this.invisible(p)){
-				toreturn[cur]=p;
-				cur++;
+				toreturn[cur++]=p;
 			}
 		}
 		return toreturn;
