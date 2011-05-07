@@ -1479,6 +1479,13 @@ public class J2Plugin extends JavaPlugin {
 			}
 			return true;
 		}
+		if(isPlayer&&commandName.equals("f3")){
+			Location loc=player.getLocation();
+			String x=""+ChatColor.GOLD+(int)loc.getX();
+			String y=""+ChatColor.GOLD+(int)loc.getY();
+			String z=""+ChatColor.GOLD+(int)loc.getZ();
+			player.sendMessage(ChatColor.AQUA+"You are at X:"+x+" Y:"+y+" Z:"+z);
+		}
 
 		return false;
 	}

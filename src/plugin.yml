@@ -290,3 +290,7 @@ commands:
     description: poof
     usage: |
             imatool
+  f3:
+    description: mmmhmm
+    usage: |
+            f3
