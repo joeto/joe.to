@@ -44,12 +44,12 @@ public class PlayerJoinQuit extends PlayerListener {
 		if(j2.hasFlag(player, Flag.TOOLS)){
 			player.sendMessage(ChatColor.AQUA+"You have tool usage enabled. Be careful");
 		}
-		/*if(j2.hasFlag(player,Flag.JAILED)){
-			player.teleportTo(j2.users.jail);
+		if(j2.hasFlag(player,Flag.JAILED)){
+			player.teleport(j2.jailloc);
 			player.sendMessage(ChatColor.RED+"You are in "+ChatColor.DARK_RED+"JAIL");
 			player.sendMessage(ChatColor.RED+"To get out, talk to the jailer");
 			player.sendMessage(ChatColor.RED+"You need to punch him");
-		}*/
+		}
 	}
 
 	@Override
