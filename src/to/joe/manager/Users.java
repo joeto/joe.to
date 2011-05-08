@@ -101,7 +101,9 @@ public class Users {
 	public void jail(String name, String reason, String admin){
 		if(isOnline(name)){
 			addFlag(name,Flag.JAILED);
-		}
+
+			Player inquestion = j2.getPlayer(name);
+			inquestion.teleport(j2.jailloc);
 		else {
 			j2.mysql.getUser(name);
 			addFlag(name,Flag.JAILED);
