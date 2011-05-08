@@ -1,4 +1,3 @@
-
 package to.joe.listener;
 
 
@@ -65,6 +64,13 @@ public class BlockAll extends BlockListener {
 			event.setCancelled(true);
 			return;
 		}
+
+    	if(j2.hasFlag(player, Flag.JAILED)){
+    		player.sendMessage("You're jailed, you cant break anything");
+    		event.setCancelled(true);
+    		return;
+    	}
+
     	/*BlockRow changed;
 		Block smacked = event.getBlock();
 		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ(),(System.currentTimeMillis()/1000L),null);
@@ -86,6 +92,12 @@ public class BlockAll extends BlockListener {
 			return;
 		}
     	
+    	if(j2.hasFlag(player, Flag.JAILED)){
+    		player.sendMessage("You're jailed, you cant place anything");
+    		event.setCancelled(true);
+    		return;
+    	}
+
     	/*BlockRow test;
 		
 		test = new BlockRow(player.getDisplayName(),old.getTypeId(),type,blockPlaced.getX(),blockPlaced.getY(),blockPlaced.getZ(),(System.currentTimeMillis()/1000L),null);
