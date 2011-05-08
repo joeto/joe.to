@@ -181,6 +181,9 @@ public class J2Plugin extends JavaPlugin {
 			itemblacklist=new ArrayList<Integer>();
 			watchlist=new ArrayList<Integer>();
 			summonlist=new ArrayList<Integer>();
+			String[] jail=j2properties.getString("jail","0,1,0,0,0").split(",");
+			Location jailloc = new Location(this.getServer().getWorld("world"),Double.valueOf(jail[0]).doubleValue(),Double.valueOf(jail[1]).doubleValue(),Double.valueOf(jail[2]).doubleValue(),Float.valueOf(jail[3]).floatValue(),Float.valueOf(jail[4]).floatValue());
+		
 			for(String s:superBlacklist.split(",")){
 				if(s!=null){
 					superblacklist.add(Integer.valueOf(s));
@@ -1517,4 +1520,5 @@ public class J2Plugin extends JavaPlugin {
 	public int servernumber;
 	ArrayList<String> srstaffList,adminsList,trustedList;
 	public String mcbansapi;
+        public Location jailloc;
 }
