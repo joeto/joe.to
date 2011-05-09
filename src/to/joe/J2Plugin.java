@@ -49,7 +49,7 @@ public class J2Plugin extends JavaPlugin {
 	private final PlayerJoinQuit plrlisJoinQuit = new PlayerJoinQuit(this);
 	private final BlockAll blockListener = new BlockAll(this);
 	private final EntityAll entityListener = new EntityAll(this);
-	private final PlayerTeleport plrlisTeleport = new PlayerTeleport(this);
+	private final PlayerMovement plrlisMovement = new PlayerMovement(this);
 	public final Chats chat = new Chats(this);
 	public final IRC irc = new IRC(this);
 	public final KicksBans kickbans = new KicksBans(this);
@@ -63,6 +63,7 @@ public class J2Plugin extends JavaPlugin {
 	public final Permissions perms=new Permissions(this);
 	private final Recipes recipes=new Recipes(this);
 	public final Minitrue minitrue=new Minitrue(this);
+	public final Jailer jail = new Jailer(this);
 	//public managerBlockLog blogger;
 	public MySQL mysql;
 
@@ -101,6 +102,7 @@ public class J2Plugin extends JavaPlugin {
 		// Register our events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_CHAT, plrlisChat, Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, plrlisChat, Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, plrlisItem, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_CANBUILD, blockListener, Priority.Normal, this);
@@ -116,7 +118,8 @@ public class J2Plugin extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, plrlisJoinQuit, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_KICK, plrlisJoinQuit, Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_TELEPORT, plrlisTeleport, Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_TELEPORT, plrlisMovement, Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_MOVE,plrlisMovement,Priority.Normal,this);
 		pm.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);
 		if(debug)log.info("Events registered");
 		PluginDescriptionFile pdfFile = this.getDescription();
@@ -166,6 +169,7 @@ public class J2Plugin extends JavaPlugin {
 			gsPass = j2properties.getString("gs-pass","");
 			ircLevel2 = j2properties.getString("irc-level2","").split(",");
 			safemode=j2properties.getBoolean("safemode",false);
+			explodeblocks=j2properties.getBoolean("explodeblocks",true);
 			ihatewolves=j2properties.getBoolean("ihatewolves", false);
 			maintenance = j2properties.getBoolean("maintenance",false);
 			maintmessage = j2properties.getString("maintmessage","Server offline for maintenance");
@@ -177,6 +181,8 @@ public class J2Plugin extends JavaPlugin {
 			String watchList = j2properties.getString("watchlist","0");
 			String summonList = j2properties.getString("summonlist","0");
 			mcbansapi=j2properties.getString("mcbans-api", "");
+			String[] jail=j2properties.getString("jail","0,1,0,0,0").split(",");
+			this.jail.jailSet(jail);
 			superblacklist=new ArrayList<Integer>();
 			itemblacklist=new ArrayList<Integer>();
 			watchlist=new ArrayList<Integer>();
@@ -1514,6 +1520,7 @@ public class J2Plugin extends JavaPlugin {
 	public boolean maintenance=false;
 	public String maintmessage;
 	public boolean safemode;
+	public boolean explodeblocks;
 	public boolean ihatewolves;
 	public boolean trustedonly;
 	public Property tpProtect=new Property("tpProtect.list");

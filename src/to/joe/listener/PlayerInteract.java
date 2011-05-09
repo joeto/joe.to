@@ -27,6 +27,10 @@ public class PlayerInteract extends PlayerListener {
 	public void onPlayerInteract(PlayerInteractEvent event){
 		Player player = event.getPlayer();
 		Material material=event.getMaterial();
+		if(j2.jail.processAction(player)){
+			event.setCancelled(true);
+			return;
+		}
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)
 				||event.getAction().equals(Action.RIGHT_CLICK_AIR)){	
 			int type=material.getId();

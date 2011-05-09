@@ -27,6 +27,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		j2.ip.processJoin(name);
 		j2.warps.processJoin(name);
 		j2.damage.processJoin(name);
+		j2.jail.processJoin(player);
 		try{
 			j2.mcbans.processJoin(name);
 		}
