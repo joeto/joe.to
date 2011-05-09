@@ -17,7 +17,7 @@ public class Jailer {
 		this.jailLocation = new Location(j2.getServer().getWorld("world"),Double.valueOf(jail[0]).doubleValue(),Double.valueOf(jail[1]).doubleValue(),Double.valueOf(jail[2]).doubleValue(),Float.valueOf(jail[3]).floatValue(),Float.valueOf(jail[4]).floatValue());
 	}
 	public void processJoin(Player player){
-		if(this.isJailed(player)){
+		if(!this.isJailed(player)){
 			return;
 		}
 		player.teleport(this.jailLocation);

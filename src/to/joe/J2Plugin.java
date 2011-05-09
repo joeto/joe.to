@@ -181,7 +181,7 @@ public class J2Plugin extends JavaPlugin {
 			String watchList = j2properties.getString("watchlist","0");
 			String summonList = j2properties.getString("summonlist","0");
 			mcbansapi=j2properties.getString("mcbans-api", "");
-			String[] jail=j2properties.getString("jail","0,1,0,0,0").split(",");
+			String[] jail=j2properties.getString("jail","10,11,10,0,0").split(",");
 			this.jail.jailSet(jail);
 			superblacklist=new ArrayList<Integer>();
 			itemblacklist=new ArrayList<Integer>();
