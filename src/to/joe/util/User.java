@@ -16,10 +16,12 @@ import java.util.Date;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 
 public class User {
 	private Material hat=Material.AIR;
-	public User(String name, ChatColor color, String group,  ArrayList<Flag> extraFlags/*, int channel*/){
+	public User(String name, ChatColor color, String group,  ArrayList<Flag> extraFlags, World world, String safeWord/*, int channel*/){
 		this.name=name;
 		this.color=color;
 		this.backup=color;
@@ -31,10 +33,27 @@ public class User {
 		this.lastChat.add(0L);
 		this.lastChat.add(0L);
 		this.lastChat.add(0L);
+		this.blocksTravelled=new ArrayList<Block>();
+		this.blocksTravelled.add(world.getBlockAt(0,1,0));
+		this.blocksTravelled.add(world.getBlockAt(0,1,0));
+		this.blocksTravelled.add(world.getBlockAt(0,1,0));
+		this.blocksTravelled.add(world.getBlockAt(0,1,0));
+		this.blocksTravelled.add(world.getBlockAt(0,1,0));
+		this.blocksTravelled.add(world.getBlockAt(0,1,0));
+		this.blocksTravelled.add(world.getBlockAt(0,1,0));
+		this.blocksTravelled.add(world.getBlockAt(0,1,0));
+		this.blocksTravelled.add(world.getBlockAt(0,1,0));
+		this.blocksTravelled.add(world.getBlockAt(0,1,0));
+		this.safeWord=safeWord;
+		if(safeWord==null)
+			this.safeWord="";
 		//this.channel=channel;
 	}
 	public void setGroup(String Group){
 		group=Group;
+	}
+	public String getSafeWord(){
+		return this.safeWord;
 	}
 	public void tempSetColor(ChatColor clr){
 		this.color=clr;
@@ -86,10 +105,30 @@ public class User {
 		this.lastChat.add(cur);
 		return true;
 	}
+	
+	public Block getBlock(){
+		return this.blocksTravelled.get(9);
+	}
+	
+	public Block getMidBlock(){
+		return this.blocksTravelled.get(4);
+	}
+	
+	public Block getLastBlock(){
+		return this.blocksTravelled.get(0);
+	}
+	
+	public void setCurLoc(Block block){
+		this.blocksTravelled.remove(0);
+		this.blocksTravelled.add(block);
+	}
+
+	private ArrayList<Block> blocksTravelled;
 	private ArrayList<Flag> extraFlags;
 	private int channel;
 	private String name;
 	private ChatColor color,backup;
 	private String group;
 	private ArrayList<Long> lastChat;
+	private String safeWord;
 }

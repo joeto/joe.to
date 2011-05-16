@@ -6,7 +6,6 @@ public enum Flag {
 	ADMIN('a',"Base Admin"),
 	DONOR('d',"Donor"),
 	FUN('f',"Fun commands"),
-	HIDDEN('h',"Hidden"),
 	JAILED('j', "Jailed"),
 	MODWORLD('m',"Can Modify"),
 	NEW('n',"New"),

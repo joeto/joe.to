@@ -24,6 +24,8 @@ import to.joe.listener.*;
 import to.joe.manager.*;
 import to.joe.util.*;
 
+import com.sk89q.jinglenote.JingleNoteManager;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -64,6 +66,8 @@ public class J2Plugin extends JavaPlugin {
 	private final Recipes recipes=new Recipes(this);
 	public final Minitrue minitrue=new Minitrue(this);
 	public final Jailer jail = new Jailer(this);
+	public final MoveTracker move = new MoveTracker(this);
+	public JingleNoteManager jingleNoteManager;
 	//public managerBlockLog blogger;
 	public MySQL mysql;
 
@@ -72,6 +76,7 @@ public class J2Plugin extends JavaPlugin {
 
 		irc.kill();
 		stopTimer();
+		jingleNoteManager.stopAll();
 		// NOTE: All registered events are automatically unregistered when a plugin is disabled
 
 	}
@@ -82,7 +87,7 @@ public class J2Plugin extends JavaPlugin {
 		protectedUsers=new ArrayList<String>();
 		loadData();
 		if(debug)log.info("Data loaded");
-
+		jingleNoteManager=new JingleNoteManager();
 		//irc start
 		if(ircEnable)irc.prepIRC();
 		irc.startIRCTimer();
@@ -406,8 +411,13 @@ public class J2Plugin extends JavaPlugin {
 
 	public boolean hasFlag(String playername, Flag flag){
 		User user=users.getUser(playername);
-		if(user!=null && (user.getUserFlags().contains(flag) || users.groupHasFlag(user.getGroup(), flag))){
-			return true;
+		if(user!=null){
+			if((flag.equals(Flag.ADMIN)||flag.equals(Flag.SRSTAFF))&&!users.isCleared(playername)){
+				return false;
+			}
+			if(user.getUserFlags().contains(flag) || users.groupHasFlag(user.getGroup(), flag)){
+				return true;
+			}
 		}
 		return false;
 	}
@@ -1423,11 +1433,11 @@ public class J2Plugin extends JavaPlugin {
 		if(commandName.equals("thor")&&isPlayer&&hasFlag(player,Flag.ADMIN)){
 			if(hasFlag(player,Flag.CUSTOM_THOR)){
 				player.sendMessage(ChatColor.GOLD+"You lose your mystical powers");
-				users.dropFlag(playerName, Flag.CUSTOM_THOR);
+				users.dropFlagLocal(playerName, Flag.CUSTOM_THOR);
 			}
 			else {
 				player.sendMessage(ChatColor.GOLD+"You gain mystical powers");
-				users.addFlag(playerName, Flag.CUSTOM_THOR);
+				users.addFlagLocal(playerName, Flag.CUSTOM_THOR);
 			}
 			return true;
 		}
@@ -1477,11 +1487,11 @@ public class J2Plugin extends JavaPlugin {
 		if(isPlayer&&commandName.equals("imatool")&&hasFlag(player,Flag.ADMIN)){
 			if(hasFlag(player,Flag.TOOLS)){
 				player.sendMessage(ChatColor.AQUA+"GOD YOU ARE SUCH A TOOL. Powers gone");
-				users.dropFlag(playerName, Flag.TOOLS);
+				users.dropFlagLocal(playerName, Flag.TOOLS);
 			}
 			else {
 				player.sendMessage(ChatColor.AQUA+"Tool use enabled");
-				users.addFlag(playerName, Flag.TOOLS);
+				users.addFlagLocal(playerName, Flag.TOOLS);
 			}
 			return true;
 		}
@@ -1491,9 +1501,33 @@ public class J2Plugin extends JavaPlugin {
 			String y=""+ChatColor.GOLD+(int)loc.getY();
 			String z=""+ChatColor.GOLD+(int)loc.getZ();
 			player.sendMessage(ChatColor.AQUA+"You are at X:"+x+" Y:"+y+" Z:"+z);
+			return true;
 		}
-
-		return false;
+		if(commandName.equals("setspawn")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))){
+			if(args.length<3){
+				player.sendMessage(ChatColor.RED+"/setspawn x y z");
+				return true;
+			}
+			player.getWorld().setSpawnLocation(Integer.valueOf(args[0]), Integer.valueOf(args[1]), Integer.valueOf(args[2]));
+			player.sendMessage(ChatColor.RED+"Spawn set");
+			log.info("Spawn set to "+args[0]+" "+args[1]+" "+args[2]+" by "+playerName);
+			return true;
+		}
+		if(isPlayer&&commandName.equals("auth")){
+			User user=users.getUser(player);
+			if(user!=null&&args.length==1){
+				String safeword=user.getSafeWord();
+				if(!safeword.equalsIgnoreCase("")&&safeword.equals(args[0])){
+					this.users.clear(playerName);
+					player.sendMessage(ChatColor.LIGHT_PURPLE+"Authenticated");
+					return true;
+				}
+			}
+			this.users.playerReset(playerName);
+			player.sendMessage(ChatColor.LIGHT_PURPLE+"You no can has permissions");
+			return true;
+		}
+		return true;
 	}
 
 	public boolean debug;

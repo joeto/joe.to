@@ -106,7 +106,7 @@ public class MySQL {
 					flags.add(Flag.byChar(Flags.charAt(x)));
 				}
 				if(j2.debug)j2.log.info("User "+name+" in "+rs.getString("group")+" with "+ Flags);
-				return new User(name, toColor(rs.getInt("color")), rs.getString("group"), flags);
+				return new User(name, toColor(rs.getInt("color")), rs.getString("group"), flags, j2.getServer().getWorld("world"), rs.getString("safeword"));
 			}
 			else{
 				String state2="INSERT INTO j2users (`name`,`group`,`color`,`flags`) values (\""+name+"\",\"regular\",10,\"n\")";
@@ -115,7 +115,7 @@ public class MySQL {
 				ps.executeUpdate();
 				ArrayList<Flag> f=new ArrayList<Flag>();
 				f.add(Flag.NEW);
-				return new User(name, ChatColor.GREEN, "regular", f);
+				return new User(name, ChatColor.GREEN, "regular", f,j2.getServer().getWorld("world"),"");
 			}
 		} catch (SQLException ex) {
 			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);

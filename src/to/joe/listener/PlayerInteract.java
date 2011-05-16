@@ -2,6 +2,8 @@ package to.joe.listener;
 
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 //import org.bukkit.Location;
 import org.bukkit.Material;
 //import org.bukkit.World;
@@ -10,6 +12,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.block.Action;
+import org.bukkit.inventory.ItemStack;
 //import org.bukkit.inventory.ItemStack;
 
 import to.joe.J2Plugin;
@@ -59,17 +62,29 @@ public class PlayerInteract extends PlayerListener {
 				//		managerBlockLog.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ(),(System.currentTimeMillis()/1000L),null));
 				event.getClickedBlock().setTypeId(0);
 			}
-			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
+		}
+		if(material.equals(Material.SLIME_BALL)&&j2.hasFlag(player, Flag.TOOLS)){
+			if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 				Block b=event.getClickedBlock();
 				event.getPlayer().sendMessage("Boom");
-	            int x=b.getX();
-	            int z=b.getZ();
-	            int y=b.getY()+1;
-	            j2.log.info("1X1 by "+player.getName()+" at "+x+" "+y+" "+z);
-	            while(y<128){
-	            	b.getWorld().getBlockAt(x, y, z).setTypeId(0);
-	            	y++;
-	            }
+				int x=b.getX();
+				int z=b.getZ();
+				int y=b.getY();
+				j2.log.info("1X1 by "+player.getName()+" at "+x+" "+y+" "+z);
+				while(y<128){
+					b.getWorld().getBlockAt(x, y, z).setTypeId(0);
+					y++;
+				}
+			}
+			if((event.getAction().equals(Action.LEFT_CLICK_AIR)||event.getAction().equals(Action.LEFT_CLICK_BLOCK))){
+				Block targetb=player.getTargetBlock(null, 50);
+				if(targetb!=null){
+					event.getPlayer().sendMessage("bloop!");
+					World world=targetb.getWorld();
+					Location location=targetb.getLocation();
+					for(int x=0;x<5;x++)
+						world.dropItemNaturally(location, new ItemStack(Material.SLIME_BALL,1));
+				}
 			}
 		}
 		/*if(material.equals(Material.PORK)&&j2.hasFlag(player, Flag.TOOLS)&&

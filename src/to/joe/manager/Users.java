@@ -17,7 +17,26 @@ public class Users {
 		this.j2=J2;
 		this.users=new ArrayList<User>();
 		this.groups=new HashMap<String, ArrayList<Flag>>();
+		this.clearedAdmins=new ArrayList<String>();
 	}
+
+	public boolean isCleared(String name){
+		synchronized(clearlock){
+			return this.clearedAdmins.contains(name);
+		}			
+	}
+
+	public void clear(String name){
+		synchronized(clearlock){
+			this.clearedAdmins.add(name);
+		}	
+	}
+	public void playerReset(String name){
+		synchronized(clearlock){
+			this.clearedAdmins.remove(name);
+		}	
+	}
+
 	public User getUser(String name){
 		synchronized (this.userlock){
 			for(User u:this.users){
@@ -62,20 +81,32 @@ public class Users {
 		if(user==null){
 			user=this.j2.mysql.getUser(name);
 		}
-		user.addFlag(flag);
+		this.addFlagLocal(name, flag);
 		if(j2.debug)
 			j2.log.info("Adding flag "+flag.getChar()+" for "+name);
 		this.j2.mysql.setFlags(name, user.getUserFlags());
+	}
+	public void addFlagLocal(String name, Flag flag){
+		User user=getUser(name);
+		if(user!=null){
+			user.addFlag(flag);
+		}
 	}
 	public void dropFlag(String name, Flag flag){
 		User user=getUser(name);
 		if(user==null){
 			user=this.j2.mysql.getUser(name);
 		}
-		user.dropFlag(flag);
+		this.dropFlagLocal(name, flag);
 		if(j2.debug)
 			j2.log.info("Dropping flag "+flag.getChar()+" for "+name);
 		this.j2.mysql.setFlags(name, user.getUserFlags());
+	}
+	public void dropFlagLocal(String name, Flag flag){
+		User user=getUser(name);
+		if(user!=null){
+			user.addFlag(flag);
+		}
 	}
 	public void setGroups(HashMap<String, ArrayList<Flag>> Groups){
 		this.groups=Groups;
@@ -108,7 +139,7 @@ public class Users {
 			delUser(name);
 		}
 		synchronized(jaillock){
-			jailReasons.put(name, reason);
+			this.jailReasons.put(name, reason);
 		}
 		//j2.mysql.jail(name,reason,admin);
 	}
@@ -123,23 +154,24 @@ public class Users {
 			delUser(name);
 		}
 		synchronized(jaillock){
-			jailReasons.remove(name);
+			this.jailReasons.remove(name);
 		}
 		//j2.mysql.unJail(name);
 	}
 
 	public String getJailReason(String name){
-		return jailReasons.get(name);
+		return this.jailReasons.get(name);
 	}
 
 	public void jailSet(HashMap<String,String> incoming){
-		jailReasons=incoming;
+		this.jailReasons=incoming;
 	}
 
 
 	public Location jail;
 	private ArrayList<User> users;
 	private HashMap<String, ArrayList<Flag>> groups;
-	private Object userlock= new Object(),jaillock=new Object();
+	private Object userlock= new Object(),jaillock=new Object(),clearlock=new Object();
 	private HashMap<String, String> jailReasons;
+	private ArrayList<String> clearedAdmins;
 }

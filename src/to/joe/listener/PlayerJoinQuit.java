@@ -1,5 +1,13 @@
 package to.joe.listener;
 
+/*import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiUnavailableException;
+import com.sk89q.jinglenote.MidiJingleSequencer;
+*/
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
@@ -28,6 +36,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		j2.warps.processJoin(name);
 		j2.damage.processJoin(name);
 		j2.jail.processJoin(player);
+		j2.users.playerReset(name);
 		try{
 			j2.mcbans.processJoin(name);
 		}
@@ -51,6 +60,22 @@ public class PlayerJoinQuit extends PlayerListener {
 			player.sendMessage(ChatColor.RED+"To get out, talk to the jailer");
 			player.sendMessage(ChatColor.RED+"You need to punch him");
 		}*/
+		/*try {
+            MidiJingleSequencer sequencer = new MidiJingleSequencer(
+                    new File("intro.mid"));
+            j2.jingleNoteManager.play(player, sequencer, 2000);
+        } catch (MidiUnavailableException e) {
+            j2.log.warning("[J2INGLE] Failed to access MIDI: "
+                    + e.getMessage());
+        } catch (InvalidMidiDataException e) {
+        	j2.log.warning("[J2INGLE] Failed to read intro MIDI file: "
+                    + e.getMessage());
+        } catch (FileNotFoundException e) {
+        	j2.log.info("[J2INGLE] No intro.mid; not playing intro song.");
+        } catch (IOException e) {
+        	j2.log.warning("[J2INGLE] Failed to read intro MIDI file: "
+                    + e.getMessage());
+        }*/
 	}
 
 	@Override
@@ -76,6 +101,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		}
 		event.setQuitMessage(null);
 		j2.damage.arf(name);
+		j2.users.playerReset(name);
 	}
 
 	@Override
