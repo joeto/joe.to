@@ -42,6 +42,7 @@ public class MCBans {
 		if(is_mcbans_mod.equals("y")){
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.RED+"Admins, be polite, "+name+" is an mcbans admin");
 			j2.irc.ircAdminMsg("[MCBANS] "+name+" is an MCBans admin. Nifty.");
+			j2.log.info("[MCBANS] "+name+" is an MCBans admin. Nifty.");
 			Player player=j2.getServer().getPlayer(name);
 			if(player!=null){
 				player.sendMessage(ChatColor.GREEN+"Welcome, oh glorious MCBans lord, to joe.to!  "+ChatColor.RED+"I LOVE YOU <3");
@@ -51,7 +52,7 @@ public class MCBans {
 		}
 		else if((Integer.parseInt(disputes)>0)){
 			Player player=j2.getServer().getPlayer(name);
-			player.sendMessage(ChatColor.GREEN+"[MCBANS] This server has "+ChatColor.AQUA+disputes+ChatColor.GREEN+" active disputes");
+			player.sendMessage(ChatColor.GREEN+"[MCBANS] You've got "+ChatColor.AQUA+disputes+ChatColor.GREEN+" active disputes");
 		}
 	}
 

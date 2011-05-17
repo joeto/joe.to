@@ -15,12 +15,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
 public class User {
-	private Material hat=Material.AIR;
+
 	public User(String name, ChatColor color, String group,  ArrayList<Flag> extraFlags, World world, String safeWord/*, int channel*/){
 		this.name=name;
 		this.color=color;
@@ -60,12 +59,6 @@ public class User {
 	}
 	public void restoreColor(){
 		this.color=backup;
-	}
-	public void tempSetHat(Material mat){
-		this.hat=mat;
-	}
-	public Material whatWasHat(){
-		return this.hat;
 	}
 	public String getName(){
 		return name;

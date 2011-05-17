@@ -8,9 +8,14 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import com.sk89q.jinglenote.MidiJingleSequencer;
 */
+
+
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
+
 import to.joe.J2Plugin;
 import to.joe.util.Flag;
 import to.joe.util.User;
@@ -37,6 +42,13 @@ public class PlayerJoinQuit extends PlayerListener {
 		j2.damage.processJoin(name);
 		j2.jail.processJoin(player);
 		j2.users.playerReset(name);
+		if(player.getInventory().getHelmet().equals(Material.FIRE)){
+			player.getInventory().setHelmet(new ItemStack(Material.GRASS));
+			player.sendMessage(ChatColor.RED+"You fizzle out");
+		}
+		if(j2.maintenance){
+			player.sendMessage(ChatColor.YELLOW+"We are in maintenance mode");
+		}
 		try{
 			j2.mcbans.processJoin(name);
 		}
@@ -54,6 +66,11 @@ public class PlayerJoinQuit extends PlayerListener {
 		if(j2.hasFlag(player, Flag.TOOLS)){
 			player.sendMessage(ChatColor.AQUA+"You have tool usage enabled. Be careful");
 		}
+		if(j2.hasFlag(player, Flag.CONTRIBUTOR)){
+			player.sendMessage(ChatColor.LIGHT_PURPLE+"We think you're an "+ChatColor.GOLD+"AMAZING CONTRIBUTOR");
+			player.sendMessage(ChatColor.LIGHT_PURPLE+"to the minecraft community as a whole! "+ChatColor.RED+"<3");
+		}
+		
 		/*if(j2.hasFlag(player,Flag.JAILED)){
 			player.teleportTo(j2.users.jail);
 			player.sendMessage(ChatColor.RED+"You are in "+ChatColor.DARK_RED+"JAIL");
@@ -119,6 +136,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		User user=j2.mysql.getUser(name);
 		boolean isAdmin=(user.getUserFlags().contains(Flag.ADMIN)||j2.users.groupHasFlag(user.getGroup(), Flag.ADMIN));
 		boolean isDonor=(user.getUserFlags().contains(Flag.DONOR)||j2.users.groupHasFlag(user.getGroup(), Flag.DONOR));
+		boolean isContributor=(user.getUserFlags().contains(Flag.CONTRIBUTOR)||j2.users.groupHasFlag(user.getGroup(), Flag.CONTRIBUTOR));
 		boolean isTrusted=(user.getUserFlags().contains(Flag.TRUSTED)||j2.users.groupHasFlag(user.getGroup(), Flag.TRUSTED));
 		boolean incoming=true;
 		if(reason!=null){
@@ -134,7 +152,7 @@ public class PlayerJoinQuit extends PlayerListener {
 			//j2.users.delUser(name);
 			incoming=false;
 		}
-		if(j2.trustedonly && !isTrusted){
+		if(j2.trustedonly && !isTrusted && !isContributor){
 			reason="Trusted only. http://forums.joe.to";
 			event.setKickMessage(reason);
 			event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, reason);
@@ -146,7 +164,7 @@ public class PlayerJoinQuit extends PlayerListener {
 			//j2.kickbans.callKick(player.getName(), "CONSOLE", "Logged in on another Minecraft");
 			incoming=false;
 		}
-		if(!isAdmin && !isDonor && j2.getServer().getOnlinePlayers().length >= j2.playerLimit){
+		if(!isAdmin && !isDonor &&!isContributor && j2.getServer().getOnlinePlayers().length >= j2.playerLimit){
 			event.setKickMessage("Server Full");
 			event.disallow(PlayerPreLoginEvent.Result.KICK_FULL, "Server full");
 			//j2.users.delUser(name);

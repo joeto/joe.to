@@ -9,7 +9,6 @@ import java.util.TimerTask;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import to.joe.J2Plugin;
@@ -68,10 +67,10 @@ public class Damages {
 		ArrayList<Wolf> wlist=new ArrayList<Wolf>();
 		boolean hated=j2.ihatewolves;
 		PlayerInventory i=player.getInventory();
-		i.setBoots(new ItemStack(0));
-		i.setChestplate(new ItemStack(0));
-		i.setHelmet(new ItemStack(0));
-		i.setLeggings(new ItemStack(0));
+		i.setBoots(null);
+		i.setChestplate(null);
+		i.setHelmet(null);
+		i.setLeggings(null);
 		j2.ihatewolves=false;
 		for(int x=0;x<10;x++){
 			Wolf bob=(Wolf)player.getWorld().spawnCreature(player.getLocation(),CreatureType.WOLF);

@@ -1245,7 +1245,6 @@ public class J2Plugin extends JavaPlugin {
 				chat.msgByFlagless(Flag.ADMIN,ChatColor.RED+"    "+playerName+" is an admin. Pay attention to "+playerName);
 			users.getUser(playerName).tempSetColor(ChatColor.RED);
 			damage.protect(playerName);
-			users.getUser(playerName).tempSetHat(player.getInventory().getHelmet().getType());
 			player.getInventory().setHelmet(new ItemStack(51));
 			log.info(playerName+" set mode to SUPERSAIYAN");
 			return true;
@@ -1256,7 +1255,7 @@ public class J2Plugin extends JavaPlugin {
 			player.sendMessage(ChatColor.RED+"You fizzle out");
 			chat.msgByFlag(Flag.ADMIN, ChatColor.RED+playerName+" disabled GODMODE");
 			users.getUser(name).restoreColor();
-			player.getInventory().setHelmet(new ItemStack(users.getUser(playerName).whatWasHat()));
+			player.getInventory().setHelmet(new ItemStack(Material.GRASS,1));
 			log.info(name+" set mode to NOT-SO-SAIYAN");
 			if(!safemode){
 				damage.danger(playerName);
@@ -1519,12 +1518,17 @@ public class J2Plugin extends JavaPlugin {
 				String safeword=user.getSafeWord();
 				if(!safeword.equalsIgnoreCase("")&&safeword.equals(args[0])){
 					this.users.clear(playerName);
-					player.sendMessage(ChatColor.LIGHT_PURPLE+"Authenticated");
+					chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+playerName+" authenticated");
+					log.info("[J2AUTH] "+playerName+" authenticated");
 					return true;
 				}
 			}
+			if(users.isCleared(playerName)){
+				chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+playerName+" deauthenticated");
+				log.info("[J2AUTH] "+playerName+" deauthenticated");
+			}
 			this.users.playerReset(playerName);
-			player.sendMessage(ChatColor.LIGHT_PURPLE+"You no can has permissions");
+			//player.sendMessage(ChatColor.LIGHT_PURPLE+"You no can has permissions");
 			return true;
 		}
 		return true;

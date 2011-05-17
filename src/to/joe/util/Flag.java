@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 public enum Flag {
 	ADMIN('a',"Base Admin"),
+	CONTRIBUTOR('c',"Important MC Community Member"),
 	DONOR('d',"Donor"),
 	FUN('f',"Fun commands"),
 	JAILED('j', "Jailed"),
