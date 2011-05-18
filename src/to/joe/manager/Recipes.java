@@ -51,5 +51,9 @@ public class Recipes {
 		bob7.shape("a a"," a ","a a");
 		bob7.setIngredient('a', Material.NETHERRACK);
 		this.j2.getServer().addRecipe(bob7);
+		ShapedRecipe bob8=new ShapedRecipe(new ItemStack(Material.WEB,1));		
+		bob.shape("A A"," A ","A A");
+		bob.setIngredient('A', Material.STRING);
+		this.j2.getServer().addRecipe(bob8);
 	}
 }
