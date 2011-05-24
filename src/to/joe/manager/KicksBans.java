@@ -8,16 +8,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Ban;
 import to.joe.util.Flag;
 
 public class KicksBans {
-	private J2Plugin j2;
+	private J2 j2;
 	public ArrayList<Ban> bans;
 	public ArrayList<String> xrayers;
 
-	public KicksBans(J2Plugin j2p){
+	public KicksBans(J2 j2p){
 		this.j2=j2p;
 		this.bans = new ArrayList<Ban>();
 		this.xrayers=new ArrayList<String>();

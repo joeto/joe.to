@@ -4,11 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 
 public class Recipes {
-	J2Plugin j2;
-	public Recipes(J2Plugin j2){
+	J2 j2;
+	public Recipes(J2 j2){
 		this.j2=j2;
 	}
 	public void addRecipes(){

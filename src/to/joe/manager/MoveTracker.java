@@ -5,11 +5,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import to.joe.util.User;
-import to.joe.J2Plugin;
+import to.joe.J2;
 
 public class MoveTracker {
-	private J2Plugin j2;
-	public MoveTracker(J2Plugin j2){
+	private J2 j2;
+	public MoveTracker(J2 j2){
 		this.j2=j2;
 	}
 	public void move(Player player){

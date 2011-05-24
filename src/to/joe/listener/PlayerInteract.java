@@ -15,14 +15,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 //import org.bukkit.inventory.ItemStack;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 
 
 public class PlayerInteract extends PlayerListener {
-	private final J2Plugin j2;
+	private final J2 j2;
 
-	public PlayerInteract(J2Plugin instance) {
+	public PlayerInteract(J2 instance) {
 		j2 = instance;
 	}
 

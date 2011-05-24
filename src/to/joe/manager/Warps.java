@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 import to.joe.util.Warp;
 
 public class Warps {
-	public Warps(J2Plugin J2){
+	public Warps(J2 J2){
 		this.warps=new ArrayList<Warp>();
 		this.homes=new ArrayList<Warp>();
 		this.j2=J2;
@@ -152,6 +152,6 @@ public class Warps {
 
 	private ArrayList<Warp> warps;
 	private ArrayList<Warp> homes;
-	private J2Plugin j2;
+	private J2 j2;
 	private Object lock=new Object();
 }

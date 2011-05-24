@@ -6,14 +6,14 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.ChatChannel;
 import to.joe.util.Flag;
 
 public class Chats {
 	private String[] colorlist;
-	private J2Plugin j2;
-	public Chats(J2Plugin j2p){
+	private J2 j2;
+	public Chats(J2 j2p){
 		j2=j2p;
 		//colorslist, minus lightblue white and purple
 		colorlist=new String[11];

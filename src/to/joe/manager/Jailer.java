@@ -4,13 +4,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 
 public class Jailer {
-	private J2Plugin j2;
+	private J2 j2;
 	private Location jailLocation;
-	public Jailer(J2Plugin j2){
+	public Jailer(J2 j2){
 		this.j2=j2;
 	}
 	public void jailSet(String[] jail){

@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Ban;
 import to.joe.util.Flag;
 import to.joe.util.Report;
@@ -25,10 +25,10 @@ import to.joe.util.Warp;
 public class MySQL {
 	private String user,pass,db;
 	private int serverNumber;
-	private J2Plugin j2;
+	private J2 j2;
 	private String aliasdb="alias";
 	//private SimpleDateFormat formatter = new SimpleDateFormat("MM-dd hh:mm");
-	public MySQL(String User,String Pass, String DB, int ServerNumber, J2Plugin J2){
+	public MySQL(String User,String Pass, String DB, int ServerNumber, J2 J2){
 		user=User;
 		pass=Pass;
 		db=DB;
@@ -131,8 +131,10 @@ public class MySQL {
 					conn.close();
 				}
 			} catch (SQLException ex) {
+				j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
 			}
 		}
+		j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell");
 		return null;
 	}
 

@@ -6,14 +6,14 @@ import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 import to.joe.util.User;
 
 
 public class Users {
-	private J2Plugin j2;
-	public Users(J2Plugin J2){
+	private J2 j2;
+	public Users(J2 J2){
 		this.j2=J2;
 		this.users=new ArrayList<User>();
 		this.groups=new HashMap<String, ArrayList<Flag>>();
@@ -105,7 +105,7 @@ public class Users {
 	public void dropFlagLocal(String name, Flag flag){
 		User user=getUser(name);
 		if(user!=null){
-			user.addFlag(flag);
+			user.dropFlag(flag);
 		}
 	}
 	public void setGroups(HashMap<String, ArrayList<Flag>> Groups){

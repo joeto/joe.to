@@ -14,13 +14,13 @@ import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 
 public class EntityAll extends EntityListener {
-	private J2Plugin j2;
+	private J2 j2;
 
-	public EntityAll(J2Plugin j2){
+	public EntityAll(J2 j2){
 		this.j2=j2;
 	}
 	@Override

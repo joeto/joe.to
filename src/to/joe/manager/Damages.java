@@ -11,13 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.PlayerInventory;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 
 public class Damages {
 	public ArrayList<String> PvPsafe,PvEsafe;
 	public HashMap<String,ArrayList<Wolf>> allWolf;
-	J2Plugin j2;
-	public Damages(J2Plugin j2){
+	J2 j2;
+	public Damages(J2 j2){
 		this.j2=j2;
 		this.clear();
 		this.allWolf=new HashMap<String,ArrayList<Wolf>>();

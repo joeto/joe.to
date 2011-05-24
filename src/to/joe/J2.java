@@ -18,6 +18,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.util.config.Configuration;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import to.joe.listener.*;
@@ -32,6 +33,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -45,7 +47,7 @@ import java.util.logging.Logger;
  *
  * @author mbaxter
  */
-public class J2Plugin extends JavaPlugin {
+public class J2 extends JavaPlugin {
 	private final PlayerChat plrlisChat = new PlayerChat(this);
 	private final PlayerInteract plrlisItem = new PlayerInteract(this);
 	private final PlayerJoinQuit plrlisJoinQuit = new PlayerJoinQuit(this);
@@ -68,6 +70,8 @@ public class J2Plugin extends JavaPlugin {
 	public final Jailer jail = new Jailer(this);
 	public final MoveTracker move = new MoveTracker(this);
 	public JingleNoteManager jingleNoteManager;
+	public final ActivityTracker activity = new ActivityTracker(this);
+	public final CraftualHarassmentPanda panda=new CraftualHarassmentPanda(this);
 	//public managerBlockLog blogger;
 	public MySQL mysql;
 
@@ -141,52 +145,97 @@ public class J2Plugin extends JavaPlugin {
 		motd=readDaFile("motd.txt");
 		help=readDaFile("help.txt");
 		Property j2properties = new Property("j2.properties");
+		Configuration conf=this.getConfiguration();
+		HashMap<String,Object> conf_general=new HashMap<String,Object>();
+		HashMap<String,Object> conf_mysql=new HashMap<String,Object>();
+		HashMap<String,Object> conf_irc=new HashMap<String,Object>();
+		HashMap<String,Object> conf_tips=new HashMap<String,Object>();
+		HashMap<String,Object> conf_maint=new HashMap<String,Object>();
+		HashMap<String,Object> conf_blacklists=new HashMap<String,Object>();
+		
+		
 		try { 
 			debug = j2properties.getBoolean("debug",false);
+			conf_general.put("debug-mode", this.debug);
 			//mysql start
 			String mysql_username = j2properties.getString("user", "root");
 			String mysql_password = j2properties.getString("pass", "root");
 			String mysql_db = j2properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
+			conf_mysql.put("username", mysql_username);
+			conf_mysql.put("database", mysql_db);
+			conf_mysql.put("password", mysql_password);
 			//chatTable = properties.getString("chat","chat");
 			servernumber = j2properties.getInt("server-number", 0);
+			conf_general.put("server-number", this.servernumber);
 			mysql = new MySQL(mysql_username,mysql_password,mysql_db, servernumber, this);
 			mysql.loadMySQLData();
 			//mysql end
 
 			playerLimit=j2properties.getInt("max-players",20);
+			conf_general.put("max-players", this.playerLimit);
 			tips_delay = j2properties.getInt("tip-delay", 120);
 			tips_color = "\u00A7"+j2properties.getString("tip-color", "b");
+			conf_tips.put("delay", tips_delay);
+			conf_tips.put("color", tips_color);
 			ircHost = j2properties.getString("irc-host","localhost");
+			conf_irc.put("host", ircHost);
 			ircName = j2properties.getString("irc-name","aMinecraftBot");
+			conf_irc.put("nick", ircName);
 			ircChannel = j2properties.getString("irc-channel","#minecraftbot");
+			conf_irc.put("relay-channel", ircChannel);
 			ircAdminChannel = j2properties.getString("irc-adminchannel","#minecraftbotadmin");
+			conf_irc.put("admin-channel", ircAdminChannel);
 			int ircuc = j2properties.getInt("irc-usercolor",15);
+			conf_irc.put("ingame-color", ircuc);
 			ircUserColor=mysql.toColor(ircuc);
 			ircSeparator= j2properties.getString("irc-separator","<,>").split(",");
+			conf_irc.put("ingame-separator", j2properties.getString("irc-separator","<,>"));
 			ircCharLim = j2properties.getInt("irc-charlimit",390);
+			conf_irc.put("char-limit", ircCharLim);
 			ircMsg=j2properties.getBoolean("irc-msg-enable",false);
+			conf_irc.put("require-msg-cmd", ircMsg);
 			ircEnable=j2properties.getBoolean("irc-enable",false);
+			conf_irc.put("enable", ircEnable);
 			ircEcho = j2properties.getBoolean("irc-echo",false);
+			conf_irc.put("echo-messages", ircEcho);
 			ircPort = j2properties.getInt("irc-port",6667);
+			conf_irc.put("port", ircPort);
 			ircDebug = j2properties.getBoolean("irc-debug",false);
+			conf_irc.put("debug-spam", ircDebug);
 			ircOnJoin = j2properties.getString("irc-onjoin","");
+			conf_irc.put("channel-join-message", ircOnJoin);
 			gsAuth = j2properties.getString("gs-auth","");
+			conf_irc.put("gamesurge-user", gsAuth);
 			gsPass = j2properties.getString("gs-pass","");
+			conf_irc.put("gamesurge-pass", gsPass);
 			ircLevel2 = j2properties.getString("irc-level2","").split(",");
+			conf_irc.put("level2-commands", j2properties.getString("irc-level2"));
 			safemode=j2properties.getBoolean("safemode",false);
+			conf_general.put("safemode", safemode);
 			explodeblocks=j2properties.getBoolean("explodeblocks",true);
+			conf_general.put("allow-explosions", explodeblocks);
 			ihatewolves=j2properties.getBoolean("ihatewolves", false);
+			conf_general.put("disable-wolves", ihatewolves);
 			maintenance = j2properties.getBoolean("maintenance",false);
+			conf_maint.put("enable", maintenance);
 			maintmessage = j2properties.getString("maintmessage","Server offline for maintenance");
-			fun=j2properties.getBoolean("funmode",false);
+			conf_maint.put("message", maintmessage);
 			trustedonly=j2properties.getBoolean("trustedonly",false);
+			conf_general.put("block-nontrusted", trustedonly);
 			randomcolor=j2properties.getBoolean("randcolor",false);
-			String superBlacklist = j2properties.getString("superblacklist", "0");				
+			conf_general.put("random-namecolor", randomcolor);
+			String superBlacklist = j2properties.getString("superblacklist", "0");
+			conf_blacklists.put("prevent-trusted", superBlacklist);
 			String regBlacklist = j2properties.getString("regblacklist", "0");
+			conf_blacklists.put("prevent-general", regBlacklist);
 			String watchList = j2properties.getString("watchlist","0");
+			conf_blacklists.put("watchlist", watchlist);
 			String summonList = j2properties.getString("summonlist","0");
+			conf_blacklists.put("prevent-summon", summonList);
 			mcbansapi=j2properties.getString("mcbans-api", "");
+			conf_general.put("mcbans-api", mcbansapi);
 			String[] jail=j2properties.getString("jail","10,11,10,0,0").split(",");
+			conf_general.put("jail-xyzpy", j2properties.getString("jail"));
 			this.jail.jailSet(jail);
 			superblacklist=new ArrayList<Integer>();
 			itemblacklist=new ArrayList<Integer>();
@@ -227,6 +276,13 @@ public class J2Plugin extends JavaPlugin {
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "Exception while reading from j2.properties", e);
 		}
+		conf.setProperty("General", conf_general);
+		conf.setProperty("MySQL", conf_mysql);
+		conf.setProperty("IRC", conf_irc);
+		conf.setProperty("Maintenance", conf_maint);
+		conf.setProperty("Tips", conf_tips);
+		conf.setProperty("Blacklists", conf_blacklists);
+		conf.save();
 		this.perms.load();
 	}
 
@@ -409,6 +465,16 @@ public class J2Plugin extends JavaPlugin {
 		return builder.toString();
 	}
 
+	public boolean reallyHasFlag(String playername, Flag flag){
+		User user=users.getUser(playername);
+		if(user!=null){
+			if(user.getUserFlags().contains(flag) || users.groupHasFlag(user.getGroup(), flag)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean hasFlag(String playername, Flag flag){
 		User user=users.getUser(playername);
 		if(user!=null){
@@ -1531,6 +1597,21 @@ public class J2Plugin extends JavaPlugin {
 			//player.sendMessage(ChatColor.LIGHT_PURPLE+"You no can has permissions");
 			return true;
 		}
+		if(commandName.equals("harass")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
+			if(args.length!=1){
+				sender.sendMessage("Missing a name!");
+				return true;
+			}
+			List<Player> listy=this.getServer().matchPlayer(args[0]);
+			if(listy.size()!=1){
+				sender.sendMessage("Fail match");
+				return true;
+			}
+			Player target=listy.get(0);
+			this.panda.harass(target);
+			sender.sendMessage(ChatColor.AQUA+"Target Acquired.");
+			return true;
+		}
 		return true;
 	}
 
@@ -1563,7 +1644,7 @@ public class J2Plugin extends JavaPlugin {
 	public boolean trustedonly;
 	public Property tpProtect=new Property("tpProtect.list");
 	public Player OneByOne = null;
-	public boolean fun,randomcolor;
+	public boolean randomcolor;
 	public Random random = new Random();
 	public int playerLimit;
 	public int servernumber;

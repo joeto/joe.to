@@ -8,7 +8,7 @@ import org.bukkit.block.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 
 
@@ -17,9 +17,9 @@ import to.joe.util.Flag;
  * @author mbaxter
  */
 public class BlockAll extends BlockListener {
-    private final J2Plugin j2;
+    private final J2 j2;
 
-    public BlockAll(final J2Plugin plugin) {
+    public BlockAll(final J2 plugin) {
         this.j2 = plugin;
     }
 
@@ -60,11 +60,16 @@ public class BlockAll extends BlockListener {
     @Override
     public void onBlockBreak(BlockBreakEvent event){
     	Player player=event.getPlayer();
+    	if(!this.j2.panda.blockHurt(player, event.getBlock().getLocation())){
+    		event.setCancelled(true);
+    		return;
+    	}
     	if(!j2.hasFlag(player, Flag.MODWORLD)){
 			player.sendMessage("You don't have permission to do that");
 			event.setCancelled(true);
 			return;
 		}
+    	j2.activity.update(player.getName());
     	/*BlockRow changed;
 		Block smacked = event.getBlock();
 		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ(),(System.currentTimeMillis()/1000L),null);
@@ -77,6 +82,11 @@ public class BlockAll extends BlockListener {
     public void onBlockPlace(BlockPlaceEvent event) {
     	Player player=event.getPlayer();
     	Block blockPlaced=event.getBlockPlaced();
+    	if(!this.j2.panda.blockPlace(player, blockPlaced.getLocation())){
+    		event.setCancelled(true);
+    		return;
+    	}
+    	j2.activity.update(player.getName());
     	//BlockState old=event.getBlockReplacedState();
     	int type=blockPlaced.getTypeId();
     	

@@ -2,13 +2,13 @@ package to.joe.manager;
 
 import java.util.ArrayList;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Report;
 
 public class Reports {
 	private ArrayList<Report> reports;
-	J2Plugin j2;
-	public Reports(J2Plugin j2){
+	J2 j2;
+	public Reports(J2 j2){
 		this.reports=new ArrayList<Report>();
 		this.j2=j2;
 	}

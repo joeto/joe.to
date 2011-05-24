@@ -2,7 +2,7 @@ package to.joe.util;
 
 import java.util.HashMap;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 
 public class ChatChannel {
 	private String chanName;
@@ -10,7 +10,7 @@ public class ChatChannel {
 	private int id;
 	//private J2Plugin j2;
 	private boolean isPrivate;
-	public ChatChannel(int id,String name, HashMap<String,Integer> userlist, boolean isPrivate, J2Plugin j2){
+	public ChatChannel(int id,String name, HashMap<String,Integer> userlist, boolean isPrivate, J2 j2){
 		this.id=id;
 		this.chanName=name;
 		this.userlist=userlist;

@@ -16,18 +16,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 import to.joe.util.User;
 
 
 public class PlayerJoinQuit extends PlayerListener {
 	
-	private final J2Plugin j2;
+	private final J2 j2;
 	
 	//private ArrayList<String> theList;
 
-	public PlayerJoinQuit(J2Plugin instance) {
+	public PlayerJoinQuit(J2 instance) {
 		j2 = instance;
 		//theList=new ArrayList<String>();
 	}

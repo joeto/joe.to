@@ -8,16 +8,16 @@ import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerListener;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 
 
 
 public class PlayerChat extends PlayerListener {
-	private final J2Plugin j2;
+	private final J2 j2;
 	private String plugins;
 	
-	public PlayerChat(J2Plugin instance) {
+	public PlayerChat(J2 instance) {
 		j2 = instance;
 		StringBuilder pluginList = new StringBuilder();
 		String[] plugins=new String[5];
@@ -42,6 +42,11 @@ public class PlayerChat extends PlayerListener {
 	public void onPlayerChat (PlayerChatEvent event ) {
 		Player player=event.getPlayer();
 		String message=event.getMessage();
+		if(!this.j2.panda.chat(player, message)){
+    		event.setCancelled(true);
+    		return;
+    	}
+		j2.activity.update(player.getName());
 		j2.chat.handleChat(player, message);
 		event.setCancelled(true);
 	}
@@ -51,6 +56,11 @@ public class PlayerChat extends PlayerListener {
 		Player player=event.getPlayer();
 		String name=player.getName();
 		String message=event.getMessage();
+		if(!this.j2.panda.chat(player, message)){
+    		event.setCancelled(true);
+    		return;
+    	}
+		j2.activity.update(name);
 		String[] split=message.split(" ");
 		String command=split[0].trim().substring(1).toLowerCase();
 		j2.log.info("[J2CMD] "+name+" command "+message);
@@ -74,6 +84,11 @@ public class PlayerChat extends PlayerListener {
 			if(j2.hasFlag(player, Flag.SRSTAFF)){
 				player.sendMessage(ChatColor.GREEN+"YOU MONSTER");
 			}
+			event.setCancelled(true);
+			event.setMessage(null);
+			return;
+		}
+		if((command.equals("bb")||command.equals("nocheat")||command.equals("vanish"))&&!j2.hasFlag(player, Flag.ADMIN)){
 			event.setCancelled(true);
 			event.setMessage(null);
 			return;

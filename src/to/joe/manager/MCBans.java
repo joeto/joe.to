@@ -16,14 +16,14 @@ import org.bukkit.entity.Player;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 
 public class MCBans {
-	private J2Plugin j2;
+	private J2 j2;
 	private String version="1.3.3.7";
 	public Hashtable<String, JSONObject> player_jsonobj = new Hashtable<String, JSONObject>();
-	public MCBans(J2Plugin j2){
+	public MCBans(J2 j2){
 		this.j2=j2;
 	}
 

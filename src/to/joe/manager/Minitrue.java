@@ -7,14 +7,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import com.echo28.bukkit.vanish.Vanish;
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 
 public class Minitrue {
-	private J2Plugin j2;
+	private J2 j2;
 	private Vanish vanish;
 	private boolean vanishing;
-	public Minitrue(J2Plugin j2){
+	public Minitrue(J2 j2){
 		this.j2=j2;
 		this.vanishing=false;
 	}
@@ -25,7 +25,7 @@ public class Minitrue {
 			p = (Vanish)test;
 		}
 		if(p == null) {
-			Logger.getLogger("Minecraft").warning("Failed to find J2Plugin. Oh dear.");
+			Logger.getLogger("Minecraft").warning("Failed to find Vanish. Oh dear.");
 		}
 		else{
 			this.vanishing=true;

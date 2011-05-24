@@ -6,17 +6,17 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.Flag;
 
 
 public class IPTracker {
-	private J2Plugin j2;
+	private J2 j2;
 	private HashMap<String,String> html,nameslist;
 	private HashMap<String,Integer> totalcount,bannedcount;
 	public ArrayList<String> badlist;
 
-	public IPTracker(J2Plugin j2){
+	public IPTracker(J2 j2){
 		this.j2=j2;
 		this.html=new HashMap<String,String>();
 		this.nameslist=new HashMap<String,String>();

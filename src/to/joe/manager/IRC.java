@@ -14,12 +14,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import org.bukkit.Location;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 import to.joe.util.ircAdmin;
 import to.joe.util.ircBot;
 
 public class IRC {
-	private J2Plugin j2;
+	private J2 j2;
 	private ircBot bot;
 	private Object adminsLock = new Object();
 	private ArrayList<ircAdmin> admins;
@@ -28,7 +28,7 @@ public class IRC {
 	//private boolean stop = false;
 	//private HashMap<String,Long> recent;
 
-	public IRC(J2Plugin j2p){
+	public IRC(J2 j2p){
 		this.j2=j2p;
 		loadIRCAdmins();
 		this.msgs=new HashMap<String,Long>();
@@ -248,7 +248,7 @@ public class IRC {
 			bot.sendMessage(j2.ircAdminChannel,message);
 	}
 
-	public J2Plugin getJ2(){
+	public J2 getJ2(){
 		return j2;
 	}
 

@@ -5,11 +5,11 @@ import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 
 public class PlayerMovement  extends PlayerListener {
-	private J2Plugin j2;
-	public PlayerMovement(J2Plugin j2){
+	private J2 j2;
+	public PlayerMovement(J2 j2){
 		this.j2=j2;
 	}
 	
@@ -33,5 +33,6 @@ public class PlayerMovement  extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
+		j2.activity.update(player.getName());
 	}
 }

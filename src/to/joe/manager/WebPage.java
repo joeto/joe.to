@@ -12,12 +12,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import to.joe.J2Plugin;
+import to.joe.J2;
 
 public class WebPage {
-	private J2Plugin j2;
+	private J2 j2;
 	private int servernum;
-	public WebPage(J2Plugin j2){
+	public WebPage(J2 j2){
 		this.j2=j2;
 	}
 	public void go(int servnum){
