@@ -283,6 +283,18 @@ public class J2 extends JavaPlugin {
 		conf.setProperty("Tips", conf_tips);
 		conf.setProperty("Blacklists", conf_blacklists);
 		conf.save();
+		if(safemode){
+			Player[] online=getServer().getOnlinePlayers();
+			if(online.length>0){
+				for(Player p:online){
+					if(p!=null)
+						damage.protect(p.getName());
+				}
+			}
+		}
+		else {
+			damage.clear();
+		}
 		this.perms.load();
 	}
 
