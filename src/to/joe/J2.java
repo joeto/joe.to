@@ -367,12 +367,9 @@ public class J2 extends JavaPlugin {
 	{
 		if (tips.isEmpty())
 			return;
-		String message = tips_color+tips.get(curTipNum);
-		for (Player p : this.getServer().getOnlinePlayers()) {
-			if (p != null) {
-				p.sendMessage(message);
-			}
-		}
+		String message = tips_color+"[TIP] "+tips.get(curTipNum);
+		this.chat.msgAll(message);
+		this.log(message);
 		if (curTipNum >= tips.size())
 			curTipNum = 0;
 		else
