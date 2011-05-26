@@ -1,9 +1,12 @@
 package to.joe.manager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
+import net.minecraft.server.Block;
 import net.minecraft.server.EntityChicken;
 import net.minecraft.server.Packet24MobSpawn;
+import net.minecraft.server.Packet60Explosion;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -42,8 +45,10 @@ public class CraftualHarassmentPanda {
 		i.remove(player.getItemInHand().getType());
 		EntityChicken bawk=new EntityChicken(((CraftWorld) player.getWorld()).getHandle());
 		bawk.setLocation(location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw());
-		Packet24MobSpawn pack=new Packet24MobSpawn(bawk);
-		((CraftPlayer)player).getHandle().netServerHandler.sendPacket(pack);
+		Packet24MobSpawn pack1=new Packet24MobSpawn(bawk);
+		Packet60Explosion pack2=new Packet60Explosion(location.getX(), location.getY(), location.getZ(),10,new HashSet<Block>());
+		((CraftPlayer)player).getHandle().netServerHandler.sendPacket(pack1);
+		((CraftPlayer)player).getHandle().netServerHandler.sendPacket(pack2);
 		return false;
 	}
 	public boolean chat(Player player,String message){
