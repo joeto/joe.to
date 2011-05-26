@@ -370,10 +370,9 @@ public class J2 extends JavaPlugin {
 		String message = tips_color+"[TIP] "+tips.get(curTipNum);
 		this.chat.msgAll(message);
 		this.log(message);
+		curTipNum++;
 		if (curTipNum >= tips.size())
-			curTipNum = 0;
-		else
-			curTipNum++;
+			curTipNum = 0;			
 	}
 
 
