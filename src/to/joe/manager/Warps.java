@@ -144,7 +144,6 @@ public class Warps {
 				if(!warps_s.equalsIgnoreCase("")){
 					warps_s=warps_s.substring(2);//remove the first comma/space
 				}
-				j2.log.info("Sending back warps: "+warps_s);
 			}
 			return warps_s;
 		}
