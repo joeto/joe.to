@@ -14,9 +14,7 @@ public class ircBot extends PircBot {
 		this.setAutoNickChange(true);
 		ircMsg=msgenabled;
 		ircCharLim = charlim;
-		ircUserColor = usercolor;
 		ircEcho = echo;
-		ircSeparator=sep;
 		ircman=j;
 		this.setMessageDelay(1100);
 	}
@@ -127,11 +125,10 @@ public class ircBot extends PircBot {
 
 	}
 	public void doMsg(String channel, String sender, String message){
-		if(addMsg(message,sender))
+		if( this.ircman.getJ2().chat.handleIRCChat(sender, message,false))
 		{
 			if(ircEcho)
 				sendMessage(channel,"[IRC] <"+sender+">"+message);
-
 		}
 		else
 		{
@@ -139,7 +136,7 @@ public class ircBot extends PircBot {
 		}
 	}
 	public void doMeMsg(String channel, String sender, String message){
-		if(addMeMsg(message,sender))
+		if(this.ircman.getJ2().chat.handleIRCChat(sender, message, true))
 		{
 			if(ircEcho)
 				sendMessage(channel,"[IRC] * "+sender+message);
@@ -150,46 +147,7 @@ public class ircBot extends PircBot {
 			sendMessage(channel,sender+": Your message was too long. The limit's " + ircCharLim + " characters");
 		}
 	}
-	public boolean addMsg(String thenewmsg,String theuser)
-	{
-		String combined=ircSeparator[0]+ircUserColor+theuser+ChatColor.WHITE+ircSeparator[1]+thenewmsg;
-		if(combined.length() > ircCharLim)
-		{
-			return false;
-		}
-		else
-		{
-			ircman.getJ2().log.info("IRC:<"+theuser+"> "+thenewmsg);
-			ircman.getJ2().chat.logChat("[irc]"+theuser, thenewmsg);
-			for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
-				if (p != null) {
-					p.sendMessage(combined);
-				}
-			}
-			return true;
-		}
-
-	}
-	public boolean addMeMsg(String thenewmsg,String theuser)
-	{
-		String combined="* "+ircUserColor+theuser+ChatColor.WHITE+thenewmsg;
-		if(combined.length() > ircCharLim)
-		{
-			return false;
-		}
-		else
-		{
-			ircman.getJ2().log.info("IRC: * "+theuser+thenewmsg);
-			ircman.getJ2().chat.logChat("[irc]* "+theuser, thenewmsg);
-			for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
-				if (p != null) {
-					p.sendMessage(combined);
-				}
-			}
-			return true;
-		}
-
-	}
+	
 	protected void onPrivateMessage(String sender,String login,String hostname,String message){
 		if(ircman.ircCommand(hostname,sender,message.split(" "))){
 			//sendMessage(sender,"Done :)");
@@ -205,6 +163,4 @@ public class ircBot extends PircBot {
 	private boolean ircMsg;
 	private boolean ircEcho;
 	private int ircCharLim;
-	private ChatColor ircUserColor;
-	private String[] ircSeparator;
 }

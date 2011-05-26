@@ -66,6 +66,9 @@ public class User {
 	public String getColorName(){
 		return color+name+ChatColor.WHITE;
 	}
+	public ChatColor getColor(){
+		return color;
+	}
 	public String getGroup(){
 		return group;
 	}

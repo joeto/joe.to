@@ -138,10 +138,6 @@ commands:
     description: Go into maintenance
     usage: |
             /maintenance <kickreason>
-  1x1:
-    description: Boom!
-    usage: |
-            /1x1
   flags:
     description: Modify a user's flags
     usage: |

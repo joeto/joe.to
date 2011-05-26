@@ -97,11 +97,37 @@ public class Chats {
 			}
 		}
 		j2.log.log(Level.INFO, "GOD: <"+name+"> "+message);
-		logChat(name,message);
 		j2.irc.ircMsg(imessage);
 	}
 
-	public void handleChat(Player player,String chat){
+	public String formatNamelyArea(String name,ChatColor color,boolean me){
+		String colorName="";
+		if(color!=null){
+			colorName=color+name;
+		}
+		else{
+			String[] colorlist=j2.chat.getColorlist();
+			int size=colorlist.length;
+			int rand=j2.random.nextInt(size);
+			if(rand<size){
+				colorName=colorlist[rand]+name;
+			}
+			else
+			{
+				for(int x=0;x<name.length();x++){
+					colorName+=colorlist[j2.random.nextInt(size)]+name.charAt(x);
+				}
+			}
+		}
+		if(me){
+			return "* "+colorName+" ";
+		}
+		else{
+			return "<"+colorName+ChatColor.WHITE+"> ";
+		}
+	}
+	
+	public void handleChat(Player player,String chat,boolean me){
 		
 		if(j2.minitrue.chat(player, chat)){
 			return;
@@ -109,7 +135,9 @@ public class Chats {
 		String name=player.getName();
 		if(this.muteAll&&!j2.hasFlag(player, Flag.ADMIN)){
 			player.sendMessage(ChatColor.RED+"All players are currently muted");
-			this.msgByFlag(Flag.ADMIN, "<"+ChatColor.YELLOW+name+ChatColor.WHITE+"> "+chat);
+			String message=this.formatNamelyArea(name, ChatColor.YELLOW, me)+chat;
+			this.msgByFlag(Flag.ADMIN, message);
+			this.j2.log(message);
 			return;
 		}
 		if(!(j2.users.getUser(player).canChat()||j2.hasFlag(player, Flag.ADMIN))){
@@ -118,46 +146,41 @@ public class Chats {
 			return;
 		}
 		
-		logChat(name, chat);
-		j2.irc.ircMsg("<"+name+"> "+chat);
+		ChatColor color=null;
+		if(!j2.randomcolor)
+			color=j2.users.getUser(player).getColor();
+		String message=this.formatNamelyArea(name, color, me)+chat;
+		if(me)
+			j2.irc.ircMsg("* "+name+" "+chat);
+		else
+			j2.irc.ircMsg("<"+name+"> "+chat);
 		//j2.irc.chatQueue.offer("<"+name+"> "+chat);
-		j2.log.info("<"+name+"> "+chat);
-
-		/* method to madness here.
-		 * This is going to be written to handle channels.
-		 */
-		String message="";
-		if(!j2.randomcolor){
-			message=ChatColor.WHITE+"<"+j2.users.getUser(player).getColorName()+ChatColor.WHITE+"> "+chat;			
-		}
-		else {
-
-			String[] colorlist=j2.chat.getColorlist();
-			int size=colorlist.length;
-			int rand=j2.random.nextInt(size);
-			if(rand<size){
-				message=ChatColor.WHITE+"<"+colorlist[rand]+name+ChatColor.WHITE+"> "+chat;
-			}
-			else
-			{
-				for(int x=0;x<name.length();x++){
-					name+=colorlist[j2.random.nextInt(size)]+name.charAt(x);
-				}
-				message=ChatColor.WHITE+"<"+name+ChatColor.WHITE+"> "+chat;
-			}
-		}
+		j2.log(message);
 		msgAll(message);
 
-		/*if(player.getName().equalsIgnoreCase("mbaxter")){
-		String[] colorlist=j2.chat.getColorlist();
-		String dname="";
-		int size=colorlist.length;
-		for(int x=0;x<7;x++){
-			dname+=colorlist[j2.random.nextInt(size)]+name.charAt(x);
-		}
-		j2.chat.msgAll(ChatColor.WHITE+"<"+dname+ChatColor.WHITE+"> "+message);
-		}*/
 	}
+	
+	
+	public boolean handleIRCChat(String name,String chat,boolean me){
+		String combined;
+		if(me){
+			combined=this.j2.ircSeparator[0]+this.j2.ircUserColor+name+ChatColor.WHITE+this.j2.ircSeparator[1]+chat;
+		}
+		else{
+			combined="* "+this.j2.ircUserColor+name+ChatColor.WHITE+chat;
+		}
+		if(combined.length() > this.j2.ircCharLim)
+		{
+			return false;
+		}
+		else
+		{
+			j2.log("IRC:"+combined);
+			this.msgAll(combined);
+			return true;
+		}
+	}
+	
 
 	private HashMap<Integer,ChatChannel> channels;
 	public void addChannel(ChatChannel chan){
@@ -177,8 +200,8 @@ public class Chats {
 		channels.put(chan.getID(), chan);
 	}
 	
-	public void logChat(String name, String message) {
-		/*this is a terrible, horrible idea. Never do it again.
+	/*public void logChat(String name, String message) {
+		this is a terrible, horrible idea. Never do it again.
 		 * 
 		 * 
 		 * Connection conn = null;
@@ -203,6 +226,6 @@ public class Chats {
 				}
 			} catch (SQLException ex) {
 			}
-		}*/
-	}
+		}
+	}*/
 }

@@ -47,7 +47,7 @@ public class PlayerChat extends PlayerListener {
     		return;
     	}
 		j2.activity.update(player.getName());
-		j2.chat.handleChat(player, message);
+		j2.chat.handleChat(player, message,false);
 		event.setCancelled(true);
 	}
 	
