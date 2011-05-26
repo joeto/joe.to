@@ -1624,6 +1624,21 @@ public class J2 extends JavaPlugin {
 			sender.sendMessage(ChatColor.AQUA+"Target Acquired.");
 			return true;
 		}
+		if(commandName.equals("muteall")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
+			if(this.chat.muteAll){
+				this.chat.muteAll=false;
+				String messageBit=" has unmuted all players";
+				this.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+playerName+messageBit);
+				this.chat.msgByFlagless(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"The ADMIN"+messageBit);
+			}
+			else{
+				this.chat.muteAll=true;
+				String messageBit=" has muted all players";
+				this.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+playerName+messageBit);
+				this.chat.msgByFlagless(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"The ADMIN"+messageBit);
+			}
+			return true;
+		}
 		return true;
 	}
 

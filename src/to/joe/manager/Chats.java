@@ -13,6 +13,7 @@ import to.joe.util.Flag;
 public class Chats {
 	private String[] colorlist;
 	private J2 j2;
+	public boolean muteAll;
 	public Chats(J2 j2p){
 		j2=j2p;
 		//colorslist, minus lightblue white and purple
@@ -28,6 +29,7 @@ public class Chats {
 		colorlist[8]=ChatColor.DARK_RED.toString();
 		colorlist[9]=ChatColor.RED.toString();
 		colorlist[10]=ChatColor.DARK_BLUE.toString();
+		this.muteAll=false;
 	}
 	
 	public static final int[] characterWidths = new int[] {
@@ -105,6 +107,11 @@ public class Chats {
 			return;
 		}
 		String name=player.getName();
+		if(this.muteAll&&!j2.hasFlag(player, Flag.ADMIN)){
+			player.sendMessage(ChatColor.RED+"All players are currently muted");
+			this.msgByFlag(Flag.ADMIN, "<"+ChatColor.YELLOW+name+ChatColor.WHITE+"> "+chat);
+			return;
+		}
 		if(!(j2.users.getUser(player).canChat()||j2.hasFlag(player, Flag.ADMIN))){
 			player.sendMessage(ChatColor.RED+"Trying to send too many messages too quickly.");
 			player.sendMessage(ChatColor.RED+"Wait 5 seconds and try again");

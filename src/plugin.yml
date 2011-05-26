@@ -306,3 +306,7 @@ commands:
     description: yarp
     usage: |
             yup
+  muteall:
+    description: mmmhmm
+    usage: |
+            Yeaaaah
