@@ -1,7 +1,6 @@
 package to.joe.manager;
 
 import java.util.HashMap;
-import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -81,22 +80,14 @@ public class Chats {
 	
 	public void aMsg(String name,String message){
 		String msg="<"+ChatColor.LIGHT_PURPLE+name+ChatColor.WHITE+"> "+message;
-		msgByFlag(Flag.ADMIN,msg);
-		j2.log.log(Level.INFO, "adminsChat: <"+name+"> "+message);
+		j2.sendAdminPlusLog(msg);
 	}
 	public void gMsg(String name,String message){
 		String amessage="<"+name+"> "+ChatColor.LIGHT_PURPLE+message;
 		String pmessage="<ADMIN> "+ChatColor.LIGHT_PURPLE+message;
 		String imessage="<ADMIN> "+message;
-		for (Player p : j2.getServer().getOnlinePlayers()) {
-			if (p != null && j2.hasFlag(p, Flag.ADMIN)) {
-				p.sendMessage(amessage);
-			}
-			else if (p !=null && !j2.hasFlag(p,Flag.ADMIN)) {
-				p.sendMessage(pmessage);
-			}
-		}
-		j2.log.log(Level.INFO, "GOD: <"+name+"> "+message);
+		this.msgByFlagless(Flag.ADMIN, pmessage);
+		this.j2.sendAdminPlusLog(amessage);
 		j2.irc.ircMsg(imessage);
 	}
 

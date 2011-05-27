@@ -60,12 +60,6 @@ public class PlayerJoinQuit extends PlayerListener {
 		}
 		event.setJoinMessage(null);
 		j2.minitrue.announceJoin(name);
-		if(j2.hasFlag(player, Flag.CUSTOM_THOR)){
-			player.sendMessage(ChatColor.GOLD+"You have mystical powers");
-		}
-		if(j2.hasFlag(player, Flag.TOOLS)){
-			player.sendMessage(ChatColor.AQUA+"You have tool usage enabled. Be careful");
-		}
 		if(j2.hasFlag(player, Flag.CONTRIBUTOR)){
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"We think you're an "+ChatColor.GOLD+"AMAZING CONTRIBUTOR");
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"to the minecraft community as a whole! "+ChatColor.RED+"<3");
@@ -126,13 +120,12 @@ public class PlayerJoinQuit extends PlayerListener {
 		String name=event.getName();
 		String ip=event.getAddress().getHostAddress();
 		//System.out.println("IP: \""+ip+"\"");
-		if(j2.debug)j2.log.info("Incoming player: "+name+" on "+ip);
+		j2.debug("Incoming player: "+name+" on "+ip);
 		String reason=j2.mysql.checkBans(name);
 		//j2.mysql.userIP(name,player.getAddress().getHostName());
 		//if(event.getResult().equals(Result.ALLOWED)){
 			j2.ip.incoming(name,ip);
 		//}
-		if(j2.debug)System.out.println("IP: "+event.getKickMessage());
 		User user=j2.mysql.getUser(name);
 		boolean isAdmin=(user.getUserFlags().contains(Flag.ADMIN)||j2.users.groupHasFlag(user.getGroup(), Flag.ADMIN));
 		boolean isDonor=(user.getUserFlags().contains(Flag.DONOR)||j2.users.groupHasFlag(user.getGroup(), Flag.DONOR));
@@ -175,6 +168,6 @@ public class PlayerJoinQuit extends PlayerListener {
 		}
 		j2.users.addUser(name);
 		event.allow();
-		if(j2.debug)j2.log.info("Player "+name+" allowed in");
+		j2.debug("Player "+name+" allowed in");
 	}
 }

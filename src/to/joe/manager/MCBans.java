@@ -42,7 +42,7 @@ public class MCBans {
 		if(is_mcbans_mod.equals("y")){
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.RED+"Admins, be polite, "+name+" is an mcbans admin");
 			j2.irc.ircAdminMsg("[MCBANS] "+name+" is an MCBans admin. Nifty.");
-			j2.log.info("[MCBANS] "+name+" is an MCBans admin. Nifty.");
+			j2.log(ChatColor.RED+"[MCBANS] "+name+" is an MCBans admin. Nifty.");
 			Player player=j2.getServer().getPlayer(name);
 			if(player!=null){
 				player.sendMessage(ChatColor.GREEN+"Welcome, oh glorious MCBans lord, to joe.to!  "+ChatColor.RED+"I LOVE YOU <3");
@@ -154,7 +154,7 @@ public class MCBans {
 			JSONObject json = new JSONObject(json_text);
 			return json;
 		} catch (JSONException e) {
-			j2.log.info("MCBANS: Retrieval of data failed.");
+			j2.log(ChatColor.RED+"MCBANS: Retrieval of data failed.");
 		}
 		return null;
 	}
@@ -193,10 +193,10 @@ public class MCBans {
 		url_items.put("exec", "unban_user");
 		HashMap<String,String> result = getResponse(url_items);
 		if ((result.get("result")).equalsIgnoreCase("y")){
-			j2.log.info("[mcbans] Unbanned "+PlayerName);
+			j2.log(ChatColor.RED+"[mcbans] Unbanned "+PlayerName);
 			return true;
 		}
-		j2.log.info("[mcbans] Failed to unban "+PlayerName);
+		j2.log(ChatColor.RED+"[mcbans] Failed to unban "+PlayerName);
 		return false;
 	}
 
@@ -232,12 +232,12 @@ public class MCBans {
 		}
 		HashMap<String, String> result = getResponse(url_items);
 		if (((String)result.get("result")).equalsIgnoreCase("y")) {
-			j2.log.info("[mcbans] Added "+PlayerName);
+			j2.log(ChatColor.RED+"[mcbans] Added "+PlayerName);
 		}
 		else if (((String)result.get("result")).equalsIgnoreCase("a")) {
-			j2.log.info("[mcbans] Player "+PlayerName+" already on list");
+			j2.log(ChatColor.RED+"[mcbans] Player "+PlayerName+" already on list");
 		} else if (((String)result.get("result")).equalsIgnoreCase("n")) {
-			j2.log.info("[mcbans] Could not add "+PlayerName);
+			j2.log(ChatColor.RED+"[mcbans] Could not add "+PlayerName);
 		}
 		return false;
 	}

@@ -57,7 +57,7 @@ public class PlayerInteract extends PlayerListener {
 		}
 		if(material.equals(Material.STICK)&&j2.hasFlag(player,Flag.TOOLS)){
 			if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-				if(j2.debug)j2.log.info(player.getName()+" used a stick");
+				j2.debug(player.getName()+" used a stick");
 				event.setCancelled(true);
 				//		managerBlockLog.bqueue.offer(new BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ(),(System.currentTimeMillis()/1000L),null));
 				event.getClickedBlock().setTypeId(0);
@@ -70,7 +70,7 @@ public class PlayerInteract extends PlayerListener {
 				int x=b.getX();
 				int z=b.getZ();
 				int y=b.getY();
-				j2.log.info("1X1 by "+player.getName()+" at "+x+" "+y+" "+z);
+				j2.log("1X1 by "+player.getName()+" at "+x+" "+y+" "+z);
 				while(y<128){
 					b.getWorld().getBlockAt(x, y, z).setTypeId(0);
 					y++;
@@ -156,7 +156,7 @@ public class PlayerInteract extends PlayerListener {
 
 	/*if(event.getItemInHand().getTypeId() == 284 && j2.hasFlag(player, Flag.ADMIN))
 		{
-			if(j2.debug)j2.log.info(player.getName()+ " used gold shovel");
+			j2.debug(player.getName()+ " used gold shovel");
 			this.j2.blogger.showBlockHistory(event.getPlayer(), event.getBlock());
 		}*/
 	//	if(event.getItemInHand().getTypeId() == 280 && j2.hasFlag(player, Flag.ADMIN)){

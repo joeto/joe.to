@@ -133,10 +133,10 @@ public class Warps {
 
 			String warps_s = "";
 			if(warps_u!=null){
-				if(j2.debug)j2.log.info("Found "+warps_u.size()+" warps");
+				j2.debug("Found "+warps_u.size()+" warps");
 				for(Warp warp_i:warps_u){
 					Flag flag=warp_i.getFlag();
-					if(j2.debug)j2.log.info(warp_i.getName()+" has flag "+warp_i.getFlag().getChar());
+					j2.debug(warp_i.getName()+" has flag "+warp_i.getFlag().getChar());
 					if(warp_i!=null && (j2.hasFlag(player, flag)||flag.equals(Flag.Z_SPAREWARP_DESIGNATION))){
 						warps_s+=", "+warp_i.getName();
 					}

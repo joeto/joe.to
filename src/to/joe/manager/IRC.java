@@ -11,7 +11,6 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
 import org.bukkit.Location;
 
 import to.joe.J2;
@@ -183,10 +182,10 @@ public class IRC {
 			done=true;
 		}
 		if(done){
-			j2.log.log(Level.INFO,"IRC admin "+adminName+"("+nick+"@"+host+") used command: "+commands);
+			j2.log("IRC admin "+adminName+"("+nick+"@"+host+") used command: "+commands);
 		}
 		else {
-			j2.log.log(Level.INFO,"IRC admin "+adminName+"("+nick+"@"+host+") tried: "+commands);
+			j2.log("IRC admin "+adminName+"("+nick+"@"+host+") tried: "+commands);
 		}
 
 		return done;
@@ -205,14 +204,14 @@ public class IRC {
 				writer.write("#Example:\r\n");
 				writer.write("#notch:pancakes.lolcakes:3\r\n");
 			} catch (Exception e) {
-				j2.log.log(Level.SEVERE, "Exception while creating " + location, e);
+				j2.logWarn("Exception while creating " + location);
 			} finally {
 				try {
 					if (writer != null) {
 						writer.close();
 					}
 				} catch (IOException e) {
-					j2.log.log(Level.SEVERE, "Exception while closing writer for " + location, e);
+					j2.logWarn("Exception while closing writer for " + location);
 				}
 			}
 		}
@@ -233,7 +232,7 @@ public class IRC {
 				}
 				scanner.close();
 			} catch (Exception e) {
-				j2.log.log(Level.SEVERE, "Exception while reading " + location + " (Are you sure you formatted it correctly?)", e);
+				j2.log( "Exception while reading " + location + " (Are you sure you formatted it correctly?)");
 			}
 		}
 	}

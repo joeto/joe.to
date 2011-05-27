@@ -25,8 +25,7 @@ public class IPTracker {
 		this.badlist=new ArrayList<String>();
 	}
 	public void incoming(String name, String IP){
-		if(j2.debug)
-			System.out.println("Checking "+name);
+		j2.debug("Checking "+name);
 		j2.mysql.userIP(name,IP);
 		HashMap<String,Boolean> names=new HashMap<String,Boolean>();
 		HashMap<String,Boolean> ips=new HashMap<String,Boolean>();
@@ -64,12 +63,10 @@ public class IPTracker {
 			if(ohnoes>0){
 				badlist.add(name);
 			}
-			if(j2.debug)
-				System.out.println("Adding to list");
+			j2.debug("Adding to list");
 		}
 		else{
-			if(j2.debug)
-				System.out.println("Not enough to add");
+			j2.debug("Not enough to add");
 		}
 	}
 	public HashMap<String,Boolean> getIPs(HashMap<String,Boolean> names,HashMap<String,Boolean> ips){
@@ -94,8 +91,7 @@ public class IPTracker {
 			ips.put(s, true);
 		}
 		for(String ip:newips){
-			if(j2.debug)
-				System.out.println("Found IP: "+ip);
+			j2.debug("Found IP: "+ip);
 			ips.put(ip, false);
 		}
 		return ips;
@@ -123,8 +119,7 @@ public class IPTracker {
 			ips.put(s, true);
 		}
 		for(String name:newnames){
-			if(j2.debug)
-				System.out.println("Found Name: "+name);
+			j2.debug("Found Name: "+name);
 			names.put(name, false);
 		}
 		return names;

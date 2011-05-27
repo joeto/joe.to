@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -52,12 +51,11 @@ public class MySQL {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 			} catch (ClassNotFoundException ex) {
-				j2.log.severe(ex.getMessage());
+				j2.logWarn(ChatColor.RED+"SQL FAIL D:");
 			}
 			return DriverManager.getConnection(db + "?autoReconnect=true&user=" + user + "&password=" + pass);
 		} catch (SQLException ex) {
-			j2.log.severe("Well that's no good");
-			j2.log.severe(ex.getMessage());
+			j2.logWarn(ChatColor.RED+"SQL FAIL :(");
 		}
 		return null;
 	}
@@ -96,7 +94,7 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="SELECT * FROM j2users WHERE name=\""+ name +"\"";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			if(rs.next()){
@@ -105,12 +103,12 @@ public class MySQL {
 				for(int x=0;x<Flags.length();x++){
 					flags.add(Flag.byChar(Flags.charAt(x)));
 				}
-				if(j2.debug)j2.log.info("User "+name+" in "+rs.getString("group")+" with "+ Flags);
+				j2.debug("User "+name+" in "+rs.getString("group")+" with "+ Flags);
 				return new User(name, toColor(rs.getInt("color")), rs.getString("group"), flags, j2.getServer().getWorld("world"), rs.getString("safeword"));
 			}
 			else{
 				String state2="INSERT INTO j2users (`name`,`group`,`color`,`flags`) values (\""+name+"\",\"regular\",10,\"n\")";
-				if(j2.debug)j2.log.info("Query: "+state2);
+				j2.debug("Query: "+state2);
 				ps = conn.prepareStatement(state2);
 				ps.executeUpdate();
 				ArrayList<Flag> f=new ArrayList<Flag>();
@@ -118,7 +116,7 @@ public class MySQL {
 				return new User(name, ChatColor.GREEN, "regular", f,j2.getServer().getWorld("world"),"");
 			}
 		} catch (SQLException ex) {
-			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -131,18 +129,17 @@ public class MySQL {
 					conn.close();
 				}
 			} catch (SQLException ex) {
-				j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+				j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
 			}
 		}
-		j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell");
+		j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
 		return null;
 	}
 
 
 
 	public void setFlags(String name, ArrayList<Flag> flags){
-		if(j2.debug)
-			j2.log.info("Calling setFlags");
+		j2.debug("Calling setFlags");
 		Connection conn = null;
 		PreparedStatement ps = null;
 		name=stringClean(name);
@@ -155,7 +152,7 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="UPDATE j2users SET flags=\""+ flaglist +"\" WHERE name=\""+ name +"\"";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.executeUpdate();
 		} catch (SQLException ex) {
@@ -180,7 +177,7 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="UPDATE j2users SET group=\""+ group +"\" WHERE name=\""+ name +"\"";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.executeUpdate();
 		} catch (SQLException ex) {
@@ -222,7 +219,7 @@ public class MySQL {
 			else
 				unBanTime=timeNow+(60*time);
 			String state="INSERT INTO j2bans (name,reason,admin,unbantime,timeofban,x,y,z,pitch,yaw,world,server) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setString(1, stringClean(name.toLowerCase()));
 			ps.setString(2, stringClean(reason));
@@ -278,7 +275,7 @@ public class MySQL {
 			try {
 				conn = getConnection();
 				String state="SELECT name,reason,unbantime FROM j2bans WHERE unbanned=0 and name=\""+user+"\"";
-				if(j2.debug)j2.log.info("Query: "+state);
+				j2.debug("Query: "+state);
 				ps = conn.prepareStatement(state);
 				rs = ps.executeQuery();
 				while (rs.next()) {
@@ -288,7 +285,7 @@ public class MySQL {
 					reason="Banned: "+reason;
 				}
 			} catch (SQLException ex) {
-				j2.log.log(Level.SEVERE, "Unable to load j2Bans. You're not going to like this.", ex);
+				j2.logWarn(ChatColor.RED+ "Unable to load j2Bans. You're not going to like this.");
 			} finally {
 				try {
 					if (ps != null) {
@@ -320,7 +317,7 @@ public class MySQL {
 				}
 			}
 			String state="UPDATE j2bans SET unbanned=1 WHERE name=\""+ name.toLowerCase() +"\"";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.executeUpdate();
 		} catch (SQLException ex) {
@@ -347,39 +344,39 @@ public class MySQL {
 			conn = getConnection();
 			HashMap<String, ArrayList<Flag>> groups = new HashMap<String, ArrayList<Flag>>();
 			String state="SELECT name,flags FROM j2groups where server=" + serverNumber;
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				String name=rs.getString("name");
 
 				String Flags=rs.getString("flags");
-				if(j2.debug)j2.log.info("Group: "+name+" with flags "+Flags);
+				j2.debug("Group: "+name+" with flags "+Flags);
 				ArrayList<Flag> flags=new ArrayList<Flag>();
 				for(int x=0;x<Flags.length();x++){
 					flags.add(Flag.byChar(Flags.charAt(x)));
 				}
 				groups.put(name, flags);
 			}
-			if(j2.debug)j2.log.info("Loaded "+groups.size()+ " groups");
+			j2.debug("Loaded "+groups.size()+ " groups");
 			j2.users.setGroups(groups);
 
 			//reports
 			String state2="SELECT id,user,x,y,z,pitch,yaw,message,world,time from reports where server="+serverNumber+" and closed=0";
 			ps = conn.prepareStatement(state2);
-			if(j2.debug)j2.log.info("Query: "+state2);
+			j2.debug("Query: "+state2);
 			rs = ps.executeQuery();
 			while (rs.next()){
 				String user=rs.getString("user");
 				Location loc=new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
 				j2.reports.addReportViaSQL(new Report(rs.getInt("id"), loc, user, rs.getString("message"),rs.getLong("time")));
-				if(j2.debug)j2.log.info("Adding new report to list, user "+user);
+				j2.debug("Adding new report to list, user "+user);
 			}
 
 			//warps
 
 			String state3="SELECT * FROM warps where server=" + serverNumber+" and flag!=\"w\"";
-			if(j2.debug)j2.log.info("Query: "+state3);
+			j2.debug("Query: "+state3);
 			ps = conn.prepareStatement(state3);
 			rs = ps.executeQuery();
 			int count=0;
@@ -391,13 +388,13 @@ public class MySQL {
 								Flag.byChar(rs.getString("flag").charAt(0))));
 				count++;
 			}
-			if(j2.debug)j2.log.info("Loaded "+count+ " warps");
+			j2.debug("Loaded "+count+ " warps");
 
 			//jailing
 
 			/*String state4="SELECT user,reason from jail where server="+serverNumber+" and free=0";
 			ps = conn.prepareStatement(state4);
-			if(j2.debug)j2.log.info("Query: "+state4);
+			j2.debug("Query: "+state4);
 			rs = ps.executeQuery();
 			HashMap<String,String> tempjail=new HashMap<String,String>();
 			while (rs.next()){
@@ -407,7 +404,7 @@ public class MySQL {
 			j2.users.jailSet(tempjail);*/
 
 		} catch (SQLException ex) {
-			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
 			j2.maintenance=true;
 		} finally {
 			try {
@@ -434,7 +431,7 @@ public class MySQL {
 			long time=report.getTime();
 			//String state="INSERT INTO reports (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('?','?',?,?,?,?,?,?,'?',?)";
 			String state="INSERT INTO `reports` (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('"+stringClean(report.getUser())+"','"+stringClean(report.getMessage())+"',"+loc.getX()+","+loc.getY()+","+loc.getZ()+","+loc.getPitch()+","+loc.getYaw()+","+serverNumber+",'"+loc.getWorld().getName()+"',"+time+");";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			//j2.log.info(report.getUser());
 			//String cleanUser=stringClean(report.getUser());
@@ -478,12 +475,12 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="UPDATE reports SET closed=1,admin=?,reason where id=?";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setString(1, admin);
 			ps.setString(2,reason);
 			ps.executeUpdate();
-			j2.log.info("Report "+id+" closed by "+admin);
+			j2.debug("Report "+id+" closed by "+admin);
 		} catch (SQLException ex) {
 
 		} finally {
@@ -507,7 +504,7 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="SELECT * FROM warps where server=? and flag=? and player=?";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setInt(1, serverNumber);
 			ps.setString(2, String.valueOf(Flag.Z_HOME_DESIGNATION.getChar()));
@@ -520,10 +517,10 @@ public class MySQL {
 								rs.getFloat("pitch"), rs.getFloat("yaw")),
 								Flag.byChar(rs.getString("flag").charAt(0))));
 			}
-			if(j2.debug)j2.log.info("Loaded "+homes.size()+ " warps");
+			j2.debug("Loaded "+homes.size()+ " warps");
 
 		} catch (SQLException ex) {
-			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -547,7 +544,7 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="DELETE FROM warps WHERE name=? and player=? and server=? and flag=?";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setString(1, warp.getName());
 			ps.setString(2, warp.getPlayer());
@@ -574,7 +571,7 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="INSERT INTO warps (name,player,server,flag,world,x,y,z,pitch,yaw) VALUES (?,?,?,?,?,?,?,?,?,?)";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setString(1, stringClean(warp.getName()));
 			ps.setString(2, stringClean(warp.getPlayer()));
@@ -611,7 +608,7 @@ public class MySQL {
 			conn = getConnection();
 			//String ip=address.getAddress().getHostAddress();
 			String state="SELECT * FROM "+aliasdb+" WHERE Name=\""+ name +"\" and IP=\""+ip+"\"";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			if(rs.next()){
@@ -622,12 +619,12 @@ public class MySQL {
 			}
 			else{
 				String state2="INSERT INTO "+aliasdb+" (`Name`,`IP`,`Time`,`Logins`) values (\""+name+"\",\""+ip+"\",now(),1)";
-				if(j2.debug)j2.log.info("Query: "+state2);
+				j2.debug("Query: "+state2);
 				ps = conn.prepareStatement(state2);
 				ps.executeUpdate();
 			}
 		} catch (SQLException ex) {
-			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -652,14 +649,14 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="SELECT IP FROM "+aliasdb+" WHERE Name=\""+ name +"\"";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			while(rs.next()){
 				IPs.add(rs.getString("IP"));
 			}
 		} catch (SQLException ex) {
-			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -685,14 +682,14 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="SELECT Name FROM "+aliasdb+" WHERE IP=\""+ IP +"\"";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			while(rs.next()){
 				names.add(rs.getString("Name"));
 			}
 		} catch (SQLException ex) {
-			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -719,14 +716,14 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="SELECT IP FROM "+aliasdb+" WHERE Name='"+name+"' order by Time desc limit 1";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			if(rs.next()){
 				result=rs.getString("IP");
 			}
 		} catch (SQLException ex) {
-			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -752,17 +749,17 @@ public class MySQL {
 		try {
 			conn = getConnection();
 			String state="SELECT permission,flag FROM perms where server=?";
-			if(j2.debug)j2.log.info("Query: "+state);
+			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setInt(1, serverNumber);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				perms.put(rs.getString("permission"), Flag.byChar(rs.getString("flag").charAt(0)));
 			}
-			if(j2.debug)j2.log.info("Loaded "+perms.size()+ " permissions");
+			j2.debug("Loaded "+perms.size()+ " permissions");
 
 		} catch (SQLException ex) {
-			j2.log.log(Level.SEVERE, "Unable to load from MySQL. Oh hell", ex);
+			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {

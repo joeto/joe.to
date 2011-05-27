@@ -82,8 +82,7 @@ public class Users {
 			user=this.j2.mysql.getUser(name);
 		}
 		this.addFlagLocal(name, flag);
-		if(j2.debug)
-			j2.log.info("Adding flag "+flag.getChar()+" for "+name);
+		j2.debug("Adding flag "+flag.getChar()+" for "+name);
 		this.j2.mysql.setFlags(name, user.getUserFlags());
 	}
 	public void addFlagLocal(String name, Flag flag){
@@ -98,8 +97,7 @@ public class Users {
 			user=this.j2.mysql.getUser(name);
 		}
 		this.dropFlagLocal(name, flag);
-		if(j2.debug)
-			j2.log.info("Dropping flag "+flag.getChar()+" for "+name);
+		j2.debug("Dropping flag "+flag.getChar()+" for "+name);
 		this.j2.mysql.setFlags(name, user.getUserFlags());
 	}
 	public void dropFlagLocal(String name, Flag flag){

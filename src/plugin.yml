@@ -306,3 +306,7 @@ commands:
     description: mmmhmm
     usage: |
             Yeaaaah
+  say:
+    description: yoink
+    usage: |
+            Yeah thats mine now

@@ -111,16 +111,6 @@ public class BlockAll extends BlockListener {
     		event.setCancelled(true);
     		return;
     	}
-    	double x = player.getLocation().getX() - (blockPlaced.getX() + 0.5D);
-        double y = player.getLocation().getY() - (blockPlaced.getY() + 0.5D);
-        double z = player.getLocation().getZ() - (blockPlaced.getZ() + 0.5D);
-        double dist = x*x + y*y + z*z;
-        if(dist>400.0D) {
-            j2.chat.msgByFlag(Flag.ADMIN, player.getName()+" placed a block over 20 away. *thwump*");
-            j2.log.info(player.getName() + " placed a block too far away");
-            player.kickPlayer("Detected as using a hack. Just rejoin if you aren't :)");
-            event.setCancelled(true);
-        }
     }
     
     

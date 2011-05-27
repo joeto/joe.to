@@ -63,7 +63,7 @@ public class PlayerChat extends PlayerListener {
 		j2.activity.update(name);
 		String[] split=message.split(" ");
 		String command=split[0].trim().substring(1).toLowerCase();
-		j2.log.info("[J2CMD] "+name+" command "+message);
+		j2.log("[J2CMD] "+name+" command "+message);
 		if((command.equals("plugins")||command.equals("pl"))&&!j2.hasFlag(player, Flag.SRSTAFF)){
 			player.sendMessage("Plugins: " + this.plugins);
 			event.setCancelled(true);

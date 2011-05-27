@@ -57,7 +57,9 @@ public class CraftualHarassmentPanda {
 		}
 		this.j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"Squawked<"+player.getName()+">"+message);
 		if(j2.users.getUser(player).canChat()){
-			this.j2.chat.msgByFlagless(Flag.ADMIN, ChatColor.WHITE+"<"+j2.users.getUser(player).getColorName()+ChatColor.WHITE+"> "+this.pandaLines[this.j2.random.nextInt(this.pandaLines.length)]);
+			String squawk=this.pandaLines[this.j2.random.nextInt(this.pandaLines.length)];
+			this.j2.chat.msgByFlagless(Flag.ADMIN, ChatColor.WHITE+"<"+j2.users.getUser(player).getColorName()+ChatColor.WHITE+"> "+squawk);
+			this.j2.irc.ircMsg("<"+player.getName()+"> "+squawk);
 		}
 		return false;
 	}

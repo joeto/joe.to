@@ -2,7 +2,6 @@ package to.joe.manager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -41,8 +40,7 @@ public class KicksBans {
 			j2.mysql.ban(name,banReason,banTime,adminName,location);
 			//if (split.length > 1) {
 			toBan.kickPlayer("Banned: " + banReason);
-			j2.log.log(Level.INFO, "Banning " + name + " by " + adminName + ": " + banReason);
-			j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
+			j2.sendAdminPlusLog(ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
 			j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned (" + banReason+")");
 			j2.irc.ircMsg(name + " banned (" + banReason+")");
 			/*} else {
@@ -67,8 +65,7 @@ public class KicksBans {
 		j2.mysql.ban(name,banReason,banTime,adminName,location);
 		forceKick(name,"Banned: "+banReason);
 		//if (split.length > 1) {
-		j2.log.log(Level.INFO, "Banning " + name + " by " + adminName + ": " + banReason);
-		j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
+		j2.sendAdminPlusLog(ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
 		/*} else {
 			j2.log.log(Level.INFO, "Banning " + name + " by " + adminName);
 			j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " + name + " by " + adminName);
@@ -92,14 +89,12 @@ public class KicksBans {
 			String name = toKick.getName();
 			if (reason!="") {
 				toKick.kickPlayer("Kicked: " + reason);
-				j2.log.log(Level.INFO, "Kicking " + name + " by " + admin + ": " + reason);
-				j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
+				j2.sendAdminPlusLog(ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
 				j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " kicked ("+reason+")");
 				j2.irc.ircMsg(name + " kicked ("+reason+")");
 			} else {
 				toKick.kickPlayer("Kicked.");
-				j2.log.log(Level.INFO, "Kicking " + name + " by " + admin);
-				j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin);
+				j2.sendAdminPlusLog(ChatColor.RED + "Kicking " + name + " by " + admin);
 				j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " kicked");
 				j2.irc.ircMsg(name + " kicked");
 			}
@@ -126,7 +121,7 @@ public class KicksBans {
 	}
 
 	public void kickAll(String reason){
-		j2.log.info("Kicking all players: "+reason);
+		j2.log(ChatColor.RED+"Kicking all players: "+reason);
 		if(reason.equalsIgnoreCase("")){
 			reason="Count to 30 and try again.";
 		}
@@ -139,20 +134,19 @@ public class KicksBans {
 
 	public void unban(String adminName,String name){
 		j2.mysql.unban(name);
-		j2.log.log(Level.INFO, "Unbanning " + name + " by " + adminName);
-		j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Unbanning " + name + " by " + adminName);
+		j2.sendAdminPlusLog(ChatColor.RED + "Unbanning " + name + " by " + adminName);
 	}
 	
 	public synchronized void ixrai(String name,String commandName){
 		if(this.xrayers.contains(name)){
 			this.callBan("BobTheVigilant", (name+" xray hacking").split(" "), new Location(j2.getServer().getWorld("world"),0,0,0));
-			j2.log.info("[BOB] Detected /"+commandName+" from "+name+" and bant");
+			j2.log(ChatColor.AQUA+"[BOB] Detected /"+commandName+" from "+name+" and bant");
 			this.xrayers.remove(name);
 		}
 		else{
 			this.xrayers.add(name);
 			this.callKick(name, "BobTheVigilant", "Remove your hacks, then rejoin :)");
-			j2.log.info("[BOB] Detected /"+commandName+" from "+name+" and kicked");
+			j2.log(ChatColor.AQUA+"[BOB] Detected /"+commandName+" from "+name+" and kicked");
 		}
 	}
 }

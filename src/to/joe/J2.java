@@ -556,7 +556,7 @@ public class J2 extends JavaPlugin {
 		replacements.put(ChatColor.WHITE, ANSICodes.attrib(37));
 	}
 
-	public void log(String message){
+	private String logPrep(String message){
 		if (terminal.isANSISupported()) {
 			String result = message;
 
@@ -567,9 +567,23 @@ public class J2 extends JavaPlugin {
 					result = result.replaceAll(color.toString(), "");
 				}
 			}
-			this.log.info(result + ANSICodes.attrib(0));
+			return result + ANSICodes.attrib(0);
 		} else {
-			this.log.info(ChatColor.stripColor(message));
+			return ChatColor.stripColor(message);
+		}
+	}
+	
+	public void log(String message){
+		this.log.info(this.logPrep(message));
+	}
+	
+	public void logWarn(String message){
+		this.log.warning(this.logPrep(message));
+	}
+	
+	public void debug(String message){
+		if(this.debug){
+			this.log(message);
 		}
 	}
 
@@ -1093,7 +1107,7 @@ public class J2 extends JavaPlugin {
 				this.sendAdminPlusLog(ChatColor.AQUA+playerName+" has turned on maintenance mode");
 				maintenance=true;
 				for (Player p : getServer().getOnlinePlayers()) {
-					if (p != null && !hasFlag(player, Flag.ADMIN)) {
+					if (p != null && !hasFlag(p, Flag.ADMIN)) {
 						p.sendMessage(ChatColor.AQUA+"Server entering maintenance mode");
 						p.kickPlayer("Server entering maintenance mode");
 					}
@@ -1654,11 +1668,21 @@ public class J2 extends JavaPlugin {
 			this.chat.muteAll=!this.chat.muteAll;
 			return true;
 		}
+		if(commandName.equals("say")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))){
+			if(args.length<1){
+				sender.sendMessage(ChatColor.RED+"Dude, you gotta /say SOMETHING");
+				return true;
+			}
+			String message=ChatColor.LIGHT_PURPLE+"[SERVER] "+this.combineSplit(0, args, " ");
+			this.log(message);
+			this.chat.msgAll(message);
+			return true;
+		}
 		return true;
 	}
 
-	public boolean debug;
-	public Logger log;
+	private boolean debug;
+	private Logger log;
 
 	public ArrayList<String> protectedUsers;
 	public String[] rules, blacklist, intro, motd, help;
