@@ -69,7 +69,7 @@ public class BlockAll extends BlockListener {
 			event.setCancelled(true);
 			return;
 		}
-    	j2.activity.update(player.getName());
+    	j2.activity.update(player);
     	/*BlockRow changed;
 		Block smacked = event.getBlock();
 		changed = new BlockRow(player.getDisplayName(),smacked.getTypeId(),0,smacked.getX(),smacked.getY(),smacked.getZ(),(System.currentTimeMillis()/1000L),null);
@@ -86,7 +86,7 @@ public class BlockAll extends BlockListener {
     		event.setCancelled(true);
     		return;
     	}
-    	j2.activity.update(player.getName());
+    	j2.activity.update(player);
     	//BlockState old=event.getBlockReplacedState();
     	int type=blockPlaced.getTypeId();
     	

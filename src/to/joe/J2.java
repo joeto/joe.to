@@ -29,8 +29,6 @@ import to.joe.listener.*;
 import to.joe.manager.*;
 import to.joe.util.*;
 
-import com.sk89q.jinglenote.JingleNoteManager;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -55,7 +53,7 @@ import java.util.logging.Logger;
  */
 public class J2 extends JavaPlugin {
 	private final PlayerChat plrlisChat = new PlayerChat(this);
-	private final PlayerInteract plrlisItem = new PlayerInteract(this);
+	private final PlayerInteract plrlisInteract = new PlayerInteract(this);
 	private final PlayerJoinQuit plrlisJoinQuit = new PlayerJoinQuit(this);
 	private final BlockAll blockListener = new BlockAll(this);
 	private final EntityAll entityListener = new EntityAll(this);
@@ -75,7 +73,6 @@ public class J2 extends JavaPlugin {
 	public final Minitrue minitrue=new Minitrue(this);
 	public final Jailer jail = new Jailer(this);
 	public final MoveTracker move = new MoveTracker(this);
-	public JingleNoteManager jingleNoteManager;
 	public final ActivityTracker activity = new ActivityTracker(this);
 	public final CraftualHarassmentPanda panda=new CraftualHarassmentPanda(this);
 	//public managerBlockLog blogger;
@@ -83,12 +80,8 @@ public class J2 extends JavaPlugin {
 
 
 	public void onDisable() {
-
 		irc.kill();
 		stopTimer();
-		jingleNoteManager.stopAll();
-		// NOTE: All registered events are automatically unregistered when a plugin is disabled
-
 	}
 
 	public void onEnable() {
@@ -98,7 +91,6 @@ public class J2 extends JavaPlugin {
 		protectedUsers=new ArrayList<String>();
 		loadData();
 		if(debug)this.log("Data loaded");
-		jingleNoteManager=new JingleNoteManager();
 		//irc start
 		if(ircEnable)irc.prepIRC();
 		irc.startIRCTimer();
@@ -120,7 +112,7 @@ public class J2 extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_CHAT, plrlisChat, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, plrlisChat, Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, plrlisJoinQuit, Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, plrlisItem, Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT, plrlisInteract, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_CANBUILD, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
@@ -771,12 +763,7 @@ public class J2 extends JavaPlugin {
 			}
 			List<Player> inquest = this.minitrue.matchPlayer(args[0],this.hasFlag(player, Flag.ADMIN));
 			if(inquest.size()==1){
-				Player inquestion=inquest.get(0);
-				User userTo=users.getUser(inquestion);
-				User userFrom=users.getUser(playerName);
-				player.sendMessage("(MSG) <"+userTo.getColorName()+"> "+combineSplit(1, args, " "));
-				inquestion.sendMessage("(MSG) <"+userFrom.getColorName()+"> "+combineSplit(1, args, " "));
-				this.log("Msg to "+inquestion.getName()+": <"+playerName+"> "+combineSplit(1, args, " "));
+				this.chat.handlePMsg(player,inquest.get(0),this.combineSplit(1, args, " "));
 			}
 			else{
 				player.sendMessage(ChatColor.RED+"Could not find player");
@@ -883,7 +870,7 @@ public class J2 extends JavaPlugin {
 			return true;
 		}
 
-		if(isPlayer && (commandName.equals("who") || commandName.equals("playerlist"))){
+		if((commandName.equals("who") || commandName.equals("playerlist") || commandName.equals("list"))){
 			minitrue.who(player);
 			return true;
 		}
@@ -1543,13 +1530,13 @@ public class J2 extends JavaPlugin {
 		}
 		//DO NOT USE THIS COMMAND FOR YOUR BENEFIT. IT IS FOR TESTING.
 		if(commandName.equals("thor")&&isPlayer&&hasFlag(player,Flag.ADMIN)){
-			if(hasFlag(player,Flag.CUSTOM_THOR)){
+			if(hasFlag(player,Flag.THOR)){
 				player.sendMessage(ChatColor.GOLD+"You lose your mystical powers");
-				users.dropFlagLocal(playerName, Flag.CUSTOM_THOR);
+				users.dropFlagLocal(playerName, Flag.THOR);
 			}
 			else {
 				player.sendMessage(ChatColor.GOLD+"You gain mystical powers");
-				users.addFlagLocal(playerName, Flag.CUSTOM_THOR);
+				users.addFlagLocal(playerName, Flag.THOR);
 			}
 			return true;
 		}
@@ -1652,7 +1639,8 @@ public class J2 extends JavaPlugin {
 			}
 			Player target=listy.get(0);
 			this.panda.harass(target);
-			this.sendAdminPlusLog(ChatColor.AQUA+"[HARASS] Target Acquired: "+target.getName()+". Thanks, "+playerName+"!");
+			this.sendAdminPlusLog(ChatColor.AQUA+"[HARASS] Target Acquired: "+ChatColor.DARK_AQUA+target.getName()+ChatColor.AQUA+". Thanks, "+playerName+"!");
+			this.irc.ircAdminMsg("[HARASS] Target Acquired: "+target.getName()+". Thanks, "+playerName+"!");
 			return true;
 		}
 		if(commandName.equals("muteall")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
@@ -1663,10 +1651,39 @@ public class J2 extends JavaPlugin {
 			else{
 				messageBit=" has muted all players";
 			}
-			this.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+playerName+messageBit);
-			this.chat.msgByFlagless(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"The ADMIN"+messageBit);
+			this.sendAdminPlusLog(ChatColor.YELLOW+playerName+messageBit);
+			this.chat.msgByFlagless(Flag.ADMIN, ChatColor.YELLOW+"The ADMIN"+messageBit);
 			this.chat.muteAll=!this.chat.muteAll;
 			return true;
+		}
+		if(commandName.equals("mute")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
+			String messageBit="";
+			if(args.length<1){
+				sender.sendMessage(ChatColor.RED+"Requires a name. /mute name");
+				return true;
+			}
+			String targetString=args[0];
+			List<Player> matches=this.getServer().matchPlayer(targetString);
+			if(matches==null||matches.size()==0){
+				sender.sendMessage(ChatColor.RED+"No matches for "+targetString);
+				return true;
+			}
+			if(matches.size()>1){
+				sender.sendMessage(ChatColor.RED+String.valueOf(matches.size())+" matches for "+targetString);
+				return true;
+			}
+			Player target=matches.get(0);
+			String targetName=target.getName();
+			boolean muted=this.hasFlag(targetName, Flag.MUTED);
+			if(muted){
+				messageBit="un";
+				this.users.dropFlagLocal(targetName,Flag.MUTED);
+			}
+			else{
+				this.users.addFlagLocal(targetName, Flag.MUTED);
+			}
+			target.sendMessage(ChatColor.YELLOW+"You have been "+messageBit.toUpperCase()+"MUTED");
+			this.sendAdminPlusLog(ChatColor.YELLOW+playerName+" has "+messageBit+"muted "+targetName);
 		}
 		if(commandName.equals("say")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))){
 			if(args.length<1){
@@ -1676,6 +1693,19 @@ public class J2 extends JavaPlugin {
 			String message=ChatColor.LIGHT_PURPLE+"[SERVER] "+this.combineSplit(0, args, " ");
 			this.log(message);
 			this.chat.msgAll(message);
+			return true;
+		}
+		if(commandName.equals("nsa")&&isPlayer&&this.hasFlag(player, Flag.ADMIN)){
+			String message;
+			if(this.hasFlag(player, Flag.NSA)){
+				message=ChatColor.DARK_AQUA+playerName+ChatColor.AQUA+" takes off his headphones. That's enough chatter";
+				this.users.dropFlagLocal(playerName, Flag.NSA);
+			}
+			else{
+				message=ChatColor.DARK_AQUA+playerName+ChatColor.AQUA+" puts on his headphones. Intercepting...";
+				this.users.addFlagLocal(playerName, Flag.NSA);
+			}
+			this.sendAdminPlusLog(message);
 			return true;
 		}
 		return true;

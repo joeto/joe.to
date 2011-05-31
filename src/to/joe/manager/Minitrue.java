@@ -76,7 +76,7 @@ public class Minitrue {
 
 	public void who(Player player){
 		Player[] players=j2.getServer().getOnlinePlayers();
-		boolean isAdmin=j2.hasFlag(player, Flag.ADMIN);
+		boolean isAdmin=this.qualified(player);
 		int curlen=0;
 		int maxlen=320;
 		int playercount=players.length;
@@ -94,18 +94,24 @@ public class Minitrue {
 			if(!invis||isAdmin){
 				String name=p.getName();
 				String cname=j2.users.getUser(name).getColorName();
-				if(isAdmin&&j2.hasFlag(p,Flag.ADMIN)){
-					if(invis)
-						cname=ChatColor.AQUA+name;
-					else
-						cname=ChatColor.RED+name;
+				if(isAdmin){
+					if(j2.hasFlag(p,Flag.ADMIN)){
+						if(invis)
+							cname=ChatColor.AQUA+name;
+						else
+							cname=ChatColor.RED+name;
+					}
+					if(j2.hasFlag(p, Flag.MUTED)){
+						cname=ChatColor.YELLOW+name;
+					}
 				}
+
 				int thislen=0;
 				for(char ch:name.toCharArray()){
 					thislen+=Chats.characterWidths[(int)ch];
 				}
 				if(thislen+1+curlen>maxlen){
-					player.sendMessage(msg);
+					this.send(player,msg);
 					msg=cname;
 				}
 				else{
@@ -114,7 +120,23 @@ public class Minitrue {
 				pc++;
 			}
 		}
-		player.sendMessage(msg);
+		this.send(player, msg);
+	}
+	public void send(Player player,String message){
+		if(player!=null){
+			player.sendMessage(message);
+		}
+		else{
+			this.j2.log(message);
+		}
+	}
+	public boolean qualified(Player player){
+		if(player!=null){
+			return this.j2.hasFlag(player, Flag.ADMIN);
+		}
+		else{
+			return true;
+		}
 	}
 
 	public List<Player> matchPlayer(String name,boolean isAdmin){

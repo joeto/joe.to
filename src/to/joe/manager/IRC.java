@@ -70,7 +70,7 @@ public class IRC {
 	
 	public void prepIRC(){
 
-		bot=new ircBot(j2.ircName,j2.ircMsg,j2.ircCharLim,j2.ircUserColor,j2.ircEcho,j2.ircSeparator,this);
+		bot=new ircBot(j2.ircName,j2.ircMsg,this);
 
 		if(j2.ircDebug)bot.setVerbose(true);
 		System.out.println("Connecting to "+j2.ircChannel+" on "+j2.ircHost+":"+j2.ircPort+" as "+j2.ircName);

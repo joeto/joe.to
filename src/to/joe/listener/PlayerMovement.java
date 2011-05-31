@@ -33,6 +33,6 @@ public class PlayerMovement  extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		j2.activity.update(player.getName());
+		j2.activity.update(player);
 	}
 }

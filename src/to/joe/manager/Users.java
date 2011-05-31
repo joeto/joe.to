@@ -2,6 +2,8 @@ package to.joe.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -18,6 +20,7 @@ public class Users {
 		this.users=new ArrayList<User>();
 		this.groups=new HashMap<String, ArrayList<Flag>>();
 		this.clearedAdmins=new ArrayList<String>();
+		this.startTimer();		
 	}
 
 	public boolean isCleared(String name){
@@ -163,6 +166,36 @@ public class Users {
 
 	public void jailSet(HashMap<String,String> incoming){
 		this.jailReasons=incoming;
+	}
+	
+	private boolean stop=true;
+	private void startTimer() {
+		stop = false;
+		final Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				if (stop) {
+					timer.cancel();
+					return;
+				}
+				checkOnline();
+			}
+		}, 10000, 10000);
+	}
+	
+	private void checkOnline(){
+		synchronized (this.userlock){
+			for(User u:new ArrayList<User>(this.users)){
+				Player p=j2.getServer().getPlayer(u.getName());
+				if(p==null||!p.isOnline()){
+					this.users.remove(u);
+					if(p!=null){
+						p.kickPlayer("You have glitched. Rejoin");
+					}
+				}
+			}
+		}
 	}
 
 

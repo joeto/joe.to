@@ -97,7 +97,7 @@ public class PlayerInteract extends PlayerListener {
 					world.dropItemNaturally(location, new ItemStack(Material.PORK,1));
 			}
 		}*/
-		if(j2.hasFlag(player, Flag.CUSTOM_THOR)&&event.hasItem()&&material.equals(Material.IRON_SWORD)){
+		if(j2.hasFlag(player, Flag.THOR)&&event.hasItem()&&material.equals(Material.IRON_SWORD)){
 			boolean weather=player.getWorld().isThundering();
 			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
 				player.getWorld().strikeLightning(event.getClickedBlock().getLocation());
@@ -113,6 +113,7 @@ public class PlayerInteract extends PlayerListener {
 		}
 	}
 
+	
 	/*@Override
 	public void onPlayerItem(PlayerItemEvent event){
 		Player player = event.getPlayer();

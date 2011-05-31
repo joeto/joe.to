@@ -87,6 +87,7 @@ public class PlayerJoinQuit extends PlayerListener {
         	j2.log.warning("[J2INGLE] Failed to read intro MIDI file: "
                     + e.getMessage());
         }*/
+		player.getInventory().remove(Material.MAP);
 	}
 
 	@Override

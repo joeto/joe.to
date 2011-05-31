@@ -1,6 +1,5 @@
 package to.joe.util;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.jibble.pircbot.*;
 
@@ -9,12 +8,10 @@ import to.joe.manager.IRC;
 public class ircBot extends PircBot {
 
 	private IRC ircman;
-	public ircBot(String mah_name,boolean msgenabled,int charlim,ChatColor usercolor,boolean echo,String[] sep,IRC j) {
+	public ircBot(String mah_name,boolean msgenabled,IRC j) {
 		this.setName(mah_name);
 		this.setAutoNickChange(true);
 		ircMsg=msgenabled;
-		ircCharLim = charlim;
-		ircEcho = echo;
 		ircman=j;
 		this.setMessageDelay(1100);
 	}
@@ -65,7 +62,7 @@ public class ircBot extends PircBot {
 					if(message.equalsIgnoreCase("!players"))
 						sendMessage(channel,"Currently "+ cPlayers +" of "+ ircman.getJ2().playerLimit +" on the server");
 					else
-						sendMessage(channel,"Players ("+ cPlayers +" of "+ ircman.getJ2().playerLimit + "):" + curPlayers);
+						sendMessage(channel,"Players ("+ cPlayers +" of "+ ircman.getJ2().playerLimit + "): " + curPlayers);
 				}
 			}
 			else if (message.equalsIgnoreCase("!admins")) {
@@ -125,27 +122,10 @@ public class ircBot extends PircBot {
 
 	}
 	public void doMsg(String channel, String sender, String message){
-		if( this.ircman.getJ2().chat.handleIRCChat(sender, message,false))
-		{
-			if(ircEcho)
-				sendMessage(channel,"[IRC] <"+sender+">"+message);
-		}
-		else
-		{
-			sendMessage(channel,sender+": Your message was too long. The limit's " + ircCharLim + " characters");
-		}
+		this.ircman.getJ2().chat.handleIRCChat(sender, message, false,channel);
 	}
 	public void doMeMsg(String channel, String sender, String message){
-		if(this.ircman.getJ2().chat.handleIRCChat(sender, message, true))
-		{
-			if(ircEcho)
-				sendMessage(channel,"[IRC] * "+sender+message);
-
-		}
-		else
-		{
-			sendMessage(channel,sender+": Your message was too long. The limit's " + ircCharLim + " characters");
-		}
+		this.ircman.getJ2().chat.handleIRCChat(sender, message, true,channel);
 	}
 	
 	protected void onPrivateMessage(String sender,String login,String hostname,String message){
@@ -161,6 +141,4 @@ public class ircBot extends PircBot {
 	
 	
 	private boolean ircMsg;
-	private boolean ircEcho;
-	private int ircCharLim;
 }

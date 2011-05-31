@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 0.9.8
+version: 0.9.9
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -62,6 +62,10 @@ commands:
     description: Who's on the server? I don't know. Third base!
     usage: |
             /who
+  list:
+    description: Who's on the server? I don't know. Third base!
+    usage: |
+            /list
   playerlist:
     description: Who's on the server? I don't know. Third base!
     usage: |
@@ -306,7 +310,15 @@ commands:
     description: mmmhmm
     usage: |
             Yeaaaah
+  mute:
+    description: mmmhmm
+    usage: |
+            Yeaaaah
   say:
     description: yoink
     usage: |
             Yeah thats mine now
+  nsa:
+    description: hehehe
+    usage: |
+            Just as you'd expect

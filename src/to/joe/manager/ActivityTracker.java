@@ -3,6 +3,9 @@ package to.joe.manager;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+
 import to.joe.J2;
 
 public class ActivityTracker {
@@ -15,10 +18,11 @@ public class ActivityTracker {
 		this.activity=new HashMap<String,Long>();
 	}
 	
-	public void update(String name){
+	public void update(Player player){
 		long time=(new Date()).getTime();
+		player.getInventory().remove(Material.MAP);
 		synchronized(sync){
-			this.activity.put(name, time);
+			this.activity.put(player.getName(), time);
 		}
 	}
 	

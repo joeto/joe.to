@@ -1,6 +1,8 @@
 package to.joe.manager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.util.config.Configuration;
@@ -15,6 +17,58 @@ public class Configurator {
 	public Configurator(J2 j2){
 		this.j2=j2;
 		this.conf=this.j2.getConfiguration();
+	}
+	public void newConf(){
+		HashMap<String,Object> conf_general=new HashMap<String,Object>();
+		HashMap<String,Object> conf_mysql=new HashMap<String,Object>();
+		HashMap<String,Object> conf_irc=new HashMap<String,Object>();
+		HashMap<String,Object> conf_tips=new HashMap<String,Object>();
+		HashMap<String,Object> conf_maint=new HashMap<String,Object>();
+		HashMap<String,Object> conf_blacklists=new HashMap<String,Object>();
+		conf_general.put("debug-mode", false);
+		conf_mysql.put("username", "root");
+		conf_mysql.put("database", "minecraft");
+		conf_mysql.put("password", "root");
+		conf_general.put("server-number", 0);
+		conf_general.put("max-players", 30);
+		conf_tips.put("delay", 120);
+		conf_tips.put("color", 12);
+		conf_irc.put("host", "localhost");
+		conf_irc.put("nick", "aMinecraftBot");
+		conf_irc.put("relay-channel", "#minecraftServ");
+		conf_irc.put("admin-channel", "#minecraftServA");
+		conf_irc.put("ingame-color", 12);
+		conf_irc.put("ingame-separator", "<,>");
+		conf_irc.put("char-limit", 390);
+		conf_irc.put("require-msg-cmd", false);
+		conf_irc.put("enable", false);
+		conf_irc.put("echo-messages", false);
+		conf_irc.put("port", 6667);
+		conf_irc.put("debug-spam", false);
+		conf_irc.put("channel-join-message", "Hi durr");
+		conf_irc.put("gamesurge-user", "");
+		conf_irc.put("gamesurge-pass", "");
+		conf_irc.put("level2-commands", "kick");
+		conf_general.put("safemode", false);
+		conf_general.put("allow-explosions", true);
+		conf_general.put("disable-wolves", false);
+		conf_maint.put("enable", false);
+		conf_maint.put("message", "We will be back");
+		conf_general.put("block-nontrusted", false);
+		conf_general.put("random-namecolor", false);
+		conf_blacklists.put("prevent-trusted", "0");
+		conf_blacklists.put("prevent-general", "0");
+		conf_blacklists.put("watchlist", "0");
+		conf_blacklists.put("prevent-summon", "0");
+		conf_general.put("mcbans-api", "");
+		conf_general.put("jail-xyzpy", "10,10,10,0,0");
+		conf.setProperty("General", conf_general);
+		conf.setProperty("MySQL", conf_mysql);
+		conf.setProperty("IRC", conf_irc);
+		conf.setProperty("Maintenance", conf_maint);
+		conf.setProperty("Tips", conf_tips);
+		conf.setProperty("Blacklists", conf_blacklists);
+		conf.save();
 	}
 	public void load(){
 		conf.load();

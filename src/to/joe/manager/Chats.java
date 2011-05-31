@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import to.joe.J2;
 import to.joe.util.ChatChannel;
 import to.joe.util.Flag;
+import to.joe.util.User;
 
 public class Chats {
 	private String[] colorlist;
@@ -124,8 +125,8 @@ public class Chats {
 			return;
 		}
 		String name=player.getName();
-		if(this.muteAll&&!j2.hasFlag(player, Flag.ADMIN)){
-			player.sendMessage(ChatColor.RED+"All players are currently muted");
+		if((this.muteAll&&!j2.hasFlag(player, Flag.ADMIN)||this.j2.hasFlag(player, Flag.MUTED))){
+			player.sendMessage(ChatColor.RED+"You are currently muted");
 			String message=this.formatNamelyArea(name, ChatColor.YELLOW, me)+chat;
 			this.msgByFlag(Flag.ADMIN, message);
 			this.j2.log(message);
@@ -152,26 +153,53 @@ public class Chats {
 	}
 	
 	
-	public boolean handleIRCChat(String name,String chat,boolean me){
+	public void handleIRCChat(String name,String message,boolean me,String channel){
+		if(this.muteAll){
+			this.j2.irc.getBot().sendMessage(channel,"All players currently muted. Message will not go through.");
+			return;
+		}
 		String combined;
 		if(me){
-			combined=this.j2.ircSeparator[0]+this.j2.ircUserColor+name+ChatColor.WHITE+this.j2.ircSeparator[1]+chat;
+			combined=this.j2.ircSeparator[0]+this.j2.ircUserColor+name+ChatColor.WHITE+this.j2.ircSeparator[1]+message;
 		}
 		else{
-			combined="* "+this.j2.ircUserColor+name+ChatColor.WHITE+chat;
+			combined="* "+this.j2.ircUserColor+name+ChatColor.WHITE+message;
 		}
 		if(combined.length() > this.j2.ircCharLim)
 		{
-			return false;
+			this.j2.irc.getBot().sendMessage(channel,name+": Your message was too long. The limit's " + this.j2.ircCharLim + " characters");
 		}
 		else
 		{
 			j2.log("IRC:"+combined);
 			this.msgAll(combined);
-			return true;
+			if(j2.ircEcho){
+				if(me){
+					
+				}
+				else{
+					this.j2.irc.getBot().sendMessage(channel,"[IRC] <"+name+">"+message);
+				}
+			}
 		}
 	}
 	
+	public void handlePMsg(Player from,Player to, String message){
+		User userTo=this.j2.users.getUser(to);
+		User userFrom=this.j2.users.getUser(from);
+		String colorTo=userTo.getColorName();
+		String colorFrom=userFrom.getColorName();
+		String complete=ChatColor.WHITE+"<"+colorFrom+"->"+colorTo+"> "+message;
+		if(j2.hasFlag(from,Flag.MUTED)){
+			from.sendMessage(ChatColor.RED+"You are muted");
+		}
+		else{
+			to.sendMessage(complete);
+			from.sendMessage(complete);
+		}
+		this.msgByFlag(Flag.NSA, this.nsaify(complete));
+		this.j2.log(complete);
+	}
 
 	private HashMap<Integer,ChatChannel> channels;
 	public void addChannel(ChatChannel chan){
@@ -189,6 +217,10 @@ public class Chats {
 	}
 	public void loadChannel(ChatChannel chan){
 		channels.put(chan.getID(), chan);
+	}
+	
+	public String nsaify(String string){
+		return string.replace(ChatColor.WHITE.toString(), ChatColor.DARK_AQUA.toString());
 	}
 	
 	/*public void logChat(String name, String message) {

@@ -55,7 +55,7 @@ public class CraftualHarassmentPanda {
 		if(!this.panda(player)){
 			return true;
 		}
-		this.j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"Squawked<"+player.getName()+">"+message);
+		this.j2.sendAdminPlusLog( ChatColor.DARK_AQUA+"[HARASS]BLOCKED: "+player.getName()+ChatColor.WHITE+": "+message);
 		if(j2.users.getUser(player).canChat()){
 			String squawk=this.pandaLines[this.j2.random.nextInt(this.pandaLines.length)];
 			this.j2.chat.msgByFlagless(Flag.ADMIN, ChatColor.WHITE+"<"+j2.users.getUser(player).getColorName()+ChatColor.WHITE+"> "+squawk);

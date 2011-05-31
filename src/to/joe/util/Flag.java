@@ -10,13 +10,15 @@ public enum Flag {
 	JAILED('j', "Jailed"),
 	MODWORLD('m',"Can Modify"),
 	NEW('n',"New"),
+	NSA('N',"Listening In"),
 	SRSTAFF('s', "Senior Staff"),
 	TRUSTED('t', "Trusted"),
 	TOOLS('T',"Tool mode"),
-	CUSTOM_THOR('x',"Thor Powers"),
+	THOR('x',"Thor Powers"),
+	MUTED('X',"Muted"),
 	CUSTOM2('y',"Custom2"),
 	CUSTOM3('z',"Custom3"),
-	//Numbers are reserved for internal programming that's convenient.
+	//Numbers are reserved for internal programming.
 	Z_HOME_DESIGNATION('0',"DO NOT USE"),
 	Z_SPAREWARP_DESIGNATION('1',"DO NOT USE");
 	private char flag;
