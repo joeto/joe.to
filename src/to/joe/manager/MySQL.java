@@ -116,7 +116,7 @@ public class MySQL {
 				return new User(name, ChatColor.GREEN, "regular", f,j2.getServer().getWorld("world"),"");
 			}
 		} catch (SQLException ex) {
-			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
+			j2.logWarn(ChatColor.RED+ "Unable to load user "+name+" from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -129,10 +129,10 @@ public class MySQL {
 					conn.close();
 				}
 			} catch (SQLException ex) {
-				j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
+				j2.logWarn(ChatColor.RED+ "Unable to load user "+name+" from MySQL. Oh hell");
 			}
 		}
-		j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
+		j2.logWarn(ChatColor.RED+ "Unable to load user "+name+" from MySQL. Oh hell");
 		return null;
 	}
 
@@ -441,7 +441,7 @@ public class MySQL {
 			j2.users.jailSet(tempjail);*/
 
 		} catch (SQLException ex) {
-			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
+			j2.logWarn(ChatColor.RED+ "Unable to load base data from MySQL. Oh hell");
 			j2.maintenance=true;
 		} finally {
 			try {
@@ -563,7 +563,7 @@ public class MySQL {
 			j2.debug("Loaded "+homes.size()+ " warps");
 
 		} catch (SQLException ex) {
-			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
+			j2.logWarn(ChatColor.RED+ "Unable to load homes for "+playername+" from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -667,7 +667,7 @@ public class MySQL {
 				ps.executeUpdate();
 			}
 		} catch (SQLException ex) {
-			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
+			j2.logWarn(ChatColor.RED+ "Unable to load user/ip from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -699,7 +699,7 @@ public class MySQL {
 				IPs.add(rs.getString("IP"));
 			}
 		} catch (SQLException ex) {
-			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
+			j2.logWarn(ChatColor.RED+ "Unable to load user/ip from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -732,7 +732,7 @@ public class MySQL {
 				names.add(rs.getString("Name"));
 			}
 		} catch (SQLException ex) {
-			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
+			j2.logWarn(ChatColor.RED+ "Unable to load user/ip from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -766,7 +766,7 @@ public class MySQL {
 				result=rs.getString("IP");
 			}
 		} catch (SQLException ex) {
-			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
+			j2.logWarn(ChatColor.RED+ "Unable to load user/ip from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
@@ -802,7 +802,7 @@ public class MySQL {
 			j2.debug("Loaded "+perms.size()+ " permissions");
 
 		} catch (SQLException ex) {
-			j2.logWarn(ChatColor.RED+ "Unable to load from MySQL. Oh hell");
+			j2.logWarn(ChatColor.RED+ "Unable to load user/ip from MySQL. Oh hell");
 		} finally {
 			try {
 				if (ps != null) {
