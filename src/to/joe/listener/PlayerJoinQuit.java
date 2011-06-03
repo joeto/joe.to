@@ -10,11 +10,8 @@ import com.sk89q.jinglenote.MidiJingleSequencer;
 */
 
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
 
 import to.joe.J2;
 import to.joe.util.Flag;
@@ -34,36 +31,9 @@ public class PlayerJoinQuit extends PlayerListener {
 	
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		Player player=event.getPlayer();
-		String name=player.getName();
-		j2.irc.processJoin(name);
-		j2.ip.processJoin(name);
-		j2.warps.processJoin(name);
-		j2.damage.processJoin(name);
-		j2.jail.processJoin(player);
-		j2.users.playerReset(name);
-		if(player.getInventory().getHelmet().equals(Material.FIRE)){
-			player.getInventory().setHelmet(new ItemStack(Material.GRASS));
-			player.sendMessage(ChatColor.RED+"You fizzle out");
-		}
-		if(j2.maintenance){
-			player.sendMessage(ChatColor.YELLOW+"We are in maintenance mode");
-		}
-		try{
-			j2.mcbans.processJoin(name);
-		}
-		catch (Exception e){
-			
-		}
-		for(String line : j2.motd){
-			player.sendMessage(line);
-		}
 		event.setJoinMessage(null);
-		j2.minitrue.announceJoin(name);
-		if(j2.hasFlag(player, Flag.CONTRIBUTOR)){
-			player.sendMessage(ChatColor.LIGHT_PURPLE+"We think you're an "+ChatColor.GOLD+"AMAZING CONTRIBUTOR");
-			player.sendMessage(ChatColor.LIGHT_PURPLE+"to the minecraft community as a whole! "+ChatColor.RED+"<3");
-		}
+		this.j2.users.processJoin(event.getPlayer());
+		
 		
 		/*if(j2.hasFlag(player,Flag.JAILED)){
 			player.teleportTo(j2.users.jail);
@@ -71,23 +41,7 @@ public class PlayerJoinQuit extends PlayerListener {
 			player.sendMessage(ChatColor.RED+"To get out, talk to the jailer");
 			player.sendMessage(ChatColor.RED+"You need to punch him");
 		}*/
-		/*try {
-            MidiJingleSequencer sequencer = new MidiJingleSequencer(
-                    new File("intro.mid"));
-            j2.jingleNoteManager.play(player, sequencer, 2000);
-        } catch (MidiUnavailableException e) {
-            j2.log.warning("[J2INGLE] Failed to access MIDI: "
-                    + e.getMessage());
-        } catch (InvalidMidiDataException e) {
-        	j2.log.warning("[J2INGLE] Failed to read intro MIDI file: "
-                    + e.getMessage());
-        } catch (FileNotFoundException e) {
-        	j2.log.info("[J2INGLE] No intro.mid; not playing intro song.");
-        } catch (IOException e) {
-        	j2.log.warning("[J2INGLE] Failed to read intro MIDI file: "
-                    + e.getMessage());
-        }*/
-		player.getInventory().remove(Material.MAP);
+		
 	}
 
 	@Override

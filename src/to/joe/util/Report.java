@@ -7,15 +7,20 @@ public class Report {
 	private String message, user;
 	private Location location;
 	private long time;
-	public Report(int ID, Location loc, String User, String Message,long time){
+	private boolean closed;
+	public Report(int ID, Location loc, String User, String Message,long time,boolean closed){
 		this.id=ID;
 		this.location=loc;
 		this.user=User;
 		this.message=Message;
 		this.time=time;
+		this.closed=closed;
 	}
 	public int getID(){
 		return this.id;
+	}
+	public boolean closed(){
+		return this.closed;
 	}
 	public Location getLocation(){
 		return this.location;

@@ -18,6 +18,10 @@ public class KicksBans {
 
 	public KicksBans(J2 j2p){
 		this.j2=j2p;
+		this.restartManager();
+	}
+	
+	public void restartManager(){
 		this.bans = new ArrayList<Ban>();
 		this.xrayers=new ArrayList<String>();
 	}

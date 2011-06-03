@@ -18,6 +18,9 @@ public class IPTracker {
 
 	public IPTracker(J2 j2){
 		this.j2=j2;
+		this.restartManager();
+	}
+	public void restartManager(){
 		this.html=new HashMap<String,String>();
 		this.nameslist=new HashMap<String,String>();
 		this.totalcount=new HashMap<String,Integer>();

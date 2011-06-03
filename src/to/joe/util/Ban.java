@@ -9,20 +9,21 @@ package to.joe.util;
 public class Ban {
 	private String name, reason;
 	private boolean unbanned, temp;
-	private long timeOfUnban,timeLoaded;
-	public Ban(String n, String r, long t,long tl){
-		name=n;
-		reason=r;
-		if(reason==null || reason==""){
-			reason="Banned";
+	private long timeOfUnban,timeLoaded,timeOfBan;
+	public Ban(String name, String reason, long timeOfUnban,long timeLoaded, long timeOfBan, boolean unbanned){
+		this.name=name;
+		this.reason=reason;
+		if(this.reason==null || this.reason==""){
+			this.reason="Banned";
 		}
-		timeOfUnban=t;
-		unbanned=false;
-		if(t==0)
-			temp=false;
+		this.timeOfUnban=timeOfUnban;
+		this.unbanned=unbanned;
+		if(timeOfUnban==0)
+			this.temp=false;
 		else
-			temp=true;
-		timeLoaded=tl;
+			this.temp=true;
+		this.timeLoaded=timeLoaded;
+		this.timeOfBan=timeOfBan;
 	}
 	public String getName(){
 		return name;
@@ -30,8 +31,11 @@ public class Ban {
 	public String getReason(){
 		return reason;
 	}
-	public long getTime(){
+	public long getTimeOfUnban(){
 		return timeOfUnban;
+	}
+	public long getTimeOfBan(){
+		return timeOfBan;
 	}
 	public long getTimeLoaded(){
 		return timeLoaded;

@@ -19,9 +19,12 @@ public class Damages {
 	J2 j2;
 	public Damages(J2 j2){
 		this.j2=j2;
+		this.startDamageTimer();
+		this.restartManager();
+	}
+	public void restartManager(){
 		this.clear();
 		this.allWolf=new HashMap<String,ArrayList<Wolf>>();
-		this.startDamageTimer();
 		this.timer1=new ArrayList<String>();
 		this.timer2=new ArrayList<String>();
 	}
@@ -101,7 +104,7 @@ public class Damages {
 			timer1.add(name);
 		}
 	}
-	public void startDamageTimer() {
+	private void startDamageTimer() {
 		stop = false;
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {

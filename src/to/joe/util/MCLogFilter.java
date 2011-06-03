@@ -29,7 +29,7 @@ public class MCLogFilter implements Filter {
 	{
 		String message=logRecord.getMessage();
 		Matcher m1 = p1.matcher(message);
-	    if (m1.find()||message.startsWith("* ")||message.contains("[J2CMD]")){
+	    if (m1.find()||message.startsWith("* ")||message.contains("[J2CMD]")||message.contains("[HARASS]BLOCKED")){
 			slog.add(message);
 		}
 		return !strings.contains(message);

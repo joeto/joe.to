@@ -2,6 +2,7 @@ package to.joe.manager;
 
 import java.util.ArrayList;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import to.joe.J2;
@@ -10,9 +11,12 @@ import to.joe.util.Warp;
 
 public class Warps {
 	public Warps(J2 J2){
+		this.restartManager();
+		this.j2=J2;
+	}
+	public void restartManager(){
 		this.warps=new ArrayList<Warp>();
 		this.homes=new ArrayList<Warp>();
-		this.j2=J2;
 	}
 	public void addWarp(Warp warp){
 		j2.mysql.addWarp(warp);
@@ -49,7 +53,7 @@ public class Warps {
 	public void processJoin(String name){
 		this.loadPlayer(name);
 	}
-	
+
 	public void loadPlayer(String playername){
 		ArrayList<Warp> playerhomes=this.j2.mysql.getHomes(playername);
 		synchronized(this.lock){
@@ -104,7 +108,7 @@ public class Warps {
 	}
 	public ArrayList<Warp> getPublicWarps(){
 		synchronized(this.lock){
-			return this.warps;
+			return new ArrayList<Warp>(this.warps);
 		}
 	}
 
@@ -147,6 +151,38 @@ public class Warps {
 			}
 			return warps_s;
 		}
+	}
+	public Warp getClosestWarp(Location location){
+		ArrayList<Warp> allWarps=this.getPublicWarps();
+		double xstart=location.getX();
+		double ystart=location.getY();
+		double zstart=location.getZ();
+		int distance=0;
+		Warp solution = null;
+		for(Warp warp:allWarps){
+			if(warp!=null){
+				if(solution!=null){
+					Location locwarp=warp.getLocation();
+					double xwarp=locwarp.getX();
+					double ywarp=locwarp.getY();
+					double zwarp=locwarp.getZ();
+					int dist=(int)Math.pow((Math.pow(xwarp-xstart, 2)+Math.pow(ywarp-ystart, 2)+Math.pow(zwarp-zstart, 2)), 0.5);
+					if(dist<distance){
+						distance=dist;
+						solution=warp;
+					}
+				}
+				else{
+					solution=warp;
+					Location locwarp=warp.getLocation();
+					double xwarp=locwarp.getX();
+					double ywarp=locwarp.getY();
+					double zwarp=locwarp.getZ();
+					distance=(int)Math.pow((Math.pow(xwarp-xstart, 2)+Math.pow(ywarp-ystart, 2)+Math.pow(zwarp-zstart, 2)), 0.5);
+				}
+			}
+		}
+		return solution;
 	}
 
 	private ArrayList<Warp> warps;

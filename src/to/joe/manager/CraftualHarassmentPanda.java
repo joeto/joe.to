@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import to.joe.J2;
-import to.joe.util.Flag;
 
 public class CraftualHarassmentPanda {
 	private J2 j2;
@@ -26,8 +25,18 @@ public class CraftualHarassmentPanda {
 	String[] pandaLines;
 	public CraftualHarassmentPanda(J2 j2){
 		this.j2=j2;
+		this.restartManager();
+	}
+	
+	public void restartManager(){
 		this.harassees=new ArrayList<String>();
-		this.pandaLines=j2.readDaFile("panda.txt");
+		try{
+			this.pandaLines=j2.readDaFile("panda.txt");
+		}
+		catch (Exception e){
+			this.pandaLines=new String[1];
+			this.pandaLines[0]="ololol imma griefer ban me plz";
+		}
 	}
 	
 	public boolean blockHurt(Player player,Location location){
@@ -58,7 +67,7 @@ public class CraftualHarassmentPanda {
 		this.j2.sendAdminPlusLog( ChatColor.DARK_AQUA+"[HARASS]BLOCKED: "+player.getName()+ChatColor.WHITE+": "+message);
 		if(j2.users.getUser(player).canChat()){
 			String squawk=this.pandaLines[this.j2.random.nextInt(this.pandaLines.length)];
-			this.j2.chat.msgByFlagless(Flag.ADMIN, ChatColor.WHITE+"<"+j2.users.getUser(player).getColorName()+ChatColor.WHITE+"> "+squawk);
+			this.j2.chat.msgAll( ChatColor.WHITE+"<"+j2.users.getUser(player).getColorName()+ChatColor.WHITE+"> "+squawk);
 			this.j2.irc.ircMsg("<"+player.getName()+"> "+squawk);
 		}
 		return false;
@@ -66,6 +75,11 @@ public class CraftualHarassmentPanda {
 	public void harass(Player p){
 		synchronized(sync){
 			this.harassees.add(p.getName().toLowerCase());
+		}
+	}
+	public void remove(String name){
+		synchronized(sync){
+			this.harassees.remove(name.toLowerCase());
 		}
 	}
 	public boolean panda(Player player){

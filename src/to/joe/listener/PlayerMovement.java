@@ -1,5 +1,7 @@
 package to.joe.listener;
 
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -23,6 +25,11 @@ public class PlayerMovement  extends PlayerListener {
 		if(j2.damage.allWolf.containsKey(player.getName())){
 			event.setCancelled(true);
 		}
+		World world = player.getWorld();
+		Chunk chunk = world.getChunkAt(event.getTo());
+		int chunkx = chunk.getX();
+		int chunkz = chunk.getZ();
+		world.refreshChunk(chunkx, chunkz);
 	}
 	
 	@Override

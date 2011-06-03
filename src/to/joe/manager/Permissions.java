@@ -8,6 +8,10 @@ public class Permissions {
 
 	public Permissions(J2 j2){
 		this.j2=j2;
+		this.restartManager();
+	}
+	
+	public void restartManager(){
 		perms=new HashMap<String,Flag>();
 	}
 	

@@ -29,6 +29,18 @@ public class IRC {
 
 	public IRC(J2 j2p){
 		this.j2=j2p;
+		this.cleanStartup();
+	}
+	
+	public void restartManager(){
+		this.cleanStartup();
+		if(this.bot!=null){
+			bot.quitServer("Restarting...");
+		}
+		this.prepIRC();
+	}
+	
+	public void cleanStartup(){
 		loadIRCAdmins();
 		this.msgs=new HashMap<String,Long>();
 		//this.recent=new HashMap<String,Long>();

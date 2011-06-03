@@ -33,6 +33,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumMap;
@@ -69,7 +70,7 @@ public class J2 extends JavaPlugin {
 	public final MCBans mcbans=new MCBans(this);
 	public final Damages damage=new Damages(this);
 	public final Permissions perms=new Permissions(this);
-	private final Recipes recipes=new Recipes(this);
+	public final Recipes recipes=new Recipes(this);
 	public final Minitrue minitrue=new Minitrue(this);
 	public final Jailer jail = new Jailer(this);
 	public final MoveTracker move = new MoveTracker(this);
@@ -90,17 +91,17 @@ public class J2 extends JavaPlugin {
 		log.setFilter(new MCLogFilter());
 		protectedUsers=new ArrayList<String>();
 		loadData();
-		if(debug)this.log("Data loaded");
+		this.debug("Data loaded");
 		//irc start
 		if(ircEnable)irc.prepIRC();
 		irc.startIRCTimer();
 		//if(ircEnable)irc.startIRCTimer();
-		if(debug)this.log("IRC up (or disabled)");
+		this.debug("IRC up (or disabled)");
 		//irc end
 		loadTips();
-		if(debug)this.log("Tips loaded");
+		this.debug("Tips loaded");
 		startTipsTimer();
-		if(debug)this.log("Tips timer started");
+		this.debug("Tips timer started");
 
 		//Initialize BlockLogger
 		//this.blogger = new managerBlockLog(this.mysql.getConnection(),this.mysql.servnum());
@@ -134,7 +135,7 @@ public class J2 extends JavaPlugin {
 		System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
 		webpage.go(servernumber);
 		recipes.addRecipes();
-		minitrue.getToWork();
+		minitrue.restartManager();
 	}
 
 	public void loadData(){
@@ -492,6 +493,15 @@ public class J2 extends JavaPlugin {
 				return true;
 			}
 		}
+		else{
+			Player player=this.getServer().getPlayer(playername);
+			if(player!=null&&player.isOnline()){
+				String name=player.getName();
+				this.users.playerReset(name);
+				this.users.addUser(name);
+				this.users.processJoin(player);
+			}
+		}
 		return false;
 	}
 
@@ -525,36 +535,36 @@ public class J2 extends JavaPlugin {
 		return list.size();
 	}
 
-	private final Map<ChatColor, String> replacements = new EnumMap<ChatColor, String>(ChatColor.class);
-	private final ChatColor[] colors = ChatColor.values();
-	private Terminal terminal;
-	private ConsoleReader reader;
+	private final Map<ChatColor, String> ANSI_replacements = new EnumMap<ChatColor, String>(ChatColor.class);
+	private final ChatColor[] ANSI_colors = ChatColor.values();
+	private Terminal ANSI_terminal;
+	private ConsoleReader ANSI_reader;
 	public void initLog(){
-		this.reader = ((CraftServer)this.getServer()).getReader();
-		this.terminal = reader.getTerminal();
-		replacements.put(ChatColor.BLACK, ANSICodes.attrib(0));
-		replacements.put(ChatColor.RED, ANSICodes.attrib(31));
-		replacements.put(ChatColor.DARK_RED, ANSICodes.attrib(31));
-		replacements.put(ChatColor.GREEN, ANSICodes.attrib(32));
-		replacements.put(ChatColor.DARK_GREEN, ANSICodes.attrib(32));
-		replacements.put(ChatColor.YELLOW, ANSICodes.attrib(33));
-		replacements.put(ChatColor.GOLD, ANSICodes.attrib(33));
-		replacements.put(ChatColor.BLUE, ANSICodes.attrib(34));
-		replacements.put(ChatColor.DARK_BLUE, ANSICodes.attrib(34));
-		replacements.put(ChatColor.LIGHT_PURPLE, ANSICodes.attrib(35));
-		replacements.put(ChatColor.DARK_PURPLE, ANSICodes.attrib(35));
-		replacements.put(ChatColor.AQUA, ANSICodes.attrib(36));
-		replacements.put(ChatColor.DARK_AQUA, ANSICodes.attrib(36));
-		replacements.put(ChatColor.WHITE, ANSICodes.attrib(37));
+		this.ANSI_reader = ((CraftServer)this.getServer()).getReader();
+		this.ANSI_terminal = ANSI_reader.getTerminal();
+		ANSI_replacements.put(ChatColor.BLACK, ANSICodes.attrib(0));
+		ANSI_replacements.put(ChatColor.RED, ANSICodes.attrib(31));
+		ANSI_replacements.put(ChatColor.DARK_RED, ANSICodes.attrib(31));
+		ANSI_replacements.put(ChatColor.GREEN, ANSICodes.attrib(32));
+		ANSI_replacements.put(ChatColor.DARK_GREEN, ANSICodes.attrib(32));
+		ANSI_replacements.put(ChatColor.YELLOW, ANSICodes.attrib(33));
+		ANSI_replacements.put(ChatColor.GOLD, ANSICodes.attrib(33));
+		ANSI_replacements.put(ChatColor.BLUE, ANSICodes.attrib(34));
+		ANSI_replacements.put(ChatColor.DARK_BLUE, ANSICodes.attrib(34));
+		ANSI_replacements.put(ChatColor.LIGHT_PURPLE, ANSICodes.attrib(35));
+		ANSI_replacements.put(ChatColor.DARK_PURPLE, ANSICodes.attrib(35));
+		ANSI_replacements.put(ChatColor.AQUA, ANSICodes.attrib(36));
+		ANSI_replacements.put(ChatColor.DARK_AQUA, ANSICodes.attrib(36));
+		ANSI_replacements.put(ChatColor.WHITE, ANSICodes.attrib(37));
 	}
 
 	private String logPrep(String message){
-		if (terminal.isANSISupported()) {
+		if (ANSI_terminal.isANSISupported()) {
 			String result = message;
 
-			for (ChatColor color : colors) {
-				if (replacements.containsKey(color)) {
-					result = result.replaceAll(color.toString(), replacements.get(color));
+			for (ChatColor color : ANSI_colors) {
+				if (ANSI_replacements.containsKey(color)) {
+					result = result.replaceAll(color.toString(), ANSI_replacements.get(color));
 				} else {
 					result = result.replaceAll(color.toString(), "");
 				}
@@ -564,15 +574,15 @@ public class J2 extends JavaPlugin {
 			return ChatColor.stripColor(message);
 		}
 	}
-	
+
 	public void log(String message){
 		this.log.info(this.logPrep(message));
 	}
-	
+
 	public void logWarn(String message){
 		this.log.warning(this.logPrep(message));
 	}
-	
+
 	public void debug(String message){
 		if(this.debug){
 			this.log(message);
@@ -642,7 +652,6 @@ public class J2 extends JavaPlugin {
 			for(String line : rules){
 				player.sendMessage(line);
 			}
-
 			return true;
 		}
 		if (isPlayer && commandName.equals("help")){
@@ -871,7 +880,7 @@ public class J2 extends JavaPlugin {
 		}
 
 		if((commandName.equals("who") || commandName.equals("playerlist") || commandName.equals("list"))){
-			minitrue.who(player);
+			minitrue.who(sender);
 			return true;
 		}
 
@@ -894,7 +903,7 @@ public class J2 extends JavaPlugin {
 				irc.ircAdminMsg(ircmessage);
 				this.log(ircmessage);
 				if(!this.hasFlag(player, Flag.ADMIN)){
-					Report report=new Report(0, player.getLocation(), player.getName(), theReport, (new Date().getTime())/1000);
+					Report report=new Report(0, player.getLocation(), player.getName(), theReport, (new Date().getTime())/1000,false);
 					reports.addReport(report);
 				}
 				player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
@@ -907,18 +916,41 @@ public class J2 extends JavaPlugin {
 			return true;
 		}
 		if(isPlayer && commandName.equals("r") && hasFlag(player, Flag.ADMIN)){
-			ArrayList<Report> reps=reports.getReports();
-			int size=reps.size();
-			if(size==0){
-				player.sendMessage(ChatColor.RED+"No reports. Hurray!");
+			if(args.length==0){
+				ArrayList<Report> reps=reports.getReports();
+				int size=reps.size();
+				if(size==0){
+					player.sendMessage(ChatColor.RED+"No reports. Hurray!");
 
-				return true;
+					return true;
+				}
+				player.sendMessage(ChatColor.DARK_PURPLE+"Found "+size+" reports:");
+				for(Report r:reps){
+					if(!r.closed()){
+						Location location=r.getLocation();
+						String x=ChatColor.GOLD.toString()+location.getBlockX()+ChatColor.DARK_PURPLE+",";
+						String y=ChatColor.GOLD.toString()+location.getBlockY()+ChatColor.DARK_PURPLE+",";
+						String z=ChatColor.GOLD.toString()+location.getBlockZ()+ChatColor.DARK_PURPLE;
+						player.sendMessage(ChatColor.DARK_PURPLE+"["+r.getID()+"]["+x+y+z+"]<"
+								+ChatColor.GOLD+r.getUser()+ChatColor.DARK_PURPLE+"> "+ChatColor.WHITE
+								+r.getMessage());
+					}
+				}
 			}
-			player.sendMessage(ChatColor.DARK_PURPLE+"Found "+size+" reports:");
-			for(Report r:reps){
-				player.sendMessage(ChatColor.DARK_PURPLE+"["+r.getID()+"]<"
-						+ChatColor.WHITE+r.getUser()+ChatColor.DARK_PURPLE+"> "+ChatColor.WHITE
-						+r.getMessage());
+			else{
+				String action=args[0].toLowerCase();
+				if(action.equals("close")){
+					if(args.length>2){
+						int id=Integer.parseInt(args[1]);
+						if(id!=0){
+							this.reports.close(id, playerName, this.combineSplit(2, args, " "));
+							player.sendMessage(ChatColor.DARK_PURPLE+"Report closed");
+						}
+					}
+					else{
+						player.sendMessage(ChatColor.DARK_PURPLE+"/r close ID reason");
+					}
+				}
 			}
 
 			return true;
@@ -1132,6 +1164,7 @@ public class J2 extends JavaPlugin {
 			else {
 				user.dropFlag(Flag.byChar(flag));
 			}
+			this.mysql.setFlags(name, user.getUserFlags());
 			String tolog=ChatColor.RED+playerName+" changed flags: "+name + " "+ action +" flag "+ Flag.byChar(flag).getDescription();
 			chat.msgByFlag(Flag.ADMIN, tolog);
 			this.log(tolog);
@@ -1349,6 +1382,7 @@ public class J2 extends JavaPlugin {
 			users.getUser(playerName).tempSetColor(ChatColor.RED);
 			damage.protect(playerName);
 			player.getInventory().setHelmet(new ItemStack(51));
+			this.users.addFlagLocal(playerName, Flag.GODMODE);
 			return true;
 		}
 		if(isPlayer && commandName.equals("bits")
@@ -1362,6 +1396,7 @@ public class J2 extends JavaPlugin {
 				damage.danger(playerName);
 				player.sendMessage(ChatColor.RED+"You are no longer safe");
 			}
+			this.users.dropFlagLocal(playerName, Flag.GODMODE);
 			return true;
 		}
 		if(isPlayer && (commandName.equals("coo")||
@@ -1411,6 +1446,42 @@ public class J2 extends JavaPlugin {
 			}
 			this.log(ChatColor.LIGHT_PURPLE+"[mcbans] "+playerName+" looked up "+args[0]);
 			mcbans.lookup(args[0], player);
+			return true;
+		}
+		if(commandName.equals("j2lookup")&&isPlayer&&hasFlag(player,Flag.ADMIN)){
+			if(args.length==0){
+				player.sendMessage(ChatColor.LIGHT_PURPLE+"/j2lookup player");
+				return true;
+			}
+			String target=args[0];
+			this.log(ChatColor.LIGHT_PURPLE+"[j2bans] "+playerName+" looked up "+target);
+			String x="";
+			boolean allbans=false;
+			if(args.length>1&&args[1].equalsIgnoreCase("all")){
+				allbans=true;
+			}
+			ArrayList<Ban> bans=this.mysql.getBans(target,allbans);
+			ArrayList<String> messages=new ArrayList<String>();
+			boolean banned=false;
+			for(Ban ban:bans){
+				if(ban.isBanned()){
+					x=ChatColor.DARK_RED+"X";
+					banned=true;
+				}
+				else{
+					x=ChatColor.GREEN+"U";
+				}
+				String c=ChatColor.DARK_AQUA.toString();
+				messages.add(c+"["+x+c+"] "+this.shortdateformat.format(new Date(ban.getTimeOfBan()*1000))+" "+ChatColor.GOLD+ban.getReason());
+			}
+			String c2=ChatColor.GREEN.toString();
+			if(banned){
+				c2=ChatColor.RED.toString();
+			}
+			player.sendMessage(ChatColor.AQUA+"Found "+ChatColor.GOLD+bans.size()+ChatColor.AQUA+" bans for "+c2+target);
+			for(String message:messages){
+				player.sendMessage(message);
+			}
 			return true;
 		}
 		if(commandName.equals("smite")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
@@ -1595,10 +1666,10 @@ public class J2 extends JavaPlugin {
 		}
 		if(isPlayer&&(commandName.equals("f3")||commandName.equals("loc"))){
 			Location loc=player.getLocation();
-			String x=""+ChatColor.GOLD+(int)loc.getX();
-			String y=""+ChatColor.GOLD+(int)loc.getY();
+			String x=""+ChatColor.GOLD+(int)loc.getX()+ChatColor.DARK_AQUA;
+			String y=""+ChatColor.GOLD+(int)loc.getY()+ChatColor.DARK_AQUA;
 			String z=""+ChatColor.GOLD+(int)loc.getZ();
-			player.sendMessage(ChatColor.AQUA+"You are at X:"+x+" Y:"+y+" Z:"+z);
+			player.sendMessage(ChatColor.DARK_AQUA+"You are at X:"+x+" Y:"+y+" Z:"+z);
 			return true;
 		}
 		if(commandName.equals("setspawn")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))){
@@ -1710,7 +1781,7 @@ public class J2 extends JavaPlugin {
 		}
 		return true;
 	}
-
+	SimpleDateFormat shortdateformat=new SimpleDateFormat("yyyy-MM-dd kk:mm");
 	private boolean debug;
 	private Logger log;
 

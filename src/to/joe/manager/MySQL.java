@@ -196,6 +196,7 @@ public class MySQL {
 	}
 	public void ban(String name,String reason, long time, String admin,Location location){
 		j2.mcbans.processBan(name, admin, reason);
+		j2.panda.remove(name);
 		Connection conn = null;
 		PreparedStatement ps = null;
 		double x=0,y=0,z=0;
@@ -234,7 +235,7 @@ public class MySQL {
 			ps.setString(11, world);
 			ps.setInt(12, this.serverNumber);
 			ps.executeUpdate();
-			Ban newban=new Ban(name.toLowerCase(),reason,unBanTime,timeNow);
+			Ban newban=new Ban(name.toLowerCase(),reason,unBanTime,timeNow,timeNow,false);
 			j2.kickbans.bans.add(newban);
 
 		} catch (SQLException ex) {
@@ -251,17 +252,17 @@ public class MySQL {
 			}
 		}
 	}
-	public String checkBans(String user){
+	public String checkBans(String username){
 		Date curTime=new Date();
 		long timeNow=curTime.getTime()/1000;
 		String reason=null;
 		ArrayList<Ban> banhat=new ArrayList<Ban>(j2.kickbans.bans);
 		for (Ban ban : banhat){
-			if(ban.isBanned() && ban.isTemp() && ban.getTime()<timeNow){
+			if(ban.isBanned() && ban.isTemp() && ban.getTimeOfUnban()<timeNow){
 				//unban(user);
 				//tempbans
 			}
-			if(ban.getTimeLoaded()>timeNow-60 && ban.getName().equalsIgnoreCase(user) && ban.isBanned()){
+			if(ban.getTimeLoaded()>timeNow-60 && ban.getName().equalsIgnoreCase(username) && ban.isBanned()){
 				reason="Banned: "+ban.getReason();
 			}
 			if(ban.getTimeLoaded()<timeNow-60){
@@ -274,13 +275,13 @@ public class MySQL {
 			ResultSet rs = null;
 			try {
 				conn = getConnection();
-				String state="SELECT name,reason,unbantime FROM j2bans WHERE unbanned=0 and name=\""+user+"\"";
+				String state="SELECT name,reason,unbantime,timeofban FROM j2bans WHERE unbanned=0 and name=\""+username+"\"";
 				j2.debug("Query: "+state);
 				ps = conn.prepareStatement(state);
 				rs = ps.executeQuery();
 				while (rs.next()) {
 					reason=rs.getString("reason");
-					Ban ban=new Ban(rs.getString("name"),reason,rs.getLong("unbantime"),timeNow);
+					Ban ban=new Ban(rs.getString("name"),reason,rs.getLong("unbantime"),timeNow,rs.getLong("timeofban"),false);
 					j2.kickbans.bans.add(ban);
 					reason="Banned: "+reason;
 				}
@@ -302,6 +303,42 @@ public class MySQL {
 			}
 		}
 		return reason;
+	}
+	public ArrayList<Ban> getBans(String playerName, boolean allbans){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String username=this.stringClean(playerName);
+		ArrayList<Ban> bans=new ArrayList<Ban>();
+		try {
+			conn = getConnection();
+			String notallbans="";
+			if(!allbans)
+				notallbans=" and unbanned=0";
+			String state="SELECT name,reason,timeofban,unbantime,unbanned FROM j2bans WHERE name=\""+username+"\""+notallbans;
+			j2.debug("Query: "+state);
+			ps = conn.prepareStatement(state);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				bans.add(new Ban(rs.getString("name"),rs.getString("reason"),rs.getLong("unbantime"),0,rs.getLong("timeofban"),rs.getBoolean("unbanned")));
+			}
+		} catch (SQLException ex) {
+			j2.logWarn(ChatColor.RED+ "Unable to load j2Bans. You're not going to like this.");
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+		return bans;
 	}
 	public void unban(String aname){
 		j2.mcbans.processUnban(aname);
@@ -362,14 +399,14 @@ public class MySQL {
 			j2.users.setGroups(groups);
 
 			//reports
-			String state2="SELECT id,user,x,y,z,pitch,yaw,message,world,time from reports where server="+serverNumber+" and closed=0";
+			String state2="SELECT id,user,x,y,z,pitch,yaw,message,world,time,closed from reports where server="+serverNumber+" and closed=0";
 			ps = conn.prepareStatement(state2);
 			j2.debug("Query: "+state2);
 			rs = ps.executeQuery();
 			while (rs.next()){
 				String user=rs.getString("user");
 				Location loc=new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
-				j2.reports.addReportViaSQL(new Report(rs.getInt("id"), loc, user, rs.getString("message"),rs.getLong("time")));
+				j2.reports.addReportViaSQL(new Report(rs.getInt("id"), loc, user, rs.getString("message"),rs.getLong("time"),rs.getBoolean("closed")));
 				j2.debug("Adding new report to list, user "+user);
 			}
 
@@ -425,6 +462,7 @@ public class MySQL {
 	public void addReport(Report report){
 		Connection conn = null;
 		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = getConnection();
 			Location loc=report.getLocation();
@@ -448,12 +486,16 @@ public class MySQL {
 			ps.setString(9, loc.getWorld().getName());
 			ps.setLong(10, time);*/
 			ps.executeUpdate();
-			ps = conn.prepareStatement("SELECT id FROM reports where `time`=? and `message`=?");
-			ps.setLong(1, time);
-			ps.setString(2, report.getMessage());
-			ResultSet rs=ps.executeQuery();
-			int id=rs.getInt("id");
-			j2.reports.reportID(time, id);
+			String state2="SELECT id,user,x,y,z,pitch,yaw,message,world,time,closed from reports where server="+serverNumber+" and closed=0 and id>"+j2.reports.maxid;
+			ps = conn.prepareStatement(state2);
+			j2.debug("Query: "+state2);
+			rs = ps.executeQuery();
+			while (rs.next()){
+				String user=rs.getString("user");
+				Location loc2=new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
+				j2.reports.addReportViaSQL(new Report(rs.getInt("id"), loc2, user, rs.getString("message"),rs.getLong("time"),rs.getBoolean("closed")));
+				j2.debug("Adding new report to list, user "+user);
+			}
 		} catch (SQLException ex) {
 
 		} finally {
@@ -474,11 +516,12 @@ public class MySQL {
 		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
-			String state="UPDATE reports SET closed=1,admin=?,reason where id=?";
+			String state="UPDATE reports SET closed=1,admin=?,reason=? where id=?";
 			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setString(1, admin);
 			ps.setString(2,reason);
+			ps.setInt(3, id);
 			ps.executeUpdate();
 			j2.debug("Report "+id+" closed by "+admin);
 		} catch (SQLException ex) {

@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import to.joe.J2;
 import to.joe.util.Flag;
@@ -17,10 +20,14 @@ public class Users {
 	private J2 j2;
 	public Users(J2 J2){
 		this.j2=J2;
+		this.startTimer();
+		this.restartManager();
+	}
+	
+	public void restartManager(){
 		this.users=new ArrayList<User>();
 		this.groups=new HashMap<String, ArrayList<Flag>>();
 		this.clearedAdmins=new ArrayList<String>();
-		this.startTimer();		
 	}
 
 	public boolean isCleared(String name){
@@ -195,6 +202,38 @@ public class Users {
 					}
 				}
 			}
+		}
+	}
+	
+	public void processJoin(Player player){
+		String name=player.getName();
+		j2.irc.processJoin(name);
+		j2.ip.processJoin(name);
+		j2.warps.processJoin(name);
+		j2.damage.processJoin(name);
+		j2.jail.processJoin(player);
+		this.playerReset(name);
+		if(player.getInventory().getHelmet().equals(Material.FIRE)){
+			player.getInventory().setHelmet(new ItemStack(Material.GRASS));
+			player.sendMessage(ChatColor.RED+"You fizzle out");
+		}
+		if(j2.maintenance){
+			player.sendMessage(ChatColor.YELLOW+"We are in maintenance mode");
+		}
+		try{
+			j2.mcbans.processJoin(name);
+		}
+		catch (Exception e){
+			
+		}
+		for(String line : j2.motd){
+			player.sendMessage(line);
+		}
+		
+		j2.minitrue.processJoin(player);
+		if(j2.hasFlag(player, Flag.CONTRIBUTOR)){
+			player.sendMessage(ChatColor.LIGHT_PURPLE+"We think you're an "+ChatColor.GOLD+"AMAZING CONTRIBUTOR");
+			player.sendMessage(ChatColor.LIGHT_PURPLE+"to the minecraft community as a whole! "+ChatColor.RED+"<3");
 		}
 	}
 

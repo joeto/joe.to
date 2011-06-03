@@ -2,8 +2,8 @@ package to.joe.manager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import com.echo28.bukkit.vanish.Vanish;
@@ -18,20 +18,23 @@ public class Minitrue {
 		this.j2=j2;
 		this.vanishing=false;
 	}
-	public void getToWork(){
+	public void restartManager(){
 		Vanish p = null;
 		Plugin test = this.j2.getServer().getPluginManager().getPlugin("Vanish");
 		if(test != null && test instanceof Vanish) {
 			p = (Vanish)test;
 		}
 		if(p == null) {
-			Logger.getLogger("Minecraft").warning("Failed to find Vanish. Oh dear.");
+			j2.logWarn("Failed to find Vanish. Oh dear.");
 		}
 		else{
 			this.vanishing=true;
 		}
 
 		this.vanish = p;
+	}
+	public void processJoin(Player player){
+		this.announceJoin(player.getName());
 	}
 	public void vanish(Player player){
 		if(this.vanishing){
@@ -74,9 +77,9 @@ public class Minitrue {
 		return 0;
 	}
 
-	public void who(Player player){
+	public void who(CommandSender sender){
 		Player[] players=j2.getServer().getOnlinePlayers();
-		boolean isAdmin=this.qualified(player);
+		boolean isAdmin=this.qualified(sender);
 		int curlen=0;
 		int maxlen=320;
 		int playercount=players.length;
@@ -93,8 +96,20 @@ public class Minitrue {
 			boolean invis=j2.minitrue.invisible(p);
 			if(!invis||isAdmin){
 				String name=p.getName();
-				String cname=j2.users.getUser(name).getColorName();
+				String cname=ChatColor.WHITE+name;
+				try{
+					cname=j2.users.getUser(name).getColorName();
+				}
+				catch(Exception e){
+					this.j2.users.playerReset(name);
+					this.j2.users.addUser(name);
+					this.j2.users.processJoin(p);
+					cname=ChatColor.GREEN+name;
+				}
 				if(isAdmin){
+					if(j2.hasFlag(p, Flag.TRUSTED)){
+						cname=ChatColor.DARK_GREEN+name;
+					}
 					if(j2.hasFlag(p,Flag.ADMIN)){
 						if(invis)
 							cname=ChatColor.AQUA+name;
@@ -104,14 +119,29 @@ public class Minitrue {
 					if(j2.hasFlag(p, Flag.MUTED)){
 						cname=ChatColor.YELLOW+name;
 					}
+					if(j2.hasFlag(p, Flag.NSA)){
+						cname+=ChatColor.DARK_AQUA+"«»";
+					}
+					if(j2.hasFlag(p,Flag.THOR)){
+						cname+=ChatColor.WHITE+"/";
+					}
+					if(j2.hasFlag(p,Flag.GODMODE)){
+						cname+=ChatColor.DARK_RED+"⌂";
+					}
+					if(j2.hasFlag(p,Flag.TOOLS)){
+						cname+=ChatColor.AQUA+"¬";
+					}
+					if(j2.hasFlag(p, Flag.JAILED)){
+						cname+=ChatColor.GRAY+"[ø]";
+					}
 				}
-
+				cname+=ChatColor.WHITE.toString();
 				int thislen=0;
 				for(char ch:name.toCharArray()){
 					thislen+=Chats.characterWidths[(int)ch];
 				}
 				if(thislen+1+curlen>maxlen){
-					this.send(player,msg);
+					this.send(sender,msg);
 					msg=cname;
 				}
 				else{
@@ -120,9 +150,9 @@ public class Minitrue {
 				pc++;
 			}
 		}
-		this.send(player, msg);
+		this.send(sender, msg);
 	}
-	public void send(Player player,String message){
+	public void send(CommandSender player,String message){
 		if(player!=null){
 			player.sendMessage(message);
 		}
@@ -130,9 +160,9 @@ public class Minitrue {
 			this.j2.log(message);
 		}
 	}
-	public boolean qualified(Player player){
-		if(player!=null){
-			return this.j2.hasFlag(player, Flag.ADMIN);
+	public boolean qualified(CommandSender sender){
+		if(sender!=null&&sender instanceof Player){
+			return this.j2.hasFlag((Player)sender, Flag.ADMIN);
 		}
 		else{
 			return true;

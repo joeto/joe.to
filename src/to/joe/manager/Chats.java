@@ -29,6 +29,10 @@ public class Chats {
 		colorlist[8]=ChatColor.DARK_RED.toString();
 		colorlist[9]=ChatColor.RED.toString();
 		colorlist[10]=ChatColor.DARK_BLUE.toString();
+		this.restartManager();
+	}
+	
+	public void restartManager(){
 		this.muteAll=false;
 	}
 	

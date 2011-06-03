@@ -41,18 +41,18 @@ public class MCBans {
 		}
 		if(is_mcbans_mod.equals("y")){
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.RED+"Admins, be polite, "+name+" is an mcbans admin");
-			j2.irc.ircAdminMsg("[MCBANS] "+name+" is an MCBans admin. Nifty.");
-			j2.log(ChatColor.RED+"[MCBANS] "+name+" is an MCBans admin. Nifty.");
+			j2.irc.ircAdminMsg("[MCBANS] "+name+" is an MCBans admin.");
+			j2.log(ChatColor.RED+"[MCBANS] "+name+" is an MCBans admin.");
 			Player player=j2.getServer().getPlayer(name);
 			if(player!=null){
-				player.sendMessage(ChatColor.GREEN+"Welcome, oh glorious MCBans lord, to joe.to!  "+ChatColor.RED+"I LOVE YOU <3");
-				player.sendMessage(ChatColor.GREEN+"I'll make it pretty quick. You have "+ChatColor.AQUA+disputes+ChatColor.GREEN+" disputes");
+				//player.sendMessage(ChatColor.GREEN+"Welcome, oh glorious MCBans lord, to joe.to!  "+ChatColor.RED+"I LOVE YOU <3");
+				player.sendMessage(ChatColor.GREEN+"MCBANS info: You have "+ChatColor.AQUA+disputes+ChatColor.GREEN+" disputes");
 				player.sendMessage(ChatColor.GREEN+"For debug purposes: Rep: "+ChatColor.AQUA+reputation+ChatColor.GREEN+"/10. Bans: "+ChatColor.AQUA+ban_num+ChatColor.GREEN+". Ban Status: "+ChatColor.AQUA+ban_status);
 			}
 		}
-		else if((Integer.parseInt(disputes)>0)){
+		else if(j2.hasFlag(name,Flag.SRSTAFF)&&(Integer.parseInt(disputes)>0)){
 			Player player=j2.getServer().getPlayer(name);
-			player.sendMessage(ChatColor.GREEN+"[MCBANS] You've got "+ChatColor.AQUA+disputes+ChatColor.GREEN+" active disputes");
+			player.sendMessage(ChatColor.GREEN+"[MCBANS] We have "+ChatColor.AQUA+disputes+ChatColor.GREEN+" active disputes");
 		}
 	}
 
