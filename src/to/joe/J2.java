@@ -897,14 +897,13 @@ public class J2 extends JavaPlugin {
 		if(isPlayer && commandName.equals("report")){
 			if(args.length>0){
 				String theReport=combineSplit(0, args, " ");
-				String message="Report: <§d"+playerName+"§f>"+theReport;
-				String ircmessage="Report from "+playerName+": "+theReport;
-				chat.msgByFlag(Flag.ADMIN, message);
-				irc.ircAdminMsg(ircmessage);
-				this.log(ircmessage);
 				if(!this.hasFlag(player, Flag.ADMIN)){
 					Report report=new Report(0, player.getLocation(), player.getName(), theReport, (new Date().getTime())/1000,false);
 					reports.addReport(report);
+				}
+				else{
+					String ircmessage="Report from the field: <"+playerName+"> "+theReport;
+					irc.ircAdminMsg(ircmessage);
 				}
 				player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
 			}
@@ -949,6 +948,21 @@ public class J2 extends JavaPlugin {
 					}
 					else{
 						player.sendMessage(ChatColor.DARK_PURPLE+"/r close ID reason");
+					}
+				}
+				if(action.equals("tp")){
+					if(args.length>1){
+						Report report=this.reports.getReport(Integer.valueOf(args[1]));
+						if(report!=null){
+							player.teleport(report.getLocation());
+							player.sendMessage(ChatColor.DARK_PURPLE+"Wheeeeeeeee");
+						}
+						else{
+							player.sendMessage(ChatColor.DARK_PURPLE+"Report not found");
+						}
+					}
+					else{
+						player.sendMessage(ChatColor.DARK_PURPLE+"/r tp ID");
 					}
 				}
 			}
@@ -1627,7 +1641,7 @@ public class J2 extends JavaPlugin {
 			}
 			Player target=list.get(0);
 			if(target!=null){
-				target.damage(21);
+				target.damage(9001);
 				target.sendMessage(ChatColor.RED+"You have been slayed");
 				this.sendAdminPlusLog(ChatColor.RED+playerName+" slayed "+target.getName());
 			}

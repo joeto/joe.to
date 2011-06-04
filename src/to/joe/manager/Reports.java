@@ -2,6 +2,9 @@ package to.joe.manager;
 
 import java.util.ArrayList;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+
 import to.joe.J2;
 import to.joe.util.Report;
 
@@ -23,11 +26,22 @@ public class Reports {
 	public void addReport(Report newReport){
 		this.j2.mysql.addReport(newReport);
 	}
-	public void addReportViaSQL(Report newReport){
-		this.reports.add(newReport);
-		if(newReport.getID()>maxid){
-			maxid=newReport.getID();
+	public void addReportViaSQL(Report report){
+		this.reports.add(report);
+		if(report.getID()>maxid){
+			maxid=report.getID();
 		}
+		Location location=report.getLocation();
+		String pc=ChatColor.DARK_PURPLE.toString();
+		String gc=ChatColor.GOLD.toString();
+		String wc=ChatColor.WHITE.toString();
+		String x=gc+location.getBlockX()+pc+",";
+		String y=gc+location.getBlockY()+pc+",";
+		String z=gc+location.getBlockZ()+pc;
+		String message=pc+"["+wc+"NEW REPORT"+pc+"]["+report.getID()+"]["+x+y+z+"]<"
+				+gc+report.getUser()+pc+"> "+wc+report.getMessage();
+		this.j2.sendAdminPlusLog(message);
+		this.j2.irc.ircAdminMsg(ChatColor.stripColor(message));
 	}
 	public void close(int id, String admin, String reason){
 		synchronized(sync){
@@ -48,6 +62,11 @@ public class Reports {
 				}
 			}
 			return null;
+		}
+	}
+	public int numReports(){
+		synchronized(sync){
+			return this.reports.size();
 		}
 	}
 	public ArrayList<Report> getReports(){

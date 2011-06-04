@@ -59,7 +59,7 @@ public class PlayerJoinQuit extends PlayerListener {
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player=event.getPlayer();
 		String name=player.getName();
-		j2.minitrue.announceLeave(name);
+		j2.minitrue.processLeave(player);
 		if(j2.users.getUser(player)!=null){
 			j2.users.delUser(player.getName());
 			j2.warps.dropPlayer(player.getName());

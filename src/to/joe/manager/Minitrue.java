@@ -5,55 +5,39 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import com.echo28.bukkit.vanish.Vanish;
 import to.joe.J2;
 import to.joe.util.Flag;
+import to.joe.util.Vanish;
 
 public class Minitrue {
-	private J2 j2;
-	private Vanish vanish;
-	private boolean vanishing;
+	public J2 j2;
+	private Vanish vanish = new Vanish(this);
 	public Minitrue(J2 j2){
 		this.j2=j2;
-		this.vanishing=false;
 	}
 	public void restartManager(){
-		Vanish p = null;
-		Plugin test = this.j2.getServer().getPluginManager().getPlugin("Vanish");
-		if(test != null && test instanceof Vanish) {
-			p = (Vanish)test;
-		}
-		if(p == null) {
-			j2.logWarn("Failed to find Vanish. Oh dear.");
-		}
-		else{
-			this.vanishing=true;
-		}
 
-		this.vanish = p;
 	}
 	public void processJoin(Player player){
 		this.announceJoin(player.getName());
 	}
-	public void vanish(Player player){
-		if(this.vanishing){
-			vanish.vanish(player);
-			if(this.invisible(player)){//assume player is NOW invisible
-				this.announceLeave(player.getName());
-			}
-			else{//now visible
-				this.announceJoin(player.getName());
-			}
+	public void processLeave(Player player){
+		if(!this.invisible(player)){
+			this.announceLeave(player.getName());
 		}
-		else{
-			player.sendMessage(ChatColor.AQUA+"Can't vanish D:");
+		this.vanish.invisible.remove(player);
+	}
+	public void vanish(Player player){
+		vanish.callVanish(player);
+		if(this.invisible(player)){//assume player is NOW invisible
+			this.announceLeave(player.getName());
+		}
+		else{//now visible
+			this.announceJoin(player.getName());
 		}
 	}
 	public boolean invisible(Player player){
-		if(this.vanishing)
-			return vanish.invisible.contains(player);
-		else return false;
+		return vanish.invisible.contains(player);
 	}
 	public void announceJoin(String playerName){
 		j2.chat.msgAll(ChatColor.YELLOW+"Now arriving: "+playerName);
@@ -72,9 +56,7 @@ public class Minitrue {
 	}
 
 	public int numinvis(){
-		if(this.vanishing)
-			return this.vanish.invisible.size();
-		return 0;
+		return this.vanish.invisible.size();
 	}
 
 	public void who(CommandSender sender){
