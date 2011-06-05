@@ -85,12 +85,17 @@ public class ircBot extends PircBot {
 					sendMessage(channel,"There are admins online!");
 			}
 			else if (ircMsg && parts[0].equalsIgnoreCase("!msg")){
-				String damessage = "";
-				for(int $x=1;$x<parts.length;$x++)
-				{
-					damessage+=" "+parts[$x];
+				if(channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
+					sendMessage(channel,"Try that in the other channel.");
 				}
-				doMsg(channel,sender,damessage);
+				else{
+					String damessage = "";
+					for(int $x=1;$x<parts.length;$x++)
+					{
+						damessage+=" "+parts[$x];
+					}
+					doMsg(channel,sender,damessage);
+				}
 			}
 			else if (ircMsg && parts[0].equalsIgnoreCase("!me")){
 				String damessage = "";

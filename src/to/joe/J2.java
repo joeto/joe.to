@@ -168,6 +168,9 @@ public class J2 extends JavaPlugin {
 			servernumber = j2properties.getInt("server-number", 0);
 			conf_general.put("server-number", this.servernumber);
 			mysql = new MySQL(mysql_username,mysql_password,mysql_db, servernumber, this);
+			this.warps.restartManager();
+			this.reports.restartManager();
+			this.users.restartGroups();
 			mysql.loadMySQLData();
 			//mysql end
 
@@ -594,7 +597,6 @@ public class J2 extends JavaPlugin {
 		this.log(message);
 	}
 
-
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		String commandName = command.getName().toLowerCase();
 		Player player=null;
@@ -900,12 +902,14 @@ public class J2 extends JavaPlugin {
 				if(!this.hasFlag(player, Flag.ADMIN)){
 					Report report=new Report(0, player.getLocation(), player.getName(), theReport, (new Date().getTime())/1000,false);
 					reports.addReport(report);
+					player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
 				}
 				else{
 					String ircmessage="Report from the field: <"+playerName+"> "+theReport;
 					irc.ircAdminMsg(ircmessage);
+					player.sendMessage(ChatColor.RED+"Report transmitted. Thanks you soldier.");
 				}
-				player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
+
 			}
 			else {
 				player.sendMessage(ChatColor.RED+"To report to the admins, say /report MESSAGE");
@@ -1197,9 +1201,11 @@ public class J2 extends JavaPlugin {
 				}
 			}
 			else{
-				Warp warp=warps.getPublicWarp(args[0]);
+				String target=args[0];
+				Warp warp=warps.getPublicWarp(target);
 				if(warp!=null && (hasFlag(player, warp.getFlag())||warp.getFlag().equals(Flag.Z_SPAREWARP_DESIGNATION))){
-					player.sendMessage(ChatColor.RED+"Whoosh!");
+					player.sendMessage(ChatColor.RED+"Welcome to: "+ChatColor.LIGHT_PURPLE+target);
+					this.log(ChatColor.AQUA+"Player "+playerName+" went to warp "+target);
 					player.teleport(warp.getLocation());
 				}
 				else {
@@ -1207,7 +1213,6 @@ public class J2 extends JavaPlugin {
 				}
 
 			}
-
 			return true;
 		}
 
@@ -1446,9 +1451,12 @@ public class J2 extends JavaPlugin {
 		}
 		if(commandName.equals("madagascar")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
 			this.sendAdminPlusLog(playerName+" wants to SHUT. DOWN. EVERYTHING.");
-			ircEnable=false;
-			if(this.ircEnable)
+			if(this.ircEnable){
+				irc.getBot().sendMessage(this.ircAdminChannel, "A MAN IN BRAZIL IS COUGHING");
+				irc.getBot().sendMessage(this.ircChannel, "A MAN IN BRAZIL IS COUGHING");
 				irc.getBot().quitServer("SHUT. DOWN. EVERYTHING.");
+			}
+			ircEnable=false;
 			kickbans.kickAll("We'll be back after these brief messages");
 			this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
 			return true;
@@ -1783,15 +1791,29 @@ public class J2 extends JavaPlugin {
 		if(commandName.equals("nsa")&&isPlayer&&this.hasFlag(player, Flag.ADMIN)){
 			String message;
 			if(this.hasFlag(player, Flag.NSA)){
-				message=ChatColor.DARK_AQUA+playerName+ChatColor.AQUA+" takes off his headphones. That's enough chatter";
+				message=ChatColor.DARK_AQUA+playerName+ChatColor.AQUA+" takes off headphones. That's enough chatter";
 				this.users.dropFlagLocal(playerName, Flag.NSA);
 			}
 			else{
-				message=ChatColor.DARK_AQUA+playerName+ChatColor.AQUA+" puts on his headphones. Intercepting...";
+				message=ChatColor.DARK_AQUA+playerName+ChatColor.AQUA+" puts on headphones. Intercepting...";
 				this.users.addFlagLocal(playerName, Flag.NSA);
 			}
 			this.sendAdminPlusLog(message);
 			return true;
+		}
+		if(this.servernumber==2&&commandName.equals("station")){
+			Warp target=this.warps.getClosestWarp(player.getLocation());
+			String name=target.getName();
+			if(args.length==1&&args[0].equalsIgnoreCase("go")){
+				player.teleport(target.getLocation());
+				player.sendMessage(ChatColor.AQUA+"You are now at "+ChatColor.DARK_AQUA+"Station "+name);
+				player.sendMessage(ChatColor.AQUA+"You can return here by saying "+ChatColor.DARK_AQUA+"/warp "+name);
+			}
+			else{
+				player.sendMessage(ChatColor.AQUA+"You are closest to "+ChatColor.DARK_AQUA+"Station "+name);
+				player.sendMessage(ChatColor.AQUA+"You can always get there with "+ChatColor.DARK_AQUA+"/warp "+name);
+				player.sendMessage(ChatColor.AQUA+"To travel to the closest station say "+ChatColor.DARK_AQUA+"/station go");
+			}
 		}
 		return true;
 	}

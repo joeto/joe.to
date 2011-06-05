@@ -29,6 +29,9 @@ public class Users {
 		this.groups=new HashMap<String, ArrayList<Flag>>();
 		this.clearedAdmins=new ArrayList<String>();
 	}
+	public void restartGroups(){
+		this.groups=new HashMap<String, ArrayList<Flag>>();
+	}
 
 	public boolean isCleared(String name){
 		synchronized(clearlock){

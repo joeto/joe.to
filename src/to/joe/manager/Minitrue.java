@@ -11,7 +11,7 @@ import to.joe.util.Vanish;
 
 public class Minitrue {
 	public J2 j2;
-	private Vanish vanish = new Vanish(this);
+	public Vanish vanish = new Vanish(this);
 	public Minitrue(J2 j2){
 		this.j2=j2;
 	}

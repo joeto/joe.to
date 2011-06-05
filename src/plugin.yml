@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 0.9.9.2.2
+version: 0.9.9.3
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -323,6 +323,10 @@ commands:
     usage: |
             Yeah thats mine now
   nsa:
+    description: hehehe
+    usage: |
+            Just as you'd expect
+  station:
     description: hehehe
     usage: |
             Just as you'd expect

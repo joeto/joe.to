@@ -493,7 +493,7 @@ public class MySQL {
 			while (rs.next()){
 				String user=rs.getString("user");
 				Location loc2=new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
-				j2.reports.addReportViaSQL(new Report(rs.getInt("id"), loc2, user, rs.getString("message"),rs.getLong("time"),rs.getBoolean("closed")));
+				j2.reports.addReportAndAlert(new Report(rs.getInt("id"), loc2, user, rs.getString("message"),rs.getLong("time"),rs.getBoolean("closed")));
 				j2.debug("Adding new report to list, user "+user);
 			}
 		} catch (SQLException ex) {

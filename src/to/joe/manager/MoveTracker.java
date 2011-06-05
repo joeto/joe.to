@@ -16,6 +16,9 @@ public class MoveTracker {
 		User user=j2.users.getUser(player);
 		Location location=player.getLocation();
 		Block block =location.getBlock();
+		if(!player.isOnline()){
+			return;
+		}
 		if(!user.getBlock().equals(block)){
 			/*if(player.getName().equalsIgnoreCase("mbaxter")&&j2.safemode){
 				Location target=user.getMidBlock().getLocation();

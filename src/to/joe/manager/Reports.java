@@ -26,7 +26,10 @@ public class Reports {
 	public void addReport(Report newReport){
 		this.j2.mysql.addReport(newReport);
 	}
-	public void addReportViaSQL(Report report){
+	public void addReportAndAlert(Report report){
+		this.j2.irc.ircAdminMsg(ChatColor.stripColor(addReportViaSQL(report)));
+	}
+	public String addReportViaSQL(Report report){
 		this.reports.add(report);
 		if(report.getID()>maxid){
 			maxid=report.getID();
@@ -41,7 +44,7 @@ public class Reports {
 		String message=pc+"["+wc+"NEW REPORT"+pc+"]["+report.getID()+"]["+x+y+z+"]<"
 				+gc+report.getUser()+pc+"> "+wc+report.getMessage();
 		this.j2.sendAdminPlusLog(message);
-		this.j2.irc.ircAdminMsg(ChatColor.stripColor(message));
+		return message;
 	}
 	public void close(int id, String admin, String reason){
 		synchronized(sync){

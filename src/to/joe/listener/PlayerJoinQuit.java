@@ -27,12 +27,14 @@ public class PlayerJoinQuit extends PlayerListener {
 	public PlayerJoinQuit(J2 instance) {
 		j2 = instance;
 		//theList=new ArrayList<String>();
+		
 	}
 	
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		event.setJoinMessage(null);
-		this.j2.users.processJoin(event.getPlayer());
+		Player player=event.getPlayer();
+		this.j2.users.processJoin(player);
 		
 		
 		/*if(j2.hasFlag(player,Flag.JAILED)){
@@ -41,7 +43,7 @@ public class PlayerJoinQuit extends PlayerListener {
 			player.sendMessage(ChatColor.RED+"To get out, talk to the jailer");
 			player.sendMessage(ChatColor.RED+"You need to punch him");
 		}*/
-		
+		this.j2.minitrue.vanish.updateInvisible(player);
 	}
 
 	@Override
@@ -68,6 +70,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		event.setQuitMessage(null);
 		j2.damage.arf(name);
 		j2.users.playerReset(name);
+		this.j2.minitrue.vanish.invisible.remove(player);
 	}
 
 	@Override
@@ -76,7 +79,13 @@ public class PlayerJoinQuit extends PlayerListener {
 		String ip=event.getAddress().getHostAddress();
 		//System.out.println("IP: \""+ip+"\"");
 		j2.debug("Incoming player: "+name+" on "+ip);
-		String reason=j2.mysql.checkBans(name);
+		String reason=null;
+		try{
+			reason=j2.mysql.checkBans(name);
+		}
+		catch (Exception e){
+			reason="Try again. Ban system didn't like you.";
+		}
 		//j2.mysql.userIP(name,player.getAddress().getHostName());
 		//if(event.getResult().equals(Result.ALLOWED)){
 			j2.ip.incoming(name,ip);
@@ -88,7 +97,8 @@ public class PlayerJoinQuit extends PlayerListener {
 		boolean isTrusted=(user.getUserFlags().contains(Flag.TRUSTED)||j2.users.groupHasFlag(user.getGroup(), Flag.TRUSTED));
 		boolean incoming=true;
 		if(reason!=null){
-			reason="Visit http://forums.joe.to for unban";
+			if(!reason.equals("Try again. Ban system hiccup."))
+					reason="Visit http://forums.joe.to for unban";
 			event.setKickMessage(reason);
 			event.disallow(PlayerPreLoginEvent.Result.KICK_BANNED, reason);
 			incoming=false;
