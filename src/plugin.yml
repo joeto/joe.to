@@ -234,6 +234,10 @@ commands:
     description: Hmmm
     usage: |
             j2lookup
+  iplookup:
+    description: Hmmm
+    usage: |
+            iplookup
   pvpon:
     description: Hmmm
     usage: |

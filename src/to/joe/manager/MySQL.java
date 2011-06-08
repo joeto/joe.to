@@ -683,7 +683,7 @@ public class MySQL {
 			}
 		}
 	}
-	
+
 	public ArrayList<String> IPGetIPs(String name){
 		ArrayList<String> IPs=new ArrayList<String>();
 		Connection conn = null;
@@ -716,7 +716,7 @@ public class MySQL {
 		}
 		return IPs;
 	}
-	
+
 	public ArrayList<String> IPGetNames(String IP){
 		ArrayList<String> names=new ArrayList<String>();
 		Connection conn = null;
@@ -749,7 +749,42 @@ public class MySQL {
 		}
 		return names;
 	}
-	
+
+	public HashMap<String, Long> IPGetNamesOnIP(String IP){
+		HashMap<String, Long> nameDates = new HashMap<String, Long>();
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			String state="SELECT `Name`, max(`Time`) FROM "+aliasdb+" WHERE IP=\""+ IP +"\" ORDER BY max(`Time`) DESC LIMIT 5";
+			j2.debug("Query: "+state);
+			ps = conn.prepareStatement(state);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				nameDates.put(rs.getString("Name"), rs.getTimestamp("max(`Time`)").getTime());
+			}
+		} catch (SQLException ex) {
+			j2.logWarn(ChatColor.RED+ "Unable to load user/ip from MySQL. Oh hell");
+			j2.debug("Exception: " + ex.getMessage());
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+		return nameDates;
+	}
+
 	public String IPGetLast(String name){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -783,7 +818,7 @@ public class MySQL {
 		}
 		return result;
 	}
-	
+
 	public HashMap<String,Flag> getPerms(){
 		HashMap<String,Flag> perms=new HashMap<String,Flag>();
 		Connection conn = null;
