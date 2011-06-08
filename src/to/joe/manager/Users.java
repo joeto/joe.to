@@ -23,7 +23,7 @@ public class Users {
 		this.startTimer();
 		this.restartManager();
 	}
-	
+
 	public void restartManager(){
 		this.users=new ArrayList<User>();
 		this.groups=new HashMap<String, ArrayList<Flag>>();
@@ -75,7 +75,11 @@ public class Users {
 	public void addUser(String playerName){
 		synchronized (this.userlock){
 			User user=this.j2.mysql.getUser(playerName);
-			this.users.add(user);
+			if(user!=null)
+				this.users.add(user);
+			else{
+				this.j2.logWarn("Tried to add user \""+playerName+"\" and got null");
+			}
 		}
 	}
 	public void delUser(String name){
@@ -177,7 +181,7 @@ public class Users {
 	public void jailSet(HashMap<String,String> incoming){
 		this.jailReasons=incoming;
 	}
-	
+
 	private boolean stop=true;
 	private void startTimer() {
 		stop = false;
@@ -193,7 +197,7 @@ public class Users {
 			}
 		}, 10000, 10000);
 	}
-	
+
 	private void checkOnline(){
 		synchronized (this.userlock){
 			for(User u:new ArrayList<User>(this.users)){
@@ -207,7 +211,7 @@ public class Users {
 			}
 		}
 	}
-	
+
 	public void processJoin(Player player){
 		String name=player.getName();
 		j2.irc.processJoin(name);
@@ -227,7 +231,7 @@ public class Users {
 			j2.mcbans.processJoin(name);
 		}
 		catch (Exception e){
-			
+
 		}
 		for(String line : j2.motd){
 			player.sendMessage(line);
