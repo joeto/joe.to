@@ -763,7 +763,7 @@ public class MySQL {
 			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			while(rs.next()){
-				nameDates.put(rs.getString("`Name`"), rs.getTimestamp("`Time`").getTime());
+				nameDates.put(rs.getString("Name"), rs.getTimestamp("Time").getTime());
 			}
 		} catch (SQLException ex) {
 			j2.logWarn(ChatColor.RED+ "Unable to load user/ip from MySQL. Oh hell");
