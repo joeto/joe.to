@@ -1,5 +1,4 @@
---
--- Generation Time: May 01, 2011 at 02:24 PM
+-- Generation Time: Jun 07, 2011 at 10:07 PM
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -25,35 +24,12 @@ CREATE TABLE IF NOT EXISTS `alias` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `blocks`
---
-
-CREATE TABLE IF NOT EXISTS `blocks` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `player` varchar(32) NOT NULL DEFAULT '-',
-  `replaced` int(11) NOT NULL DEFAULT '0',
-  `type` int(11) NOT NULL DEFAULT '0',
-  `x` int(11) NOT NULL DEFAULT '0',
-  `y` int(11) NOT NULL DEFAULT '0',
-  `z` int(11) NOT NULL DEFAULT '0',
-  `extra` varchar(70) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `coords` (`y`,`x`,`z`),
-  KEY `type` (`type`),
-  KEY `replaced` (`replaced`),
-  KEY `player` (`player`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `j2bans`
 --
 
 CREATE TABLE IF NOT EXISTS `j2bans` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
+  `name` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `reason` text NOT NULL,
   `admin` varchar(64) NOT NULL,
   `unbantime` bigint(20) DEFAULT '0',
@@ -67,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `j2bans` (
   `world` varchar(32) NOT NULL,
   `server` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -81,6 +57,12 @@ CREATE TABLE IF NOT EXISTS `j2groups` (
   `flags` varchar(26) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+INSERT INTO `j2groups` (`server`, `name`, `flags`) VALUES
+(0, 'regular', 'fm'),
+(0, 'admins', 'asftm'),
+;
+
+
 -- --------------------------------------------------------
 
 --
@@ -93,8 +75,10 @@ CREATE TABLE IF NOT EXISTS `j2users` (
   `group` varchar(16) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `color` tinyint(4) NOT NULL,
   `flags` varchar(26) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+  `safeword` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -120,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `user` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `message` text COLLATE utf8_bin NOT NULL,
   `closed` tinyint(1) NOT NULL DEFAULT '0',
-  `admin` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '""',
+  `admin` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '',
   `reason` text COLLATE utf8_bin,
   `world` varchar(32) COLLATE utf8_bin NOT NULL,
   `x` double NOT NULL,
@@ -131,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `server` tinyint(1) NOT NULL,
   `time` int(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -153,5 +137,5 @@ CREATE TABLE IF NOT EXISTS `warps` (
   `yaw` float NOT NULL,
   PRIMARY KEY (`id`),
   KEY `server` (`server`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
