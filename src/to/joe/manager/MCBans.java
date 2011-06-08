@@ -27,7 +27,8 @@ public class MCBans {
 		this.j2=j2;
 	}
 
-	public void processJoin(String name){
+	public void processJoin(Player player){
+		String name=player.getName();
 		HashMap<String,String> mcbans=j2.mcbans.checkBansOnline(name);
 		Double reputation=Double.valueOf(mcbans.get("reputation"));
 		String ban_num=mcbans.get("ban_num");
@@ -37,21 +38,19 @@ public class MCBans {
 		if(reputation<10.0){
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"[MCBANS] "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has rep "+ChatColor.WHITE+reputation+ChatColor.LIGHT_PURPLE+"/10, "+ChatColor.WHITE+ban_num+ChatColor.LIGHT_PURPLE+" bans");
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"To see the bans: /lookup "+ChatColor.WHITE+name);
-			j2.irc.ircAdminMsg("[MCBANS] "+name+": Rep "+reputation+"/10. Bans: "+ban_num);
+			if(!j2.hasFlag(name, Flag.QUIETERJOIN)){
+				j2.irc.ircAdminMsg("[MCBANS] "+name+": Rep "+reputation+"/10. Bans: "+ban_num);
+			}
 		}
 		if(is_mcbans_mod.equals("y")){
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.RED+"Admins, be polite, "+name+" is an mcbans admin");
 			j2.irc.ircAdminMsg("[MCBANS] "+name+" is an MCBans admin.");
 			j2.log(ChatColor.RED+"[MCBANS] "+name+" is an MCBans admin.");
-			Player player=j2.getServer().getPlayer(name);
-			if(player!=null){
-				//player.sendMessage(ChatColor.GREEN+"Welcome, oh glorious MCBans lord, to joe.to!  "+ChatColor.RED+"I LOVE YOU <3");
-				player.sendMessage(ChatColor.GREEN+"MCBANS info: You have "+ChatColor.AQUA+disputes+ChatColor.GREEN+" disputes");
-				player.sendMessage(ChatColor.GREEN+"For debug purposes: Rep: "+ChatColor.AQUA+reputation+ChatColor.GREEN+"/10. Bans: "+ChatColor.AQUA+ban_num+ChatColor.GREEN+". Ban Status: "+ChatColor.AQUA+ban_status);
-			}
+			//player.sendMessage(ChatColor.GREEN+"Welcome, oh glorious MCBans lord, to joe.to!  "+ChatColor.RED+"I LOVE YOU <3");
+			player.sendMessage(ChatColor.GREEN+"MCBANS info: You have "+ChatColor.AQUA+disputes+ChatColor.GREEN+" disputes");
+			player.sendMessage(ChatColor.GREEN+"For debug purposes: Rep: "+ChatColor.AQUA+reputation+ChatColor.GREEN+"/10. Bans: "+ChatColor.AQUA+ban_num+ChatColor.GREEN+". Ban Status: "+ChatColor.AQUA+ban_status);
 		}
 		else if(j2.hasFlag(name,Flag.SRSTAFF)&&(Integer.parseInt(disputes)>0)){
-			Player player=j2.getServer().getPlayer(name);
 			player.sendMessage(ChatColor.GREEN+"[MCBANS] We have "+ChatColor.AQUA+disputes+ChatColor.GREEN+" active disputes");
 		}
 	}

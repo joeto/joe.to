@@ -213,6 +213,10 @@ public class Users {
 	}
 
 	public void processJoin(Player player){
+		//Last chance to check
+		if(!player.isOnline()){
+			return;
+		}
 		String name=player.getName();
 		j2.irc.processJoin(name);
 		j2.ip.processJoin(name);
@@ -220,7 +224,7 @@ public class Users {
 		j2.damage.processJoin(name);
 		j2.jail.processJoin(player);
 		this.playerReset(name);
-		if(player.getInventory().getHelmet().equals(Material.FIRE)){
+		if(player.getInventory().getHelmet().getTypeId()==Material.FIRE.getId()){
 			player.getInventory().setHelmet(new ItemStack(Material.GRASS));
 			player.sendMessage(ChatColor.RED+"You fizzle out");
 		}
@@ -228,7 +232,7 @@ public class Users {
 			player.sendMessage(ChatColor.YELLOW+"We are in maintenance mode");
 		}
 		try{
-			j2.mcbans.processJoin(name);
+			j2.mcbans.processJoin(player);
 		}
 		catch (Exception e){
 

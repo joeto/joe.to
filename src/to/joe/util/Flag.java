@@ -18,7 +18,7 @@ public enum Flag {
 	TOOLS('T',"Tool mode"),//admin tool mode
 	THOR('x',"Thor Powers"),//admin lightning powers
 	MUTED('X',"Muted"),//player muted
-	CUSTOM2('y',"Custom2"),
+	QUIETERJOIN('y',"No join alerts on IRC"),
 	CUSTOM3('z',"Custom3"),
 	//Numbers are reserved for internal programming.
 	Z_HOME_DESIGNATION('0',"DO NOT USE"),

@@ -25,6 +25,9 @@ public class Minitrue {
 		if(!this.invisible(player)){
 			this.announceLeave(player.getName());
 		}
+		else{
+			this.j2.chat.msgByFlag(Flag.ADMIN, ChatColor.YELLOW+player.getName()+" quit, stealthily");
+		}
 		this.vanish.invisible.remove(player);
 	}
 	public void vanish(Player player){
@@ -75,6 +78,9 @@ public class Minitrue {
 		int pc=0;
 
 		for(Player p: players){
+			if(!p.isOnline()){
+				continue;
+			}
 			boolean invis=j2.minitrue.invisible(p);
 			if(!invis||isAdmin){
 				String name=p.getName();

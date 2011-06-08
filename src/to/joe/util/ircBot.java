@@ -97,7 +97,23 @@ public class ircBot extends PircBot {
 					doMsg(channel,sender,damessage);
 				}
 			}
+			else if (ircMsg && parts[0].equalsIgnoreCase("!broadcast")){
+				if(!channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
+					sendMessage(channel,"Try that in the other channel.");
+				}
+				else{
+					String damessage = "";
+					for(int $x=1;$x<parts.length;$x++)
+					{
+						damessage+=" "+parts[$x];
+					}
+					this.ircman.getJ2().chat.handleBroadcastFromIRC(sender, damessage);
+				}
+			}
 			else if (ircMsg && parts[0].equalsIgnoreCase("!me")){
+				if(channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
+					sendMessage(channel,"Try that in the other channel.");
+				}
 				String damessage = "";
 				for(int $x=1;$x<parts.length;$x++)
 				{

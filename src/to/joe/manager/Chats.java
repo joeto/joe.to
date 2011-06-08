@@ -87,6 +87,7 @@ public class Chats {
 		String msg="<"+ChatColor.LIGHT_PURPLE+name+ChatColor.WHITE+"> "+message;
 		j2.sendAdminPlusLog(msg);
 	}
+	
 	public void gMsg(String name,String message){
 		String amessage="<"+name+"> "+ChatColor.LIGHT_PURPLE+message;
 		String pmessage="<ADMIN> "+ChatColor.LIGHT_PURPLE+message;
@@ -164,10 +165,10 @@ public class Chats {
 		}
 		String combined;
 		if(me){
-			combined=this.j2.ircSeparator[0]+this.j2.ircUserColor+name+ChatColor.WHITE+this.j2.ircSeparator[1]+message;
+			combined="* "+this.j2.ircUserColor+name+ChatColor.WHITE+message;
 		}
 		else{
-			combined="* "+this.j2.ircUserColor+name+ChatColor.WHITE+message;
+			combined=this.j2.ircSeparator[0]+this.j2.ircUserColor+name+ChatColor.WHITE+this.j2.ircSeparator[1]+message;
 		}
 		if(combined.length() > this.j2.ircCharLim)
 		{
@@ -186,6 +187,11 @@ public class Chats {
 				}
 			}
 		}
+	}
+	
+	public void handleBroadcastFromIRC(String from,String message){
+		this.j2.sendAdminPlusLog(ChatColor.AQUA+"Server-wide message from "+from);
+		this.aMsg("irc-"+from, message);
 	}
 	
 	public void handlePMsg(Player from,Player to, String message){

@@ -1718,6 +1718,7 @@ public class J2 extends JavaPlugin {
 			}
 			this.users.playerReset(playerName);
 			//player.sendMessage(ChatColor.LIGHT_PURPLE+"You no can has permissions");
+			this.minitrue.vanish.updateInvisible(player);
 			return true;
 		}
 		if(commandName.equals("harass")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){

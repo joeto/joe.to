@@ -150,7 +150,9 @@ public class IPTracker {
 		if(badlist.contains(name)){
 			int total=this.getTotal(name)-1;
 			int banned=this.getBanned(name);
-			j2.irc.ircAdminMsg("[J2BANS] "+name+" matches "+total+" others: "+banned+" banned");
+			if(!j2.hasFlag(name, Flag.QUIETERJOIN)){
+				j2.irc.ircAdminMsg("[J2BANS] "+name+" matches "+total+" others: "+banned+" banned");
+			}
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"[J2BANS] "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches "+total+" others: "+banned+" banned");
 		}
 	}
