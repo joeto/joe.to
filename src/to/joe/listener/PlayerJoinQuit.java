@@ -95,6 +95,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		boolean isDonor=(user.getUserFlags().contains(Flag.DONOR)||j2.users.groupHasFlag(user.getGroup(), Flag.DONOR));
 		boolean isContributor=(user.getUserFlags().contains(Flag.CONTRIBUTOR)||j2.users.groupHasFlag(user.getGroup(), Flag.CONTRIBUTOR));
 		boolean isTrusted=(user.getUserFlags().contains(Flag.TRUSTED)||j2.users.groupHasFlag(user.getGroup(), Flag.TRUSTED));
+		boolean isPrivBlocked=user.getUserFlags().contains(Flag.NEVER_AGAIN);
 		boolean incoming=true;
 		if(reason!=null){
 			if(!reason.equals("Try again. Ban system hiccup."))
@@ -110,7 +111,7 @@ public class PlayerJoinQuit extends PlayerListener {
 			//j2.users.delUser(name);
 			incoming=false;
 		}
-		if(j2.trustedonly && !isTrusted && !isContributor){
+		if(j2.trustedonly && (!isTrusted || isPrivBlocked) ){
 			reason="Trusted only. http://forums.joe.to";
 			event.setKickMessage(reason);
 			event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, reason);
