@@ -758,12 +758,12 @@ public class MySQL {
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			String state="SELECT `Name`, max(`Time`) FROM "+aliasdb+" WHERE IP=\""+ IP +"\" ORDER BY max(`Time`) DESC LIMIT 5";
+			String state="SELECT `Name`, `Time` FROM "+aliasdb+" WHERE IP=\""+ IP +"\" ORDER BY `Time` DESC LIMIT 5";
 			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			rs = ps.executeQuery();
 			while(rs.next()){
-				nameDates.put(rs.getString("Name"), rs.getTimestamp("max(`Time`)").getTime());
+				nameDates.put(rs.getString("Name"), rs.getTimestamp("Time").getTime());
 			}
 		} catch (SQLException ex) {
 			j2.logWarn(ChatColor.RED+ "Unable to load user/ip from MySQL. Oh hell");
