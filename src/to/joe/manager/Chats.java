@@ -147,6 +147,13 @@ public class Chats {
 		if(!j2.randomcolor)
 			color=j2.users.getUser(player).getColor();
 		String message=this.formatNamelyArea(name, color, me)+chat;
+		
+		if(chat.contains("nigg") || chat.contains("fag")) {
+			String msg = ChatColor.RED + "Watch \'" + ChatColor.DARK_RED + name + ChatColor.RED + "\' for language.";
+			j2.sendAdminPlusLog(msg);
+			j2.irc.ircAdminMsg(ChatColor.stripColor(msg));
+		}
+		
 		if(me)
 			j2.irc.ircMsg("* "+name+" "+chat);
 		else
