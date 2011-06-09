@@ -69,7 +69,9 @@ public class Reports {
 	}
 	public int numReports(){
 		synchronized(sync){
-			return this.reports.size();
+			int answer=this.reports.size();
+			this.j2.debug("Reporting "+answer+" reports");
+			return answer;
 		}
 	}
 	public ArrayList<Report> getReports(){

@@ -170,6 +170,7 @@ public class Chats {
 		else{
 			combined=this.j2.ircSeparator[0]+this.j2.ircUserColor+name+ChatColor.WHITE+this.j2.ircSeparator[1]+message;
 		}
+		
 		if(combined.length() > this.j2.ircCharLim)
 		{
 			this.j2.irc.getBot().sendMessage(channel,name+": Your message was too long. The limit's " + this.j2.ircCharLim + " characters");
@@ -180,7 +181,7 @@ public class Chats {
 			this.msgAll(combined);
 			if(j2.ircEcho){
 				if(me){
-					
+					this.j2.irc.getBot().sendMessage(channel,"[IRC] *"+name+message);
 				}
 				else{
 					this.j2.irc.getBot().sendMessage(channel,"[IRC] <"+name+">"+message);

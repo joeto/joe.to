@@ -108,6 +108,7 @@ public class BlockAll extends BlockListener {
     	}
     	if(!j2.hasFlag(player, Flag.TRUSTED) && (j2.isOnRegularBlacklist(type)||j2.isOnSuperBlacklist(type))){
     		player.sendMessage(ChatColor.RED+"You need to be trusted or higher to place that block type");
+    		player.sendMessage(ChatColor.RED+"To find out how to get trusted, say "+ChatColor.AQUA+"/trust");
     		event.setCancelled(true);
     		return;
     	}

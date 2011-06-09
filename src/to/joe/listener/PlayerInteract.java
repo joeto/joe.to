@@ -37,8 +37,9 @@ public class PlayerInteract extends PlayerListener {
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)
 				||event.getAction().equals(Action.RIGHT_CLICK_AIR)){	
 			int type=material.getId();
-			if(type==0)
+			if(type==0){
 				return;
+			}
 			if(!j2.hasFlag(player, Flag.MODWORLD)){
 				player.sendMessage("You don't have permission to do that");
 				event.setCancelled(true);
@@ -50,7 +51,16 @@ public class PlayerInteract extends PlayerListener {
 				return;
 			}
 			if(!j2.hasFlag(player, Flag.TRUSTED) && (j2.isOnRegularBlacklist(type)||j2.isOnSuperBlacklist(type))){
-				player.sendMessage(ChatColor.RED+"You need to be trusted or higher to do that.");
+				
+				Material targetted=event.getClickedBlock().getType();
+				if(targetted.equals(Material.CHEST)||targetted.equals(Material.FURNACE)
+						||targetted.equals(Material.BURNING_FURNACE)||targetted.equals(Material.WORKBENCH)){
+					player.sendMessage(ChatColor.RED+"Try clicking with a different material in your hand.");
+				}
+				else{
+					player.sendMessage(ChatColor.RED+"You need to be trusted or higher to do that.");
+					player.sendMessage(ChatColor.RED+"To find out how to get trusted, say "+ChatColor.AQUA+"/trust");
+				}
 				event.setCancelled(true);
 				return;
 			}

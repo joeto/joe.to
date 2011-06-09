@@ -240,11 +240,9 @@ public class Users {
 		for(String line : j2.motd){
 			player.sendMessage(line);
 		}
-		if(j2.hasFlag(name, Flag.ADMIN)){
+		if(j2.reallyHasFlag(name, Flag.ADMIN)){
 			int count=this.j2.reports.numReports();
-			if(count>0){
-				player.sendMessage(ChatColor.LIGHT_PURPLE+"There are "+count+" reports. Say /r");
-			}
+			player.sendMessage(ChatColor.LIGHT_PURPLE+"There are "+count+" reports. ");
 		}
 		j2.minitrue.processJoin(player);
 		if(j2.hasFlag(player, Flag.CONTRIBUTOR)){

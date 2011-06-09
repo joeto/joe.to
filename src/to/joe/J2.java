@@ -902,12 +902,14 @@ public class J2 extends JavaPlugin {
 				if(!this.hasFlag(player, Flag.ADMIN)){
 					Report report=new Report(0, player.getLocation(), player.getName(), theReport, (new Date().getTime())/1000,false);
 					reports.addReport(report);
-					player.sendMessage(ChatColor.RED+"Report transmitted. Thanks! :)");
+					player.sendMessage(ChatColor.RED+"Report received. Thanks! :)");
+					player.sendMessage(ChatColor.RED+"Assuming you gave a description, we will handle it");
 				}
 				else{
-					String ircmessage="Report from the field: <"+playerName+"> "+theReport;
-					irc.ircAdminMsg(ircmessage);
-					player.sendMessage(ChatColor.RED+"Report transmitted. Thanks you soldier.");
+					String message=ChatColor.LIGHT_PURPLE+"Report from the field: <"+ChatColor.RED+playerName+ChatColor.LIGHT_PURPLE+"> "+ChatColor.WHITE+theReport;
+					this.sendAdminPlusLog(message);
+					this.irc.ircAdminMsg(ChatColor.stripColor(message));
+					player.sendMessage(ChatColor.RED+"Report transmitted. Thank you soldier.");
 				}
 
 			}
