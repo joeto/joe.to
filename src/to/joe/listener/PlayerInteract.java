@@ -51,16 +51,8 @@ public class PlayerInteract extends PlayerListener {
 				return;
 			}
 			if(!j2.hasFlag(player, Flag.TRUSTED) && (j2.isOnRegularBlacklist(type)||j2.isOnSuperBlacklist(type))){
-				
-				Material targetted=event.getClickedBlock().getType();
-				if(targetted.equals(Material.CHEST)||targetted.equals(Material.FURNACE)
-						||targetted.equals(Material.BURNING_FURNACE)||targetted.equals(Material.WORKBENCH)){
-					player.sendMessage(ChatColor.RED+"Try clicking with a different material in your hand.");
-				}
-				else{
-					player.sendMessage(ChatColor.RED+"You need to be trusted or higher to do that.");
-					player.sendMessage(ChatColor.RED+"To find out how to get trusted, say "+ChatColor.AQUA+"/trust");
-				}
+				player.sendMessage(ChatColor.RED+"You need to be trusted or higher to do that.");
+				player.sendMessage(ChatColor.RED+"To find out how to get trusted, say "+ChatColor.AQUA+"/trust");
 				event.setCancelled(true);
 				return;
 			}
@@ -123,7 +115,7 @@ public class PlayerInteract extends PlayerListener {
 		}
 	}
 
-	
+
 	/*@Override
 	public void onPlayerItem(PlayerItemEvent event){
 		Player player = event.getPlayer();

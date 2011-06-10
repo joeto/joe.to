@@ -1174,17 +1174,12 @@ public class J2 extends JavaPlugin {
 
 			String name=args[0];
 			char flag=args[2].charAt(0);
-			User user=users.getUser(name);
-			if(user==null){
-				user=mysql.getUser(name);
-			}
 			if(action.equalsIgnoreCase("add")){
-				user.addFlag(Flag.byChar(flag));
+				users.addFlag(name,Flag.byChar(flag));
 			}
 			else {
-				user.dropFlag(Flag.byChar(flag));
+				users.dropFlag(name,Flag.byChar(flag));
 			}
-			this.mysql.setFlags(name, user.getUserFlags());
 			String tolog=ChatColor.RED+playerName+" changed flags: "+name + " "+ action +" flag "+ Flag.byChar(flag).getDescription();
 			chat.msgByFlag(Flag.ADMIN, tolog);
 			this.log(tolog);

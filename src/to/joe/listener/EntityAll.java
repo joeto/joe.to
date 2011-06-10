@@ -26,7 +26,7 @@ public class EntityAll extends EntityListener {
 	}
 	@Override
 	public void onEntityExplode(EntityExplodeEvent event) {
-		if(j2.safemode){
+		if(!j2.explodeblocks){
 			event.setCancelled(true);
 		}
 	}
