@@ -197,9 +197,6 @@ public class MySQL {
 	public void ban(String name,String reason, long time, String admin,Location location){
 		j2.mcbans.processBan(name, admin, reason);
 		j2.panda.remove(name);
-		if(this.serverNumber==1){
-			this.j2.users.addFlag(name, Flag.NEVER_AGAIN);
-		}
 		Connection conn = null;
 		PreparedStatement ps = null;
 		double x=0,y=0,z=0;

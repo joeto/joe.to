@@ -121,8 +121,9 @@ public class ircBot extends PircBot {
 					damessage = "There are currently " + size + " reports open.";
 					if(size > 5)
 					{
-						damessage += " Seriously guys? Start cleaning up.";
+						damessage += " Please get find an admin to handle these reports!!!";
 					}
+					
 					sendMessage(channel, damessage);
 				}
 			}

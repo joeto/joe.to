@@ -129,15 +129,7 @@ public class Chats {
 		if(j2.minitrue.chat(player, chat)){
 			return;
 		}
-		
 		String name=player.getName();
-		
-		if(chat.contains("nigg") || chat.contains("fag")) {
-			String msg = ChatColor.RED + "Watch " + ChatColor.LIGHT_PURPLE + name + ChatColor.RED + " for language.";
-			j2.sendAdminPlusLog(msg);
-			j2.irc.ircAdminMsg(ChatColor.stripColor(msg));
-		}
-		
 		if((this.muteAll&&!j2.hasFlag(player, Flag.ADMIN)||this.j2.hasFlag(player, Flag.MUTED))){
 			player.sendMessage(ChatColor.RED+"You are currently muted");
 			String message=this.formatNamelyArea(name, ChatColor.YELLOW, me)+chat;
@@ -155,6 +147,12 @@ public class Chats {
 		if(!j2.randomcolor)
 			color=j2.users.getUser(player).getColor();
 		String message=this.formatNamelyArea(name, color, me)+chat;
+		
+		if(chat.toLowerCase().contains("nigg") || chat.toLowerCase().contains("fag")) {
+			String msg = ChatColor.RED + "Watch \'" + ChatColor.DARK_RED + name + ChatColor.RED + "\' for language.";
+			j2.sendAdminPlusLog(msg);
+			j2.irc.ircAdminMsg(ChatColor.stripColor(msg));
+		}
 		
 		if(me)
 			j2.irc.ircMsg("* "+name+" "+chat);

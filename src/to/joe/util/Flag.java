@@ -12,7 +12,6 @@ public enum Flag {
 	MODWORLD('m',"Can Modify"),//standard ability to edit blocks
 	NEW('n',"New"),//new player. currently unused
 	NSA('N',"Listening In"),//admin listening to msg
-	NEVER_AGAIN('p',"Banned from mc1"),// Cannot join mc1 no matter what.
 	SILENT_BUT_DEADLY('q',"Silent but deadly"),//invisadmin
 	SRSTAFF('s', "Senior Staff"),//senior staff
 	TRUSTED('t', "Trusted"),//trusted
