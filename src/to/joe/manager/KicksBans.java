@@ -41,6 +41,7 @@ public class KicksBans {
 		banReason=j2.combineSplit(1, split, " ");
 		if (toBan != null) {
 			String name = toBan.getName();
+			toBan.getWorld().strikeLightningEffect(toBan.getLocation());
 			j2.mysql.ban(name,banReason,banTime,adminName,location);
 			//if (split.length > 1) {
 			toBan.kickPlayer("Banned: " + banReason);
@@ -90,6 +91,7 @@ public class KicksBans {
 		}
 		Player toKick=toKickCandidates.get(0);
 		if (toKick != null) {
+			toKick.getWorld().strikeLightningEffect(toKick.getLocation());
 			String name = toKick.getName();
 			if (reason!="") {
 				toKick.kickPlayer("Kicked: " + reason);
@@ -112,6 +114,7 @@ public class KicksBans {
 		boolean msged=false;
 		for (Player p : j2.getServer().getOnlinePlayers()) {
 			if (p != null && p.getName().equalsIgnoreCase(name)) {
+				p.getWorld().strikeLightningEffect(p.getLocation());
 				p.kickPlayer(reason);
 				if(!msged){
 					if(reason!="")

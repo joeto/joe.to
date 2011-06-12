@@ -10,6 +10,8 @@ import com.sk89q.jinglenote.MidiJingleSequencer;
 */
 
 
+import java.util.ArrayList;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 
@@ -45,7 +47,8 @@ public class PlayerJoinQuit extends PlayerListener {
 		}*/
 		this.j2.minitrue.vanish.updateInvisible(player);
 	}
-
+	ArrayList<String> kicked=new ArrayList<String>();
+	
 	@Override
 	public void onPlayerKick(PlayerKickEvent event){
 		//if(theList.contains(event.getPlayer().getName())){
@@ -53,6 +56,8 @@ public class PlayerJoinQuit extends PlayerListener {
 			//j2.mysql.userIP(player.getName(), player.getAddress());
 			//theList.remove(player.getName());
 		//}
+		String name=event.getPlayer().getName();
+		kicked.add(name);
 		j2.damage.arf(event.getPlayer().getName());
 		event.setLeaveMessage(null);
 	}
@@ -61,11 +66,17 @@ public class PlayerJoinQuit extends PlayerListener {
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player=event.getPlayer();
 		String name=player.getName();
-		j2.minitrue.processLeave(player);
+		
+		if(!kicked.contains(name)){
+			j2.minitrue.processLeave(player);
+		}
+		else{
+			kicked.remove(name);
+		}
 		if(j2.users.getUser(player)!=null){
-			j2.users.delUser(player.getName());
-			j2.warps.dropPlayer(player.getName());
-			j2.irc.processLeave(player.getName());
+			j2.users.delUser(name);
+			j2.warps.dropPlayer(name);
+			j2.irc.processLeave(name);
 		}
 		event.setQuitMessage(null);
 		j2.damage.arf(name);
