@@ -3101,11 +3101,11 @@ public abstract class PircBot implements PircReplyConstants {
     // Default settings for the PircBot.
     private boolean _autoNickChange = false;
     private boolean _verbose = false;
-    private String _name = "PircBot";
+    private String _name = "J2Bot";
     private String _nick = _name;
-    private String _login = "PircBot";
-    private String _version = "PircBot " + VERSION + " Java IRC Bot - www.jibble.org";
-    private String _finger = "You ought to be arrested for fingering a bot!";
+    private String _login = "J2Bot";
+    private String _version = "J2Bot - www.joe.to";
+    private String _finger = "Ooh I like that";
     
     private String _channelPrefixes = "#&+!";
 }

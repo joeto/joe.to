@@ -19,35 +19,49 @@ public class Minitrue {
 
 	}
 	public void processJoin(Player player){
-		this.announceJoin(player.getName());
+		this.announceJoin(player.getName(),false);
 	}
 	public void processLeave(Player player){
 		if(!this.invisible(player)){
-			this.announceLeave(player.getName());
+			this.announceLeave(player.getName(),false);
 		}
 		else{
-			this.j2.chat.msgByFlag(Flag.ADMIN, ChatColor.YELLOW+player.getName()+" quit, stealthily");
+			this.j2.chat.msgByFlag(Flag.ADMIN, ChatColor.YELLOW+player.getName()+" quit, but nobody noticed");
 		}
 		this.vanish.invisible.remove(player);
 	}
 	public void vanish(Player player){
 		vanish.callVanish(player);
 		if(this.invisible(player)){//assume player is NOW invisible
-			this.announceLeave(player.getName());
+			this.announceLeave(player.getName(),true);
+			this.j2.chat.msgByFlag(Flag.ADMIN, ChatColor.YELLOW+player.getName()+" is now SUPER STEALTHILY INVISIBLE");
 		}
 		else{//now visible
-			this.announceJoin(player.getName());
+			this.announceJoin(player.getName(),true);
+			this.j2.chat.msgByFlag(Flag.ADMIN, ChatColor.YELLOW+player.getName()+" is now visible to all");
 		}
 	}
 	public boolean invisible(Player player){
 		return vanish.invisible.contains(player);
 	}
-	public void announceJoin(String playerName){
-		j2.chat.msgAll(ChatColor.YELLOW+"Now arriving: "+playerName);
+	public void announceJoin(String playerName,boolean sneaky){
+		String message=ChatColor.YELLOW+"Now arriving: "+playerName;
+		if(sneaky){
+			j2.chat.msgByFlagless(Flag.ADMIN, message);
+		}
+		else{
+			j2.chat.msgAll(message);
+		}
 	}
-	public void announceLeave(String playerName){
-		if(j2.users.isOnline(playerName)){
-			j2.chat.msgAll(ChatColor.YELLOW+"Now departing: "+playerName);
+	public void announceLeave(String playerName,boolean sneaky){
+		String message=ChatColor.YELLOW+"Now departing: "+playerName;
+		if(sneaky){
+			j2.chat.msgByFlagless(Flag.ADMIN, message);
+		}
+		else{
+			if(j2.users.isOnline(playerName)){
+				j2.chat.msgAll(message);
+			}
 		}
 	}
 	public boolean chat(Player player,String message){
