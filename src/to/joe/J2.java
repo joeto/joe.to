@@ -1446,7 +1446,7 @@ public class J2 extends JavaPlugin {
 
 			return true;
 		}
-		if(commandName.equals("madagascar")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
+		if(commandName.equals("madagascar")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))){
 			this.sendAdminPlusLog(playerName+" wants to SHUT. DOWN. EVERYTHING.");
 			if(this.ircEnable){
 				irc.getBot().sendMessage(this.ircAdminChannel, "A MAN IN BRAZIL IS COUGHING");

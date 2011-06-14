@@ -121,6 +121,7 @@ public class KicksBans {
 						j2.irc.ircMsg(name+" kicked");
 					else 
 						j2.irc.ircMsg(name+" kicked ("+reason+")");
+					j2.sendAdminPlusLog(ChatColor.RED+"Knocked "+name+" out of the server");
 					msged=!msged;
 				}
 			}
