@@ -1,9 +1,10 @@
-package to.joe.util;
+package to.joe.util.IRC;
 
 import org.bukkit.entity.*;
 import org.jibble.pircbot.*;
 
 import to.joe.manager.IRC;
+import to.joe.util.Flag;
 
 public class ircBot extends PircBot {
 

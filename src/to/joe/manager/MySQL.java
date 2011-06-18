@@ -195,7 +195,7 @@ public class MySQL {
 		}
 	}
 	public void ban(String name,String reason, long time, String admin,Location location){
-		j2.mcbans.processBan(name, admin, reason);
+		j2.banCoop.processBan(name, admin, reason);
 		j2.panda.remove(name);
 		if(this.serverNumber==1){
 			this.j2.users.addFlag(name, Flag.NEVER_AGAIN);
@@ -344,7 +344,7 @@ public class MySQL {
 		return bans;
 	}
 	public void unban(String aname){
-		j2.mcbans.processUnban(aname);
+		j2.banCoop.processUnban(aname);
 		Connection conn = null;
 		PreparedStatement ps = null;
 		String name=stringClean(aname);

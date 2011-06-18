@@ -232,7 +232,7 @@ public class Users {
 			player.sendMessage(ChatColor.YELLOW+"We are in maintenance mode");
 		}
 		try{
-			j2.mcbans.processJoin(player);
+			j2.banCoop.processJoin(player);
 		}
 		catch (Exception e){
 

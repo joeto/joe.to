@@ -61,6 +61,7 @@ public class Configurator {
 		conf_blacklists.put("watchlist", "0");
 		conf_blacklists.put("prevent-summon", "0");
 		conf_general.put("mcbans-api", "");
+		conf_general.put("mcbouncerapi", "");
 		conf_general.put("jail-xyzpy", "10,10,10,0,0");
 		conf.setProperty("General", conf_general);
 		conf.setProperty("MySQL", conf_mysql);
@@ -83,6 +84,7 @@ public class Configurator {
 		this.general_jail_xyzpy=new Location(this.j2.getServer().getWorld("world"),Integer.valueOf(jail_split[0]),Integer.valueOf(jail_split[0]),Integer.valueOf(jail_split[0]),Integer.valueOf(jail_split[0]),Integer.valueOf(jail_split[0]));
 		this.general_max_players=general.getInt("max-players", 30);
 		this.general_mcbans_api=general.getString("mcbans-api","");
+		this.general_mcbouncer_api=general.getString("mcbouncer-api","");
 		this.general_random_namecolor=general.getBoolean("random-namecolor",false);
 		this.general_safemode=general.getBoolean("safemode", false);
 		this.general_server_number=general.getInt("server-number", 0);
@@ -179,6 +181,7 @@ public class Configurator {
 	public boolean general_disable_wolves;
 	public int general_max_players;
 	public String general_mcbans_api;
+	public String general_mcbouncer_api;
 	public boolean general_safemode;
 	public boolean general_block_nontrusted;
 

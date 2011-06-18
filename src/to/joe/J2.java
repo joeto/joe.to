@@ -67,7 +67,7 @@ public class J2 extends JavaPlugin {
 	public final Warps warps = new Warps(this);
 	public final WebPage webpage = new WebPage(this);
 	public final IPTracker ip=new IPTracker(this);
-	public final MCBans mcbans=new MCBans(this);
+	public final BanCooperative banCoop=new BanCooperative(this);
 	public final Damages damage=new Damages(this);
 	public final Permissions perms=new Permissions(this);
 	public final Recipes recipes=new Recipes(this);
@@ -237,6 +237,8 @@ public class J2 extends JavaPlugin {
 			conf_blacklists.put("prevent-summon", summonList);
 			mcbansapi=j2properties.getString("mcbans-api", "");
 			conf_general.put("mcbans-api", mcbansapi);
+			mcbouncerapi=j2properties.getString("mcbouncer-api", "");
+			conf_general.put("mcbouncer-api", mcbouncerapi);
 			String[] jail=j2properties.getString("jail","10,11,10,0,0").split(",");
 			conf_general.put("jail-xyzpy", j2properties.getString("jail"));
 			this.jail.jailSet(jail);
@@ -1463,8 +1465,9 @@ public class J2 extends JavaPlugin {
 				player.sendMessage(ChatColor.LIGHT_PURPLE+"/lookup player");
 				return true;
 			}
-			this.log(ChatColor.LIGHT_PURPLE+"[mcbans] "+playerName+" looked up "+args[0]);
-			mcbans.lookup(args[0], player);
+			String name=args[0];
+			this.log(ChatColor.LIGHT_PURPLE+playerName+" looked up "+name);
+			this.banCoop.lookup(name, player);
 			return true;
 		}
 		if(commandName.equals("j2lookup")&&isPlayer&&hasFlag(player,Flag.ADMIN)){
@@ -1879,5 +1882,5 @@ public class J2 extends JavaPlugin {
 	public int playerLimit;
 	public int servernumber;
 	ArrayList<String> srstaffList,adminsList,trustedList;
-	public String mcbansapi;
+	public String mcbansapi,mcbouncerapi;
 }

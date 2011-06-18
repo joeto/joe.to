@@ -14,8 +14,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.Location;
 
 import to.joe.J2;
-import to.joe.util.ircAdmin;
-import to.joe.util.ircBot;
+import to.joe.util.IRC.ircAdmin;
+import to.joe.util.IRC.ircBot;
 
 public class IRC {
 	private J2 j2;
