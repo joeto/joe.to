@@ -231,12 +231,7 @@ public class Users {
 		if(j2.maintenance){
 			player.sendMessage(ChatColor.YELLOW+"We are in maintenance mode");
 		}
-		try{
-			j2.banCoop.processJoin(player);
-		}
-		catch (Exception e){
-
-		}
+		j2.banCoop.processJoin(player);
 		for(String line : j2.motd){
 			player.sendMessage(line);
 		}

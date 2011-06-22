@@ -202,6 +202,12 @@ public class IRC {
 
 		return done;
 	}
+	
+	public void cough(String hostname){
+		if(this.isIRCAuth(hostname)){
+			this.j2.madagascar(hostname);
+		}
+	}
 
 	public void loadIRCAdmins(){
 		String location="ircAdmins.txt";

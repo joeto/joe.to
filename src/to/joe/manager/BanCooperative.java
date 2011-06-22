@@ -43,7 +43,7 @@ public class BanCooperative {
 		this.dox(name);
 		String mcbans_disputes=mcbans.get("disputes");
 		String is_mcbans_mod=mcbans.get("is_mcbans_mod");
-		BanCoopDossier dox=this.record.get("name");
+		BanCoopDossier dox=this.record.get(name);
 		if(dox.totalBans()>0){
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"Player "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has "+ChatColor.WHITE+dox.totalBans()+ChatColor.LIGHT_PURPLE+" bans. MCBans rep "+ChatColor.WHITE+dox.getMCBansRep()+ChatColor.LIGHT_PURPLE+"/10");
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"To see the bans: /lookup "+ChatColor.WHITE+name);
@@ -61,8 +61,7 @@ public class BanCooperative {
 			player.sendMessage(ChatColor.GREEN+"[MCBANS] We have "+ChatColor.AQUA+mcbans_disputes+ChatColor.GREEN+" active disputes");
 		}
 	}
-
-
+	
 
 	private String makeUTF8(String toConvert) throws UnsupportedEncodingException{
 		return URLEncoder.encode(toConvert, "UTF-8");

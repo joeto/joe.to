@@ -1449,15 +1449,7 @@ public class J2 extends JavaPlugin {
 			return true;
 		}
 		if(commandName.equals("madagascar")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))){
-			this.sendAdminPlusLog(playerName+" wants to SHUT. DOWN. EVERYTHING.");
-			if(this.ircEnable){
-				irc.getBot().sendMessage(this.ircAdminChannel, "A MAN IN BRAZIL IS COUGHING");
-				irc.getBot().sendMessage(this.ircChannel, "A MAN IN BRAZIL IS COUGHING");
-				irc.getBot().quitServer("SHUT. DOWN. EVERYTHING.");
-			}
-			ircEnable=false;
-			kickbans.kickAll("We'll be back after these brief messages");
-			this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
+			this.madagascar(playerName);
 			return true;
 		}
 		if(commandName.equals("lookup")&&isPlayer&&hasFlag(player,Flag.ADMIN)){
@@ -1831,7 +1823,8 @@ public class J2 extends JavaPlugin {
 			this.sendAdminPlusLog(message);
 			return true;
 		}
-		if(this.servernumber==2&&commandName.equals("station")){
+		if(isPlayer&&this.servernumber==2&&commandName.equals("station")){
+			
 			Warp target=this.warps.getClosestWarp(player.getLocation());
 			String name=target.getName();
 			if(args.length==1&&args[0].equalsIgnoreCase("go")){
@@ -1847,6 +1840,21 @@ public class J2 extends JavaPlugin {
 		}
 		return true;
 	}
+	
+	public void madagascar(String name){
+		this.sendAdminPlusLog(name+" wants to SHUT. DOWN. EVERYTHING.");
+		if(this.ircEnable){
+			if(name.equalsIgnoreCase("console")){
+				irc.getBot().sendMessage(this.ircAdminChannel, "A MAN IN BRAZIL IS COUGHING");
+			}
+			irc.getBot().quitServer("SHUT. DOWN. EVERYTHING.");
+		}
+		ircEnable=false;
+		this.maintenance=true;
+		kickbans.kickAll("We'll be back after these brief messages");
+		this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
+	}
+	
 	SimpleDateFormat shortdateformat=new SimpleDateFormat("yyyy-MM-dd kk:mm");
 	private boolean debug;
 	private Logger log;

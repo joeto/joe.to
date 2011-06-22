@@ -8,24 +8,24 @@ import to.joe.util.Flag;
 
 public class ircBot extends PircBot {
 
-	private IRC ircman;
+	private IRC irc;
 	public ircBot(String mah_name,boolean msgenabled,IRC j) {
 		this.setName(mah_name);
 		this.setAutoNickChange(true);
 		ircMsg=msgenabled;
-		ircman=j;
+		irc=j;
 		this.setMessageDelay(1100);
 	}
 	public void onDisconnect(){
-		if(ircman.getJ2().ircEnable){
-			ircman.restart=true;
-			ircman.getJ2().ircEnable=false;
+		if(irc.getJ2().ircEnable){
+			irc.restart=true;
+			irc.getJ2().ircEnable=false;
 			this.dispose();
 		}
 	}
 	public void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel)  
 	{
-		if(targetNick.equalsIgnoreCase(this.getNick())&&channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
+		if(targetNick.equalsIgnoreCase(this.getNick())&&channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
 			this.joinChannel(channel);
 		}
 	}
@@ -40,11 +40,11 @@ public class ircBot extends PircBot {
 				String curPlayers = "";
 				int cPlayers=0;
 				Player[] players;
-				if(channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
-					players=ircman.getJ2().getServer().getOnlinePlayers();
+				if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
+					players=irc.getJ2().getServer().getOnlinePlayers();
 				}
 				else{
-					players=ircman.getJ2().minitrue.getOnlinePlayers();
+					players=irc.getJ2().minitrue.getOnlinePlayers();
 				}
 				for (Player p : players) {
 					if (p != null){
@@ -61,15 +61,15 @@ public class ircBot extends PircBot {
 					sendMessage(channel,"No players online.");
 				else{
 					if(message.equalsIgnoreCase("!players"))
-						sendMessage(channel,"Currently "+ cPlayers +" of "+ ircman.getJ2().playerLimit +" on the server");
+						sendMessage(channel,"Currently "+ cPlayers +" of "+ irc.getJ2().playerLimit +" on the server");
 					else
-						sendMessage(channel,"Players ("+ cPlayers +" of "+ ircman.getJ2().playerLimit + "): " + curPlayers);
+						sendMessage(channel,"Players ("+ cPlayers +" of "+ irc.getJ2().playerLimit + "): " + curPlayers);
 				}
 			}
 			else if (message.equalsIgnoreCase("!admins")) {
 				String curAdmins = "Admins: ";
-				for (Player p : ircman.getJ2().getServer().getOnlinePlayers()) {
-					if (p != null && (ircman.getJ2().hasFlag(p,Flag.ADMIN))) {
+				for (Player p : irc.getJ2().getServer().getOnlinePlayers()) {
+					if (p != null && (irc.getJ2().hasFlag(p,Flag.ADMIN))) {
 						if(curAdmins=="Admins: "){
 							curAdmins+=p.getName();
 						}
@@ -80,13 +80,13 @@ public class ircBot extends PircBot {
 				}
 				if(curAdmins=="Admins: ")
 					sendMessage(channel,"No admins online. Find one on #joe.to or #minecraft");
-				else if(channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel))
+				else if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel))
 					sendMessage(channel,curAdmins);
 				else
 					sendMessage(channel,"There are admins online!");
 			}
 			else if (ircMsg && parts[0].equalsIgnoreCase("!msg")){
-				if(channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
+				if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
 					sendMessage(channel,"Try that in the other channel.");
 				}
 				else{
@@ -99,7 +99,7 @@ public class ircBot extends PircBot {
 				}
 			}
 			else if (ircMsg && parts[0].equalsIgnoreCase("!broadcast")){
-				if(!channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
+				if(!channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
 					sendMessage(channel,"Try that in the other channel.");
 				}
 				else{
@@ -108,17 +108,17 @@ public class ircBot extends PircBot {
 					{
 						damessage+=" "+parts[$x];
 					}
-					this.ircman.getJ2().chat.handleBroadcastFromIRC(sender, damessage);
+					this.irc.getJ2().chat.handleBroadcastFromIRC(sender, damessage);
 				}
 			}
 			else if (ircMsg && parts[0].equalsIgnoreCase("!reports")){
-				if(!channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
+				if(!channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
 					sendMessage(channel,"Try that in the other channel.");
 				}
 				else{
 					String damessage = "";
 					
-					int size = ircman.getJ2().reports.getReports().size();
+					int size = irc.getJ2().reports.getReports().size();
 					damessage = "There are currently " + size + " reports open.";
 					if(size > 5)
 					{
@@ -128,7 +128,7 @@ public class ircBot extends PircBot {
 				}
 			}
 			else if (ircMsg && parts[0].equalsIgnoreCase("!me")){
-				if(channel.equalsIgnoreCase(ircman.getJ2().ircAdminChannel)){
+				if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
 					sendMessage(channel,"Try that in the other channel.");
 				}
 				String damessage = "";
@@ -140,9 +140,9 @@ public class ircBot extends PircBot {
 			}
 			return;
 		}
-		if(message.charAt(0)=='.' && channel.equalsIgnoreCase(ircman.getJ2().ircChannel)){
+		if(message.charAt(0)=='.' && channel.equalsIgnoreCase(irc.getJ2().ircChannel)){
 			String[] parts=message.split(" ");
-			if(ircman.ircCommand(hostname,sender, parts)){
+			if(irc.ircCommand(hostname,sender, parts)){
 				//sendMessage(sender,"Done :)");
 				sendRawLine("NOTICE "+sender+" :Done");
 			}
@@ -154,20 +154,23 @@ public class ircBot extends PircBot {
 			}
 			return;
 		}
+		if(message.equals("A MAN IN BRAZIL IS COUGHING") && channel.equalsIgnoreCase(irc.getJ2().ircChannel)){
+			this.irc.cough(hostname);
+		}
 		if (!ircMsg){
 			doMsg(channel,sender," "+message);
 		}
 
 	}
 	public void doMsg(String channel, String sender, String message){
-		this.ircman.getJ2().chat.handleIRCChat(sender, message, false,channel);
+		this.irc.getJ2().chat.handleIRCChat(sender, message, false,channel);
 	}
 	public void doMeMsg(String channel, String sender, String message){
-		this.ircman.getJ2().chat.handleIRCChat(sender, message, true,channel);
+		this.irc.getJ2().chat.handleIRCChat(sender, message, true,channel);
 	}
 	
 	protected void onPrivateMessage(String sender,String login,String hostname,String message){
-		if(ircman.ircCommand(hostname,sender,message.split(" "))){
+		if(irc.ircCommand(hostname,sender,message.split(" "))){
 			//sendMessage(sender,"Done :)");
 			sendRawLine("NOTICE "+sender+" :Done");
 		}
