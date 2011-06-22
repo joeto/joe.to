@@ -47,7 +47,7 @@ public class IRC {
 	}
 	
 	public boolean goodToGo(String string){
-		if(string.startsWith("[J2BANS]")||string.startsWith("[MCBANS]")){
+		if(string.startsWith("[J2BANS]")||string.startsWith("[BANS]")){
 			long rightNow=(new Date()).getTime();
 			if(this.msgs.containsKey(string)){
 				if((this.msgs.get(string).longValue()+3600000L)<rightNow){
