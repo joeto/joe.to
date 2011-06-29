@@ -11,11 +11,13 @@ public class BanCoopDossier {
 	private EnumMap<BanCoopType, ArrayList<BanCoopBan>> bans;
 	private double mcbans_rep;
 	private String name;
-	public BanCoopDossier(String name, EnumMap<BanCoopType, Integer> count, EnumMap<BanCoopType, ArrayList<BanCoopBan>> bans, double mcbans_rep){
+	private int significantCount;
+	public BanCoopDossier(String name, EnumMap<BanCoopType, Integer> count, int significantCount, EnumMap<BanCoopType, ArrayList<BanCoopBan>> bans, double mcbans_rep){
 		this.count=count;
 		this.bans=bans;
 		this.mcbans_rep=mcbans_rep;
 		this.name=name;
+		this.significantCount=significantCount;
 	}
 	
 	public String oneLiner(){
@@ -28,6 +30,10 @@ public class BanCoopDossier {
 			total+=i.intValue();
 		}
 		return total;
+	}
+	
+	public int sigBans(){
+		return this.significantCount;
 	}
 	
 	public double getMCBansRep(){

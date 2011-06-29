@@ -47,7 +47,7 @@ public class BanCooperative {
 		if(dox.totalBans()>0){
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"Player "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has "+ChatColor.WHITE+dox.totalBans()+ChatColor.LIGHT_PURPLE+" bans. MCBans rep "+ChatColor.WHITE+dox.getMCBansRep()+ChatColor.LIGHT_PURPLE+"/10");
 			j2.chat.msgByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"To see the bans: /lookup "+ChatColor.WHITE+name);
-			if(!j2.hasFlag(name, Flag.QUIETERJOIN)){
+			if(!j2.hasFlag(name, Flag.QUIETERJOIN)&&dox.sigBans()>0){
 				j2.irc.ircAdminMsg("[BANS] "+name+": Bans: "+dox.totalBans()+". MCBans Rep "+dox.getMCBansRep()+"/10");
 			}
 		}
@@ -158,6 +158,7 @@ public class BanCooperative {
 		EnumMap<BanCoopType, Integer> count=new EnumMap<BanCoopType,Integer>(BanCoopType.class);
 		EnumMap<BanCoopType, ArrayList<BanCoopBan>> allBans=new EnumMap<BanCoopType, ArrayList<BanCoopBan>>(BanCoopType.class);
 		
+		int sigCount=0;
 		
 		ArrayList<BanCoopBan> mcbans_bans=new ArrayList<BanCoopBan>();
 		HashMap<String,String> postVars = new HashMap<String,String>();
@@ -172,6 +173,7 @@ public class BanCooperative {
 			JSONArray global=mcbans_json.optJSONArray("ban_reasons_global");
 			for (int i=0; i<global.length(); i++) {
 				mcbans_bans.add(new BanCoopBanMCBans(global.getString(i),"g"));
+				sigCount++;
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -198,9 +200,10 @@ public class BanCooperative {
 			}
 		}
 		count.put(BanCoopType.MCBOUNCER, mcbouncer_count);
+		sigCount+=mcbouncer_count;
 		allBans.put(BanCoopType.MCBOUNCER, mcbouncer_bans);
 		
-		this.record.put(name, new BanCoopDossier(name, count, allBans, mcbans_rep));
+		this.record.put(name, new BanCoopDossier(name, count, sigCount, allBans, mcbans_rep));
 	}
 	
 	private void mcbans_unban(String name){
