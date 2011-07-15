@@ -124,6 +124,10 @@ public class ircBot extends PircBot {
 					{
 						damessage += " Seriously guys? Start cleaning up.";
 					}
+                                        if(size == 0)
+                                        {
+                                                damessage += " \o/"
+                                        }
 					sendMessage(channel, damessage);
 				}
 			}
