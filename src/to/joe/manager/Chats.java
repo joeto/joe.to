@@ -129,9 +129,31 @@ public class Chats {
 		if(j2.minitrue.chat(player, chat)){
 			return;
 		}
-		
+		User user=j2.users.getUser(player);
 		String name=player.getName();
 		String chatlc=chat.toLowerCase();
+		
+		int spamCount=user.isRepeat(chatlc);
+		if(spamCount>0){
+			switch(spamCount){
+			case 3:
+				player.sendMessage(ChatColor.RED+"Do you really need to repeat that message?");
+				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Warned "+name+" for chat spam. Kicking if continues.");
+				this.j2.debug("User "+name+" warned for chatspam");
+				break;
+			case 5:
+				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Kicked "+name+" for spamming");
+				this.j2.irc.ircAdminMsg("Kicked "+name+" for spamming. Message in next line");
+				this.j2.irc.ircAdminMsg(chat);
+				this.j2.debug("User "+name+" kicked for chatspam");
+				break;
+			default:
+				this.j2.debug("User "+name+" is spamming chat - "+spamCount);
+				break;
+			}
+			return;
+		}
+		
 		if(chatlc.contains("nigg") || chatlc.contains("fag")) {
 			String msg = ChatColor.RED + "Watch " + ChatColor.LIGHT_PURPLE + name + ChatColor.RED + " for language.";
 			j2.sendAdminPlusLog(msg);
@@ -145,7 +167,7 @@ public class Chats {
 			this.j2.log(message);
 			return;
 		}
-		if(!(j2.users.getUser(player).canChat()||j2.hasFlag(player, Flag.ADMIN))){
+		if(!(user.canChat()||j2.hasFlag(player, Flag.ADMIN))){
 			player.sendMessage(ChatColor.RED+"Trying to send too many messages too quickly.");
 			player.sendMessage(ChatColor.RED+"Wait 5 seconds and try again");
 			return;

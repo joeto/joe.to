@@ -1,4 +1,4 @@
-package to.joe.util.BanCooperative;
+package to.joe.util.BanCooperative.Runners;
 
 import java.util.HashMap;
 
@@ -7,12 +7,15 @@ import org.bukkit.ChatColor;
 import to.joe.J2;
 import to.joe.manager.BanCooperative;
 
-public class BanRunnerBan extends BanRunner{
+public class CoopRunnerBan extends CoopRunner{
 
 	private String admin;
 	private String reason;
 	
-	public BanRunnerBan(J2 j2, BanCooperative coop, String name, String admin, String reason) {
+	private final String local="localBan";
+	private final String global="globalBan";
+	
+	public CoopRunnerBan(J2 j2, BanCooperative coop, String name, String admin, String reason) {
 		super(j2, coop, name);
 		this.admin=admin;
 		this.reason=reason;
@@ -24,15 +27,15 @@ public class BanRunnerBan extends BanRunner{
 	}
 	
 	private void mcbans_ban(){
-		String banType="ban_local_user";
+		String banType=this.local;
 		String reason_lower=reason.toLowerCase();
 		if(reason_lower.contains("grief")
 				&&!(reason_lower.contains("fuck")||reason_lower.contains("shit")||reason_lower.contains("bitch"))){
-			banType="ban_user";
+			banType=this.global;
 		}
 		if(admin.toLowerCase().contains("bob")){
 			admin="mbaxter";
-			banType="ban_local_user";
+			banType=this.local;
 		}
 		HashMap<String, String> postVars = new HashMap<String, String>();
 		postVars.put("player", name);
@@ -40,7 +43,6 @@ public class BanRunnerBan extends BanRunner{
 		postVars.put("reason", reason);
 		String ip = j2.mysql.IPGetLast(name);
 		postVars.put("playerip", ip);
-		postVars.put("duration", "0");
 		postVars.put("exec", banType);
 		HashMap<String, String> result = JSONToHashMap(this.mcbans_api(postVars));
 		if (result.get("result").equalsIgnoreCase("y")) {

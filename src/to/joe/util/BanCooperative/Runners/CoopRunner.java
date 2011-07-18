@@ -1,4 +1,5 @@
-package to.joe.util.BanCooperative;
+package to.joe.util.BanCooperative.Runners;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -19,8 +20,13 @@ import org.json.JSONObject;
 
 import to.joe.J2;
 import to.joe.manager.BanCooperative;
+import to.joe.util.BanCooperative.BanCoopBan;
+import to.joe.util.BanCooperative.BanCoopBanMCBans;
+import to.joe.util.BanCooperative.BanCoopBanMCBouncer;
+import to.joe.util.BanCooperative.BanCoopDossier;
+import to.joe.util.BanCooperative.BanCoopType;
 
-public abstract class BanRunner implements Runnable{
+public abstract class CoopRunner implements Runnable{
 
 	protected J2 j2;
 	protected BanCooperative coop;
@@ -28,11 +34,11 @@ public abstract class BanRunner implements Runnable{
 	protected String name;
 	protected Player admin;
 	
-	private final String mcbans_version="3.0.1.3.3.7";
-	private final String mcbans_host="http://72.10.39.172";
+	
+	private final String mcbans_host="http://72.10.39.172/v2";
 	private final String mcbouncer_host="http://www.mcbouncer.com/api/";
 	
-	public BanRunner(J2 j2,BanCooperative coop, String name ){
+	public CoopRunner(J2 j2,BanCooperative coop, String name ){
 		this.j2=j2;
 		this.coop=coop;
 		this.name=name;
@@ -114,7 +120,7 @@ public abstract class BanRunner implements Runnable{
 	}
 
 	
-	protected void dox(String name){
+	protected void dox(){
 		
 		EnumMap<BanCoopType, Integer> count=new EnumMap<BanCoopType,Integer>(BanCoopType.class);
 		EnumMap<BanCoopType, ArrayList<BanCoopBan>> allBans=new EnumMap<BanCoopType, ArrayList<BanCoopBan>>(BanCoopType.class);
@@ -124,14 +130,15 @@ public abstract class BanRunner implements Runnable{
 		ArrayList<BanCoopBan> mcbans_bans=new ArrayList<BanCoopBan>();
 		HashMap<String,String> postVars = new HashMap<String,String>();
 		postVars.put("player", name);
-		postVars.put("exec", "lookup_user");
+		postVars.put("admin", "BobTheCurious");
+		postVars.put("exec", "playerLookup");
 		JSONObject mcbans_json = this.mcbans_api(postVars);
 		try {
-			JSONArray local=mcbans_json.optJSONArray("ban_reasons_local");
+			JSONArray local=mcbans_json.optJSONArray("local");
 			for (int i=0; i<local.length(); i++) {
 				mcbans_bans.add(new BanCoopBanMCBans(local.getString(i),"l"));
 			}
-			JSONArray global=mcbans_json.optJSONArray("ban_reasons_global");
+			JSONArray global=mcbans_json.optJSONArray("global");
 			for (int i=0; i<global.length(); i++) {
 				mcbans_bans.add(new BanCoopBanMCBans(global.getString(i),"g"));
 				sigCount++;
@@ -139,8 +146,8 @@ public abstract class BanRunner implements Runnable{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		double mcbans_rep=mcbans_json.optDouble("ban_rep",10.0);
-		int mcbans_count=mcbans_json.optInt("ban_num",0);
+		double mcbans_rep=mcbans_json.optDouble("reputation",10.0);
+		int mcbans_count=mcbans_json.optInt("total",0);
 		if(mcbans_count<mcbans_bans.size()){
 			mcbans_count=mcbans_bans.size();
 		}
@@ -167,11 +174,11 @@ public abstract class BanRunner implements Runnable{
 		this.coop.record.put(name, new BanCoopDossier(name, count, sigCount, allBans, mcbans_rep));
 	}
 
-	protected HashMap<String,String> mcbans_user_connect(String name) {
+	protected HashMap<String,String> mcbans_user_connect(String name,String ip) {
 		HashMap<String, String> postVars=new HashMap<String, String>();
 		postVars.put("player", name.toLowerCase());
-		postVars.put("version", mcbans_version);
-		postVars.put("exec", "user_connect");
+		postVars.put("playerip", ip);
+		postVars.put("exec", "playerConnect");
 		return JSONToHashMap(this.mcbans_api(postVars));
 	}
 	protected JSONObject mcbans_api(HashMap<String, String> postVars) {

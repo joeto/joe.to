@@ -82,6 +82,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		j2.damage.arf(name);
 		j2.users.playerReset(name);
 		this.j2.minitrue.vanish.invisible.remove(player);
+		this.j2.banCoop.disconnect(name);
 	}
 
 	@Override

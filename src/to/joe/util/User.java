@@ -32,6 +32,8 @@ public class User {
 		this.lastChat.add(0L);
 		this.lastChat.add(0L);
 		this.lastChat.add(0L);
+		this.lastMessage="";
+		this.spamCount=0;
 		this.blocksTravelled=new ArrayList<Block>();
 		this.blocksTravelled.add(world.getBlockAt(0,1,0));
 		this.blocksTravelled.add(world.getBlockAt(0,1,0));
@@ -93,13 +95,29 @@ public class User {
 		return channel;
 	}
 	public boolean canChat(){
+		return this.canChat(10000L);
+	}
+	
+	public boolean canChat(long time){
 		long cur=(new Date()).getTime();
-		if((this.lastChat.get(0)+10000L)>cur){
+		if((this.lastChat.get(0)+time)>cur){
 			return false;
 		}
 		this.lastChat.remove((int)0);
 		this.lastChat.add(cur);
 		return true;
+	}
+	
+	public int isRepeat(String message){
+		boolean isIt=message.equals(this.lastMessage);
+		if(!isIt){
+			this.spamCount=0;
+		}
+		else{
+			this.spamCount++;
+		}
+		this.lastMessage=message;
+		return this.spamCount;
 	}
 	
 	public Block getBlock(){
@@ -126,5 +144,7 @@ public class User {
 	private ChatColor color,backup;
 	private String group;
 	private ArrayList<Long> lastChat;
+	private String lastMessage;
+	private int spamCount;
 	private String safeWord;
 }

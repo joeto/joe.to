@@ -26,7 +26,7 @@ public class Minitrue {
 			this.announceLeave(player.getName(),false);
 		}
 		else{
-			this.j2.chat.msgByFlag(Flag.ADMIN, ChatColor.YELLOW+player.getName()+" quit, but nobody noticed");
+			this.j2.chat.msgByFlag(Flag.ADMIN, ChatColor.YELLOW+player.getName()+" quit, only admins saw");
 		}
 		this.vanish.invisible.remove(player);
 	}
@@ -45,7 +45,7 @@ public class Minitrue {
 		return vanish.invisible.contains(player);
 	}
 	public void announceJoin(String playerName,boolean sneaky){
-		String message=ChatColor.YELLOW+"Now arriving: "+playerName;
+		String message=ChatColor.YELLOW+"Joining: "+playerName;
 		if(sneaky){
 			j2.chat.msgByFlagless(Flag.ADMIN, message);
 		}
@@ -54,7 +54,7 @@ public class Minitrue {
 		}
 	}
 	public void announceLeave(String playerName,boolean sneaky){
-		String message=ChatColor.YELLOW+"Now departing: "+playerName;
+		String message=ChatColor.YELLOW+"Leaving: "+playerName;
 		if(sneaky){
 			j2.chat.msgByFlagless(Flag.ADMIN, message);
 		}

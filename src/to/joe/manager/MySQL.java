@@ -344,7 +344,6 @@ public class MySQL {
 		return bans;
 	}
 	public void unban(String aname){
-		j2.banCoop.processUnban(aname);
 		Connection conn = null;
 		PreparedStatement ps = null;
 		String name=stringClean(aname);

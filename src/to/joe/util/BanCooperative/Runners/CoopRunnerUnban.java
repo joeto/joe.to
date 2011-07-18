@@ -1,4 +1,4 @@
-package to.joe.util.BanCooperative;
+package to.joe.util.BanCooperative.Runners;
 
 import java.util.HashMap;
 
@@ -7,10 +7,13 @@ import org.bukkit.ChatColor;
 import to.joe.J2;
 import to.joe.manager.BanCooperative;
 
-public class BanRunnerUnban extends BanRunner {
+public class CoopRunnerUnban extends CoopRunner {
 
-	public BanRunnerUnban(J2 j2, BanCooperative coop, String name) {
+	private String admin;
+	
+	public CoopRunnerUnban(J2 j2, BanCooperative coop, String name, String admin) {
 		super(j2, coop, name);
+		this.admin=admin;
 	}
 
 	@Override
@@ -21,7 +24,8 @@ public class BanRunnerUnban extends BanRunner {
 	private void mcbans_unban(){
 		HashMap<String,String> postVars = new HashMap<String,String>();
 		postVars.put("player", name);
-		postVars.put("exec", "unban_user");
+		postVars.put("exec", "unBan");
+		postVars.put("admin", admin);
 		HashMap<String,String> result = JSONToHashMap(this.mcbans_api(postVars));
 		if ((result.get("result")).equalsIgnoreCase("y")){
 			j2.log(ChatColor.RED+"[mcbans] Unbanned "+name);

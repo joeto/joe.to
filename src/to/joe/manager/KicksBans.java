@@ -143,6 +143,7 @@ public class KicksBans {
 	public void unban(String adminName,String name){
 		j2.mysql.unban(name);
 		j2.sendAdminPlusLog(ChatColor.RED + "Unbanning " + name + " by " + adminName);
+		j2.banCoop.processUnban(name,adminName);
 	}
 	
 	public synchronized void ixrai(String name,String commandName){

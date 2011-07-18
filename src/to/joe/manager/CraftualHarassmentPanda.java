@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import to.joe.J2;
+import to.joe.util.User;
 
 public class CraftualHarassmentPanda {
 	private J2 j2;
@@ -65,7 +66,31 @@ public class CraftualHarassmentPanda {
 			return true;
 		}
 		this.j2.sendAdminPlusLog( ChatColor.DARK_AQUA+"[HARASS]BLOCKED: "+player.getName()+ChatColor.WHITE+": "+message);
-		if(j2.users.getUser(player).canChat()){
+		User user=j2.users.getUser(player);
+		String name=player.getName();
+		String chatlc=message.toLowerCase();
+		
+		int spamCount=user.isRepeat(chatlc);
+		if(spamCount>0){
+			switch(spamCount){
+			case 2:
+				player.sendMessage(ChatColor.RED+"Do you really need to repeat that message?");
+				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Warned "+name+" for chat spam. Kicking if continues.");
+				this.j2.debug("User "+name+" warned for chatspam");
+				break;
+			case 3:
+				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Kicked "+name+" for spamming");
+				this.j2.irc.ircAdminMsg("Kicked "+name+" for spamming. Message in next line");
+				this.j2.irc.ircAdminMsg(message);
+				this.j2.debug("User "+name+" kicked for chatspam");
+				break;
+			default:
+				this.j2.debug("User "+name+" is spamming chat - "+spamCount);
+				break;
+			}
+			return false;
+		}
+		if(j2.users.getUser(player).canChat(20000)){
 			String squawk=this.pandaLines[this.j2.random.nextInt(this.pandaLines.length)];
 			this.j2.chat.msgAll( ChatColor.WHITE+"<"+j2.users.getUser(player).getColorName()+ChatColor.WHITE+"> "+squawk);
 			this.j2.irc.ircMsg("<"+player.getName()+"> "+squawk);

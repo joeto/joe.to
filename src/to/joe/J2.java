@@ -136,6 +136,7 @@ public class J2 extends JavaPlugin {
 		webpage.go(servernumber);
 		recipes.addRecipes();
 		minitrue.restartManager();
+		this.banCoop.startThumper();
 	}
 
 	public void loadData(){
@@ -1057,7 +1058,7 @@ public class J2 extends JavaPlugin {
 			}
 			else{
 				player.sendMessage(ChatColor.AQUA+"Trusted status gives special privileges");
-				player.sendMessage(ChatColor.AQUA+"For more information, visit our forums");
+				player.sendMessage(ChatColor.AQUA+"You want it? Visit our forums Minecraft section");
 				player.sendMessage(ChatColor.AQUA+"http://forums.joe.to");
 			}
 			return true;
@@ -1678,15 +1679,15 @@ public class J2 extends JavaPlugin {
 		}
 		if(commandName.equals("amitrusted")){
 			if(!isPlayer||this.hasFlag(player,Flag.ADMIN)){
-				sender.sendMessage(ChatColor.AQUA+"You're an ass");
+				sender.sendMessage(ChatColor.AQUA+"You're a sexy beast");
 			}
 			else{
 				if(hasFlag(player, Flag.TRUSTED)){
-					player.sendMessage(ChatColor.AQUA+"You are trusted!");
+					player.sendMessage(ChatColor.AQUA+"You are trusted! Yay!");
 				}
 				else{
-					player.sendMessage(ChatColor.AQUA+"You are not trusted");
-					player.sendMessage(ChatColor.AQUA+"Visit http://forums.joe.to");
+					player.sendMessage(ChatColor.AQUA+"You are not trusted. Get it!");
+					player.sendMessage(ChatColor.AQUA+"Visit http://forums.joe.to   Minecraft section");
 				}
 			}
 			return true;
@@ -1698,11 +1699,11 @@ public class J2 extends JavaPlugin {
 		}
 		if(isPlayer&&commandName.equals("imatool")&&hasFlag(player,Flag.ADMIN)){
 			if(hasFlag(player,Flag.TOOLS)){
-				player.sendMessage(ChatColor.AQUA+"GOD YOU ARE SUCH A TOOL. Powers gone");
+				player.sendMessage(ChatColor.AQUA+"Tool mode disabled.");
 				users.dropFlagLocal(playerName, Flag.TOOLS);
 			}
 			else {
-				player.sendMessage(ChatColor.AQUA+"Tool use enabled");
+				player.sendMessage(ChatColor.AQUA+"Tool mode enabled. Be careful.");
 				users.addFlagLocal(playerName, Flag.TOOLS);
 			}
 			return true;
@@ -1747,15 +1748,21 @@ public class J2 extends JavaPlugin {
 				sender.sendMessage(ChatColor.AQUA+"Missing a name!");
 				return true;
 			}
-			List<Player> listy=this.getServer().matchPlayer(args[0]);
-			if(listy.size()!=1){
-				sender.sendMessage(ChatColor.AQUA+"Fail match");
+			Player target=this.getServer().getPlayer(args[0]);
+			if(target==null|!target.isOnline()){
+				sender.sendMessage(ChatColor.AQUA+"Fail. No such user \""+args[0]+"\"");
 				return true;
 			}
-			Player target=listy.get(0);
-			this.panda.harass(target);
-			this.sendAdminPlusLog(ChatColor.AQUA+"[HARASS] Target Acquired: "+ChatColor.DARK_AQUA+target.getName()+ChatColor.AQUA+". Thanks, "+playerName+"!");
-			this.irc.ircAdminMsg("[HARASS] Target Acquired: "+target.getName()+". Thanks, "+playerName+"!");
+			if(!this.panda.panda(target)){
+				this.panda.harass(target);
+				this.sendAdminPlusLog(ChatColor.AQUA+"[HARASS] Target Acquired: "+ChatColor.DARK_AQUA+target.getName()+ChatColor.AQUA+". Thanks, "+playerName+"!");
+				this.irc.ircAdminMsg("[HARASS] Target Acquired: "+target.getName()+". Thanks, "+playerName+"!");
+			}
+			else{
+				this.panda.remove(target.getName());
+				this.sendAdminPlusLog(ChatColor.AQUA+"[HARASS] Target Removed: "+ChatColor.DARK_AQUA+target.getName()+ChatColor.AQUA+". Thanks, "+playerName+"!");
+				this.irc.ircAdminMsg("[HARASS] Target Removed: "+target.getName()+". Thanks, "+playerName+"!");
+			}
 			return true;
 		}
 		if(commandName.equals("muteall")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
@@ -1847,9 +1854,9 @@ public class J2 extends JavaPlugin {
 			if(name.equalsIgnoreCase("console")){
 				irc.getBot().sendMessage(this.ircAdminChannel, "A MAN IN BRAZIL IS COUGHING");
 			}
+			ircEnable=false;
 			irc.getBot().quitServer("SHUT. DOWN. EVERYTHING.");
 		}
-		ircEnable=false;
 		this.maintenance=true;
 		kickbans.kickAll("We'll be back after these brief messages");
 		this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
