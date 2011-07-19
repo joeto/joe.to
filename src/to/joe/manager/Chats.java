@@ -187,6 +187,7 @@ public class Chats {
 				this.j2.debug("User "+name+" warned for chatspam");
 				break;
 			case 5:
+				player.kickPlayer("No spamming, thanks :)");
 				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Kicked "+name+" for spamming");
 				this.j2.irc.ircAdminMsg("Kicked "+name+" for spamming. Message in next line");
 				this.j2.irc.ircAdminMsg(chat);
