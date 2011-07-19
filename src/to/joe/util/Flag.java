@@ -2,6 +2,11 @@ package to.joe.util;
 
 import java.util.HashMap;
 
+/**
+ * Flag
+ * @author matt
+ *
+ */
 public enum Flag {
 	ADMIN('a',"Base Admin"),//standard commands
 	CONTRIBUTOR('c',"Important MC Community Member"),//bukkit team, etc
@@ -32,16 +37,34 @@ public enum Flag {
 		this.flag=f;
 		this.description=desc;
 	}
+	/**
+	 * Get character by which this flag is represented
+	 * @return
+	 */
 	public char getChar(){
 		return this.flag;
 	}
+	/**
+	 * Get the longer string describing this flag
+	 * @return
+	 */
 	public String getDescription(){
 		return this.description;
 	}
+	/**
+	 * Get a flag by it's representing char
+	 * @param Char
+	 * @return
+	 */
 	public static Flag byChar(final char Char) {
 		return flags.get(Char);
 	}
 
+	/**
+	 * Does this character represent a flag?
+	 * @param Char
+	 * @return
+	 */
 	public static boolean isFlagChar(char Char){
 		return flags.containsKey(Char);
 	}

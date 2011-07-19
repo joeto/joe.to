@@ -80,7 +80,7 @@ public class PlayerJoinQuit extends PlayerListener {
 		}
 		event.setQuitMessage(null);
 		j2.damage.arf(name);
-		j2.users.playerReset(name);
+		j2.users.resetAuthentication(name);
 		this.j2.minitrue.vanish.invisible.remove(player);
 		this.j2.banCoop.disconnect(name);
 	}

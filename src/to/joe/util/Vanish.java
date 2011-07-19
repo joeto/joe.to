@@ -16,6 +16,11 @@ import org.bukkit.entity.Player;
 
 import to.joe.manager.Minitrue;
 
+/**
+ * Vanishing handling
+ * @author matt
+ *
+ */
 public class Vanish
 {
 
@@ -24,6 +29,9 @@ public class Vanish
 	public int REFRESH_TIMER = 2;
 	private Timer timer = new Timer();
 
+	/**
+	 * List of all invisible players
+	 */
 	public List<Player> invisible = new ArrayList<Player>();
 
 
@@ -33,21 +41,36 @@ public class Vanish
 		this.mini=mini;
 	}
 
-	private void invisible(Player p1, Player p2, boolean force)
+	/**
+	 * Hide player from another
+	 * @param hidePlayer
+	 * @param obliviousPlayer
+	 * @param force Force even on admins.
+	 */
+	private void invisible(Player hidePlayer, Player obliviousPlayer, boolean force)
 	{
-		if (this.mini.j2.hasFlag(p2,Flag.ADMIN)) return;
-		CraftPlayer hide = (CraftPlayer)p1;
-		CraftPlayer hideFrom = (CraftPlayer)p2;
+		if (this.mini.j2.hasFlag(obliviousPlayer,Flag.ADMIN)) return;
+		CraftPlayer hide = (CraftPlayer)hidePlayer;
+		CraftPlayer hideFrom = (CraftPlayer)obliviousPlayer;
 		hideFrom.getHandle().netServerHandler.sendPacket(new Packet29DestroyEntity(hide.getEntityId()));
 	}
 
-	private void uninvisible(Player p1, Player p2)
+	/** 
+	 * Reveal player to other player
+	 * @param unHidingPlayer
+	 * @param nowAwarePlayer
+	 */
+	private void uninvisible(Player unHidingPlayer, Player nowAwarePlayer)
 	{
-		CraftPlayer unHide = (CraftPlayer)p1;
-		CraftPlayer unHideFrom = (CraftPlayer)p2;
+		CraftPlayer unHide = (CraftPlayer)unHidingPlayer;
+		CraftPlayer unHideFrom = (CraftPlayer)nowAwarePlayer;
 		unHideFrom.getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(unHide.getHandle()));
 	}
 
+	/**
+	 * Vanish toggle on player
+	 * @param player
+	 */
 	public void callVanish(Player player)
 	{
 		if(this.invisible.contains(player)){
@@ -119,6 +142,10 @@ public class Vanish
 		this.timer.schedule(new UpdateInvisibleTimerTask(true), 60000 * this.REFRESH_TIMER);
 	}
 
+	/**
+	 * Update invisibility for player
+	 * @param player
+	 */
 	public void updateInvisible(Player player)
 	{
 		for (Player invisiblePlayer : this.invisible)
@@ -136,6 +163,9 @@ public class Vanish
 		return Math.sqrt(Math.pow(loc1.getX() - loc2.getX(), 2.0D) + Math.pow(loc1.getY() - loc2.getY(), 2.0D) + Math.pow(loc1.getZ() - loc2.getZ(), 2.0D));
 	}
 
+	/**
+	 * Update invisible timed.
+	 */
 	public void updateInvisibleOnTimer()
 	{
 		updateInvisibleForAll();

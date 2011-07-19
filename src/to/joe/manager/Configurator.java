@@ -10,6 +10,11 @@ import org.bukkit.util.config.ConfigurationNode;
 
 import to.joe.J2;
 
+/**
+ * Configuration handler. Not yet implemented
+ * @author matt
+ *
+ */
 public class Configurator {
 
 	private J2 j2;
@@ -18,6 +23,9 @@ public class Configurator {
 		this.j2=j2;
 		this.conf=this.j2.getConfiguration();
 	}
+	/**
+	 * Create a fresh configuration.
+	 */
 	public void newConf(){
 		HashMap<String,Object> conf_general=new HashMap<String,Object>();
 		HashMap<String,Object> conf_mysql=new HashMap<String,Object>();
@@ -71,6 +79,9 @@ public class Configurator {
 		conf.setProperty("Blacklists", conf_blacklists);
 		conf.save();
 	}
+	/**
+	 * Loads the config
+	 */
 	public void load(){
 		conf.load();
 		ConfigurationNode general=conf.getNode("General");

@@ -11,6 +11,11 @@ import to.joe.J2;
 import to.joe.util.Ban;
 import to.joe.util.Flag;
 
+/**
+ * Manager of kicking/banning
+ * @author matt
+ *
+ */
 public class KicksBans {
 	private J2 j2;
 	public ArrayList<Ban> bans;
@@ -21,11 +26,20 @@ public class KicksBans {
 		this.restartManager();
 	}
 	
+	/**
+	 * Reset ban cache.
+	 */
 	public void restartManager(){
 		this.bans = new ArrayList<Ban>();
 		this.xrayers=new ArrayList<String>();
 	}
 
+	/**
+	 * Called for /ban
+	 * @param adminName
+	 * @param split chat split
+	 * @param location location of admin
+	 */
 	public void callBan(String adminName, String[] split, Location location)
 	{
 		List<Player> toBanCandidates = j2.getServer().matchPlayer(split[0]);
@@ -46,7 +60,7 @@ public class KicksBans {
 			//if (split.length > 1) {
 			toBan.kickPlayer("Banned: " + banReason);
 			j2.sendAdminPlusLog(ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
-			j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned (" + banReason+")");
+			j2.chat.messageByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned (" + banReason+")");
 			j2.irc.ircMsg(name + " banned (" + banReason+")");
 			/*} else {
 				toBan.kickPlayer("Banned.");
@@ -61,6 +75,12 @@ public class KicksBans {
 			}
 		}
 	}
+	/**
+	 * called on /addban
+	 * @param adminName
+	 * @param split command text split
+	 * @param location admin location
+	 */
 	public void callAddBan(String adminName, String[] split,Location location)
 	{
 		String banReason="";
@@ -77,10 +97,23 @@ public class KicksBans {
 		}*/
 	}
 
-	public void callKick(String pname,String admin,String reason){
-		this.callKick(pname, admin, reason, false);
+	/**
+	 * Calling /kick
+	 * @param name
+	 * @param admin
+	 * @param reason
+	 */
+	public void callKick(String name,String admin,String reason){
+		this.callKick(name, admin, reason, false);
 	}
 
+	/**
+	 * Calling /kick, with option of being quiet about it
+	 * @param pname
+	 * @param admin
+	 * @param reason
+	 * @param quiet
+	 */
 	public void callKick(String pname,String admin,String reason, boolean quiet){
 		List<Player> toKickCandidates = j2.getServer().matchPlayer(pname);
 		if(toKickCandidates.size()!=1 ){
@@ -96,12 +129,12 @@ public class KicksBans {
 			if (reason!="") {
 				toKick.kickPlayer("Kicked: " + reason);
 				j2.sendAdminPlusLog(ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
-				j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " kicked ("+reason+")");
+				j2.chat.messageByFlagless(Flag.ADMIN,ChatColor.RED + name + " kicked ("+reason+")");
 				j2.irc.ircMsg(name + " kicked ("+reason+")");
 			} else {
 				toKick.kickPlayer("Kicked.");
 				j2.sendAdminPlusLog(ChatColor.RED + "Kicking " + name + " by " + admin);
-				j2.chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name + " kicked");
+				j2.chat.messageByFlagless(Flag.ADMIN,ChatColor.RED + name + " kicked");
 				j2.irc.ircMsg(name + " kicked");
 			}
 		} else {
@@ -110,6 +143,12 @@ public class KicksBans {
 		}
 	}
 
+	/**
+	 * Remove all instances of an exact playername
+	 * Used for /addban
+	 * @param name
+	 * @param reason
+	 */
 	public void forceKick(String name,String reason){
 		boolean msged=false;
 		for (Player p : j2.getServer().getOnlinePlayers()) {
@@ -128,6 +167,10 @@ public class KicksBans {
 		}
 	}
 
+	/**
+	 * Kick all players
+	 * @param reason
+	 */
 	public void kickAll(String reason){
 		j2.log(ChatColor.RED+"Kicking all players: "+reason);
 		if(reason.equalsIgnoreCase("")){
@@ -140,12 +183,23 @@ public class KicksBans {
 		}
 	}
 
+	/**
+	 * Unban a player
+	 * @param adminName
+	 * @param name
+	 */
 	public void unban(String adminName,String name){
 		j2.mysql.unban(name);
 		j2.sendAdminPlusLog(ChatColor.RED + "Unbanning " + name + " by " + adminName);
 		j2.banCoop.processUnban(name,adminName);
 	}
 	
+	/**
+	 * Player attempting to use an old style xray hack
+	 * Defunct
+	 * @param name
+	 * @param commandName
+	 */
 	public synchronized void ixrai(String name,String commandName){
 		if(this.xrayers.contains(name)){
 			this.callBan("BobTheVigilant", (name+" xray hacking").split(" "), new Location(j2.getServer().getWorld("world"),0,0,0));

@@ -14,12 +14,21 @@ import org.bukkit.inventory.Inventory;
 
 import to.joe.J2;
 
+/**
+ * Creates and maintains webpages with info.
+ * @author matt
+ *
+ */
 public class WebPage {
 	private J2 j2;
 	private int servernum;
 	public WebPage(J2 j2){
 		this.j2=j2;
 	}
+	/**
+	 * Start webpaging!
+	 * @param servnum Server number
+	 */
 	public void go(int servnum){
 		startUpdateTimer1();
 		this.servernum=servnum;
@@ -27,7 +36,7 @@ public class WebPage {
 	}
 	private boolean stop;
 	public boolean restart = false;
-	public void startUpdateTimer1() {
+	private void startUpdateTimer1() {
 		stop = false;
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {

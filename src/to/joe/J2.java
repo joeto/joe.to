@@ -59,32 +59,89 @@ public class J2 extends JavaPlugin {
 	private final BlockAll blockListener = new BlockAll(this);
 	private final EntityAll entityListener = new EntityAll(this);
 	private final PlayerMovement plrlisMovement = new PlayerMovement(this);
+	/**
+	 * Chat manager
+	 */
 	public final Chats chat = new Chats(this);
+	/**
+	 * IRC manager
+	 */
 	public final IRC irc = new IRC(this);
+	/**
+	 * Kick/ban manager
+	 */
 	public final KicksBans kickbans = new KicksBans(this);
+	/**
+	 * User manager
+	 */
 	public final Users users = new Users(this);
+	/**
+	 * Report manager
+	 */
 	public final Reports reports = new Reports(this);
+	/**
+	 * Warp manager
+	 */
 	public final Warps warps = new Warps(this);
+	/**
+	 * Webpage manager
+	 */
 	public final WebPage webpage = new WebPage(this);
+	/**
+	 * IP Tracking manager
+	 */
 	public final IPTracker ip=new IPTracker(this);
+	/**
+	 * Ban cooperative manager
+	 */
 	public final BanCooperative banCoop=new BanCooperative(this);
+	/**
+	 * Damage manager
+	 */
 	public final Damages damage=new Damages(this);
+	/**
+	 * Permission manager
+	 */
 	public final Permissions perms=new Permissions(this);
+	/**
+	 * Recipe implementer
+	 */
 	public final Recipes recipes=new Recipes(this);
+	/**
+	 * Ministry of Truth
+	 */
 	public final Minitrue minitrue=new Minitrue(this);
+	/**
+	 * Jail manager
+	 */
 	public final Jailer jail = new Jailer(this);
+	/**
+	 * Movement tracker
+	 */
 	public final MoveTracker move = new MoveTracker(this);
+	/**
+	 * Activity tracker
+	 */
 	public final ActivityTracker activity = new ActivityTracker(this);
+	/**
+	 * Craftual Harassment Panda
+	 */
 	public final CraftualHarassmentPanda panda=new CraftualHarassmentPanda(this);
 	//public managerBlockLog blogger;
 	public MySQL mysql;
 
 
+	/* (non-Javadoc)
+	 * @see org.bukkit.plugin.Plugin#onDisable()
+	 */
 	public void onDisable() {
 		irc.kill();
 		stopTimer();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bukkit.plugin.Plugin#onEnable()
+	 */
 	public void onEnable() {
 		this.initLog();
 		log=Logger.getLogger("Minecraft");
@@ -136,9 +193,12 @@ public class J2 extends JavaPlugin {
 		webpage.go(servernumber);
 		recipes.addRecipes();
 		minitrue.restartManager();
-		this.banCoop.startThumper();
+		//this.banCoop.startThumper();
 	}
 
+	/**
+	 * Load a butt-ton of data for startup.
+	 */
 	public void loadData(){
 		rules=readDaFile("rules.txt");
 		blacklist=readDaFile("blacklistinfo.txt");
@@ -306,6 +366,11 @@ public class J2 extends JavaPlugin {
 
 
 
+	/**
+	 * Read named file
+	 * @param filename
+	 * @return array of lines
+	 */
 	public String[] readDaFile(String filename)
 	{
 
@@ -362,12 +427,12 @@ public class J2 extends JavaPlugin {
 		tips_stopTimer = true;
 	}
 
-	public void broadcastTip()
+	private void broadcastTip()
 	{
 		if (tips.isEmpty())
 			return;
 		String message = tips_color+"[TIP] "+tips.get(curTipNum);
-		this.chat.msgAll(message);
+		this.chat.messageAll(message);
 		this.log(message);
 		curTipNum++;
 		if (curTipNum >= tips.size())
@@ -375,7 +440,7 @@ public class J2 extends JavaPlugin {
 	}
 
 
-	public void loadTips() {
+	private void loadTips() {
 		tips = new ArrayList<String>();
 		if (!new File(tips_location).exists()) {
 
@@ -398,22 +463,39 @@ public class J2 extends JavaPlugin {
 
 	//end tips
 
+	/**
+	 * Is the ID on the super-blacklist?
+	 * @param id
+	 * @return
+	 */
 	public boolean isOnSuperBlacklist(int id) {
 		return superblacklist.contains(Integer.valueOf(id));
 	}
+	/**
+	 * Is the ID on the regular blacklist?
+	 * @param id
+	 * @return
+	 */
 	public boolean isOnRegularBlacklist(int id) {
 		return itemblacklist.contains(Integer.valueOf(id));
 	}
+	/**
+	 * Is the ID being watched for summoning?
+	 * @param id
+	 * @return
+	 */
 	public boolean isOnWatchlist(int id) {
 		return watchlist.contains(Integer.valueOf(id));
 	}
+	/**
+	 * Is the ID being blocked from summoning?
+	 * @param id
+	 * @return
+	 */
 	public boolean isOnSummonlist(int id) {
 		return summonlist.contains(Integer.valueOf(id));
 	}
 
-	public void travelLog(String name,int distance){
-
-	}
 
 	/*public Block locationCheck(Player player,Block block,boolean placed){
 		int x,z;
@@ -465,10 +547,14 @@ public class J2 extends JavaPlugin {
 		return null;
 	}*/
 
-	public void tpToCoord(Player player, double x, double y, double z, float rotation, float pitch){
-		player.teleport(new Location(this.getServer().getWorlds().get(0), x, y, z, rotation, pitch));
-	}
 
+	/**
+	 * Combine a String array from startIndex with separator
+	 * @param startIndex
+	 * @param string
+	 * @param seperator
+	 * @return
+	 */
 	public String combineSplit(int startIndex, String[] string, String seperator) {
 		StringBuilder builder = new StringBuilder();
 		for (int i = startIndex; i < string.length; i++) {
@@ -479,6 +565,12 @@ public class J2 extends JavaPlugin {
 		return builder.toString();
 	}
 
+	/**
+	 * Does the user have this flag when authed?
+	 * @param playername
+	 * @param flag
+	 * @return
+	 */
 	public boolean reallyHasFlag(String playername, Flag flag){
 		User user=users.getUser(playername);
 		if(user!=null){
@@ -489,10 +581,16 @@ public class J2 extends JavaPlugin {
 		return false;
 	}
 
+	/**
+	 * Does user have this flag currently?
+	 * @param playername
+	 * @param flag
+	 * @return
+	 */
 	public boolean hasFlag(String playername, Flag flag){
 		User user=users.getUser(playername);
 		if(user!=null){
-			if((flag.equals(Flag.ADMIN)||flag.equals(Flag.SRSTAFF))&&!users.isCleared(playername)){
+			if((flag.equals(Flag.ADMIN)||flag.equals(Flag.SRSTAFF))&&!users.isAuthed(playername)){
 				return false;
 			}
 			if(user.getUserFlags().contains(flag) || users.groupHasFlag(user.getGroup(), flag)){
@@ -503,7 +601,7 @@ public class J2 extends JavaPlugin {
 			Player player=this.getServer().getPlayer(playername);
 			if(player!=null&&player.isOnline()){
 				String name=player.getName();
-				this.users.playerReset(name);
+				this.users.resetAuthentication(name);
 				this.users.addUser(name);
 				this.users.processJoin(player);
 			}
@@ -511,16 +609,31 @@ public class J2 extends JavaPlugin {
 		return false;
 	}
 
+	/**
+	 * Lazy hasFlag
+	 * @param player
+	 * @param flag
+	 * @return
+	 */
 	public boolean hasFlag(Player player, Flag flag){
 		return this.hasFlag(player.getName(), flag);
 	}
 
+	/**
+	 * Send jail message to player
+	 * @param player
+	 */
 	public void jailMsg(Player player){
 		player.sendMessage(ChatColor.RED+"You are "+ChatColor.DARK_RED+"IN JAIL");
 		player.sendMessage(ChatColor.RED+"for violation of our server rules");
 		player.sendMessage(ChatColor.RED+"Look around you for info on freedom");
 	}
 
+	/**
+	 * Part of fakeCraftIRC. Send message to named tag.
+	 * @param message
+	 * @param tag
+	 */
 	public void craftIRC_sendMessageToTag(String message, String tag){
 		if(debug){
 			this.log("J2: Got message, tag \""+tag+"\"");
@@ -533,6 +646,11 @@ public class J2 extends JavaPlugin {
 		}
 	}
 
+	/**
+	 * How many sanitized users does this string match?
+	 * @param name
+	 * @return
+	 */
 	public int playerMatches(String name){
 		List<Player> list=this.minitrue.matchPlayer(name,true);
 		if(list==null){
@@ -545,7 +663,7 @@ public class J2 extends JavaPlugin {
 	private final ChatColor[] ANSI_colors = ChatColor.values();
 	private Terminal ANSI_terminal;
 	private ConsoleReader ANSI_reader;
-	public void initLog(){
+	private void initLog(){
 		this.ANSI_reader = ((CraftServer)this.getServer()).getReader();
 		this.ANSI_terminal = ANSI_reader.getTerminal();
 		ANSI_replacements.put(ChatColor.BLACK, ANSICodes.attrib(0));
@@ -581,25 +699,44 @@ public class J2 extends JavaPlugin {
 		}
 	}
 
+	/**
+	 * Add string to log, as INFO
+	 * @param message
+	 */
 	public void log(String message){
 		this.log.info(this.logPrep(message));
 	}
 
+	/**
+	 * Add string to log, as WARNING
+	 * @param message
+	 */
 	public void logWarn(String message){
 		this.log.warning(this.logPrep(message));
 	}
 
+	/**
+	 * If debugging enabled, log message.
+	 * @param message
+	 */
 	public void debug(String message){
 		if(this.debug){
 			this.log(message);
 		}
 	}
 
+	/**
+	 * Message admins and the log.
+	 * @param message
+	 */
 	public void sendAdminPlusLog(String message){
-		this.chat.msgByFlag(Flag.ADMIN, message);
+		this.chat.messageByFlag(Flag.ADMIN, message);
 		this.log(message);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+	 */
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		String commandName = command.getName().toLowerCase();
 		Player player=null;
@@ -777,7 +914,7 @@ public class J2 extends JavaPlugin {
 			}
 			List<Player> inquest = this.minitrue.matchPlayer(args[0],this.hasFlag(player, Flag.ADMIN));
 			if(inquest.size()==1){
-				this.chat.handlePMsg(player,inquest.get(0),this.combineSplit(1, args, " "));
+				this.chat.handlePrivateMessage(player,inquest.get(0),this.combineSplit(1, args, " "));
 			}
 			else{
 				player.sendMessage(ChatColor.RED+"Could not find player");
@@ -895,7 +1032,7 @@ public class J2 extends JavaPlugin {
 				return true;
 			}
 			String message=combineSplit(0, args, " ");
-			chat.aMsg(playerName,message);
+			chat.adminOnlyMessage(playerName,message);
 			return true;
 		}
 
@@ -985,7 +1122,7 @@ public class J2 extends JavaPlugin {
 			}
 			String text = "";
 			text+=combineSplit(0, args, " ");
-			chat.gMsg(playerName,text);
+			chat.globalAdminMessage(playerName,text);
 			return true;
 		}
 		if((commandName.equals("ban")||commandName.equals("b")) && (!isPlayer || hasFlag(player, Flag.ADMIN))){
@@ -1130,7 +1267,7 @@ public class J2 extends JavaPlugin {
 		}*/
 		if(commandName.equals("ircrefresh") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
 			irc.loadIRCAdmins();
-			chat.msgByFlag(Flag.SRSTAFF, ChatColor.RED+"IRC admins reloaded by "+playerName);
+			chat.messageByFlag(Flag.SRSTAFF, ChatColor.RED+"IRC admins reloaded by "+playerName);
 			this.log(playerName+ " reloaded irc admins");
 
 			return true;
@@ -1138,7 +1275,7 @@ public class J2 extends JavaPlugin {
 
 		if(commandName.equals("j2reload") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
 			loadData();
-			chat.msgByFlag(Flag.SRSTAFF, "j2 data reloaded by "+playerName);
+			chat.messageByFlag(Flag.SRSTAFF, "j2 data reloaded by "+playerName);
 			this.log("j2 data reloaded by "+playerName);
 
 			return true;
@@ -1184,7 +1321,7 @@ public class J2 extends JavaPlugin {
 				users.dropFlag(name,Flag.byChar(flag));
 			}
 			String tolog=ChatColor.RED+playerName+" changed flags: "+name + " "+ action +" flag "+ Flag.byChar(flag).getDescription();
-			chat.msgByFlag(Flag.ADMIN, tolog);
+			chat.messageByFlag(Flag.ADMIN, tolog);
 			this.log(tolog);
 
 			return true;
@@ -1397,7 +1534,7 @@ public class J2 extends JavaPlugin {
 			this.sendAdminPlusLog( ChatColor.RED+playerName+" enabled GODMODE");
 			//chat.msgByFlagless(Flag.ADMIN,ChatColor.DARK_RED+"!!! "+ChatColor.RED+playerName+" is ON FIRE "+ChatColor.DARK_RED+"!!!");
 			if(args.length>0&&args[0].equalsIgnoreCase("a"))
-				chat.msgByFlagless(Flag.ADMIN,ChatColor.RED+"    "+playerName+" is an admin. Pay attention to "+playerName);
+				chat.messageByFlagless(Flag.ADMIN,ChatColor.RED+"    "+playerName+" is an admin. Pay attention to "+playerName);
 			users.getUser(playerName).tempSetColor(ChatColor.RED);
 			damage.protect(playerName);
 			player.getInventory().setHelmet(new ItemStack(51));
@@ -1562,12 +1699,12 @@ public class J2 extends JavaPlugin {
 			if(args[0].equalsIgnoreCase("start")){
 				player.getWorld().setStorm(true);
 				this.sendAdminPlusLog(ChatColor.RED+playerName+" starts up a storm");
-				this.chat.msgByFlagless(Flag.ADMIN, ChatColor.RED+"Somebody has started a storm!");
+				this.chat.messageByFlagless(Flag.ADMIN, ChatColor.RED+"Somebody has started a storm!");
 			}
 			if(args[0].equalsIgnoreCase("stop")){
 				player.getWorld().setStorm(false);
 				this.sendAdminPlusLog(ChatColor.RED+playerName+" stops the storm");
-				this.chat.msgByFlagless(Flag.ADMIN, ChatColor.RED+"Somebody has prevented a storm!");
+				this.chat.messageByFlagless(Flag.ADMIN, ChatColor.RED+"Somebody has prevented a storm!");
 			}
 			return true;
 		}
@@ -1639,7 +1776,7 @@ public class J2 extends JavaPlugin {
 				else
 					message=ChatColor.GOLD+"MrBlip shows off his hat";
 			}
-			chat.msgAll(message);
+			chat.messageAll(message);
 			this.log(ChatColor.GOLD+playerName+" flexed.");
 			return true;
 		}
@@ -1730,15 +1867,15 @@ public class J2 extends JavaPlugin {
 			if(user!=null&&args.length==1){
 				String safeword=user.getSafeWord();
 				if(!safeword.equalsIgnoreCase("")&&safeword.equals(args[0])){
-					this.users.clear(playerName);
+					this.users.authenticatedAdmin(playerName);
 					this.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"[J2AUTH] "+playerName+" authenticated");
 					return true;
 				}
 			}
-			if(users.isCleared(playerName)){
+			if(users.isAuthed(playerName)){
 				this.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"[J2AUTH] "+playerName+" deauthenticated");
 			}
-			this.users.playerReset(playerName);
+			this.users.resetAuthentication(playerName);
 			//player.sendMessage(ChatColor.LIGHT_PURPLE+"You no can has permissions");
 			this.minitrue.vanish.updateInvisible(player);
 			return true;
@@ -1754,7 +1891,7 @@ public class J2 extends JavaPlugin {
 				return true;
 			}
 			if(!this.panda.panda(target)){
-				this.panda.harass(target);
+				this.panda.harass(target.getName());
 				this.sendAdminPlusLog(ChatColor.AQUA+"[HARASS] Target Acquired: "+ChatColor.DARK_AQUA+target.getName()+ChatColor.AQUA+". Thanks, "+playerName+"!");
 				this.irc.ircAdminMsg("[HARASS] Target Acquired: "+target.getName()+". Thanks, "+playerName+"!");
 			}
@@ -1774,7 +1911,7 @@ public class J2 extends JavaPlugin {
 				messageBit=" has muted all players";
 			}
 			this.sendAdminPlusLog(ChatColor.YELLOW+playerName+messageBit);
-			this.chat.msgByFlagless(Flag.ADMIN, ChatColor.YELLOW+"The ADMIN"+messageBit);
+			this.chat.messageByFlagless(Flag.ADMIN, ChatColor.YELLOW+"The ADMIN"+messageBit);
 			this.chat.muteAll=!this.chat.muteAll;
 			return true;
 		}
@@ -1814,7 +1951,7 @@ public class J2 extends JavaPlugin {
 			}
 			String message=ChatColor.LIGHT_PURPLE+"[SERVER] "+this.combineSplit(0, args, " ");
 			this.log(message);
-			this.chat.msgAll(message);
+			this.chat.messageAll(message);
 			return true;
 		}
 		if(commandName.equals("nsa")&&isPlayer&&this.hasFlag(player, Flag.ADMIN)){
@@ -1848,6 +1985,10 @@ public class J2 extends JavaPlugin {
 		return true;
 	}
 	
+	/**
+	 * SHUT. DOWN. EVERYTHING.
+	 * @param name Admin shutting down
+	 */
 	public void madagascar(String name){
 		this.sendAdminPlusLog(name+" wants to SHUT. DOWN. EVERYTHING.");
 		if(this.ircEnable){

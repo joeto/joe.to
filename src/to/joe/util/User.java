@@ -1,16 +1,5 @@
 package to.joe.util;
 
-/*
- * In-progress user class, for handling all sorts of fun things
- * 
- * To be added:
- * 	Tracking amounts of things done, like distance travelled, blocks broken/made
- *  Perhaps track teleport protection in here
- *  
- *  Or maybe track that elsewhere
- * 
- */
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -18,6 +7,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+/**
+ * A j2 user. Special tracking for special people.
+ * @author matt
+ *
+ */
 public class User {
 
 	public User(String name, ChatColor color, String group,  ArrayList<Flag> extraFlags, World world, String safeWord/*, int channel*/){
@@ -50,33 +44,68 @@ public class User {
 			this.safeWord="";
 		//this.channel=channel;
 	}
+	/**
+	 * Set the user's group
+	 * @param Group
+	 */
 	public void setGroup(String Group){
 		group=Group;
 	}
+	/**
+	 * Set admin safeword
+	 * @return
+	 */
 	public String getSafeWord(){
 		return this.safeWord;
 	}
+	/**
+	 * Back up their color
+	 * @param clr
+	 */
 	public void tempSetColor(ChatColor clr){
 		this.color=clr;
 	}
+	/**
+	 * Bring back color from backups
+	 */
 	public void restoreColor(){
 		this.color=backup;
 	}
+	/**
+	 * @return user's name
+	 */
 	public String getName(){
 		return name;
 	}
+	/**
+	 * @return user's name with coloring
+	 */
 	public String getColorName(){
 		return color+name+ChatColor.WHITE;
 	}
+	/**
+	 * @return user's color
+	 */
 	public ChatColor getColor(){
 		return color;
 	}
+	/**
+	 * @return user's group
+	 */
 	public String getGroup(){
 		return group;
 	}
+	/**
+	 * @return list of user's flags
+	 */
 	public ArrayList<Flag> getUserFlags(){
 		return extraFlags;
 	}
+	/**
+	 * Add flag to user
+	 * @param flag
+	 * @return if it was freshly added
+	 */
 	public boolean addFlag(Flag flag){
 		if(!extraFlags.contains(flag)){
 			extraFlags.add(flag);
@@ -84,6 +113,11 @@ public class User {
 		}
 		return false;
 	}
+	/**
+	 * Drop flag
+	 * @param flag
+	 * @return if it was freshly removed
+	 */
 	public boolean dropFlag(Flag flag){
 		if(extraFlags.contains(flag)){
 			extraFlags.remove(flag);
@@ -91,13 +125,18 @@ public class User {
 		}
 		return false;
 	}
-	public int getChannels(){
-		return channel;
-	}
+	
+	/**
+	 * @return if player can chat after default time (10s)
+	 */
 	public boolean canChat(){
 		return this.canChat(10000L);
 	}
 	
+	/**
+	 * @param time
+	 * @return if player can chat after inputted time
+	 */
 	public boolean canChat(long time){
 		long cur=(new Date()).getTime();
 		if((this.lastChat.get(0)+time)>cur){
@@ -108,6 +147,11 @@ public class User {
 		return true;
 	}
 	
+	/**
+	 * Spam check. Adjust spam count as necessary.
+	 * @param message
+	 * @return if message is a repeat
+	 */
 	public int isRepeat(String message){
 		boolean isIt=message.equals(this.lastMessage);
 		if(!isIt){
@@ -120,7 +164,7 @@ public class User {
 		return this.spamCount;
 	}
 	
-	public Block getBlock(){
+	/*public Block getBlock(){
 		return this.blocksTravelled.get(9);
 	}
 	
@@ -135,11 +179,10 @@ public class User {
 	public void setCurLoc(Block block){
 		this.blocksTravelled.remove(0);
 		this.blocksTravelled.add(block);
-	}
+	}*/
 
 	private ArrayList<Block> blocksTravelled;
 	private ArrayList<Flag> extraFlags;
-	private int channel;
 	private String name;
 	private ChatColor color,backup;
 	private String group;

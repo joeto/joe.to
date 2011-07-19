@@ -6,11 +6,19 @@ import org.bukkit.inventory.ShapedRecipe;
 
 import to.joe.J2;
 
+/**
+ * Strange recipe manager
+ * @author matt
+ *
+ */
 public class Recipes {
 	J2 j2;
 	public Recipes(J2 j2){
 		this.j2=j2;
 	}
+	/**
+	 * Implement recipes to mc3
+	 */
 	public void addRecipes(){
 		if(j2.servernumber!=3){
 			return;

@@ -7,53 +7,55 @@ import java.io.FileInputStream;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Properties file handling
+ *
+ */
 public final class Property {
     private String name;
     private Properties property = new Properties();
 
     public Property(String name) {
         this.name = name;
-
         File file = new File(name);
-
         try {
             if (file.exists()) {
-                load();
+                this.load();
             } else {
-                save();
+                this.save();
             }
         } catch (IOException ex) {
         }
     }
 
     public void load() throws IOException {
-        property.load(new FileInputStream(name));
+        this.property.load(new FileInputStream(this.name));
     }
 
     public void save() {
         try {
-        property.store(new FileOutputStream(name), null);
+        this.property.store(new FileOutputStream(this.name), null);
         }catch(IOException ex) {
         }
     }
 
     @SuppressWarnings("unchecked")
 	public Map<String, String> returnMap() throws Exception {
-        return (Map<String, String>) property.clone();
+        return (Map<String, String>) this.property.clone();
     }
 
     public boolean containsKey(String var) {
-        return property.containsKey(var);
+        return this.property.containsKey(var);
     }
 
     public String getProperty(String var) {
-        return (String)property.getProperty(var);
+        return (String)this.property.getProperty(var);
     }
 
     public void removeKey(String var) {
         if (this.property.containsKey(var)) {
             this.property.remove(var);
-            save();
+            this.save();
         }
     }
 
@@ -73,14 +75,13 @@ public final class Property {
         if (this.containsKey(key)) {
             return this.getProperty(key);
         }
-
         setString(key, value);
         return value;
     }
 
     public void setString(String key, String value) {
-        property.put(key, value);
-        save();
+    	this.property.put(key, value);
+    	this.save();
     }
 
     public int getInt(String key) {
@@ -94,23 +95,20 @@ public final class Property {
         if (this.containsKey(key)) {
             return Integer.parseInt(this.getProperty(key));
         }
-
-        setInt(key, value);
+        this.setInt(key, value);
         return value;
 
     }
 
     public void setInt(String key, int value) {
-        property.put(key, String.valueOf(value));
-
-        save();
+    	this.property.put(key, String.valueOf(value));
+    	this.save();
     }
 
     public double getDouble(String key) {
         if (this.containsKey(key)) {
             return Double.parseDouble(this.getProperty(key));
         }
-
         return 0;
     }
 
@@ -118,22 +116,19 @@ public final class Property {
         if (this.containsKey(key)) {
             return Double.parseDouble(this.getProperty(key));
         }
-
-        setDouble(key, value);
+        this.setDouble(key, value);
         return value;
     }
 
     public void setDouble(String key, double value) {
-        property.put(key, String.valueOf(value));
-
-        save();
+    	this.property.put(key, String.valueOf(value));
+    	this.save();
     }
 
     public long getLong(String key) {
         if (this.containsKey(key)) {
             return Long.parseLong(this.getProperty(key));
         }
-
         return 0;
     }
 
@@ -141,22 +136,19 @@ public final class Property {
         if (this.containsKey(key)) {
             return Long.parseLong(this.getProperty(key));
         }
-
-        setLong(key, value);
+        this.setLong(key, value);
         return value;
     }
 
     public void setLong(String key, long value) {
-        property.put(key, String.valueOf(value));
-
-        save();
+    	this.property.put(key, String.valueOf(value));
+    	this.save();
     }
 
     public boolean getBoolean(String key) {
         if (this.containsKey(key)) {
             return Boolean.parseBoolean(this.getProperty(key));
         }
-
         return false;
     }
 
@@ -164,15 +156,13 @@ public final class Property {
         if (this.containsKey(key)) {
             return Boolean.parseBoolean(this.getProperty(key));
         }
-
-        setBoolean(key, value);
+        this.setBoolean(key, value);
         return value;
     }
 
     public void setBoolean(String key, boolean value) {
-        property.put(key, String.valueOf(value));
-
-        save();
+    	this.property.put(key, String.valueOf(value));
+    	this.save();
     }
 }
 

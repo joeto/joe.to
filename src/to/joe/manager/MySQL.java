@@ -21,12 +21,25 @@ import to.joe.util.Report;
 import to.joe.util.User;
 import to.joe.util.Warp;
 
+/**
+ * All interactions with SQL
+ * @author matt
+ *
+ */
 public class MySQL {
 	private String user,pass,db;
 	private int serverNumber;
 	private J2 j2;
 	private String aliasdb="alias";
 	//private SimpleDateFormat formatter = new SimpleDateFormat("MM-dd hh:mm");
+	/**
+	 * Initializes the MySQL manager
+	 * @param User
+	 * @param Pass
+	 * @param DB
+	 * @param ServerNumber
+	 * @param J2
+	 */
 	public MySQL(String User,String Pass, String DB, int ServerNumber, J2 J2){
 		user=User;
 		pass=Pass;
@@ -34,18 +47,10 @@ public class MySQL {
 		serverNumber=ServerNumber;
 		j2=J2;
 	}
-	public String user(){
-		return user;
-	}
-	public String pass(){
-		return pass;
-	}
-	public String db(){
-		return db;
-	}
-	public int servnum(){
-		return serverNumber;
-	}
+	/**
+	 * Get the SQL connection
+	 * @return
+	 */
 	public Connection getConnection() {
 		try {
 			try {
@@ -61,6 +66,11 @@ public class MySQL {
 	}
 
 
+	/**
+	 * Replace number with color, from storage
+	 * @param input
+	 * @return
+	 */
 	public ChatColor toColor(int input){
 		switch(input){
 		case 0: return ChatColor.BLACK;
@@ -83,10 +93,15 @@ public class MySQL {
 		return null;
 	}
 
-	public String stringClean(String toClean){
+	private String stringClean(String toClean){
 		return toClean.replace('\"', '_').replace('\'', '_').replace(';', '_').replace(',', '_');
 	}
 
+	/**
+	 * Get the User class of a username
+	 * @param name
+	 * @return
+	 */
 	public User getUser(String name){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -138,6 +153,11 @@ public class MySQL {
 
 
 
+	/**
+	 * Update a user's flags.
+	 * @param name
+	 * @param flags
+	 */
 	public void setFlags(String name, ArrayList<Flag> flags){
 		j2.debug("Calling setFlags");
 		Connection conn = null;
@@ -169,6 +189,11 @@ public class MySQL {
 			}
 		}
 	}
+	/**
+	 * Set a user's group
+	 * @param name
+	 * @param group
+	 */
 	public void setGroup(String name, String group){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -194,6 +219,14 @@ public class MySQL {
 			}
 		}
 	}
+	/**
+	 * Ban a user
+	 * @param name
+	 * @param reason
+	 * @param time Currently unused. Just set to 0
+	 * @param admin
+	 * @param location
+	 */
 	public void ban(String name,String reason, long time, String admin,Location location){
 		j2.banCoop.processBan(name, admin, reason);
 		j2.panda.remove(name);
@@ -255,6 +288,11 @@ public class MySQL {
 			}
 		}
 	}
+	/**
+	 * Acquire latest ban reason if any
+	 * @param username
+	 * @return
+	 */
 	public String checkBans(String username){
 		Date curTime=new Date();
 		long timeNow=curTime.getTime()/1000;
@@ -307,6 +345,12 @@ public class MySQL {
 		}
 		return reason;
 	}
+	/**
+	 * Acquire all bans of a username
+	 * @param playerName
+	 * @param allbans
+	 * @return
+	 */
 	public ArrayList<Ban> getBans(String playerName, boolean allbans){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -343,19 +387,23 @@ public class MySQL {
 		}
 		return bans;
 	}
-	public void unban(String aname){
+	/**
+	 * Unban a user.
+	 * @param name
+	 */
+	public void unban(String name){
 		Connection conn = null;
 		PreparedStatement ps = null;
-		String name=stringClean(aname);
+		String clean_name=stringClean(name);
 		try {
 			conn = j2.mysql.getConnection();
 
 			for (Ban ban : j2.kickbans.bans) {
-				if (ban.getName().equalsIgnoreCase(name)) {
+				if (ban.getName().equalsIgnoreCase(clean_name)) {
 					ban.unBan();
 				}
 			}
-			String state="UPDATE j2bans SET unbanned=1 WHERE name=\""+ name.toLowerCase() +"\"";
+			String state="UPDATE j2bans SET unbanned=1 WHERE name=\""+ clean_name.toLowerCase() +"\"";
 			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.executeUpdate();
@@ -374,6 +422,9 @@ public class MySQL {
 		}
 	}
 
+	/**
+	 * Loads groups, reports, warps
+	 */
 	public void loadMySQLData() {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -420,7 +471,7 @@ public class MySQL {
 			rs = ps.executeQuery();
 			int count=0;
 			while (rs.next()) {
-				j2.warps.addWarpViaMysql(new Warp(rs.getString("name"), rs.getString("player"), 
+				j2.warps.addWarpInternal(new Warp(rs.getString("name"), rs.getString("player"), 
 						new Location(j2.getServer().getWorld(rs.getString("world")),
 								rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"),
 								rs.getFloat("pitch"), rs.getFloat("yaw")),
@@ -461,6 +512,10 @@ public class MySQL {
 		}
 	}
 
+	/**
+	 * Add a report
+	 * @param report
+	 */
 	public void addReport(Report report){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -513,6 +568,12 @@ public class MySQL {
 		}
 	}
 
+	/**
+	 * Update a report as being closed by admin.
+	 * @param id
+	 * @param admin
+	 * @param reason
+	 */
 	public void closeReport(int id, String admin, String reason){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -541,6 +602,11 @@ public class MySQL {
 		}
 	}
 
+	/**
+	 * Get a list of all homes of a player
+	 * @param playername
+	 * @return
+	 */
 	public ArrayList<Warp> getHomes(String playername){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -583,6 +649,10 @@ public class MySQL {
 		return homes;
 	}
 
+	/**
+	 * Remove a warp
+	 * @param warp
+	 */
 	public void removeWarp(Warp warp){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -610,6 +680,10 @@ public class MySQL {
 			}
 		}
 	}
+	/**
+	 * Add a warp
+	 * @param warp
+	 */
 	public void addWarp(Warp warp){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -645,6 +719,11 @@ public class MySQL {
 		}
 	}
 
+	/**
+	 * Update alias db
+	 * @param name
+	 * @param ip
+	 */
 	public void userIP(String name,String ip){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -686,6 +765,11 @@ public class MySQL {
 		}
 	}
 
+	/**
+	 * Get IPs matching username
+	 * @param name
+	 * @return
+	 */
 	public ArrayList<String> IPGetIPs(String name){
 		ArrayList<String> IPs=new ArrayList<String>();
 		Connection conn = null;
@@ -719,6 +803,11 @@ public class MySQL {
 		return IPs;
 	}
 
+	/**
+	 * Get names matching IP
+	 * @param IP
+	 * @return
+	 */
 	public ArrayList<String> IPGetNames(String IP){
 		ArrayList<String> names=new ArrayList<String>();
 		Connection conn = null;
@@ -752,6 +841,11 @@ public class MySQL {
 		return names;
 	}
 
+	/**
+	 * Get names and timestamps matching IP
+	 * @param IP
+	 * @return
+	 */
 	public HashMap<String, Long> IPGetNamesOnIP(String IP){
 		HashMap<String, Long> nameDates = new HashMap<String, Long>();
 
@@ -787,6 +881,11 @@ public class MySQL {
 		return nameDates;
 	}
 
+	/**
+	 * Get last IP used by username
+	 * @param name
+	 * @return
+	 */
 	public String IPGetLast(String name){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -821,6 +920,10 @@ public class MySQL {
 		return result;
 	}
 
+	/**
+	 * Get all permissions
+	 * @return
+	 */
 	public HashMap<String,Flag> getPerms(){
 		HashMap<String,Flag> perms=new HashMap<String,Flag>();
 		Connection conn = null;

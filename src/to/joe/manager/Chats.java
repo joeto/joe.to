@@ -1,41 +1,50 @@
 package to.joe.manager;
 
-import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import to.joe.J2;
-import to.joe.util.ChatChannel;
 import to.joe.util.Flag;
 import to.joe.util.User;
 
+/**
+ * Manager for handling chatting
+ * @author matt
+ *
+ */
 public class Chats {
-	private String[] colorlist;
+	private String[] randomColorList;
 	private J2 j2;
 	public boolean muteAll;
 	public Chats(J2 j2p){
 		j2=j2p;
 		//colorslist, minus lightblue white and purple
-		colorlist=new String[11];
-		colorlist[0]=ChatColor.BLUE.toString();
-		colorlist[1]=ChatColor.DARK_PURPLE.toString();
-		colorlist[2]=ChatColor.GOLD.toString();
-		colorlist[3]=ChatColor.GRAY.toString();
-		colorlist[4]=ChatColor.GREEN.toString();
-		colorlist[5]=ChatColor.DARK_GRAY.toString();
-		colorlist[6]=ChatColor.DARK_GREEN.toString();
-		colorlist[7]=ChatColor.DARK_AQUA.toString();
-		colorlist[8]=ChatColor.DARK_RED.toString();
-		colorlist[9]=ChatColor.RED.toString();
-		colorlist[10]=ChatColor.DARK_BLUE.toString();
+		randomColorList=new String[11];
+		randomColorList[0]=ChatColor.BLUE.toString();
+		randomColorList[1]=ChatColor.DARK_PURPLE.toString();
+		randomColorList[2]=ChatColor.GOLD.toString();
+		randomColorList[3]=ChatColor.GRAY.toString();
+		randomColorList[4]=ChatColor.GREEN.toString();
+		randomColorList[5]=ChatColor.DARK_GRAY.toString();
+		randomColorList[6]=ChatColor.DARK_GREEN.toString();
+		randomColorList[7]=ChatColor.DARK_AQUA.toString();
+		randomColorList[8]=ChatColor.DARK_RED.toString();
+		randomColorList[9]=ChatColor.RED.toString();
+		randomColorList[10]=ChatColor.DARK_BLUE.toString();
 		this.restartManager();
 	}
 	
+	/**
+	 * Restart manager. Sets muteall false.
+	 */
 	public void restartManager(){
 		this.muteAll=false;
 	}
 	
+	/**
+	 * List of char widths in-game. 
+	 */
 	public static final int[] characterWidths = new int[] {
         1, 9, 9, 8, 8, 8, 8, 7, 9, 8, 9, 9, 8, 9, 9, 9,
         8, 8, 8, 8, 9, 9, 8, 9, 8, 8, 8, 8, 8, 9, 9, 9,
@@ -55,55 +64,83 @@ public class Chats {
         7, 7, 7, 7, 9, 6, 7, 8, 7, 6, 6, 9, 7, 6, 7, 1
     };
 
-	public String[] getColorlist(){
-		return colorlist;
+	/**
+	 * @return List of acceptable colors for randomization
+	 */
+	public String[] getRandomColorList(){
+		return randomColorList;
 	}
 
-	public void msgByFlag(Flag flag,String msg){
+	/**
+	 * Send message only to players with named flag
+	 * @param flag
+	 * @param message
+	 */
+	public void messageByFlag(Flag flag,String message){
 		for (Player plr : j2.getServer().getOnlinePlayers()) {
 			if (plr != null && j2.hasFlag(plr, flag)) {
-				plr.sendMessage(msg);
+				plr.sendMessage(message);
 			}
 		}
 	}
 
-	public void msgByFlagless(Flag flag,String msg){
+	/**
+	 * Send message only to players WITHOUT named flag
+	 * @param flag
+	 * @param message
+	 */
+	public void messageByFlagless(Flag flag,String message){
 		for (Player plr : j2.getServer().getOnlinePlayers()) {
 			if (plr != null && !j2.hasFlag(plr, flag)) {
-				plr.sendMessage(msg);
+				plr.sendMessage(message);
 			}
 		}
 	}
 
-	public void msgAll(String msg){
+	/**
+	 * Send message to all players
+	 * @param message
+	 */
+	public void messageAll(String message){
 		for (Player p : j2.getServer().getOnlinePlayers()) {
 			if (p != null) {
-				p.sendMessage(msg);
+				p.sendMessage(message);
 			}
 		}
 	}
 	
-	public void aMsg(String name,String message){
+	/**
+	 * Admin-only chat.
+	 * @param name Sender
+	 * @param message
+	 */
+	public void adminOnlyMessage(String name,String message){
 		String msg="<"+ChatColor.LIGHT_PURPLE+name+ChatColor.WHITE+"> "+message;
 		j2.sendAdminPlusLog(msg);
 	}
 	
-	public void gMsg(String name,String message){
+	/**
+	 * Message from admin to all players.
+	 * Sender appears as ADMIN except to admins.
+	 * @param name Sender
+	 * @param message
+	 */
+	public void globalAdminMessage(String name,String message){
 		String amessage="<"+name+"> "+ChatColor.LIGHT_PURPLE+message;
 		String pmessage="<ADMIN> "+ChatColor.LIGHT_PURPLE+message;
 		String imessage="<ADMIN> "+message;
-		this.msgByFlagless(Flag.ADMIN, pmessage);
+		this.messageByFlagless(Flag.ADMIN, pmessage);
 		this.j2.sendAdminPlusLog(amessage);
 		j2.irc.ircMsg(imessage);
 	}
 
-	public String formatNamelyArea(String name,ChatColor color,boolean me){
+	private String formatNamelyArea(String name,ChatColor color,boolean me){
 		String colorName="";
 		if(color!=null){
 			colorName=color+name;
 		}
 		else{
-			String[] colorlist=j2.chat.getColorlist();
+			String[] colorlist=j2.chat.getRandomColorList();
 			int size=colorlist.length;
 			int rand=j2.random.nextInt(size);
 			if(rand<size){
@@ -124,6 +161,14 @@ public class Chats {
 		}
 	}
 	
+	/**
+	 * Handle a message sent.
+	 * Includes anti-spam measures
+	 * And bigotry detection
+	 * @param player
+	 * @param chat Message from the player
+	 * @param me Is the message a /me message
+	 */
 	public void handleChat(Player player,String chat,boolean me){
 		
 		if(j2.minitrue.chat(player, chat)){
@@ -163,7 +208,7 @@ public class Chats {
 		if((this.muteAll&&!j2.hasFlag(player, Flag.ADMIN)||this.j2.hasFlag(player, Flag.MUTED))){
 			player.sendMessage(ChatColor.RED+"You are currently muted");
 			String message=this.formatNamelyArea(name, ChatColor.YELLOW, me)+chat;
-			this.msgByFlag(Flag.ADMIN, message);
+			this.messageByFlag(Flag.ADMIN, message);
 			this.j2.log(message);
 			return;
 		}
@@ -184,11 +229,19 @@ public class Chats {
 			j2.irc.ircMsg("<"+name+"> "+chat);
 		//j2.irc.chatQueue.offer("<"+name+"> "+chat);
 		j2.log(message);
-		msgAll(message);
+		messageAll(message);
 
 	}
 	
 	
+	/**
+	 * Handles a message coming from IRC.
+	 * Does not send if all players muted.
+	 * @param name Sender of the message
+	 * @param message
+	 * @param me Is the message a /me message
+	 * @param channel Channel message was sent from
+	 */
 	public void handleIRCChat(String name,String message,boolean me,String channel){
 		if(this.muteAll){
 			this.j2.irc.getBot().sendMessage(channel,"All players currently muted. Message will not go through.");
@@ -209,7 +262,7 @@ public class Chats {
 		else
 		{
 			j2.log("IRC:"+combined);
-			this.msgAll(combined);
+			this.messageAll(combined);
 			if(j2.ircEcho){
 				if(me){
 					this.j2.irc.getBot().sendMessage(channel,"[IRC] *"+name+message);
@@ -221,12 +274,23 @@ public class Chats {
 		}
 	}
 	
+	/**
+	 * Takes a admin broadcast from the admin irc channel
+	 * @param from Sender of the message
+	 * @param message
+	 */
 	public void handleBroadcastFromIRC(String from,String message){
 		this.j2.sendAdminPlusLog(ChatColor.AQUA+"Server-wide message from "+from);
-		this.aMsg("irc-"+from, message);
+		this.adminOnlyMessage("irc-"+from, message);
 	}
 	
-	public void handlePMsg(Player from,Player to, String message){
+	/**
+	 * Handle a /msg, secretly sends to any listening admins
+	 * @param from Sender
+	 * @param to Receiver
+	 * @param message
+	 */
+	public void handlePrivateMessage(Player from,Player to, String message){
 		User userTo=this.j2.users.getUser(to);
 		User userFrom=this.j2.users.getUser(from);
 		String colorTo=userTo.getColorName();
@@ -239,11 +303,11 @@ public class Chats {
 			to.sendMessage(complete);
 			from.sendMessage(complete);
 		}
-		this.msgByFlag(Flag.NSA, this.nsaify(complete));
+		this.messageByFlag(Flag.NSA, this.nsaify(complete));
 		this.j2.log(complete);
 	}
 
-	private HashMap<Integer,ChatChannel> channels;
+	/*private HashMap<Integer,ChatChannel> channels;
 	public void addChannel(ChatChannel chan){
 		//j2.mysql.chanAdd(chan);
 		channels.put(chan.getID(),chan);
@@ -259,9 +323,9 @@ public class Chats {
 	}
 	public void loadChannel(ChatChannel chan){
 		channels.put(chan.getID(), chan);
-	}
+	}*/
 	
-	public String nsaify(String string){
+	private String nsaify(String string){
 		return string.replace(ChatColor.WHITE.toString(), ChatColor.DARK_AQUA.toString());
 	}
 	

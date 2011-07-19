@@ -14,6 +14,13 @@ import java.util.regex.Pattern;
 
 
 
+/**
+ * Filter on the log. 
+ * Removes some lines
+ * Sends some other lines to secondary.log as well
+ * @author matt
+ *
+ */
 public class MCLogFilter implements Filter {
 
 	private ArrayList<String> strings;
@@ -25,6 +32,7 @@ public class MCLogFilter implements Filter {
 	}
 	Pattern p1 = Pattern.compile("(<).*?(>)( )",Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     
+	@Override
 	public boolean isLoggable(LogRecord logRecord)
 	{
 		String message=logRecord.getMessage();
@@ -35,6 +43,11 @@ public class MCLogFilter implements Filter {
 		return !strings.contains(message);
 	}
 	
+	/**
+	 * The Secondary logging system
+	 * @author matt
+	 *
+	 */
 	private class SecondaryLog {
 		private Logger log;
 		private FileHandler fh;
@@ -54,6 +67,10 @@ public class MCLogFilter implements Filter {
 			this.log.setUseParentHandlers(false);
 		}
 		
+		/**
+		 * Add a line to the log
+		 * @param line
+		 */
 		public void add(String line){
 			if(this.canLog){
 				this.log.info(line);

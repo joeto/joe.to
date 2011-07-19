@@ -4,6 +4,11 @@ import java.util.HashMap;
 import to.joe.J2;
 import to.joe.util.Flag;
 
+/**
+ * Permissions interactions
+ * @author matt
+ *
+ */
 public class Permissions {
 
 	public Permissions(J2 j2){
@@ -11,14 +16,26 @@ public class Permissions {
 		this.restartManager();
 	}
 	
+	/**
+	 * Restart manager
+	 */
 	public void restartManager(){
 		perms=new HashMap<String,Flag>();
 	}
 	
+	/**
+	 * Load permissions
+	 */
 	public void load(){
 		perms=j2.mysql.getPerms();
 	}
 	
+	/**
+	 * Check if player has named permission
+	 * @param playername
+	 * @param permission
+	 * @return
+	 */
 	public boolean permCheck(String playername,String permission){
 		if(j2.hasFlag(playername,Flag.SRSTAFF)){
 			return true;
@@ -50,6 +67,12 @@ public class Permissions {
 		
 	}
 	
+	/**
+	 * Return if player is in named group
+	 * @param name
+	 * @param group
+	 * @return
+	 */
 	public boolean inGroup(String name,String group){
 		if(Flag.isFlagChar(group.charAt(0))){
 			return j2.hasFlag(name, Flag.byChar(group.charAt(0)));

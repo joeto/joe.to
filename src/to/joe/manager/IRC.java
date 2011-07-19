@@ -17,6 +17,11 @@ import to.joe.J2;
 import to.joe.util.IRC.ircAdmin;
 import to.joe.util.IRC.ircBot;
 
+/**
+ * Manager for the IRC relay
+ * @author matt
+ *
+ */
 public class IRC {
 	private J2 j2;
 	private ircBot bot;
@@ -32,6 +37,9 @@ public class IRC {
 		this.cleanStartup();
 	}
 	
+	/**
+	 * Restarts the bot. 
+	 */
 	public void restartManager(){
 		this.cleanStartup();
 		if(this.bot!=null){
@@ -40,12 +48,21 @@ public class IRC {
 		this.prepIRC();
 	}
 	
+	/**
+	 * Load IRC admins, clear message queue.
+	 */
 	public void cleanStartup(){
 		loadIRCAdmins();
 		this.msgs=new HashMap<String,Long>();
 		//this.recent=new HashMap<String,Long>();
 	}
 	
+	/**
+	 * Checks if a string matches a previously submitted string from the last hour
+	 * If it's a repeat ban announce, dont' send. 
+	 * @param string
+	 * @return
+	 */
 	public boolean goodToGo(String string){
 		if(string.startsWith("[J2BANS]")||string.startsWith("[BANS]")){
 			long rightNow=(new Date()).getTime();
@@ -67,6 +84,11 @@ public class IRC {
 		return true;
 	}
 
+	/**
+	 * Announces player joining - currently disabled too spammy
+	 * Also queries to see if it's not in the admin channel
+	 * @param name
+	 */
 	public void processJoin(String name){
 		if(j2.ircEnable && j2.getServer().getOnlinePlayers().length<2){
 			//j2.irc.ircMsg(name+" has logged in");
@@ -74,12 +96,19 @@ public class IRC {
 		}
 	}
 	
+	/**
+	 * Announces player leaving - currently disabled too spammy
+	 * @param name
+	 */
 	public void processLeave(String name){
 		if(j2.ircEnable && j2.getServer().getOnlinePlayers().length<10){
 			//j2.irc.ircMsg(name+" has left the server");
 		}
 	}
 	
+	/**
+	 * Connecting to IRC, authenticating, etc
+	 */
 	public void prepIRC(){
 
 		bot=new ircBot(j2.ircName,j2.ircMsg,this);
@@ -101,14 +130,24 @@ public class IRC {
 
 	}
 
+	/**
+	 * Murder the bot
+	 */
 	public void kill(){
 		if(bot!=null)bot.disconnect();
 	}
 
+	/**
+	 * Acquires the bot
+	 * @return the bot
+	 */
 	public ircBot getBot(){
 		return bot;
 	}
 
+	/**
+	 * If not connected to admin channel, join it.
+	 */
 	public void adminChannel(){
 		if(j2.ircEnable&&!(new ArrayList<String>(Arrays.asList((bot.getChannels()))).contains(j2.ircAdminChannel))){
 			if(j2.gsAuth!=""){
@@ -119,6 +158,11 @@ public class IRC {
 		}
 	}
 
+	/**
+	 * check if the hostmask is an admin
+	 * @param hostname
+	 * @return
+	 */
 	public boolean isIRCAuth(String hostname){
 		synchronized(adminsLock){
 			for(ircAdmin admin:admins){
@@ -130,6 +174,11 @@ public class IRC {
 		return false;
 	}
 
+	/**
+	 * Is the command a level 2 command
+	 * @param command
+	 * @return
+	 */
 	public boolean ircLevel2(String command) {
 		for (String str : j2.ircLevel2) {
 			if (command.equalsIgnoreCase(str)) {
@@ -139,11 +188,23 @@ public class IRC {
 		return false;
 	}
 
-	public void doIRC(String to,String message){
+	/**
+	 * Send a message to target
+	 * @param target
+	 * @param message
+	 */
+	public void doIRC(String target,String message){
 		if(j2.ircEnable)
-			bot.sendMessage(to, message);
+			bot.sendMessage(target, message);
 	}
 
+	/**
+	 * Process attempted command
+	 * @param host
+	 * @param nick
+	 * @param command
+	 * @return
+	 */
 	public boolean ircCommand(String host,String nick,String[] command){
 		if(!j2.ircEnable)
 			return false;
@@ -178,11 +239,11 @@ public class IRC {
 			done=true;
 		}
 		if(com.equalsIgnoreCase("g")&&command.length>1){
-			j2.chat.gMsg(adminName, j2.combineSplit(1, command, " "));
+			j2.chat.globalAdminMessage(adminName, j2.combineSplit(1, command, " "));
 			done=true;
 		}
 		if(com.equalsIgnoreCase("a")&&command.length>1){
-			j2.chat.aMsg(adminName, j2.combineSplit(1, command, " "));
+			j2.chat.adminOnlyMessage(adminName, j2.combineSplit(1, command, " "));
 			done=true;
 		}
 		if(com.equalsIgnoreCase("addban")&&command.length>2){
@@ -203,12 +264,19 @@ public class IRC {
 		return done;
 	}
 	
+	/**
+	 * Attempted shutdown
+	 * @param hostname
+	 */
 	public void cough(String hostname){
 		if(this.isIRCAuth(hostname)){
 			this.j2.madagascar(hostname);
 		}
 	}
 
+	/**
+	 * Reload IRC admins list
+	 */
 	public void loadIRCAdmins(){
 		String location="ircAdmins.txt";
 		if (!new File(location).exists()) {
@@ -255,22 +323,36 @@ public class IRC {
 		}
 	}
 
+	/**
+	 * Send message to regular channel
+	 * @param message
+	 */
 	public void ircMsg(String message){
 		if(j2.ircEnable)
 			bot.sendMessage(j2.ircChannel,message);
 	}
 
+	/**
+	 * Send message to admin channel
+	 * @param message
+	 */
 	public void ircAdminMsg(String message){
 		if(j2.ircEnable&&this.goodToGo(message))
 			bot.sendMessage(j2.ircAdminChannel,message);
 	}
 
+	/**
+	 * @return the manager's J2
+	 */
 	public J2 getJ2(){
 		return j2;
 	}
 
 	private boolean stop;
 	public boolean restart = false;
+	/**
+	 * Start 10 second checks to see if online, if in channels, etc.
+	 */
 	public void startIRCTimer() {
 		stop = false;
 		final Timer timer = new Timer();
