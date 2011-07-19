@@ -78,12 +78,23 @@ public class ircBot extends PircBot {
 						}
 					}
 				}
-				if(curAdmins=="Admins: ")
-					sendMessage(channel,"No admins online. Find one on #joe.to or #minecraft");
-				else if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel))
-					sendMessage(channel,curAdmins);
-				else
+				boolean adminsOnline=!curAdmins.equals("Admins: ");
+				if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
+					if(adminsOnline){
+						sendMessage(channel,"No admins online.");
+					}
+					else {
+						sendMessage(channel,curAdmins);
+					}
+				}
+				else{
+					if(adminsOnline){
+						sendMessage(channel,"No admins online. Find one on #joe.to or #minecraft");
+					}
+					else {
 					sendMessage(channel,"There are admins online!");
+					}
+				}
 			}
 			else if (ircMsg && parts[0].equalsIgnoreCase("!msg")){
 				if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
@@ -116,18 +127,31 @@ public class ircBot extends PircBot {
 					sendMessage(channel,"Try that in the other channel.");
 				}
 				else{
-					String damessage = "";
-					
+					String response = "";
+
 					int size = irc.getJ2().reports.getReports().size();
-					damessage = "There are currently " + size + " reports open.";
-					if(size > 5)
-					{
-						damessage += " Seriously guys? Start cleaning up.";
+					response = "There are currently " + size + " reports open. ";
+					switch(size){
+					case 0:
+						response+="\\o/";
+						break;
+					case 1:
+						response+=":|";
+						break;
+					case 2:
+						response+=":(";
+						break;
+					case 3:
+						response+=":'(";
+						break;
+					case 4:
+						response+="D:";
+						break;
+					default:
+						response += "Seriously guys? Start cleaning up.";
+						break;
 					}
-					else if(size==0){
-						damessage+=" \\o/";
-					}
-					sendMessage(channel, damessage);
+					sendMessage(channel, response);
 				}
 			}
 			else if (ircMsg && parts[0].equalsIgnoreCase("!me")){
@@ -171,7 +195,7 @@ public class ircBot extends PircBot {
 	public void doMeMsg(String channel, String sender, String message){
 		this.irc.getJ2().chat.handleIRCChat(sender, message, true,channel);
 	}
-	
+
 	protected void onPrivateMessage(String sender,String login,String hostname,String message){
 		if(irc.ircCommand(hostname,sender,message.split(" "))){
 			//sendMessage(sender,"Done :)");
@@ -182,7 +206,7 @@ public class ircBot extends PircBot {
 			sendRawLine("NOTICE "+sender+" :No access to that command");
 		}
 	}
-	
-	
+
+
 	private boolean ircMsg;
 }
