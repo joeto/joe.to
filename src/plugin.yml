@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 0.9.9.7
+version: 0.9.9.7.2
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -46,6 +46,10 @@ commands:
     description: Send a message to a user
     usage: |
             /msg [player] [message]
+  tell:
+    description: Send a message to a user
+    usage: |
+            /tell [player] [message]
   item:
     description: Acquire an item
     usage: |

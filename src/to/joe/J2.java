@@ -906,10 +906,9 @@ public class J2 extends JavaPlugin {
 			return true;
 		}
 
-		if(isPlayer && commandName.equals("msg")){
+		if(isPlayer && (commandName.equals("msg")||commandName.equals("tell"))){
 			if(args.length<2){
 				player.sendMessage(ChatColor.RED+"Correct usage: /msg player message");
-
 				return true;
 			}
 			List<Player> inquest = this.minitrue.matchPlayer(args[0],this.hasFlag(player, Flag.ADMIN));
