@@ -14,11 +14,12 @@ public class Voting {
 	private String currentQuestion;
 	private boolean voteInProgress;
 	private HashMap<String,Integer> votes;
-	
+	private int tallyTaskNumber;
+
 	public Voting(J2 j2){
 		this.j2=j2;
 	}
-	
+
 	/**
 	 * Called when a player does /voteadmin
 	 * Player is already known to be an admin if this fires.
@@ -69,9 +70,14 @@ public class Voting {
 				}
 				this.j2.chat.messageAll(ChatColor.AQUA+"Say "+ChatColor.DARK_AQUA+"/vote x"+ChatColor.AQUA+" where x is the question #");
 				//Run the run() method of VoteTally in 30 seconds
-				this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(j2, new VoteTally(this.j2), 30000L);
+				this.tallyTaskNumber=this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(j2, new VoteTally(this.j2), 30000L);
 			}
 		}
+		/*
+		 * To cancel a vote, use these two lines:
+		 * this.j2.getServer().getScheduler().cancelTask(this.tallyTaskNumber);
+		 * this.tallyTaskNumber=-1;
+		 */
 	}
 	/**
 	 * Tell player the usage.
@@ -80,7 +86,7 @@ public class Voting {
 	public void usageVoteAdmin(Player player){
 		player.sendMessage(ChatColor.RED+"Usage: /voteadmin start|cancel|stop|confirm");
 	}
-	
+
 	/**
 	 * Called when a player says /vote
 	 * Record to this.votes
@@ -90,40 +96,41 @@ public class Voting {
 	 * @param args
 	 */
 	public void voteCommand(Player player, String[] args){
-		
+
 	}
-	
+
 	/**
 	 * @return the current question
 	 */
 	public String getCurrentQuestion(){
 		return this.currentQuestion;
 	}
-	
+
 	/**
 	 * @return The current options
 	 */
 	public String[] getCurrentOptions(){
 		return this.currentOptions;
 	}
-	
+
 	/**
 	 * @return the current votes.
 	 */
 	public HashMap<String,Integer> getVotes(){
 		return this.votes;
 	}
-	
+
 	/**
 	 * vote done! :)
 	 */
 	public void cleanUp(){
 		this.voteInProgress=false;
 	}
-	
+
 	private class VoteTally implements Runnable{
 		private J2 j2;
 		private Voting voting;
+
 		public VoteTally(J2 j2){
 			this.j2=j2;
 			this.voting=j2.voting;
@@ -134,11 +141,12 @@ public class Voting {
 			//Access via this.voting.getCurrentQuestion() and this.voting.getCurrentOptions()
 			//and this.voting.getVotes()
 			//In here is where you announce winners
-			
+
 			j2.chat.messageAll("A WINNAR IS OPTION X");
+
 			//Lastly, vote is no longer in progress
 			this.voting.cleanUp();
+
 		}
-		
 	}
 }
