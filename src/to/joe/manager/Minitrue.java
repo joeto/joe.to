@@ -17,6 +17,7 @@ import to.joe.util.Vanish;
  * IGNORANCE IS STRENGTH
  * 
  * Also, handles admins going invisible
+ * And join/quits
  * 
  * @author matt
  *
@@ -37,8 +38,9 @@ public class Minitrue {
 	 * Called when a player has joined the game.
 	 * @param player The player who is joining.
 	 */
-	public void processJoin(Player player){
-		this.announceJoin(player.getName(),false);
+	public void processJoin(Player player,boolean quiet){
+		if(!quiet)
+			this.announceJoin(player.getName(),false);
 	}
 	/**
 	 * Called when a player leaves the game.
@@ -165,7 +167,7 @@ public class Minitrue {
 				catch(Exception e){
 					this.j2.users.resetAuthentication(name);
 					this.j2.users.addUser(name);
-					this.j2.users.processJoin(p);
+					this.j2.users.processJoin(p,true);
 					cname=ChatColor.GREEN+name;
 				}
 				if(isAdmin){

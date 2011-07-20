@@ -36,7 +36,7 @@ public class PlayerJoinQuit extends PlayerListener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		event.setJoinMessage(null);
 		Player player=event.getPlayer();
-		this.j2.users.processJoin(player);
+		this.j2.users.processJoin(player,false);
 		
 		
 		/*if(j2.hasFlag(player,Flag.JAILED)){

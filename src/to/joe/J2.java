@@ -127,6 +127,10 @@ public class J2 extends JavaPlugin {
 	 * Craftual Harassment Panda
 	 */
 	public final CraftualHarassmentPanda panda=new CraftualHarassmentPanda(this);
+	/**
+	 * Vote manager
+	 */
+	public final Voting voting=new Voting(this);
 	//public managerBlockLog blogger;
 	public MySQL mysql;
 
@@ -603,7 +607,7 @@ public class J2 extends JavaPlugin {
 				String name=player.getName();
 				this.users.resetAuthentication(name);
 				this.users.addUser(name);
-				this.users.processJoin(player);
+				this.users.processJoin(player,true);
 			}
 		}
 		return false;
@@ -1980,6 +1984,12 @@ public class J2 extends JavaPlugin {
 				player.sendMessage(ChatColor.AQUA+"You can always get there with "+ChatColor.DARK_AQUA+"/warp "+name);
 				player.sendMessage(ChatColor.AQUA+"To travel to the closest station say "+ChatColor.DARK_AQUA+"/station go");
 			}
+		}
+		if(isPlayer&&(commandName.equals("voteadmin")||commandName.equals("va"))&&hasFlag(player, Flag.ADMIN)){
+			this.voting.voteAdminCommand(player, args);
+		}
+		if(isPlayer&&commandName.equals("vote")){
+			this.voting.voteCommand(player, args);
 		}
 		return true;
 	}

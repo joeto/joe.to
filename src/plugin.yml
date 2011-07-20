@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 0.9.9.7.2a
+version: 0.9.9.7.2b
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -335,6 +335,14 @@ commands:
     usage: |
             Just as you'd expect
   station:
+    description: hehehe
+    usage: |
+            Just as you'd expect
+  vote:
+    description: hehehe
+    usage: |
+            Just as you'd expect
+  voteadmin:
     description: hehehe
     usage: |
             Just as you'd expect

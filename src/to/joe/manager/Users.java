@@ -316,13 +316,15 @@ public class Users {
 				}
 			}
 		}
+
+
 	}
 
 	/**
 	 * Process user joining.
 	 * @param player
 	 */
-	public void processJoin(Player player){
+	public void processJoin(Player player,boolean quiet){
 		//Last chance to check
 		if(!player.isOnline()){
 			return;
@@ -341,7 +343,9 @@ public class Users {
 		if(j2.maintenance){
 			player.sendMessage(ChatColor.YELLOW+"We are in maintenance mode");
 		}
-		j2.banCoop.processJoin(player);
+		if(!quiet){
+			j2.banCoop.processJoin(player);
+		}
 		for(String line : j2.motd){
 			player.sendMessage(line);
 		}
@@ -349,7 +353,7 @@ public class Users {
 			int count=this.j2.reports.numReports();
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"There are "+count+" reports. ");
 		}
-		j2.minitrue.processJoin(player);
+		j2.minitrue.processJoin(player,quiet);
 		if(j2.hasFlag(player, Flag.CONTRIBUTOR)){
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"We think you're an "+ChatColor.GOLD+"AMAZING CONTRIBUTOR");
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"to the minecraft community as a whole! "+ChatColor.RED+"<3");
