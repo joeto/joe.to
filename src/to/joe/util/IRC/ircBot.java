@@ -80,7 +80,7 @@ public class ircBot extends PircBot {
 				}
 				boolean adminsOnline=!curAdmins.equals("Admins: ");
 				if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
-					if(adminsOnline){
+					if(!adminsOnline){
 						sendMessage(channel,"No admins online.");
 					}
 					else {
@@ -88,7 +88,7 @@ public class ircBot extends PircBot {
 					}
 				}
 				else{
-					if(adminsOnline){
+					if(!adminsOnline){
 						sendMessage(channel,"No admins online. Find one on #joe.to or #minecraft");
 					}
 					else {

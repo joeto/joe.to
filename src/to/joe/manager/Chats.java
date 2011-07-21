@@ -34,35 +34,35 @@ public class Chats {
 		randomColorList[10]=ChatColor.DARK_BLUE.toString();
 		this.restartManager();
 	}
-	
+
 	/**
 	 * Restart manager. Sets muteall false.
 	 */
 	public void restartManager(){
 		this.muteAll=false;
 	}
-	
+
 	/**
 	 * List of char widths in-game. 
 	 */
 	public static final int[] characterWidths = new int[] {
-        1, 9, 9, 8, 8, 8, 8, 7, 9, 8, 9, 9, 8, 9, 9, 9,
-        8, 8, 8, 8, 9, 9, 8, 9, 8, 8, 8, 8, 8, 9, 9, 9,
-        4, 2, 5, 6, 6, 6, 6, 3, 5, 5, 5, 6, 2, 6, 2, 6,
-        6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 2, 2, 5, 6, 5, 6,
-        7, 6, 6, 6, 6, 6, 6, 6, 6, 4, 6, 6, 6, 6, 6, 6,
-        6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 6, 4, 6, 6,
-        3, 6, 6, 6, 6, 6, 5, 6, 6, 2, 6, 5, 3, 6, 6, 6,
-        6, 6, 6, 6, 4, 6, 6, 6, 6, 6, 6, 5, 2, 5, 7, 6,
-        6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 6, 3, 6, 6,
-        6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 6,
-        6, 3, 6, 6, 6, 6, 6, 6, 6, 7, 6, 6, 6, 2, 6, 6,
-        8, 9, 9, 6, 6, 6, 8, 8, 6, 8, 8, 8, 8, 8, 6, 6,
-        9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-        9, 9, 9, 9, 9, 9, 9, 9, 9, 6, 9, 9, 9, 5, 9, 9,
-        8, 7, 7, 8, 7, 8, 8, 8, 7, 8, 8, 7, 9, 9, 6, 7,
-        7, 7, 7, 7, 9, 6, 7, 8, 7, 6, 6, 9, 7, 6, 7, 1
-    };
+		1, 9, 9, 8, 8, 8, 8, 7, 9, 8, 9, 9, 8, 9, 9, 9,
+		8, 8, 8, 8, 9, 9, 8, 9, 8, 8, 8, 8, 8, 9, 9, 9,
+		4, 2, 5, 6, 6, 6, 6, 3, 5, 5, 5, 6, 2, 6, 2, 6,
+		6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 2, 2, 5, 6, 5, 6,
+		7, 6, 6, 6, 6, 6, 6, 6, 6, 4, 6, 6, 6, 6, 6, 6,
+		6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 6, 4, 6, 6,
+		3, 6, 6, 6, 6, 6, 5, 6, 6, 2, 6, 5, 3, 6, 6, 6,
+		6, 6, 6, 6, 4, 6, 6, 6, 6, 6, 6, 5, 2, 5, 7, 6,
+		6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 6, 3, 6, 6,
+		6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 6,
+		6, 3, 6, 6, 6, 6, 6, 6, 6, 7, 6, 6, 6, 2, 6, 6,
+		8, 9, 9, 6, 6, 6, 8, 8, 6, 8, 8, 8, 8, 8, 6, 6,
+		9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+		9, 9, 9, 9, 9, 9, 9, 9, 9, 6, 9, 9, 9, 5, 9, 9,
+		8, 7, 7, 8, 7, 8, 8, 8, 7, 8, 8, 7, 9, 9, 6, 7,
+		7, 7, 7, 7, 9, 6, 7, 8, 7, 6, 6, 9, 7, 6, 7, 1
+	};
 
 	/**
 	 * @return List of acceptable colors for randomization
@@ -96,7 +96,7 @@ public class Chats {
 			}
 		}
 	}
-
+	
 	/**
 	 * Send message to all players
 	 * @param message
@@ -104,11 +104,13 @@ public class Chats {
 	public void messageAll(String message){
 		for (Player p : j2.getServer().getOnlinePlayers()) {
 			if (p != null) {
-				p.sendMessage(message);
+				if(!this.j2.hasFlag(p,Flag.LALALA)){
+					p.sendMessage(message);
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Admin-only chat.
 	 * @param name Sender
@@ -118,7 +120,7 @@ public class Chats {
 		String msg="<"+ChatColor.LIGHT_PURPLE+name+ChatColor.WHITE+"> "+message;
 		j2.sendAdminPlusLog(msg);
 	}
-	
+
 	/**
 	 * Message from admin to all players.
 	 * Sender appears as ADMIN except to admins.
@@ -160,7 +162,7 @@ public class Chats {
 			return "<"+colorName+ChatColor.WHITE+"> ";
 		}
 	}
-	
+
 	/**
 	 * Handle a message sent.
 	 * Includes anti-spam measures
@@ -170,14 +172,14 @@ public class Chats {
 	 * @param me Is the message a /me message
 	 */
 	public void handleChat(Player player,String chat,boolean me){
-		
+
 		if(j2.minitrue.chat(player, chat)){
 			return;
 		}
 		User user=j2.users.getUser(player);
 		String name=player.getName();
 		String chatlc=chat.toLowerCase();
-		
+
 		int spamCount=user.isRepeat(chatlc);
 		if(spamCount>0){
 			switch(spamCount){
@@ -199,13 +201,13 @@ public class Chats {
 			}
 			return;
 		}
-		
+
 		if(chatlc.contains("nigg") || chatlc.contains("fag")) {
 			String msg = ChatColor.RED + "Watch " + ChatColor.LIGHT_PURPLE + name + ChatColor.RED + " for language.";
 			j2.sendAdminPlusLog(msg);
 			j2.irc.ircAdminMsg(ChatColor.stripColor(msg));
 		}
-		
+
 		if((this.muteAll&&!j2.hasFlag(player, Flag.ADMIN)||this.j2.hasFlag(player, Flag.MUTED))){
 			player.sendMessage(ChatColor.RED+"You are currently muted");
 			String message=this.formatNamelyArea(name, ChatColor.YELLOW, me)+chat;
@@ -218,12 +220,12 @@ public class Chats {
 			player.sendMessage(ChatColor.RED+"Wait 5 seconds and try again");
 			return;
 		}
-		
+
 		ChatColor color=null;
 		if(!j2.randomcolor)
 			color=j2.users.getUser(player).getColor();
 		String message=this.formatNamelyArea(name, color, me)+chat;
-		
+
 		if(me)
 			j2.irc.ircMsg("* "+name+" "+chat);
 		else
@@ -233,8 +235,8 @@ public class Chats {
 		messageAll(message);
 
 	}
-	
-	
+
+
 	/**
 	 * Handles a message coming from IRC.
 	 * Does not send if all players muted.
@@ -255,7 +257,7 @@ public class Chats {
 		else{
 			combined=this.j2.ircSeparator[0]+this.j2.ircUserColor+name+ChatColor.WHITE+this.j2.ircSeparator[1]+message;
 		}
-		
+
 		if(combined.length() > this.j2.ircCharLim)
 		{
 			this.j2.irc.getBot().sendMessage(channel,name+": Your message was too long. The limit's " + this.j2.ircCharLim + " characters");
@@ -274,7 +276,7 @@ public class Chats {
 			}
 		}
 	}
-	
+
 	/**
 	 * Takes a admin broadcast from the admin irc channel
 	 * @param from Sender of the message
@@ -284,7 +286,7 @@ public class Chats {
 		this.j2.sendAdminPlusLog(ChatColor.AQUA+"Server-wide message from "+from);
 		this.adminOnlyMessage("irc-"+from, message);
 	}
-	
+
 	/**
 	 * Handle a /msg, secretly sends to any listening admins
 	 * @param from Sender
@@ -325,16 +327,16 @@ public class Chats {
 	public void loadChannel(ChatChannel chan){
 		channels.put(chan.getID(), chan);
 	}*/
-	
+
 	private String nsaify(String string){
 		return string.replace(ChatColor.WHITE.toString(), ChatColor.DARK_AQUA.toString());
 	}
-	
+
 	/*public void logChat(String name, String message) {
 		this is a terrible, horrible idea. Never do it again.
-		 * 
-		 * 
-		 * Connection conn = null;
+	 * 
+	 * 
+	 * Connection conn = null;
 		PreparedStatement ps = null;
 		try {
 			conn = getConnection();

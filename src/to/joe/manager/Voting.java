@@ -34,7 +34,7 @@ public class Voting {
 	public void voteAdminCommand(Player player, String[] args){
 		String name=player.getName();
 		if(args.length<1){
-			player.sendMessage(ChatColor.RED+"Usage: /voteadmin start|cancel|stop|confirm");
+			this.usageVoteAdmin(player);
 			return ;
 		}
 		else{ 
@@ -76,6 +76,7 @@ public class Voting {
 					}
 				}
 				this.j2.chat.messageAll(ChatColor.AQUA+"Say "+ChatColor.DARK_AQUA+"/vote x"+ChatColor.AQUA+" where x is the question #");
+				this.j2.chat.muteAll=false;
 				this.votes=new HashMap<String,Integer>();
 				//Run the run() method of VoteTally in 30 seconds
 				this.tallyTaskNumber=this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(j2, new VoteTally(this.j2), 600L);
@@ -85,7 +86,7 @@ public class Voting {
 					this.j2.getServer().getScheduler().cancelTask(this.tallyTaskNumber);
 					this.tallyTaskNumber=-1;
 					this.j2.sendAdminPlusLog(ChatColor.AQUA + name + " canceled the vote.");
-					this.j2.chat.messageAll(ChatColor.RED + "Admin canceled the voting.");
+					this.j2.chat.messageByFlagless(Flag.ADMIN,ChatColor.RED + "Admin canceled the voting.");
 					this.cleanUp();
 				}
 				else{
@@ -98,7 +99,7 @@ public class Voting {
 	 * Tell player the usage.
 	 * @param player
 	 */
-	public void usageVoteAdmin(Player player){
+	private void usageVoteAdmin(Player player){
 		player.sendMessage(ChatColor.RED+"Usage: /voteadmin start|cancel");
 	}
 
@@ -149,14 +150,14 @@ public class Voting {
 	/**
 	 * @return the current question
 	 */
-	public String getCurrentQuestion(){
+	private String getCurrentQuestion(){
 		return this.currentQuestion;
 	}
 
 	/**
 	 * @return The current options
 	 */
-	public ArrayList<String> getCurrentOptions(){
+	private ArrayList<String> getCurrentOptions(){
 		synchronized(this.optionsSync){
 			return new ArrayList<String>(this.currentOptions);
 		}
@@ -165,14 +166,14 @@ public class Voting {
 	/**
 	 * @return the current votes.
 	 */
-	public HashMap<String,Integer> getVotes(){
+	private HashMap<String,Integer> getVotes(){
 		return new HashMap<String,Integer>(this.votes);
 	}
 
 	/**
 	 * vote done! :)
 	 */
-	public void cleanUp(){
+	private void cleanUp(){
 		this.voteInProgress=false;
 	}
 
@@ -184,6 +185,7 @@ public class Voting {
 		}
 		@Override
 		public void run() {
+			this.j2.chat.muteAll=true;
 			this.j2.chat.messageAll(ChatColor.AQUA+"Vote over! Tallying results...");
 			Collection<Integer> votes=this.j2.voting.getVotes().values();
 			ArrayList<String> options=this.j2.voting.getCurrentOptions();
@@ -228,7 +230,7 @@ public class Voting {
 
 			//Lastly, vote is no longer in progress
 			this.j2.voting.cleanUp();
-
+			this.j2.chat.muteAll=false;
 		}
 	}
 }

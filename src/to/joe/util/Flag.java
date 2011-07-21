@@ -13,7 +13,8 @@ public enum Flag {
 	DONOR('d',"Donor"),//moneh! and other stuff
 	FUN('f',"Fun commands"),//standard toolset for mc2. currently unused
 	GODMODE('g',"Godmode"),//just for tracking, not 100% used yet
-	JAILED('j', "Jailed"),//no get out of jail free card
+	JAILED('j', "Jailed"),//no get out of jail free card,
+	LALALA('l', "Shutting out the world"),
 	MODWORLD('m',"Can Modify"),//standard ability to edit blocks
 	NEW('n',"New"),//new player. currently unused
 	NSA('N',"Listening In"),//admin listening to msg

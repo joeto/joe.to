@@ -1993,6 +1993,27 @@ public class J2 extends JavaPlugin {
 		if(isPlayer&&commandName.equals("vote")){
 			this.voting.voteCommand(player, args);
 		}
+		if(args.length>0&&commandName.equals("maxplayers")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))){
+			int newCount;
+			try{
+				newCount=Integer.parseInt(args[0]);
+			}
+			catch(NumberFormatException e){
+				newCount=this.playerLimit;
+			}
+			this.playerLimit=newCount;
+			this.sendAdminPlusLog(ChatColor.RED+playerName+" set max players to "+this.playerLimit);
+		}
+		if(commandName.equals("shush")&&isPlayer&&this.hasFlag(playerName, Flag.ADMIN)){
+			if(this.hasFlag(playerName,Flag.LALALA)){
+				this.users.dropFlagLocal(playerName, Flag.LALALA);
+				this.sendAdminPlusLog(ChatColor.DARK_AQUA+playerName+" can now hear you again");
+			}
+			else{
+				this.users.addFlagLocal(playerName, Flag.LALALA);
+				this.sendAdminPlusLog(ChatColor.DARK_AQUA+playerName+" has fingers to ears and is singing");
+			}
+		}
 		return true;
 	}
 	
