@@ -197,6 +197,7 @@ public class J2 extends JavaPlugin {
 		webpage.go(servernumber);
 		recipes.addRecipes();
 		minitrue.restartManager();
+		this.activity.restartManager();
 		//this.banCoop.startThumper();
 	}
 
@@ -604,10 +605,7 @@ public class J2 extends JavaPlugin {
 		else{
 			Player player=this.getServer().getPlayer(playername);
 			if(player!=null&&player.isOnline()){
-				String name=player.getName();
-				this.users.resetAuthentication(name);
-				this.users.addUser(name);
-				this.users.processJoin(player,true);
+				player.kickPlayer("Rejoin in 10 seconds.");
 			}
 		}
 		return false;
@@ -934,11 +932,15 @@ public class J2 extends JavaPlugin {
 
 			Player playerFor = null;
 			Material material = null;
+			
 			int count = 1;
 			String[] gData = null;
 			Byte bytedata = null;
 			if (args.length >= 1) {
 				gData = args[0].split(":");
+				if(gData[0].equals("0")){
+					gData[0]="1";
+				}
 				material = Material.matchMaterial(gData[0]);
 				if (gData.length == 2) {
 					try{
@@ -965,7 +967,7 @@ public class J2 extends JavaPlugin {
 					count=1;
 				}
 			}*/
-			if (args.length == 3) {
+			if (args.length == 3 && this.hasFlag(playerName, Flag.ADMIN)) {
 				playerFor = getServer().getPlayer(args[2]);
 				if (playerFor == null) {
 					player.sendMessage(ChatColor.RED + "'" + args[2] + "' is not a valid player!");
