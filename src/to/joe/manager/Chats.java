@@ -294,6 +294,10 @@ public class Chats {
 	 * @param message
 	 */
 	public void handlePrivateMessage(Player from,Player to, String message){
+		if(to.equals(from)){
+			to.sendMessage(ChatColor.RED+"I think you're lonely.");
+			return;
+		}
 		User userTo=this.j2.users.getUser(to);
 		User userFrom=this.j2.users.getUser(from);
 		String colorTo=userTo.getColorName();
@@ -306,7 +310,12 @@ public class Chats {
 			to.sendMessage(complete);
 			from.sendMessage(complete);
 		}
-		this.messageByFlag(Flag.NSA, this.nsaify(complete));
+		String nsaified=this.nsaify(complete);
+		for(Player p:this.j2.getServer().getOnlinePlayers()){
+			if(p!=null&&p.isOnline()&&!p.equals(from)&&!p.equals(to)&&this.j2.hasFlag(p, Flag.NSA)){
+				p.sendMessage(nsaified);
+			}
+		}
 		this.j2.log(complete);
 	}
 

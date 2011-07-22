@@ -68,10 +68,26 @@ public class Users {
 	 * Deauth admin
 	 * @param name
 	 */
-	public void resetAuthentication(String name){
+	public void resetAuthentication(Player player){
+		String name=player.getName();
+		if(this.j2.hasFlag(name,Flag.GODMODE)){
+			
+		}
+		this.getUser(name).setFlags(this.j2.mysql.getUser(name).getUserFlags());
+		if(this.j2.minitrue.invisible(player)){
+			this.j2.minitrue.vanish(player);
+		}
+		this.dropAuthentication(name);
+	}
+
+	/**
+	 * Remove name from auth list
+	 * @param name
+	 */
+	public void dropAuthentication(String name){
 		synchronized(authlock){
 			this.authedAdmins.remove(name);
-		}	
+		}
 	}
 
 	/**
@@ -335,7 +351,6 @@ public class Users {
 		j2.warps.processJoin(name);
 		j2.damage.processJoin(name);
 		j2.jail.processJoin(player);
-		this.resetAuthentication(name);
 		if(player.getInventory().getHelmet().getTypeId()==Material.FIRE.getId()){
 			player.getInventory().setHelmet(new ItemStack(Material.GRASS));
 			player.sendMessage(ChatColor.RED+"You fizzle out");

@@ -33,7 +33,7 @@ public class Jailer {
 		if(!this.isJailed(player)){
 			return;
 		}
-		player.teleport(this.jailLocation);
+		j2.safePort(player, this.jailLocation);
 	}
 	/**
 	 * Message the user that they're in jail

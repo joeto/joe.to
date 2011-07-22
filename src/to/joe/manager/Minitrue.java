@@ -165,7 +165,6 @@ public class Minitrue {
 					cname=j2.users.getUser(name).getColorName();
 				}
 				catch(Exception e){
-					this.j2.users.resetAuthentication(name);
 					this.j2.users.addUser(name);
 					this.j2.users.processJoin(p,true);
 					cname=ChatColor.GREEN+name;

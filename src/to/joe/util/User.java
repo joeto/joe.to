@@ -164,6 +164,14 @@ public class User {
 		return this.spamCount;
 	}
 	
+	/**
+	 * Replace user flags
+	 * @param flags
+	 */
+	public void setFlags(ArrayList<Flag> flags){
+		this.extraFlags=flags;
+	}
+	
 	/*public Block getBlock(){
 		return this.blocksTravelled.get(9);
 	}

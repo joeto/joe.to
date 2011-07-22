@@ -18,6 +18,7 @@ public class PlayerMovement  extends PlayerListener {
 	@Override
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		Player player=event.getPlayer();
+		
 		if(j2.jail.processAction(player)){
 			event.setCancelled(true);
 			return;

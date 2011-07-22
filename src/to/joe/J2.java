@@ -854,7 +854,7 @@ public class J2 extends JavaPlugin {
 					player.sendMessage(ChatColor.RED+"Can't teleport to yourself");
 				}
 				else {
-					player.teleport(inquestion.getLocation());
+					safePort(player, inquestion.getLocation());
 					player.sendMessage("OH GOD I'M FLYING AAAAAAAAH");
 					this.log("Teleport: " + player.getName() + " teleported to "+inquestion.getName());
 				}
@@ -875,7 +875,7 @@ public class J2 extends JavaPlugin {
 					player.sendMessage(ChatColor.RED+"Can't teleport yourself to yourself. Derp.");
 				}
 				else {
-					inquestion.teleport(player.getLocation());
+					safePort(inquestion, player.getLocation());
 					inquestion.sendMessage("You've been teleported");
 					player.sendMessage("Grabbing "+inquestion.getName());
 					this.sendAdminPlusLog(ChatColor.AQUA + playerName + " pulled "+inquestion.getName()+" to self");
@@ -891,13 +891,13 @@ public class J2 extends JavaPlugin {
 		if(commandName.equals("spawn") && (!isPlayer ||hasFlag(player, Flag.FUN))){
 			if(isPlayer && (!hasFlag(player, Flag.ADMIN)|| args.length<1)){
 				player.sendMessage(ChatColor.RED+"WHEEEEEEEEEEEEEEE");
-				player.teleport(player.getWorld().getSpawnLocation());
+				safePort(player, player.getWorld().getSpawnLocation());
 			}
 			else if (args.length ==1){
 				List<Player> inquest = this.minitrue.matchPlayer(args[0],true);
 				if(inquest.size()==1){
 					Player inquestion=inquest.get(0);
-					inquestion.teleport(inquestion.getWorld().getSpawnLocation());
+					safePort(inquestion, inquestion.getWorld().getSpawnLocation());
 					inquestion.sendMessage(ChatColor.RED+"OH GOD I'M BEING PULLED TO SPAWN OH GOD");
 					this.sendAdminPlusLog(ChatColor.RED+playerName+" pulled "+inquestion.getName()+" to spawn");
 				}
@@ -932,7 +932,7 @@ public class J2 extends JavaPlugin {
 
 			Player playerFor = null;
 			Material material = null;
-			
+
 			int count = 1;
 			String[] gData = null;
 			Byte bytedata = null;
@@ -1105,7 +1105,7 @@ public class J2 extends JavaPlugin {
 					if(args.length>1){
 						Report report=this.reports.getReport(Integer.valueOf(args[1]));
 						if(report!=null){
-							player.teleport(report.getLocation());
+							safePort(player, report.getLocation());
 							player.sendMessage(ChatColor.DARK_PURPLE+"Wheeeeeeeee");
 						}
 						else{
@@ -1282,7 +1282,6 @@ public class J2 extends JavaPlugin {
 			loadData();
 			chat.messageByFlag(Flag.SRSTAFF, "j2 data reloaded by "+playerName);
 			this.log("j2 data reloaded by "+playerName);
-
 			return true;
 		}
 
@@ -1348,7 +1347,7 @@ public class J2 extends JavaPlugin {
 				if(warp!=null && (hasFlag(player, warp.getFlag())||warp.getFlag().equals(Flag.Z_SPAREWARP_DESIGNATION))){
 					player.sendMessage(ChatColor.RED+"Welcome to: "+ChatColor.LIGHT_PURPLE+target);
 					this.log(ChatColor.AQUA+"Player "+playerName+" went to warp "+target);
-					player.teleport(warp.getLocation());
+					safePort(player, warp.getLocation());
 				}
 				else {
 					player.sendMessage(ChatColor.RED+"Warp does not exist. For a list, say /warp");
@@ -1374,7 +1373,7 @@ public class J2 extends JavaPlugin {
 				Warp home=warps.getUserWarp(player.getName(),args[0]);
 				if(home!=null){
 					player.sendMessage(ChatColor.RED+"Whoosh!");
-					player.teleport(home.getLocation());
+					safePort(player, home.getLocation());
 				}
 				else {
 					player.sendMessage(ChatColor.RED+"That home does not exist. For a list, say /home");
@@ -1472,7 +1471,7 @@ public class J2 extends JavaPlugin {
 				Warp warptarget=warps.getUserWarp(target, args[1]);
 				if(warptarget!=null){
 					player.sendMessage(ChatColor.RED+"Whooooosh!  *crash*");
-					player.teleport(warptarget.getLocation());
+					safePort(player, warptarget.getLocation());
 				}
 				else {
 					player.sendMessage(ChatColor.RED+"No such home");
@@ -1485,21 +1484,16 @@ public class J2 extends JavaPlugin {
 			return true;
 		}
 		if(commandName.equals("clearinventory")||commandName.equals("ci")&&hasFlag(player,Flag.FUN)){
+			Player target = null;
 			if(isPlayer && args.length==0){
-				player.getInventory().clear();
+				target=player;
 				player.sendMessage(ChatColor.RED+"Inventory emptied");
 				this.log(ChatColor.RED+player.getName()+" emptied inventory");
 			}
 			else if(args.length==1 && (!isPlayer||hasFlag(player,Flag.ADMIN))){
 				List<Player> targets=this.minitrue.matchPlayer(args[0],true);
 				if(targets.size()==1){
-					Player target=targets.get(0);
-					PlayerInventory i=player.getInventory();
-					i.setBoots(null);
-					i.setChestplate(null);
-					i.setHelmet(null);
-					i.setLeggings(null);
-					target.getInventory().clear();
+					target=targets.get(0);
 					target.sendMessage(ChatColor.RED+"Your inventory has been cleared by an admin");
 					this.sendAdminPlusLog(ChatColor.RED+playerName+" emptied inventory of "+target.getName());
 				}
@@ -1507,7 +1501,14 @@ public class J2 extends JavaPlugin {
 					sender.sendMessage(ChatColor.RED+"Found "+targets.size()+" matches. Try again");
 				}
 			}
-
+			if(target!=null){
+				PlayerInventory targetInventory=target.getInventory();
+				targetInventory.clear(36);
+				targetInventory.clear(37);
+				targetInventory.clear(38);
+				targetInventory.clear(39);
+				targetInventory.clear();
+			}
 			return true;
 		}
 		if(isPlayer && commandName.equals("removeitem")){
@@ -1552,7 +1553,7 @@ public class J2 extends JavaPlugin {
 			player.sendMessage(ChatColor.RED+"You fizzle out");
 			this.sendAdminPlusLog( ChatColor.RED+playerName+" disabled GODMODE");
 			users.getUser(name).restoreColor();
-			player.getInventory().setHelmet(new ItemStack(Material.GRASS,1));
+			player.getInventory().clear(39);
 			if(!safemode){
 				damage.danger(playerName);
 				player.sendMessage(ChatColor.RED+"You are no longer safe");
@@ -1567,7 +1568,7 @@ public class J2 extends JavaPlugin {
 				player.sendMessage(ChatColor.RED+"You did not specify an X, Y, and Z");
 			}
 			else {
-				player.teleport(new Location(player.getWorld(),Double.valueOf(args[0]),Double.valueOf(args[1]),Double.valueOf(args[2]),0,0));
+				safePort(player, new Location(player.getWorld(),Double.valueOf(args[0]),Double.valueOf(args[1]),Double.valueOf(args[2]),0,0));
 				player.sendMessage(ChatColor.RED+"WHEEEEE I HOPE THIS ISN'T UNDERGROUND");
 			}
 
@@ -1880,7 +1881,7 @@ public class J2 extends JavaPlugin {
 			if(users.isAuthed(playerName)){
 				this.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"[J2AUTH] "+playerName+" deauthenticated");
 			}
-			this.users.resetAuthentication(playerName);
+			this.users.resetAuthentication(player);
 			//player.sendMessage(ChatColor.LIGHT_PURPLE+"You no can has permissions");
 			this.minitrue.vanish.updateInvisible(player);
 			return true;
@@ -1891,7 +1892,7 @@ public class J2 extends JavaPlugin {
 				return true;
 			}
 			Player target=this.getServer().getPlayer(args[0]);
-			if(target==null|!target.isOnline()){
+			if(target==null||!target.isOnline()){
 				sender.sendMessage(ChatColor.AQUA+"Fail. No such user \""+args[0]+"\"");
 				return true;
 			}
@@ -1973,11 +1974,11 @@ public class J2 extends JavaPlugin {
 			return true;
 		}
 		if(isPlayer&&this.servernumber==2&&commandName.equals("station")){
-			
+
 			Warp target=this.warps.getClosestWarp(player.getLocation());
 			String name=target.getName();
 			if(args.length==1&&args[0].equalsIgnoreCase("go")){
-				player.teleport(target.getLocation());
+				safePort(player, target.getLocation());
 				player.sendMessage(ChatColor.AQUA+"You are now at "+ChatColor.DARK_AQUA+"Station "+name);
 				player.sendMessage(ChatColor.AQUA+"You can return here by saying "+ChatColor.DARK_AQUA+"/warp "+name);
 			}
@@ -2016,7 +2017,7 @@ public class J2 extends JavaPlugin {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * SHUT. DOWN. EVERYTHING.
 	 * @param name Admin shutting down
@@ -2035,6 +2036,15 @@ public class J2 extends JavaPlugin {
 		this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
 	}
 	
+	public void safePort(Player player, Location location){
+		Entity vehicle=player.getVehicle();
+		if(vehicle!=null){
+			player.leaveVehicle();
+			vehicle.remove();
+		}
+		player.teleport(location);
+	}
+
 	SimpleDateFormat shortdateformat=new SimpleDateFormat("yyyy-MM-dd kk:mm");
 	private boolean debug;
 	private Logger log;

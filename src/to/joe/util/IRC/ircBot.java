@@ -33,8 +33,8 @@ public class ircBot extends PircBot {
 			String login, String hostname, String message) {
 		if(message.charAt(0)=='!'){
 			String[] parts=message.split(" ");
-			if (message.equalsIgnoreCase("!help")) {
-				sendMessage(channel, sender + ": I am here to set you free.");
+			if (parts[0].toLowerCase().equals("!help")) {
+				this.sendNotice(sender, "!msg - Send a message to players on the server | !players - Get current playercount | !playerlist - List players online");
 			}
 			else if (message.equalsIgnoreCase("!players") || message.equalsIgnoreCase("!playerlist")) {
 				String curPlayers = "";
