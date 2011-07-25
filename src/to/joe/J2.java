@@ -198,7 +198,7 @@ public class J2 extends JavaPlugin {
 		recipes.addRecipes();
 		minitrue.restartManager();
 		this.activity.restartManager();
-		//this.banCoop.startThumper();
+		this.banCoop.startCallback();
 	}
 
 	/**
