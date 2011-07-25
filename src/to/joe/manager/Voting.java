@@ -75,7 +75,7 @@ public class Voting {
 						this.j2.chat.messageAll(ChatColor.DARK_AQUA.toString() + x + ". " +ChatColor.AQUA+ bits[x]);
 					}
 				}
-				this.j2.chat.messageAll(ChatColor.AQUA+"Say "+ChatColor.DARK_AQUA+"/vote x"+ChatColor.AQUA+" where x is the question #");
+				this.j2.chat.messageAll(ChatColor.AQUA+"Say "+ChatColor.DARK_AQUA+"/vote x"+ChatColor.AQUA+" where x is the answer #");
 				this.j2.chat.muteAll=false;
 				this.votes=new HashMap<String,Integer>();
 				//Run the run() method of VoteTally in 30 seconds

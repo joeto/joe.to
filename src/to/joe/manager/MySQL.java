@@ -959,4 +959,41 @@ public class MySQL {
 		}
 		return perms;
 	}
+	
+	public HashMap<String,String> getIRCAdmins(){
+		HashMap<String,String> admins=new HashMap<String,String>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			String state="SELECT name,hostname FROM j2users where hostname!=''";
+			j2.debug("Query: "+state);
+			ps = conn.prepareStatement(state);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				admins.put(rs.getString("hostname"), rs.getString("name"));
+			}
+			j2.debug("Loaded "+admins.size()+ " irc admins");
+
+		} catch (SQLException ex) {
+			j2.logWarn(ChatColor.RED+ "Unable to load irc admins from MySQL. Oh hell");
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+		return admins;
+	}
+	
+	
 }

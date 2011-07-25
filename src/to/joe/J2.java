@@ -1271,7 +1271,7 @@ public class J2 extends JavaPlugin {
 			return true;
 		}*/
 		if(commandName.equals("ircrefresh") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
-			irc.loadIRCAdmins();
+			irc.reloadIRCAdmins();
 			chat.messageByFlag(Flag.SRSTAFF, ChatColor.RED+"IRC admins reloaded by "+playerName);
 			this.log(playerName+ " reloaded irc admins");
 

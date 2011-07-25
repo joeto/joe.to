@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 1.0
+version: 1.0.1
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -179,15 +179,15 @@ commands:
     usage: |
             /removehome <homename>
   homeinvasion:
-    description: Hehehehehe
+    description: Admin command, getting into other user homes
     usage: |
             /homeinvasion <playername>
   hi:
-    description: Hehehehehe
+    description: Admin command, getting into other user homes
     usage: |
             /hi <playername>
   invasion:
-    description: Hehehehehe
+    description: Admin command, getting into other user homes
     usage: |
             /invasion <playername>
   clearinventory:
@@ -211,7 +211,7 @@ commands:
     usage: |
             /bits
   coo:
-    description: Whoosh!
+    description: Whoosh! To coordinates
     usage: |
             /coo x y z
   whereis:
@@ -227,47 +227,47 @@ commands:
     usage: |
             smackirc
   madagascar:
-    description: hmmm
+    description: A MAN IN BRAZIL IS COUGHING
     usage: |
             madagascar
   lookup:
-    description: Hmmm
+    description: Look up in external ban systems
     usage: |
             lookup
   j2lookup:
-    description: Hmmm
+    description: Look up in j2 ban system
     usage: |
             j2lookup
   iplookup:
-    description: Hmmm
+    description: See most recent users to log in via named player's IP
     usage: |
             iplookup
   pvpon:
-    description: Hmmm
+    description: Enable pvp for a user
     usage: |
             pvpon
   pvpoff:
-    description: Hmmm
+    description: Disable pvp for a user
     usage: |
             pvpoff
   woof:
-    description: Hmmm
+    description: Wolfly attack
     usage: |
             woof
   smite:
-    description: hmm
+    description: Zap a user
     usage: |
             smite
   storm:
-    description: hmm
+    description: Control the weather
     usage: |
             storm
   ircmsg:
-    description: hmm
+    description: Send message to target via irc bot
     usage: |
             ircmsg name message
   flex:
-    description: hmm
+    description: Flexing
     usage: |
             Error: Not enough muscle mass
   removeitem:
@@ -279,11 +279,11 @@ commands:
     usage: |
             ROAR
   ixrai12345:
-    description: yeah
+    description: Catching xrayers, deprecated
     usage: |
             Byebye
   cjbmodsxray:
-    description: yeah
+    description: Catching xrayers, deprecated
     usage: |
             Byebye
   amitrusted:
@@ -299,53 +299,54 @@ commands:
     usage: |
             vanish
   imatool:
-    description: poof
+    description: toggle tool mode
     usage: |
             imatool
   f3:
-    description: mmmhmm
+    description: Acquire XYZ
     usage: |
             f3
   setspawn:
-    description: mmhmm
+    description: Set spawn coordinates
     usage: |
-            yup
+            setspawn x y z
   auth:
-    description: yarp
+    description: Log in as admin
     usage: |
-            yup
+            auth
   harass:
-    description: yarp
+    description: Abuse that griefer
     usage: |
-            yup
+            harass
   muteall:
-    description: mmmhmm
+    description: Make them stop talking
     usage: |
-            Yeaaaah
+            muteall
   mute:
-    description: mmmhmm
+    description: Make a certain player stop talking
     usage: |
-            Yeaaaah
+            mute
   say:
-    description: yoink
+    description: Speak as [SERVER]
     usage: |
-            Yeah thats mine now
+            say
   nsa:
-    description: hehehe
+    description: Always listening
     usage: |
             Just as you'd expect
   station:
-    description: hehehe
+    description: Locate nearest warp
     usage: |
-            Just as you'd expect
+            station
   vote:
-    description: hehehe
+    description: Voting on options
     usage: |
-            Just as you'd expect
+            vote x
   voteadmin:
-    description: hehehe
+    description: Admin control of voting
     usage: |
-            Just as you'd expect
+            voteadmin
   shush:
-    description: meow
-    usage: yup
+    description: Control the voices inside your head
+    usage: |
+            shush

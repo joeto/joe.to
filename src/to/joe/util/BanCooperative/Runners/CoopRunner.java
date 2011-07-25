@@ -133,6 +133,10 @@ public abstract class CoopRunner implements Runnable{
 		postVars.put("admin", "BobTheCurious");
 		postVars.put("exec", "playerLookup");
 		JSONObject mcbans_json = this.mcbans_api(postVars);
+		if(mcbans_json==null){
+			this.j2.logWarn("MCBans is DOWN");
+			return;
+		}
 		try {
 			JSONArray local=mcbans_json.optJSONArray("local");
 			for (int i=0; i<local.length(); i++) {

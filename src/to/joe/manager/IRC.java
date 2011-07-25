@@ -1,20 +1,17 @@
 package to.joe.manager;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.Location;
 
 import to.joe.J2;
-import to.joe.util.IRC.ircAdmin;
+import to.joe.util.Flag;
+import to.joe.util.User;
 import to.joe.util.IRC.ircBot;
 
 /**
@@ -26,7 +23,7 @@ public class IRC {
 	private J2 j2;
 	private ircBot bot;
 	private Object adminsLock = new Object();
-	private ArrayList<ircAdmin> admins;
+	private HashMap<String,String> admins;//hostname->name
 	private HashMap<String,Long> msgs;
 	public LinkedBlockingQueue<String> chatQueue = new LinkedBlockingQueue<String>();
 	//private boolean stop = false;
@@ -35,6 +32,10 @@ public class IRC {
 	public IRC(J2 j2p){
 		this.j2=j2p;
 		this.cleanStartup();
+	}
+	
+	public void reloadIRCAdmins(){
+		this.admins=this.j2.mysql.getIRCAdmins();
 	}
 	
 	/**
@@ -52,7 +53,6 @@ public class IRC {
 	 * Load IRC admins, clear message queue.
 	 */
 	public void cleanStartup(){
-		loadIRCAdmins();
 		this.msgs=new HashMap<String,Long>();
 		//this.recent=new HashMap<String,Long>();
 	}
@@ -125,9 +125,8 @@ public class IRC {
 			bot.sendMessage("ChanServ", "inviteme "+j2.ircAdminChannel);
 		}
 		bot.joinChannel(j2.ircChannel);
-		loadIRCAdmins();
 		if(j2.ircOnJoin!="")bot.sendMessage(j2.ircChannel,j2.ircOnJoin);
-
+		this.reloadIRCAdmins();
 	}
 
 	/**
@@ -165,27 +164,8 @@ public class IRC {
 	 */
 	public boolean isIRCAuth(String hostname){
 		synchronized(adminsLock){
-			for(ircAdmin admin:admins){
-				if(admin!=null && admin.getHostname().equals(hostname)){
-					return true;
-				}
-			}
+			return this.admins.containsKey(hostname);
 		}
-		return false;
-	}
-
-	/**
-	 * Is the command a level 2 command
-	 * @param command
-	 * @return
-	 */
-	public boolean ircLevel2(String command) {
-		for (String str : j2.ircLevel2) {
-			if (command.equalsIgnoreCase(str)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -200,33 +180,44 @@ public class IRC {
 
 	/**
 	 * Process attempted command
-	 * @param host
+	 * @param hostname
 	 * @param nick
 	 * @param command
 	 * @return
 	 */
-	public boolean ircCommand(String host,String nick,String[] command){
+	public boolean ircCommand(String hostname,String nick,String[] command){
 		if(!j2.ircEnable)
 			return false;
+		@SuppressWarnings("unused")
 		int lvl=0;
+		String commands=j2.combineSplit(0, command, " ");
 		String[] args=new String[command.length-1];
 		System.arraycopy(command, 1, args, 0, command.length -1);
 		String adminName="";
-		synchronized(adminsLock){
-			for(ircAdmin admin:admins){
-				if(admin!=null && admin.getHostname().equals(host)){
-					lvl=admin.getLevel();
-					adminName=admin.getUsername();
-				}
-			}
+		if(!this.isIRCAuth(hostname)){
+			this.j2.log("Failed IRC command: "+hostname+" tried: "+commands);
+			return false;
+		}
+		else{
+			adminName=this.admins.get(hostname);
+		}
+		User user=this.j2.mysql.getUser(adminName);
+		String group=user.getGroup();
+		ArrayList<Flag> flags=this.j2.users.getGroupFlags(group);
+		flags.addAll(user.getUserFlags());
+		if(flags.contains(Flag.SRSTAFF)){
+			lvl=2;
+		}
+		else if(flags.contains(Flag.ADMIN)){
+			lvl=1;
+		}
+		else{
+			this.j2.log("Failed IRC command: "+nick+"("+hostname+") tried: "+commands);
+			return false;
 		}
 		if(command[0].charAt(0)=='.'){
 			command[0]=command[0].substring(1);
 		}
-		if(lvl==0 || (lvl==2 && !ircLevel2(command[0])  )  ){
-			return false;
-		}
-		String commands=j2.combineSplit(0, command, " ");
 		String com=command[0];
 		boolean done=false;
 		if(com.equalsIgnoreCase("kick")&&command.length>2){
@@ -255,10 +246,10 @@ public class IRC {
 			done=true;
 		}
 		if(done){
-			j2.log("IRC admin "+adminName+"("+nick+"@"+host+") used command: "+commands);
+			j2.log("IRC admin "+adminName+"("+nick+"@"+hostname+") used command: "+commands);
 		}
 		else {
-			j2.log("IRC admin "+adminName+"("+nick+"@"+host+") tried: "+commands);
+			j2.log("IRC admin "+adminName+"("+nick+"@"+hostname+") tried: "+commands);
 		}
 
 		return done;
@@ -277,7 +268,7 @@ public class IRC {
 	/**
 	 * Reload IRC admins list
 	 */
-	public void loadIRCAdmins(){
+	/*public void loadIRCAdmins(){
 		String location="ircAdmins.txt";
 		if (!new File(location).exists()) {
 			FileWriter writer = null;
@@ -321,7 +312,7 @@ public class IRC {
 				j2.log( "Exception while reading " + location + " (Are you sure you formatted it correctly?)");
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Send message to regular channel

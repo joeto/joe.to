@@ -17,17 +17,6 @@ public class CoopRunnerMCBansHeartbeat extends CoopRunner{
 	
 	@Override
 	public void run() {
-		while(true){
-			this.ping();
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-			}
-		}
-		
-	}
-
-	private void ping(){
 		HashMap<String,String> postVars = new HashMap<String,String>();
 		postVars.put("version", this.mcbans_version);
 		postVars.put("maxPlayers", String.valueOf(j2.playerLimit));
@@ -35,7 +24,7 @@ public class CoopRunnerMCBansHeartbeat extends CoopRunner{
 		postVars.put("playerList", this.playerList());
 		this.mcbans_api(postVars);
 	}
-	
+
 	private String playerList(){
 		StringBuilder playerList=new StringBuilder();
 		Player[] players=this.j2.getServer().getOnlinePlayers();

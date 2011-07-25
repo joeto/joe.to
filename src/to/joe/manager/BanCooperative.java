@@ -27,11 +27,10 @@ public class BanCooperative {
 	}
 	
 	/**
-	 * Starts the MCBans callBack. Currently disabled.
+	 * Starts the MCBans callBack. 
 	 */
-	public void startThumper(){
-		CoopRunnerMCBansHeartbeat thumpThump=new CoopRunnerMCBansHeartbeat(j2,this);
-		new Thread(thumpThump).start();
+	public void startCallback(){
+		this.j2.getServer().getScheduler().scheduleAsyncRepeatingTask(this.j2, new CoopRunnerMCBansHeartbeat(j2,this), 60000, 60000);
 	}
 
 	/**
