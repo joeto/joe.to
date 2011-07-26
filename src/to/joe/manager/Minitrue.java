@@ -41,6 +41,9 @@ public class Minitrue {
 	public void processJoin(Player player,boolean quiet){
 		if(!quiet)
 			this.announceJoin(player.getName(),false);
+		else if(this.j2.hasFlag(player, Flag.SILENT_JOIN)&&!this.invisible(player)){
+			this.vanish.callVanish(player);
+		}
 	}
 	/**
 	 * Called when a player leaves the game.

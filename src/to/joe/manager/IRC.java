@@ -218,31 +218,35 @@ public class IRC {
 		if(command[0].charAt(0)=='.'){
 			command[0]=command[0].substring(1);
 		}
-		String com=command[0];
+		String com=command[0].toLowerCase();
 		boolean done=false;
-		if(com.equalsIgnoreCase("kick")&&command.length>2){
+		if(com.equals("kick")&&command.length>2){
 			j2.kickbans.callKick(command[1], adminName, j2.combineSplit(2,command," "));
 			//j2.kickbans.forceKick(command[1], j2.combineSplit(2,command," "));
 			done=true;
 		}
-		if(com.equalsIgnoreCase("ban")&&command.length>2){
+		if(com.equals("ban")&&command.length>2){
 			j2.kickbans.callBan(adminName, args, new Location(j2.getServer().getWorlds().get(0), 0,0,0,0,0));
 			done=true;
 		}
-		if(com.equalsIgnoreCase("g")&&command.length>1){
+		if(com.equals("g")&&command.length>1){
 			j2.chat.globalAdminMessage(adminName, j2.combineSplit(1, command, " "));
 			done=true;
 		}
-		if(com.equalsIgnoreCase("a")&&command.length>1){
+		if(com.equals("a")&&command.length>1){
 			j2.chat.adminOnlyMessage(adminName, j2.combineSplit(1, command, " "));
 			done=true;
 		}
-		if(com.equalsIgnoreCase("addban")&&command.length>2){
+		if(com.equals("addban")&&command.length>2){
 			j2.kickbans.callAddBan(adminName, args, new Location(j2.getServer().getWorlds().get(0), 0,0,0,0,0));
 			done=true;
 		}
-		if(com.equalsIgnoreCase("unban")&&command.length>1){
+		if(com.equals("unban")&&command.length>1){
 			j2.kickbans.unban(adminName, command[1]);
+			done=true;
+		}
+		if(com.equals("q")){
+			this.j2.users.addFlag(adminName, Flag.SILENT_JOIN);
 			done=true;
 		}
 		if(done){

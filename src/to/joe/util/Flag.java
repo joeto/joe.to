@@ -14,18 +14,18 @@ public enum Flag {
 	FUN('f',"Fun commands"),//standard toolset for mc2. currently unused
 	GODMODE('g',"Godmode"),//just for tracking, not 100% used yet
 	JAILED('j', "Jailed"),//no get out of jail free card,
-	LALALA('l', "Shutting out the world"),
+	SHUT_OUT_WORLD('l', "Shutting out the world"),
 	MODWORLD('m',"Can Modify"),//standard ability to edit blocks
 	NEW('n',"New"),//new player. currently unused
 	NSA('N',"Listening In"),//admin listening to msg
-	NEVER_AGAIN('p',"Banned from mc1"),// Cannot join mc1 no matter what.
-	SILENT_BUT_DEADLY('q',"Silent but deadly"),//invisadmin
+	BARRED_MC1('p',"Banned from mc1"),// Cannot join mc1 no matter what.
+	SILENT_JOIN('q',"Silent but deadly"),//invisadmin
 	SRSTAFF('s', "Senior Staff"),//senior staff
 	TRUSTED('t', "Trusted"),//trusted
 	TOOLS('T',"Tool mode"),//admin tool mode
 	THOR('x',"Thor Powers"),//admin lightning powers
 	MUTED('X',"Muted"),//player muted
-	QUIETERJOIN('y',"No join alerts on IRC"),
+	QUIETERJOIN_NOIRC('y',"No join alerts on IRC"),
 	CUSTOM3('z',"Custom3"),
 	//Numbers are reserved for internal programming.
 	Z_HOME_DESIGNATION('0',"DO NOT USE"),

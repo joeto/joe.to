@@ -2006,14 +2006,27 @@ public class J2 extends JavaPlugin {
 			this.sendAdminPlusLog(ChatColor.RED+playerName+" set max players to "+this.playerLimit);
 		}
 		if(commandName.equals("shush")&&isPlayer&&this.hasFlag(playerName, Flag.ADMIN)){
-			if(this.hasFlag(playerName,Flag.LALALA)){
-				this.users.dropFlagLocal(playerName, Flag.LALALA);
+			if(this.hasFlag(playerName,Flag.SHUT_OUT_WORLD)){
+				this.users.dropFlagLocal(playerName, Flag.SHUT_OUT_WORLD);
 				this.sendAdminPlusLog(ChatColor.DARK_AQUA+playerName+" can now hear you again");
 			}
 			else{
-				this.users.addFlagLocal(playerName, Flag.LALALA);
+				this.users.addFlagLocal(playerName, Flag.SHUT_OUT_WORLD);
 				this.sendAdminPlusLog(ChatColor.DARK_AQUA+playerName+" has fingers to ears and is singing");
 			}
+			return true;
+		}
+		if(commandName.equals("hat")&&isPlayer&&this.hasFlag(playerName, Flag.ADMIN)){
+			ItemStack meow=player.getItemInHand();
+			if(meow.getAmount()>0&&meow.getTypeId()<256){
+				player.getInventory().setHelmet(new ItemStack(meow.getType(),1));
+				meow.setAmount(meow.getAmount()-1);
+				player.sendMessage(ChatColor.RED+"You pat your new helmet");
+			}
+			else{
+				player.sendMessage(ChatColor.RED+"You pat your head");
+			}
+			return true;
 		}
 		return true;
 	}

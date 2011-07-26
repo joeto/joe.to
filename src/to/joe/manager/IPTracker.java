@@ -199,7 +199,7 @@ public class IPTracker {
 		if(badlist.contains(name)){
 			int total=this.getTotal(name)-1;
 			int banned=this.getBanned(name);
-			if(!j2.hasFlag(name, Flag.QUIETERJOIN)){
+			if(!j2.hasFlag(name, Flag.QUIETERJOIN_NOIRC)){
 				j2.irc.ircAdminMsg("[J2BANS] "+name+" matches "+total+" others: "+banned+" banned");
 			}
 			j2.chat.messageByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"[J2BANS] "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" matches "+total+" others: "+banned+" banned");

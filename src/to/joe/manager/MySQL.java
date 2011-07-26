@@ -231,7 +231,7 @@ public class MySQL {
 		j2.banCoop.processBan(name, admin, reason);
 		j2.panda.remove(name);
 		if(this.serverNumber==1){
-			this.j2.users.addFlag(name, Flag.NEVER_AGAIN);
+			this.j2.users.addFlag(name, Flag.BARRED_MC1);
 		}
 		Connection conn = null;
 		PreparedStatement ps = null;

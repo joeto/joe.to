@@ -104,7 +104,7 @@ public class Chats {
 	public void messageAll(String message){
 		for (Player p : j2.getServer().getOnlinePlayers()) {
 			if (p != null) {
-				if(!this.j2.hasFlag(p,Flag.LALALA)){
+				if(!this.j2.hasFlag(p,Flag.SHUT_OUT_WORLD)){
 					p.sendMessage(message);
 				}
 			}

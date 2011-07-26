@@ -345,6 +345,7 @@ public class Users {
 		if(!player.isOnline()){
 			return;
 		}
+		boolean stealthy=this.j2.hasFlag(player, Flag.SILENT_JOIN);
 		String name=player.getName();
 		j2.irc.processJoin(name);
 		j2.ip.processJoin(name);
@@ -368,7 +369,11 @@ public class Users {
 			int count=this.j2.reports.numReports();
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"There are "+count+" reports. ");
 		}
-		j2.minitrue.processJoin(player,quiet);
+		j2.minitrue.processJoin(player,stealthy);
+		if(stealthy){
+			this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.YELLOW+"Stealthy join by "+name);
+			this.dropFlag(name, Flag.SILENT_JOIN);
+		}
 		if(j2.hasFlag(player, Flag.CONTRIBUTOR)){
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"We think you're an "+ChatColor.GOLD+"AMAZING CONTRIBUTOR");
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"to the minecraft community as a whole! "+ChatColor.RED+"<3");
