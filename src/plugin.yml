@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 1.0.2
+version: 1.0.3
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -354,3 +354,15 @@ commands:
     description: Place block of id on head
     usage: |
             hat
+  note:
+    description: Leave an offline note for a user
+    usage: |
+            note
+  anote:
+    description: Leave an offline note for a user from admin
+    usage: |
+            anote
+  maxplayers:
+    description: Set max playercount
+    usage: |
+            maxplayers

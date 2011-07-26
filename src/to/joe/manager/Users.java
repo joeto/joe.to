@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import to.joe.J2;
 import to.joe.util.Flag;
+import to.joe.util.Note;
 import to.joe.util.User;
 
 
@@ -377,6 +378,15 @@ public class Users {
 		if(j2.hasFlag(player, Flag.CONTRIBUTOR)){
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"We think you're an "+ChatColor.GOLD+"AMAZING CONTRIBUTOR");
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"to the minecraft community as a whole! "+ChatColor.RED+"<3");
+		}
+		ArrayList<Note> notes=this.j2.mysql.getNotes(name);
+		if(notes.size()>0){
+			player.sendMessage(ChatColor.DARK_AQUA+"You have notes!");
+			for(Note note:notes){
+				if(note!=null){
+					player.sendMessage(note.toString());
+				}
+			}
 		}
 	}
 

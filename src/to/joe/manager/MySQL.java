@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 //import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +18,7 @@ import org.bukkit.Location;
 import to.joe.J2;
 import to.joe.util.Ban;
 import to.joe.util.Flag;
+import to.joe.util.Note;
 import to.joe.util.Report;
 import to.joe.util.User;
 import to.joe.util.Warp;
@@ -993,6 +995,72 @@ public class MySQL {
 			}
 		}
 		return admins;
+	}
+	
+	public void addNote(String sender, String recipient, String message, boolean adminBusiness){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getConnection();
+			String state="INSERT INTO notes (`from`,`to`,`message`,`time`,`adminBusiness`) VALUES (?,?,?,?,?);";
+			j2.debug("Query: "+state);
+			ps = conn.prepareStatement(state);
+			ps.setString(1, stringClean(sender));
+			ps.setString(2, stringClean(recipient));
+			ps.setString(3, stringClean(message));
+			ps.setTimestamp(4, new Timestamp(new Date().getTime()));
+			ps.setBoolean(5, adminBusiness);
+			ps.executeUpdate();
+		} catch (SQLException ex) {
+			this.j2.logWarn("Failure recording a note");
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+	}
+	
+	public ArrayList<Note> getNotes(String name){
+		ArrayList<Note> notes=new ArrayList<Note>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			String state="SELECT * FROM notes where received=0 and `to`=\""+name+"\"";
+			j2.debug("Query: "+state);
+			ps = conn.prepareStatement(state);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				notes.add(new Note(rs.getString("from"), rs.getString("message"), new Date(rs.getTimestamp("time").getTime()), rs.getBoolean("adminBusiness")));
+			}
+			j2.debug("Loaded "+notes.size()+ " notes");
+			ps=conn.prepareStatement("UPDATE notes SET received=1 where `to`=\""+name+"\"");
+			ps.executeUpdate();
+		} catch (SQLException ex) {
+			j2.logWarn(ChatColor.RED+ "Unable to load user notes from MySQL. Oh hell");
+			j2.debug(ex.getMessage());
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+			}
+		}
+		return notes;
 	}
 	
 	

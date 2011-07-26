@@ -132,6 +132,9 @@ public class J2 extends JavaPlugin {
 	 */
 	public final Voting voting=new Voting(this);
 	//public managerBlockLog blogger;
+	/**
+	 * MySQL stuffs
+	 */
 	public MySQL mysql;
 
 
@@ -2025,6 +2028,53 @@ public class J2 extends JavaPlugin {
 			}
 			else{
 				player.sendMessage(ChatColor.RED+"You pat your head");
+			}
+			return true;
+		}
+		if((commandName.equals("note")||commandName.equals("anote"))&&isPlayer){
+			if(args.length<2){
+				player.sendMessage(ChatColor.RED+"/note username message");
+				return true;
+			}
+			boolean adminMode=false;
+			if(commandName.equals("anote")){
+				if(this.hasFlag(playerName, Flag.ADMIN)){
+					adminMode=true;
+				}
+			}
+			String targetName=args[0];
+			String message=this.combineSplit(1, args, " ");
+			List<Player> match=this.getServer().matchPlayer(targetName);
+			Player targetPlayer=null;
+			if(match.size()>0){
+				for(Player p:match){
+					if(p!=null&&p.isOnline()&&p.getName().toLowerCase().equals(targetName.toLowerCase())){
+						targetPlayer=p;
+					}
+				}
+			}
+			String a=ChatColor.AQUA.toString();
+			String da=ChatColor.DARK_AQUA.toString();
+			if(targetPlayer!=null){
+				if(adminMode){
+					targetPlayer.sendMessage(a+"HEY "+ChatColor.RED+targetPlayer.getName()+a+": "+message);
+					this.sendAdminPlusLog(a+"Priv <"+da+playerName+a+"->"+da+targetName+a+"> "+message);
+				}
+				else{
+					this.chat.handlePrivateMessage(player, targetPlayer, message);
+				}
+			}
+			else{
+				this.mysql.addNote(playerName, targetName, message, adminMode);
+				player.sendMessage(ChatColor.AQUA+"Note left for "+args[0]);
+				String bit=a+"Note <"+da+playerName+a+"->"+da+targetName+a+"> "+message;
+				this.log(bit);
+				if(adminMode){
+					this.chat.messageByFlag(Flag.ADMIN, bit);
+				}
+				else{
+					this.chat.messageByFlag(Flag.NSA, bit);
+				}
 			}
 			return true;
 		}
