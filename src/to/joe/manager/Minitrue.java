@@ -154,7 +154,6 @@ public class Minitrue {
 		for(char ch:msg.toCharArray()){
 			curlen+=Chats.characterWidths[(int)ch];
 		} //now we have our base length
-		int pc=0;
 
 		for(Player p: players){
 			if(!p.isOnline()){
@@ -213,7 +212,6 @@ public class Minitrue {
 				else{
 					msg+=" "+cname;
 				}
-				pc++;
 			}
 		}
 		this.send(sender, msg);

@@ -30,7 +30,7 @@ SOFTWARE.
  * @author JSON.org
  * @version 2010-12-24
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked","rawtypes"})
 public class XMLTokener extends JSONTokener {
 
 

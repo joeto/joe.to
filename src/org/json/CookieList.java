@@ -31,7 +31,7 @@ import java.util.Iterator;
  * @author JSON.org
  * @version 2010-12-24
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class CookieList {
 
     /**

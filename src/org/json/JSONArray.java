@@ -80,7 +80,7 @@ import java.util.Map;
  * @author JSON.org
  * @version 2010-12-28
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes","unchecked"})
 public class JSONArray {
 
 

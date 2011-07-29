@@ -124,9 +124,9 @@ public class HTTP {
      * @throws JSONException if the object does not contain enough
      *  information.
      */
-    @SuppressWarnings("unchecked")
 	public static String toString(JSONObject jo) throws JSONException {
-        Iterator     keys = jo.keys();
+        @SuppressWarnings("rawtypes")
+		Iterator     keys = jo.keys();
         String       string;
         StringBuffer sb = new StringBuffer();
         if (jo.has("Status-Code") && jo.has("Reason-Phrase")) {

@@ -53,6 +53,7 @@ import java.util.*;
  *          <a href="http://www.jibble.org/">http://www.jibble.org/</a>
  * @version    1.5.0 (Build time: Mon Dec 14 20:07:17 2009)
  */
+@SuppressWarnings ("rawtypes")
 public abstract class PircBot implements PircReplyConstants {
 
 
@@ -164,9 +165,9 @@ public abstract class PircBot implements PircReplyConstants {
         BufferedWriter bwriter = new BufferedWriter(outputStreamWriter);
         
         // Attempt to join the server.
-        if (password != null && !password.equals("")) {
+        /*if (password != null && !password.equals("")) {
             PircOutputThread.sendRawLine(this, bwriter, "PASS " + password);
-        }
+        }*/
         String nick = this.getName();
         PircOutputThread.sendRawLine(this, bwriter, "NICK " + nick);
         PircOutputThread.sendRawLine(this, bwriter, "USER " + this.getLogin() + " 8 * :" + this.getVersion());
@@ -2848,7 +2849,7 @@ public abstract class PircBot implements PircReplyConstants {
      * 
      * @see #onUserList(String,PircUser[]) onUserList
      */
-    @SuppressWarnings("unchecked")
+    
 	public final PircUser[] getUsers(String channel) {
         channel = channel.toLowerCase();
         PircUser[] userArray = new PircUser[0];
@@ -2879,7 +2880,6 @@ public abstract class PircBot implements PircReplyConstants {
      * @return A String array containing the names of all channels that we
      *         are in.
      */
-    @SuppressWarnings("unchecked")
 	public final String[] getChannels() {
         String[] channels = new String[0];
         synchronized (_channels) {
@@ -2923,7 +2923,7 @@ public abstract class PircBot implements PircReplyConstants {
      * Add a user to the specified channel in our memory.
      * Overwrite the existing entry if it exists.
      */
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	private final void addUser(String channel, PircUser user) {
         channel = channel.toLowerCase();
         synchronized (_channels) {
@@ -2940,8 +2940,7 @@ public abstract class PircBot implements PircReplyConstants {
     /**
      * Remove a user from the specified channel in our memory.
      */
-    @SuppressWarnings("unchecked")
-	private final PircUser removeUser(String channel, String nick) {
+    private final PircUser removeUser(String channel, String nick) {
         channel = channel.toLowerCase();
         PircUser user = new PircUser("", nick);
         synchronized (_channels) {
@@ -2957,7 +2956,6 @@ public abstract class PircBot implements PircReplyConstants {
     /**
      * Remove a user from all channels in our memory.
      */
-    @SuppressWarnings("unchecked")
 	private final void removeUser(String nick) {
         synchronized (_channels) {
             Enumeration enumeration = _channels.keys();
@@ -2972,7 +2970,6 @@ public abstract class PircBot implements PircReplyConstants {
     /**
      * Rename a user if they appear in any of the channels we know about.
      */
-    @SuppressWarnings("unchecked")
 	private final void renameUser(String oldNick, String newNick) {
         synchronized (_channels) {
             Enumeration enumeration = _channels.keys();
@@ -3002,7 +2999,6 @@ public abstract class PircBot implements PircReplyConstants {
     /**
      * Removes all channels from our memory of users.
      */
-    @SuppressWarnings("unchecked")
 	private final void removeAllChannels() {
         synchronized(_channels) {
             _channels = new Hashtable();
@@ -3010,7 +3006,7 @@ public abstract class PircBot implements PircReplyConstants {
     }
 
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	private final void updateUser(String channel, int userMode, String nick) {
         channel = channel.toLowerCase();
         synchronized (_channels) {
@@ -3085,12 +3081,10 @@ public abstract class PircBot implements PircReplyConstants {
     
     // A Hashtable of channels that points to a selfreferential Hashtable of
     // User objects (used to remember which users are in which channels).
-    @SuppressWarnings("unchecked")
 	private Hashtable _channels = new Hashtable();
     
     // A Hashtable to temporarily store channel topics when we join them
     // until we find out who set that topic.
-    @SuppressWarnings("unchecked")
 	private Hashtable _topics = new Hashtable();
     
     // DccManager to process and handle all DCC events.

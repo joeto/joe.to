@@ -148,7 +148,7 @@ public class PircDccManager {
     
     
     private PircBot _bot;
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private Vector _awaitingResume = new Vector();
     
 }

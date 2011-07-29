@@ -103,7 +103,7 @@ public abstract class CoopRunner implements Runnable{
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected HashMap<String, String> JSONToHashMap(JSONObject result){
 		HashMap<String,String> output=new HashMap<String,String>();
 		if (result != null)

@@ -143,7 +143,7 @@ public class PircQueue {
     }
     
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
 	private Vector _queue = new Vector();
     
 }
