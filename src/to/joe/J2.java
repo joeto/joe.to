@@ -2053,6 +2053,9 @@ public class J2 extends JavaPlugin {
 					}
 				}
 			}
+			if(this.minitrue.invisible(targetPlayer)&&!this.hasFlag(player, Flag.ADMIN)){
+				targetPlayer=null;
+			}
 			String a=ChatColor.AQUA.toString();
 			String da=ChatColor.DARK_AQUA.toString();
 			if(targetPlayer!=null){
