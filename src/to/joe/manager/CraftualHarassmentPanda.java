@@ -112,8 +112,8 @@ public class CraftualHarassmentPanda {
 			case 3:
 				player.kickPlayer("No spamming, thanks :)");
 				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Kicked "+name+" for spamming");
-				this.j2.irc.ircAdminMsg("Kicked "+name+" for spamming. Message in next line");
-				this.j2.irc.ircAdminMsg(message);
+				this.j2.irc.messageAdmins("Kicked "+name+" for spamming. Message in next line");
+				this.j2.irc.messageAdmins(message);
 				this.j2.debug("User "+name+" kicked for chatspam");
 				break;
 			default:
@@ -125,7 +125,7 @@ public class CraftualHarassmentPanda {
 		if(j2.users.getUser(player).canChat(20000)){
 			String squawk=this.pandaLines[this.j2.random.nextInt(this.pandaLines.length)];
 			this.j2.chat.messageAll( ChatColor.WHITE+"<"+j2.users.getUser(player).getColorName()+ChatColor.WHITE+"> "+squawk);
-			this.j2.irc.ircMsg("<"+player.getName()+"> "+squawk);
+			this.j2.irc.messageRelay("<"+player.getName()+"> "+squawk);
 		}
 		return false;
 	}

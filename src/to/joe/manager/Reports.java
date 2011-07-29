@@ -46,7 +46,7 @@ public class Reports {
 	 * @param report
 	 */
 	public void addReportAndAlert(Report report){
-		this.j2.irc.ircAdminMsg(ChatColor.stripColor(addReportViaSQL(report)));
+		this.j2.irc.messageAdmins(ChatColor.stripColor(addReportViaSQL(report)));
 	}
 	/**
 	 * Add report, return alert message

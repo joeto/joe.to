@@ -133,7 +133,7 @@ public class Chats {
 		String imessage="<ADMIN> "+message;
 		this.messageByFlagless(Flag.ADMIN, pmessage);
 		this.j2.sendAdminPlusLog(amessage);
-		j2.irc.ircMsg(imessage);
+		j2.irc.messageRelay(imessage);
 	}
 
 	private String formatNamelyArea(String name,ChatColor color,boolean me){
@@ -191,8 +191,8 @@ public class Chats {
 			case 5:
 				player.kickPlayer("No spamming, thanks :)");
 				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Kicked "+name+" for spamming");
-				this.j2.irc.ircAdminMsg("Kicked "+name+" for spamming. Message in next line");
-				this.j2.irc.ircAdminMsg(chat);
+				this.j2.irc.messageAdmins("Kicked "+name+" for spamming. Message in next line");
+				this.j2.irc.messageAdmins(chat);
 				this.j2.debug("User "+name+" kicked for chatspam");
 				break;
 			default:
@@ -205,7 +205,7 @@ public class Chats {
 		if(chatlc.contains("nigg") || chatlc.contains("fag")) {
 			String msg = ChatColor.RED + "Watch " + ChatColor.LIGHT_PURPLE + name + ChatColor.RED + " for language.";
 			j2.sendAdminPlusLog(msg);
-			j2.irc.ircAdminMsg(ChatColor.stripColor(msg));
+			j2.irc.messageAdmins(ChatColor.stripColor(msg));
 		}
 
 		if((this.muteAll&&!j2.hasFlag(player, Flag.ADMIN)||this.j2.hasFlag(player, Flag.MUTED))){
@@ -227,9 +227,9 @@ public class Chats {
 		String message=this.formatNamelyArea(name, color, me)+chat;
 
 		if(me)
-			j2.irc.ircMsg("* "+name+" "+chat);
+			j2.irc.messageRelay("* "+name+" "+chat);
 		else
-			j2.irc.ircMsg("<"+name+"> "+chat);
+			j2.irc.messageRelay("<"+name+"> "+chat);
 		//j2.irc.chatQueue.offer("<"+name+"> "+chat);
 		j2.log(message);
 		messageAll(message);

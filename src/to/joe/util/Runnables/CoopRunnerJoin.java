@@ -1,4 +1,4 @@
-package to.joe.util.BanCooperative.Runners;
+package to.joe.util.Runnables;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -27,7 +27,7 @@ public class CoopRunnerJoin extends CoopRunner{
 			j2.chat.messageByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"Player "+ChatColor.WHITE+name+ChatColor.LIGHT_PURPLE+" has "+ChatColor.WHITE+dox.totalBans()+ChatColor.LIGHT_PURPLE+" bans. MCBans rep "+ChatColor.WHITE+dox.getMCBansRep()+ChatColor.LIGHT_PURPLE+"/10");
 			j2.chat.messageByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE+"To see the bans: /lookup "+ChatColor.WHITE+name);
 			if(!j2.hasFlag(name, Flag.QUIETERJOIN_NOIRC)&&dox.sigBans()>0){
-				j2.irc.ircAdminMsg("[BANS] "+name+": Bans: "+dox.totalBans()+". MCBans Rep "+dox.getMCBansRep()+"/10");
+				j2.irc.messageAdmins("[BANS] "+name+": Bans: "+dox.totalBans()+". MCBans Rep "+dox.getMCBansRep()+"/10");
 			}
 		}
 		/*if(is_mcbans_mod.equals("y")){

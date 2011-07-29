@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 import to.joe.J2;
 import to.joe.util.BanCooperative.BanCoopDossier;
-import to.joe.util.BanCooperative.Runners.*;
+import to.joe.util.Runnables.*;
 
 /**
  * System for interfacing with MCBans and MCBouncer

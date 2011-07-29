@@ -157,7 +157,7 @@ public class J2 extends JavaPlugin {
 		loadData();
 		this.debug("Data loaded");
 		//irc start
-		if(ircEnable)irc.prepIRC();
+		if(ircEnable)irc.connectAndAuth();
 		irc.startIRCTimer();
 		//if(ircEnable)irc.startIRCTimer();
 		this.debug("IRC up (or disabled)");
@@ -644,7 +644,7 @@ public class J2 extends JavaPlugin {
 			this.log("J2: Got message, tag \""+tag+"\"");
 		}
 		if(tag.equalsIgnoreCase("nocheat")){
-			irc.ircAdminMsg(message);
+			irc.messageAdmins(message);
 			if(debug){
 				this.log("J2.2: Got message, tag \""+tag+"\"");
 			}
@@ -995,7 +995,7 @@ public class J2 extends JavaPlugin {
 			player.sendMessage("Given " + playerFor.getDisplayName() + " " + count + " " + material.toString());
 			this.log("Giving "+playerName+" "+count+" "+material.toString());
 			if((isOnWatchlist(material.getId()))&&(count>10||count<1)){
-				irc.ircAdminMsg("Detecting summon of "+count+" "+material.toString()+" by "+playerName);
+				irc.messageAdmins("Detecting summon of "+count+" "+material.toString()+" by "+playerName);
 				this.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Detecting summon of "+ChatColor.WHITE+count+" "+ChatColor.LIGHT_PURPLE+material.toString()+" by "+ChatColor.WHITE+playerName);
 			}
 			return true;
@@ -1056,7 +1056,7 @@ public class J2 extends JavaPlugin {
 				else{
 					String message=ChatColor.LIGHT_PURPLE+"Report from the field: <"+ChatColor.RED+playerName+ChatColor.LIGHT_PURPLE+"> "+ChatColor.WHITE+theReport;
 					this.sendAdminPlusLog(message);
-					this.irc.ircAdminMsg(ChatColor.stripColor(message));
+					this.irc.messageAdmins(ChatColor.stripColor(message));
 					player.sendMessage(ChatColor.RED+"Report transmitted. Thank you soldier.");
 				}
 
@@ -1902,12 +1902,12 @@ public class J2 extends JavaPlugin {
 			if(!this.panda.panda(target)){
 				this.panda.harass(target.getName());
 				this.sendAdminPlusLog(ChatColor.AQUA+"[HARASS] Target Acquired: "+ChatColor.DARK_AQUA+target.getName()+ChatColor.AQUA+". Thanks, "+playerName+"!");
-				this.irc.ircAdminMsg("[HARASS] Target Acquired: "+target.getName()+". Thanks, "+playerName+"!");
+				this.irc.messageAdmins("[HARASS] Target Acquired: "+target.getName()+". Thanks, "+playerName+"!");
 			}
 			else{
 				this.panda.remove(target.getName());
 				this.sendAdminPlusLog(ChatColor.AQUA+"[HARASS] Target Removed: "+ChatColor.DARK_AQUA+target.getName()+ChatColor.AQUA+". Thanks, "+playerName+"!");
-				this.irc.ircAdminMsg("[HARASS] Target Removed: "+target.getName()+". Thanks, "+playerName+"!");
+				this.irc.messageAdmins("[HARASS] Target Removed: "+target.getName()+". Thanks, "+playerName+"!");
 			}
 			return true;
 		}

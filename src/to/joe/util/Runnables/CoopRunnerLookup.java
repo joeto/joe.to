@@ -1,4 +1,4 @@
-package to.joe.util.BanCooperative.Runners;
+package to.joe.util.Runnables;
 
 import org.bukkit.entity.Player;
 

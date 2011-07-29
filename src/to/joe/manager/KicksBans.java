@@ -61,7 +61,7 @@ public class KicksBans {
 			toBan.kickPlayer("Banned: " + banReason);
 			j2.sendAdminPlusLog(ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
 			j2.chat.messageByFlagless(Flag.ADMIN,ChatColor.RED + name + " banned (" + banReason+")");
-			j2.irc.ircMsg(name + " banned (" + banReason+")");
+			j2.irc.messageRelay(name + " banned (" + banReason+")");
 			/*} else {
 				toBan.kickPlayer("Banned.");
 				j2.log.log(Level.INFO, "Banning " + name + " by " + adminName);
@@ -130,12 +130,12 @@ public class KicksBans {
 				toKick.kickPlayer("Kicked: " + reason);
 				j2.sendAdminPlusLog(ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
 				j2.chat.messageByFlagless(Flag.ADMIN,ChatColor.RED + name + " kicked ("+reason+")");
-				j2.irc.ircMsg(name + " kicked ("+reason+")");
+				j2.irc.messageRelay(name + " kicked ("+reason+")");
 			} else {
 				toKick.kickPlayer("Kicked.");
 				j2.sendAdminPlusLog(ChatColor.RED + "Kicking " + name + " by " + admin);
 				j2.chat.messageByFlagless(Flag.ADMIN,ChatColor.RED + name + " kicked");
-				j2.irc.ircMsg(name + " kicked");
+				j2.irc.messageRelay(name + " kicked");
 			}
 		} else {
 			if(!admin.equalsIgnoreCase("console")&&!quiet)
@@ -157,9 +157,9 @@ public class KicksBans {
 				p.kickPlayer(reason);
 				if(!msged){
 					if(reason!="")
-						j2.irc.ircMsg(name+" kicked");
+						j2.irc.messageRelay(name+" kicked");
 					else 
-						j2.irc.ircMsg(name+" kicked ("+reason+")");
+						j2.irc.messageRelay(name+" kicked ("+reason+")");
 					j2.sendAdminPlusLog(ChatColor.RED+"Knocked "+name+" out of the server");
 					msged=!msged;
 				}

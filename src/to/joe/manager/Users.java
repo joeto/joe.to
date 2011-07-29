@@ -15,6 +15,7 @@ import to.joe.J2;
 import to.joe.util.Flag;
 import to.joe.util.Note;
 import to.joe.util.User;
+import to.joe.util.Runnables.PremiumCheck;
 
 
 /**
@@ -348,6 +349,7 @@ public class Users {
 		}
 		boolean stealthy=this.j2.hasFlag(player, Flag.SILENT_JOIN);
 		String name=player.getName();
+		this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(this.j2, new PremiumCheck(name,this.j2));
 		j2.irc.processJoin(name);
 		j2.ip.processJoin(name);
 		j2.warps.processJoin(name);

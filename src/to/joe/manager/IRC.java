@@ -46,13 +46,13 @@ public class IRC {
 		if(this.bot!=null){
 			bot.quitServer("Restarting...");
 		}
-		this.prepIRC();
+		this.connectAndAuth();
 	}
 	
 	/**
 	 * Load IRC admins, clear message queue.
 	 */
-	public void cleanStartup(){
+	private void cleanStartup(){
 		this.msgs=new HashMap<String,Long>();
 		//this.recent=new HashMap<String,Long>();
 	}
@@ -63,7 +63,7 @@ public class IRC {
 	 * @param string
 	 * @return
 	 */
-	public boolean goodToGo(String string){
+	private boolean goodToGo(String string){
 		if(string.startsWith("[J2BANS]")||string.startsWith("[BANS]")){
 			long rightNow=(new Date()).getTime();
 			if(this.msgs.containsKey(string)){
@@ -109,7 +109,7 @@ public class IRC {
 	/**
 	 * Connecting to IRC, authenticating, etc
 	 */
-	public void prepIRC(){
+	public void connectAndAuth(){
 
 		bot=new ircBot(j2.ircName,j2.ircMsg,this);
 
@@ -147,7 +147,7 @@ public class IRC {
 	/**
 	 * If not connected to admin channel, join it.
 	 */
-	public void adminChannel(){
+	private void adminChannel(){
 		if(j2.ircEnable&&!(new ArrayList<String>(Arrays.asList((bot.getChannels()))).contains(j2.ircAdminChannel))){
 			if(j2.gsAuth!=""){
 				bot.sendMessage("authserv@services.gamesurge.net", "auth "+j2.gsAuth+" "+j2.gsPass);
@@ -162,7 +162,7 @@ public class IRC {
 	 * @param hostname
 	 * @return
 	 */
-	public boolean isIRCAuth(String hostname){
+	private boolean isIRCAuth(String hostname){
 		synchronized(adminsLock){
 			return this.admins.containsKey(hostname);
 		}
@@ -173,7 +173,7 @@ public class IRC {
 	 * @param target
 	 * @param message
 	 */
-	public void doIRC(String target,String message){
+	public void message(String target,String message){
 		if(j2.ircEnable)
 			bot.sendMessage(target, message);
 	}
@@ -322,7 +322,7 @@ public class IRC {
 	 * Send message to regular channel
 	 * @param message
 	 */
-	public void ircMsg(String message){
+	public void messageRelay(String message){
 		if(j2.ircEnable)
 			bot.sendMessage(j2.ircChannel,message);
 	}
@@ -331,7 +331,7 @@ public class IRC {
 	 * Send message to admin channel
 	 * @param message
 	 */
-	public void ircAdminMsg(String message){
+	public void messageAdmins(String message){
 		if(j2.ircEnable&&this.goodToGo(message))
 			bot.sendMessage(j2.ircAdminChannel,message);
 	}
@@ -365,7 +365,7 @@ public class IRC {
 
 	private void checkStatus(){
 		if(!j2.ircEnable&&restart){
-			prepIRC();
+			connectAndAuth();
 			restart=false;
 			j2.ircEnable=true;
 		}
