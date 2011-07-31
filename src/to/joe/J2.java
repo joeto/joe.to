@@ -503,6 +503,8 @@ public class J2 extends JavaPlugin {
 	public boolean isOnSummonlist(int id) {
 		return summonlist.contains(Integer.valueOf(id));
 	}
+	
+	public boolean trustReq = true;
 
 
 	/*public Block locationCheck(Player player,Block block,boolean placed){
@@ -2030,6 +2032,55 @@ public class J2 extends JavaPlugin {
 				player.sendMessage(ChatColor.RED+"You pat your head");
 			}
 			return true;
+		}
+		if(isPlayer&&commandName.equals("trustreq")){
+			if(this.hasFlag(player, Flag.ADMIN)){
+				if(args.length!=0){
+					player.sendMessage(ChatColor.RED + "Usage: /trustreq");
+					player.sendMessage(ChatColor.RED + "Toggles trusted requests on and off.");
+				}
+				else{
+					if(trustReq){
+						trustReq = false;
+                                                player.sendMessage(ChatColor.RED + "System disabled.");
+					}
+					else{
+						trustReq = true;
+                                                player.sendMessage(ChatColor.GREEN + "System enabled.");
+					}
+				}
+			}
+			if(this.hasFlag(player, Flag.TRUSTED)){
+				if(args.length!=0){
+					player.sendMessage(ChatColor.RED + "Usage: /trustreq");
+					player.sendMessage(ChatColor.RED + "Toggles reception of trusted requests.");
+				}
+				else{
+					if(this.hasFlag(player, Flag.TRUSTREQ)){
+						this.users.dropFlag(playerName, Flag.TRUSTREQ);
+						player.sendMessage(ChatColor.AQUA + "No longer recieving trusted requests.");
+					}
+					else{
+						this.users.addFlag(playerName, Flag.TRUSTREQ);
+						player.sendMessage(ChatColor.AQUA + "You are now recieving trusted requests.");
+					}
+				}
+			}
+			else{
+				if(args.length!=0){
+					player.sendMessage(ChatColor.RED + "Usage: /trustreq");
+					player.sendMessage(ChatColor.RED + "Usage: Request trusted assistance.");
+				}
+				else{
+					if(trustReq){
+						this.chat.messageByFlag(Flag.TRUSTREQ, ChatColor.DARK_AQUA + "[REQUEST] " + player + " needs trusted assistance.");
+						player.sendMessage(ChatColor.AQUA + "Request sent.");
+					}
+					else{
+						player.sendMessage(ChatColor.RED + "Sorry, trusted requests are currently disabled.");
+					}
+				}
+			}
 		}
 		if((commandName.equals("note")||commandName.equals("anote"))&&isPlayer){
 			if(args.length<2){
