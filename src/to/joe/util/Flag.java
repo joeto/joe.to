@@ -22,6 +22,7 @@ public enum Flag {
 	SILENT_JOIN('q',"Silent but deadly"),//invisadmin
 	SRSTAFF('s', "Senior Staff"),//senior staff
 	TRUSTED('t', "Trusted"),//trusted
+        TRUSTREQ('r' "Gets trusted requests"),//trustreq system
 	TOOLS('T',"Tool mode"),//admin tool mode
 	THOR('x',"Thor Powers"),//admin lightning powers
 	MUTED('X',"Muted"),//player muted
