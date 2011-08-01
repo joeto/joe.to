@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 
 /**
  * User to user notes
- * @author matt
  *
  */
 public class Note {

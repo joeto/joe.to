@@ -9,7 +9,6 @@ import org.bukkit.block.Block;
 
 /**
  * A j2 user. Special tracking for special people.
- * @author matt
  *
  */
 public class User {

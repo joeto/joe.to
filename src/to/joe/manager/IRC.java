@@ -16,7 +16,6 @@ import to.joe.util.IRC.ircBot;
 
 /**
  * Manager for the IRC relay
- * @author matt
  *
  */
 public class IRC {

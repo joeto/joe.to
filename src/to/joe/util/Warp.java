@@ -4,7 +4,6 @@ import org.bukkit.Location;
 
 /**
  * Warps and homes
- * @author matt
  *
  */
 public class Warp {

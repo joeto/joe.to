@@ -5,7 +5,6 @@ import to.joe.J2;
 /**
  * Track player movement
  * Currently unused
- * @author matt
  *
  */
 @SuppressWarnings("unused")

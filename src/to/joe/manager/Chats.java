@@ -11,7 +11,6 @@ import to.joe.util.User;
 
 /**
  * Manager for handling chatting
- * @author matt
  *
  */
 public class Chats {

@@ -13,7 +13,6 @@ import to.joe.util.Flag;
 /**
  * Activity tracking system.
  * To be used for AFK system
- * @author matt
  *
  */
 public class ActivityTracker {

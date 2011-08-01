@@ -20,7 +20,6 @@ import to.joe.J2;
 
 /**
  * System for harassing griefers
- * @author matt
  *
  */
 public class CraftualHarassmentPanda {

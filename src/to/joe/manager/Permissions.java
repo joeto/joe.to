@@ -6,7 +6,6 @@ import to.joe.util.Flag;
 
 /**
  * Permissions interactions
- * @author matt
  *
  */
 public class Permissions {

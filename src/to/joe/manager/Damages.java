@@ -16,7 +16,6 @@ import to.joe.J2;
 /**
  * Damage interpreter
  * Also handles the fun wolf attack ability
- * @author matt
  *
  */
 public class Damages {

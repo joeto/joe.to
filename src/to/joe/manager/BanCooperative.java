@@ -5,12 +5,11 @@ import org.bukkit.entity.Player;
 
 import to.joe.J2;
 import to.joe.util.BanCooperative.BanCoopDossier;
-import to.joe.util.Runnables.*;
+import to.joe.util.Runnables.BanCooperative.*;
 
 /**
  * System for interfacing with MCBans and MCBouncer
  * Easy to incorporate additional systems.
- * @author matt
  *
  */
 public class BanCooperative {

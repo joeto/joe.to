@@ -28,6 +28,7 @@ import org.bukkit.Material;
 import to.joe.listener.*;
 import to.joe.manager.*;
 import to.joe.util.*;
+import to.joe.util.Runnables.AutoSave;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -50,7 +51,6 @@ import java.util.logging.Logger;
 /**
  * J2 Plugin, on Bukkit
  *
- * @author mbaxter
  */
 public class J2 extends JavaPlugin {
 	private final PlayerChat plrlisChat = new PlayerChat(this);
@@ -202,6 +202,7 @@ public class J2 extends JavaPlugin {
 		minitrue.restartManager();
 		this.activity.restartManager();
 		this.banCoop.startCallback();
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new AutoSave(this),1,6000);//Saves every 5 minutes
 	}
 
 	/**

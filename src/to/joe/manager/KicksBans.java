@@ -14,7 +14,6 @@ import to.joe.util.Flag;
 
 /**
  * Manager of kicking/banning
- * @author matt
  *
  */
 public class KicksBans {

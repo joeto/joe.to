@@ -20,7 +20,6 @@ import to.joe.util.Runnables.PremiumCheck;
 
 /**
  * User manager
- * @author matt
  *
  */
 public class Users {

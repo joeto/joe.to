@@ -12,7 +12,6 @@ import to.joe.J2;
 
 /**
  * Configuration handler. Not yet implemented
- * @author matt
  *
  */
 public class Configurator {

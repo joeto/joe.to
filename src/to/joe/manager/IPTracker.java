@@ -13,7 +13,6 @@ import to.joe.util.Flag;
 /**
  * System for determining if player matches any other players
  * Alerts admins if player matches banned users
- * @author matt
  *
  */
 public class IPTracker {

@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
  * Filter on the log. 
  * Removes some lines
  * Sends some other lines to secondary.log as well
- * @author matt
  *
  */
 public class MCLogFilter implements Filter {
@@ -45,7 +44,6 @@ public class MCLogFilter implements Filter {
 	
 	/**
 	 * The Secondary logging system
-	 * @author matt
 	 *
 	 */
 	private class SecondaryLog {

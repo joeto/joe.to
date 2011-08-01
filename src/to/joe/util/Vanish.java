@@ -18,7 +18,6 @@ import to.joe.manager.Minitrue;
 
 /**
  * Vanishing handling
- * @author matt
  *
  */
 public class Vanish

@@ -4,7 +4,6 @@ import org.bukkit.Location;
 
 /**
  * A single report.
- * @author matt
  *
  */
 public class Report {

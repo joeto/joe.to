@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 /**
  * Flag
- * @author matt
  *
  */
 public enum Flag {

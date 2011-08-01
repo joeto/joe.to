@@ -10,7 +10,6 @@ import to.joe.util.Report;
 
 /**
  * Report manager
- * @author matt
  *
  */
 public class Reports {

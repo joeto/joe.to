@@ -1,4 +1,4 @@
-package to.joe.util.Runnables;
+package to.joe.util.Runnables.BanCooperative;
 
 import java.util.HashMap;
 

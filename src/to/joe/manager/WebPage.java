@@ -16,7 +16,6 @@ import to.joe.J2;
 
 /**
  * Creates and maintains webpages with info.
- * @author matt
  *
  */
 public class WebPage {

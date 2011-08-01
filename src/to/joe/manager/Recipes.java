@@ -8,7 +8,6 @@ import to.joe.J2;
 
 /**
  * Strange recipe manager
- * @author matt
  *
  */
 public class Recipes {

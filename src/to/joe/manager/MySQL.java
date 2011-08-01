@@ -25,7 +25,6 @@ import to.joe.util.Warp;
 
 /**
  * All interactions with SQL
- * @author matt
  *
  */
 public class MySQL {

@@ -11,7 +11,6 @@ import to.joe.util.Warp;
 
 /**
  * Warp manager (homes are private warps)
- * @author matt
  *
  */
 public class Warps {

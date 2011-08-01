@@ -9,7 +9,6 @@ import to.joe.util.Flag;
 
 /**
  * Unimplemented Jailing system
- * @author matt
  *
  */
 public class Jailer {

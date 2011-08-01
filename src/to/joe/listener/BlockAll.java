@@ -14,7 +14,6 @@ import to.joe.util.Flag;
 
 /**
  * J2 block listener
- * @author mbaxter
  */
 public class BlockAll extends BlockListener {
     private final J2 j2;

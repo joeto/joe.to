@@ -19,7 +19,6 @@ import to.joe.util.Vanish;
  * Also, handles admins going invisible
  * And join/quits
  * 
- * @author matt
  *
  */
 public class Minitrue {
