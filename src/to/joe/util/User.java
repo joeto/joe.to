@@ -134,12 +134,10 @@ public class User {
 	private boolean chatSpeed(long time){
 		long cur=(new Date()).getTime();
 		if((this.lastChat.get(0)+time)>cur){
-			System.out.println("Too fast");
 			return true;
 		}
 		this.lastChat.remove((int)0);
 		this.lastChat.add(cur);
-		System.out.println("Slow enough");
 		return false;
 	}
 	
@@ -152,15 +150,12 @@ public class User {
 		boolean isIt=this.chatSpeed(10000L);
 		if(!isIt&&!(message.startsWith("/")&&!(message.startsWith("/report")||message.startsWith("/note")||message.startsWith("/anote")||message.startsWith("/msg")))){
 			isIt=message.equals(this.lastMessage);
-			System.out.println("Checked if equals previous");
 		}
 		if(!isIt){
 			this.spamCount=0;
-			System.out.println("Reset");
 		}
 		else{
 			this.spamCount++;
-			System.out.println("Incremented");
 		}
 		this.lastMessage=message;
 		return this.spamCount;

@@ -300,15 +300,16 @@ public class Chats {
 		int spamCount=user.spamCheck(text);
 		if(spamCount>0){
 			switch(spamCount){
-			case 2:
-				player.sendMessage(ChatColor.RED+"SPAM DETECTED. Please stop :)");
+			case 3:
+				player.sendMessage(ChatColor.RED+"You will be kicked if you continue");
 				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Warned "+name+" for spam. Kicking if continues.");
 				this.j2.debug("User "+name+" warned for spam");
 				break;
-			case 3:
+			case 5:
 				this.j2.kickbans.spamKick(player);
 				break;
 			default:
+				player.sendMessage(ChatColor.RED+"Repeat message or too fast, blocked.");
 				this.j2.debug("User "+name+" is spamming - "+spamCount);
 				break;
 			}
