@@ -1,6 +1,7 @@
 package to.joe.manager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -19,19 +20,21 @@ import to.joe.util.Flag;
 public class KicksBans {
 	private J2 j2;
 	public ArrayList<Ban> bans;
-	public ArrayList<String> xrayers;
+	private ArrayList<String> xrayers;
+	private HashMap<String,Integer> sessionSpamKicks;
 
 	public KicksBans(J2 j2p){
 		this.j2=j2p;
 		this.restartManager();
 	}
-	
+
 	/**
 	 * Reset ban cache.
 	 */
 	public void restartManager(){
 		this.bans = new ArrayList<Ban>();
 		this.xrayers=new ArrayList<String>();
+		this.sessionSpamKicks=new HashMap<String,Integer>();
 	}
 
 	/**
@@ -168,6 +171,37 @@ public class KicksBans {
 	}
 
 	/**
+	 * Kick a player for spamming
+	 * @param player
+	 * @param spammingWhat
+	 */
+	public void spamKick(Player player){
+		String name=player.getName();
+		int count=0;
+		if(this.sessionSpamKicks.containsKey(name)){
+			count=this.sessionSpamKicks.get(name);
+		}
+		count++;
+		this.sessionSpamKicks.put(name, count);
+		String reason=null;
+		switch(count){
+		case 2: 
+			reason="Last warning to stop spamming";
+			break;
+		case 3:
+			this.callAddBan("BobTheSpamMonitor", null, new Location(player.getWorld(), 0,0,0));
+			this.sessionSpamKicks.remove(name);
+			break;
+		default:
+			reason="Stop spamming";
+		}
+		if(count<3){
+			player.kickPlayer(reason);
+			this.j2.sendAdminPlusLog(name+" kicked for spam");
+		}
+	}
+
+	/**
 	 * Kick all players
 	 * @param reason
 	 */
@@ -193,7 +227,7 @@ public class KicksBans {
 		j2.sendAdminPlusLog(ChatColor.RED + "Unbanning " + name + " by " + adminName);
 		j2.banCoop.processUnban(name,adminName);
 	}
-	
+
 	/**
 	 * Player attempting to use an old style xray hack
 	 * Defunct

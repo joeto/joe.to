@@ -2101,7 +2101,7 @@ public class J2 extends JavaPlugin {
 		kickbans.kickAll("We'll be back after these brief messages");
 		this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
 	}
-	
+
 	public void safePort(Player player, Location location){
 		Entity vehicle=player.getVehicle();
 		if(vehicle!=null){

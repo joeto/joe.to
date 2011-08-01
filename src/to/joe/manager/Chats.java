@@ -1,6 +1,7 @@
 package to.joe.manager;
 
 
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -17,6 +18,8 @@ public class Chats {
 	private String[] randomColorList;
 	private J2 j2;
 	public boolean muteAll;
+	
+	
 	public Chats(J2 j2p){
 		j2=j2p;
 		//colorslist, minus lightblue white and purple
@@ -176,31 +179,8 @@ public class Chats {
 		if(j2.minitrue.chat(player, chat)){
 			return;
 		}
-		User user=j2.users.getUser(player);
 		String name=player.getName();
 		String chatlc=chat.toLowerCase();
-
-		int spamCount=user.isRepeat(chatlc);
-		if(spamCount>0){
-			switch(spamCount){
-			case 3:
-				player.sendMessage(ChatColor.RED+"Do you really need to repeat that message?");
-				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Warned "+name+" for chat spam. Kicking if continues.");
-				this.j2.debug("User "+name+" warned for chatspam");
-				break;
-			case 5:
-				player.kickPlayer("No spamming, thanks :)");
-				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Kicked "+name+" for spamming");
-				this.j2.irc.messageAdmins("Kicked "+name+" for spamming. Message in next line");
-				this.j2.irc.messageAdmins(chat);
-				this.j2.debug("User "+name+" kicked for chatspam");
-				break;
-			default:
-				this.j2.debug("User "+name+" is spamming chat - "+spamCount);
-				break;
-			}
-			return;
-		}
 
 		if(chatlc.contains("nigg") || chatlc.contains("fag")) {
 			String msg = ChatColor.RED + "Watch " + ChatColor.LIGHT_PURPLE + name + ChatColor.RED + " for language.";
@@ -213,11 +193,6 @@ public class Chats {
 			String message=this.formatNamelyArea(name, ChatColor.YELLOW, me)+chat;
 			this.messageByFlag(Flag.ADMIN, message);
 			this.j2.log(message);
-			return;
-		}
-		if(!(user.canChat()||j2.hasFlag(player, Flag.ADMIN))){
-			player.sendMessage(ChatColor.RED+"Trying to send too many messages too quickly.");
-			player.sendMessage(ChatColor.RED+"Wait 5 seconds and try again");
 			return;
 		}
 
@@ -317,6 +292,29 @@ public class Chats {
 			}
 		}
 		this.j2.log(complete);
+	}
+	
+	public boolean isSpam(Player player,String text){
+		User user=j2.users.getUser(player);
+		String name=player.getName();
+		int spamCount=user.spamCheck(text);
+		if(spamCount>0){
+			switch(spamCount){
+			case 2:
+				player.sendMessage(ChatColor.RED+"SPAM DETECTED. Please stop :)");
+				this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Warned "+name+" for spam. Kicking if continues.");
+				this.j2.debug("User "+name+" warned for spam");
+				break;
+			case 3:
+				this.j2.kickbans.spamKick(player);
+				break;
+			default:
+				this.j2.debug("User "+name+" is spamming - "+spamCount);
+				break;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	/*private HashMap<Integer,ChatChannel> channels;

@@ -126,25 +126,21 @@ public class User {
 		return false;
 	}
 	
-	/**
-	 * @return if player can chat after default time (10s)
-	 */
-	public boolean canChat(){
-		return this.canChat(10000L);
-	}
 	
 	/**
 	 * @param time
-	 * @return if player can chat after inputted time
+	 * @return if speed is too quick
 	 */
-	public boolean canChat(long time){
+	private boolean chatSpeed(long time){
 		long cur=(new Date()).getTime();
 		if((this.lastChat.get(0)+time)>cur){
-			return false;
+			System.out.println("Too fast");
+			return true;
 		}
 		this.lastChat.remove((int)0);
 		this.lastChat.add(cur);
-		return true;
+		System.out.println("Slow enough");
+		return false;
 	}
 	
 	/**
@@ -152,13 +148,19 @@ public class User {
 	 * @param message
 	 * @return if message is a repeat
 	 */
-	public int isRepeat(String message){
-		boolean isIt=message.equals(this.lastMessage);
+	public int spamCheck(String message){
+		boolean isIt=this.chatSpeed(10000L);
+		if(!isIt&&!(message.startsWith("/")&&!(message.startsWith("/report")||message.startsWith("/note")||message.startsWith("/anote")||message.startsWith("/msg")))){
+			isIt=message.equals(this.lastMessage);
+			System.out.println("Checked if equals previous");
+		}
 		if(!isIt){
 			this.spamCount=0;
+			System.out.println("Reset");
 		}
 		else{
 			this.spamCount++;
+			System.out.println("Incremented");
 		}
 		this.lastMessage=message;
 		return this.spamCount;

@@ -42,7 +42,7 @@ public class PlayerChat extends PlayerListener {
 	public void onPlayerChat (PlayerChatEvent event ) {
 		Player player=event.getPlayer();
 		String message=event.getMessage();
-		if(!this.j2.panda.chat(player, message)){
+		if(this.j2.chat.isSpam(player, message)||!this.j2.panda.chat(player, message)){
     		event.setCancelled(true);
     		return;
     	}
@@ -56,7 +56,7 @@ public class PlayerChat extends PlayerListener {
 		Player player=event.getPlayer();
 		String name=player.getName();
 		String message=event.getMessage();
-		if(!this.j2.panda.chat(player, message)){
+		if(this.j2.chat.isSpam(player, message)||!this.j2.panda.chat(player, message)){
     		event.setCancelled(true);
     		return;
     	}
