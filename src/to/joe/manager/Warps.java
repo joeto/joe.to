@@ -39,7 +39,7 @@ public class Warps {
 	 */
 	public void addWarpInternal(Warp warp){
 		synchronized(this.lock){
-			if(warp.getFlag().equals(Flag.Z_HOME_DESIGNATION)){
+			if(warp.getFlag().equals(Flag.PLAYER_HOME)){
 				this.homes.add(warp);
 			}
 			else{
@@ -53,7 +53,7 @@ public class Warps {
 	 */
 	public void killWarp(Warp warp){
 		synchronized(this.lock){
-			if(warp.getFlag().equals(Flag.Z_HOME_DESIGNATION)){
+			if(warp.getFlag().equals(Flag.PLAYER_HOME)){
 				this.homes.remove(warp);
 			}
 			else{
@@ -195,7 +195,7 @@ public class Warps {
 				for(Warp warp_i:warps_u){
 					Flag flag=warp_i.getFlag();
 					j2.debug(warp_i.getName()+" has flag "+warp_i.getFlag().getChar());
-					if(warp_i!=null && (j2.hasFlag(player, flag)||flag.equals(Flag.Z_SPAREWARP_DESIGNATION))){
+					if(warp_i!=null && (j2.hasFlag(player, flag)||flag.equals(Flag.PLAYER_WARP_PUBLIC))){
 						warps_s+=", "+warp_i.getName();
 					}
 				}

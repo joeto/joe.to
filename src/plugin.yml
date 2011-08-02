@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 1.0.7
+version: 1.0.8
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -134,10 +134,10 @@ commands:
     description: /me
     usage: |
             /me <message>
-  ircrefresh:
+  ircadminreload:
     description: refresh irc admins
     usage: |
-            /ircrefresh
+            /ircadminreload
   j2reload:
     description: refresh config
     usage: |
@@ -186,10 +186,6 @@ commands:
     description: Admin command, getting into other user homes
     usage: |
             /hi <playername>
-  invasion:
-    description: Admin command, getting into other user homes
-    usage: |
-            /invasion <playername>
   clearinventory:
     description: Clear your inventory
     usage: |
@@ -242,18 +238,6 @@ commands:
     description: See most recent users to log in via named player's IP
     usage: |
             iplookup
-  pvpon:
-    description: Enable pvp for a user
-    usage: |
-            pvpon
-  pvpoff:
-    description: Disable pvp for a user
-    usage: |
-            pvpoff
-  woof:
-    description: Wolfly attack
-    usage: |
-            woof
   smite:
     description: Zap a user
     usage: |
@@ -274,18 +258,14 @@ commands:
     description: Removes currently selected item
     usage: |
             removeitem
+  ri:
+    description: Removes currently selected item
+    usage: |
+            removeitem
   thor:
     description: KRAK-A-THOOM
     usage: |
             ROAR
-  ixrai12345:
-    description: Catching xrayers, deprecated
-    usage: |
-            Byebye
-  cjbmodsxray:
-    description: Catching xrayers, deprecated
-    usage: |
-            Byebye
   amitrusted:
     description: well am i
     usage: |

@@ -18,7 +18,7 @@ public class GetGroupCommand extends MasterCommand{
 
 	@Override
 	public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
-		if(commandName.equals("getgroup")&&(!isPlayer||this.j2.hasFlag(player,Flag.ADMIN))){
+		if(!isPlayer||this.j2.hasFlag(player,Flag.ADMIN)){
 			if(args.length==0){
 				sender.sendMessage(ChatColor.RED+"/getgroup playername");
 				return;

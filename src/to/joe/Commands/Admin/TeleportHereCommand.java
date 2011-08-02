@@ -19,7 +19,7 @@ public class TeleportHereCommand extends MasterCommand{
 
 	@Override
 	public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
-		if(isPlayer && commandName.equals("tphere") && this.j2.hasFlag(player, Flag.ADMIN)){
+		if(isPlayer && this.j2.hasFlag(player, Flag.ADMIN)){
 			String targetName=args[0];
 			Player target=this.j2.getServer().getPlayer(targetName);
 			if(target==null){

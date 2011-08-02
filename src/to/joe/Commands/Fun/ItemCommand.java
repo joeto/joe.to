@@ -1,4 +1,4 @@
-package to.joe.Commands;
+package to.joe.Commands.Fun;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import to.joe.J2;
+import to.joe.Commands.MasterCommand;
 import to.joe.util.Flag;
 
 public class ItemCommand extends MasterCommand {

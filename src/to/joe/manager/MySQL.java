@@ -619,7 +619,7 @@ public class MySQL {
 			j2.debug("Query: "+state);
 			ps = conn.prepareStatement(state);
 			ps.setInt(1, serverNumber);
-			ps.setString(2, String.valueOf(Flag.Z_HOME_DESIGNATION.getChar()));
+			ps.setString(2, String.valueOf(Flag.PLAYER_HOME.getChar()));
 			ps.setString(3, playername);
 			rs = ps.executeQuery();
 			while (rs.next()) {

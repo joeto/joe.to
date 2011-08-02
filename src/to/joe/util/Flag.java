@@ -28,8 +28,8 @@ public enum Flag {
 	QUIETERJOIN_NOIRC('y',"No join alerts on IRC"),
 	CUSTOM3('z',"Custom3"),
 	//Numbers are reserved for internal programming.
-	Z_HOME_DESIGNATION('0',"DO NOT USE"),
-	Z_SPAREWARP_DESIGNATION('1',"DO NOT USE");
+	PLAYER_HOME('0',"Home designation (internal)"),
+	PLAYER_WARP_PUBLIC('1',"Unflagged warp designation (internal)");
 	
 	private char flag;
 	private String description;

@@ -20,7 +20,7 @@ public class ReportHandlingCommand extends MasterCommand{
 
 	@Override
 	public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
-		if(isPlayer && commandName.equals("r") && this.j2.hasFlag(player, Flag.ADMIN)){
+		if(isPlayer && this.j2.hasFlag(player, Flag.ADMIN)){
 			if(args.length==0){
 				ArrayList<Report> reps=this.j2.reports.getReports();
 				int size=reps.size();
