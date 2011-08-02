@@ -25,6 +25,11 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+
+import to.joe.Commands.*;
+import to.joe.Commands.Admin.*;
+import to.joe.Commands.Info.*;
+import to.joe.Commands.SeniorStaff.*;
 import to.joe.listener.*;
 import to.joe.manager.*;
 import to.joe.util.*;
@@ -195,6 +200,42 @@ public class J2 extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_MOVE,plrlisMovement,Priority.Normal,this);
 		pm.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);
 		if(debug)this.log("Events registered");
+		this.getCommand("kickall").setExecutor(new KickAllCommand(this));
+		this.getCommand("smackirc").setExecutor(new SmackIRCCommand(this));
+		this.getCommand("blacklist").setExecutor(new BlacklistCommand(this));
+		this.getCommand("help").setExecutor(new HelpCommand(this));
+		this.getCommand("intro").setExecutor(new IntroCommand(this));
+		this.getCommand("motd").setExecutor(new MOTDCommand(this));
+		this.getCommand("rules").setExecutor(new RulesCommand(this));
+		this.getCommand("protectme").setExecutor(new ProtectMeCommand(this));
+		this.getCommand("tp").setExecutor(new TeleportCommand(this));
+		this.getCommand("tphere").setExecutor(new TeleportHereCommand(this));
+		this.getCommand("spawn").setExecutor(new SpawnCommand(this));
+		this.getCommand("msg").setExecutor(new MessageCommand(this));
+		this.getCommand("tell").setExecutor(new MessageCommand(this));
+		this.getCommand("i").setExecutor(new ItemCommand(this));
+		this.getCommand("item").setExecutor(new ItemCommand(this));
+		this.getCommand("time").setExecutor(new TimeCommand(this));
+		this.getCommand("who").setExecutor(new PlayerListCommand(this));
+		this.getCommand("playerlist").setExecutor(new PlayerListCommand(this));
+		this.getCommand("list").setExecutor(new PlayerListCommand(this));
+		this.getCommand("a").setExecutor(new AdminChatCommand(this));
+		this.getCommand("report").setExecutor(new ReportCommand(this));
+		this.getCommand("r").setExecutor(new ReportHandlingCommand(this));
+		this.getCommand("g").setExecutor(new AdminGlobalChatCommand(this));
+		this.getCommand("ban").setExecutor(new BanCommand(this));
+		this.getCommand("b").setExecutor(new BanCommand(this));
+		this.getCommand("kick").setExecutor(new KickCommand(this));
+		this.getCommand("k").setExecutor(new KickCommand(this));
+		this.getCommand("addban").setExecutor(new AddBanCommand(this));
+		this.getCommand("unban").setExecutor(new UnBanCommand(this));
+		this.getCommand("pardon").setExecutor(new UnBanCommand(this));
+		this.getCommand("trust").setExecutor(new TrustCommand(this));
+		this.getCommand("getflags").setExecutor(new GetFlagsCommand(this));
+		this.getCommand("getgroup").setExecutor(new GetGroupCommand(this));
+		this.getCommand("me").setExecutor(new MeCommand(this));
+		//this.getCommand("").setExecutor(new (this));
+		//TODO
 		PluginDescriptionFile pdfFile = this.getDescription();
 		System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
 		webpage.go(servernumber);
@@ -440,7 +481,7 @@ public class J2 extends JavaPlugin {
 	{
 		if (tips.isEmpty())
 			return;
-		String message = tips_color+"[TIP] "+tips.get(curTipNum);
+		String message = ChatColor.AQUA+"[TIP] "+tips.get(curTipNum);
 		this.chat.messageAll(message);
 		this.log(message);
 		curTipNum++;
@@ -753,527 +794,12 @@ public class J2 extends JavaPlugin {
 			playerName=player.getName();
 		}
 
-		if(commandName.equals("kickall")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))&&args.length>0){
-			Player[] list=getServer().getOnlinePlayers();
-			String reason=combineSplit(0,args," ");
-			if(list!=null){
-				for(int x=0;x<list.length;x++){
-					if(list[x]!=null)
-						list[x].kickPlayer(reason);
-				}
-			}
-			this.log(playerName+" kicked all: "+reason);
-			return true;
-		}
+		
+//TODO
 
-		if(commandName.equals("smackirc")&&(!isPlayer||hasFlag(player,Flag.SRSTAFF))){
-			irc.getBot().quitServer("Back in a moment <3");
-			this.ircEnable=false;
-			irc.restart=true;
-			return true;
-		}
+		
+		
 
-
-
-		if(isPlayer && hasFlag(player,Flag.JAILED)){
-			if(commandName.equals("confess")){
-				users.getUser(player).dropFlag(Flag.JAILED);
-			}
-
-			return true;
-		}
-
-		/*if (commandName.equals("jail") && hasFlag(player, Flag.ADMIN)){
-			if(args.length<2){
-				player.sendMessage(ChatColor.RED+"Usage: /jail <playername> <reason>");
-			}
-			else {
-				String name=args[0];
-				String adminName=player.getName();
-				String reason=combineSplit(1, args, " ");
-				users.jail(name,reason,player.getName());
-				this.log("Jail: "+adminName+" jailed "+name+": "+reason);
-			}
-		}*/
-
-		if (isPlayer && commandName.equals("rules")){
-			for(String line : rules){
-				player.sendMessage(line);
-			}
-			return true;
-		}
-		if (isPlayer && commandName.equals("help")){
-			for(String line : help){
-				player.sendMessage(line);
-			}
-
-			return true;
-		}
-		if (isPlayer && commandName.equals("motd")){
-			for(String line : motd){
-				player.sendMessage(line);
-			}
-
-			return true;
-		}
-		if (isPlayer && commandName.equals("blacklist")){
-			for(String line : blacklist){
-				player.sendMessage(line);
-			}
-
-			return true;
-		}
-		if (isPlayer && commandName.equals("intro")){
-			for(String line : intro){
-				player.sendMessage(line);
-			}
-
-			return true;
-		}
-		if(isPlayer && commandName.equals("protectme") && hasFlag(player, Flag.TRUSTED)){
-			String playersName = player.getName().toLowerCase();
-			if(tpProtect.getBoolean(playersName,false)){
-				tpProtect.setBoolean(playersName, false);
-				player.sendMessage(ChatColor.RED + "You are now no longer protected from teleportation");
-			}
-			else{
-				tpProtect.setBoolean(playersName, true);
-				player.sendMessage(ChatColor.RED + "You are protected from teleportation");
-			}
-
-			return true;
-		}
-
-		if(isPlayer && commandName.equals("tp") && (hasFlag(player, Flag.FUN))&& args.length>0){
-			List<Player> inquest = this.minitrue.matchPlayer(args[0],this.hasFlag(player, Flag.ADMIN));
-			if(inquest.size()==1){
-				Player inquestion=inquest.get(0);
-				if(minitrue.invisible(inquestion)&&!hasFlag(player,Flag.ADMIN)){
-					player.sendMessage(ChatColor.RED+"No such player, or matches multiple");
-				}
-				if(!hasFlag(player, Flag.ADMIN) && inquestion!=null && (hasFlag(inquestion, Flag.TRUSTED)) && tpProtect.getBoolean(inquestion.getName().toLowerCase(), false)){
-					player.sendMessage(ChatColor.RED + "Cannot teleport to protected player.");
-				}
-				else if(inquestion.getName().equalsIgnoreCase(player.getName())){
-					player.sendMessage(ChatColor.RED+"Can't teleport to yourself");
-				}
-				else {
-					safePort(player, inquestion.getLocation());
-					player.sendMessage("OH GOD I'M FLYING AAAAAAAAH");
-					this.log("Teleport: " + player.getName() + " teleported to "+inquestion.getName());
-				}
-			}
-			else{
-				player.sendMessage(ChatColor.RED+"No such player, or matches multiple");
-			}
-
-			return true;
-		}
-
-		if(isPlayer && commandName.equals("tphere") && hasFlag(player, Flag.ADMIN)){
-			List<Player> inquest = this.minitrue.matchPlayer(args[0],true);
-			if(inquest.size()==1){
-				Player inquestion=inquest.get(0);
-
-				if(inquestion.getName().equalsIgnoreCase(player.getName())){
-					player.sendMessage(ChatColor.RED+"Can't teleport yourself to yourself. Derp.");
-				}
-				else {
-					safePort(inquestion, player.getLocation());
-					inquestion.sendMessage("You've been teleported");
-					player.sendMessage("Grabbing "+inquestion.getName());
-					this.sendAdminPlusLog(ChatColor.AQUA + playerName + " pulled "+inquestion.getName()+" to self");
-				}
-			}
-			else{
-				player.sendMessage(ChatColor.RED+"No such player, or matches multiple");
-			}
-
-			return true;
-		}
-
-		if(commandName.equals("spawn") && (!isPlayer ||hasFlag(player, Flag.FUN))){
-			if(isPlayer && (!hasFlag(player, Flag.ADMIN)|| args.length<1)){
-				player.sendMessage(ChatColor.RED+"WHEEEEEEEEEEEEEEE");
-				safePort(player, player.getWorld().getSpawnLocation());
-			}
-			else if (args.length ==1){
-				List<Player> inquest = this.minitrue.matchPlayer(args[0],true);
-				if(inquest.size()==1){
-					Player inquestion=inquest.get(0);
-					safePort(inquestion, inquestion.getWorld().getSpawnLocation());
-					inquestion.sendMessage(ChatColor.RED+"OH GOD I'M BEING PULLED TO SPAWN OH GOD");
-					this.sendAdminPlusLog(ChatColor.RED+playerName+" pulled "+inquestion.getName()+" to spawn");
-				}
-				else {
-					sender.sendMessage(ChatColor.RED+"No such player, or matches multiple");
-				}
-			}
-			return true;
-		}
-
-		if(isPlayer && (commandName.equals("msg")||commandName.equals("tell"))){
-			if(args.length<2){
-				player.sendMessage(ChatColor.RED+"Correct usage: /msg player message");
-				return true;
-			}
-			List<Player> inquest = this.minitrue.matchPlayer(args[0],this.hasFlag(player, Flag.ADMIN));
-			if(inquest.size()==1){
-				this.chat.handlePrivateMessage(player,inquest.get(0),this.combineSplit(1, args, " "));
-			}
-			else{
-				player.sendMessage(ChatColor.RED+"Could not find player");
-			}
-
-			return true;
-		}
-
-		if(isPlayer && (commandName.equals("item") || commandName.equals("i")) && hasFlag(player, Flag.FUN)){
-			if (args.length < 1) {
-				player.sendMessage(ChatColor.RED+"Correct usage is: /i [item](:damage) (amount)");
-				return true;
-			}
-
-			Player playerFor = null;
-			Material material = null;
-
-			int count = 1;
-			String[] gData = null;
-			Byte bytedata = null;
-			if (args.length >= 1) {
-				gData = args[0].split(":");
-				if(gData[0].equals("0")){
-					gData[0]="1";
-				}
-				material = Material.matchMaterial(gData[0]);
-				if (gData.length == 2) {
-					try{
-						bytedata = Byte.valueOf(gData[1]);
-					}
-					catch(NumberFormatException e){
-						player.sendMessage("No such damage value. Giving you damage=0");
-					}
-				}
-			}
-			if (args.length >= 2) {
-				try {
-					count = Integer.parseInt(args[1]);
-				} catch (NumberFormatException ex) {
-					player.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a number!");
-					return false;
-				}
-			}
-			/* With this, if i want, I could limit item amounts
-			 * if(!hasFlag(player,Flag.TRUSTED)){
-				if(count>64)
-					count=64;
-				if(count<1){
-					count=1;
-				}
-			}*/
-			if (args.length == 3 && this.hasFlag(playerName, Flag.ADMIN)) {
-				playerFor = getServer().getPlayer(args[2]);
-				if (playerFor == null) {
-					player.sendMessage(ChatColor.RED + "'" + args[2] + "' is not a valid player!");
-					return false;
-				}
-			} else{
-				playerFor=player;
-			}
-			if (material == null) {
-				player.sendMessage(ChatColor.RED + "Unknown item");
-				return false;
-			}
-			if(!hasFlag(player,Flag.ADMIN)&& isOnSummonlist(material.getId())){
-				player.sendMessage(ChatColor.RED+"Can't give that to you right now");
-				return true;
-			}
-			if (bytedata != null) {
-				playerFor.getInventory().addItem(new ItemStack(material, count, (short) 0, bytedata));
-			} else {
-				playerFor.getInventory().addItem(new ItemStack(material, count));
-			}
-			player.sendMessage("Given " + playerFor.getDisplayName() + " " + count + " " + material.toString());
-			this.log("Giving "+playerName+" "+count+" "+material.toString());
-			if((isOnWatchlist(material.getId()))&&(count>10||count<1)){
-				irc.messageAdmins("Detecting summon of "+count+" "+material.toString()+" by "+playerName);
-				this.sendAdminPlusLog(ChatColor.LIGHT_PURPLE+"Detecting summon of "+ChatColor.WHITE+count+" "+ChatColor.LIGHT_PURPLE+material.toString()+" by "+ChatColor.WHITE+playerName);
-			}
-			return true;
-		}
-
-		if(commandName.equals("time") && (!isPlayer ||hasFlag(player, Flag.ADMIN))){
-			if(args.length!=1){
-				sender.sendMessage(ChatColor.RED+"Usage: /time day|night");
-				return true;
-			}
-			long desired;
-			if(args[0].equalsIgnoreCase("day")){
-				desired=0;
-			}
-			else if(args[0].equalsIgnoreCase("night")){
-				desired=13000;
-			}
-			else{
-				sender.sendMessage(ChatColor.RED+"Usage: /time day|night");
-				return true;
-			}
-
-			long curTime=getServer().getWorlds().get(0).getTime();
-			long margin = (desired-curTime) % 24000;
-			if (margin < 0) {
-				margin += 24000;
-			}
-			getServer().getWorlds().get(0).setTime(curTime+margin);
-			this.sendAdminPlusLog(ChatColor.DARK_AQUA+playerName+" changed time");
-
-			return true;
-		}
-
-		if((commandName.equals("who") || commandName.equals("playerlist") || commandName.equals("list"))){
-			minitrue.who(sender);
-			return true;
-		}
-
-		if(commandName.equals("a") && (!isPlayer ||hasFlag(player, Flag.ADMIN))){
-			if(args.length<1){
-				sender.sendMessage(ChatColor.RED+"Usage: /a Message");
-				return true;
-			}
-			String message=combineSplit(0, args, " ");
-			chat.adminOnlyMessage(playerName,message);
-			return true;
-		}
-
-		if(isPlayer && commandName.equals("report")){
-			if(args.length>0){
-				String theReport=combineSplit(0, args, " ");
-				if(!this.hasFlag(player, Flag.ADMIN)){
-					Report report=new Report(0, player.getLocation(), player.getName(), theReport, (new Date().getTime())/1000,false);
-					reports.addReport(report);
-					player.sendMessage(ChatColor.RED+"Report received. Thanks! :)");
-					player.sendMessage(ChatColor.RED+"Assuming you gave a description, we will handle it");
-				}
-				else{
-					String message=ChatColor.LIGHT_PURPLE+"Report from the field: <"+ChatColor.RED+playerName+ChatColor.LIGHT_PURPLE+"> "+ChatColor.WHITE+theReport;
-					this.sendAdminPlusLog(message);
-					this.irc.messageAdmins(ChatColor.stripColor(message));
-					player.sendMessage(ChatColor.RED+"Report transmitted. Thank you soldier.");
-				}
-
-			}
-			else {
-				player.sendMessage(ChatColor.RED+"To report to the admins, say /report MESSAGE");
-				player.sendMessage(ChatColor.RED+"Where MESSAGE is what you want to tell them");
-			}
-
-			return true;
-		}
-		if(isPlayer && commandName.equals("r") && hasFlag(player, Flag.ADMIN)){
-			if(args.length==0){
-				ArrayList<Report> reps=reports.getReports();
-				int size=reps.size();
-				if(size==0){
-					player.sendMessage(ChatColor.RED+"No reports. Hurray!");
-
-					return true;
-				}
-				player.sendMessage(ChatColor.DARK_PURPLE+"Found "+size+" reports:");
-				for(Report r:reps){
-					if(!r.closed()){
-						Location location=r.getLocation();
-						String x=ChatColor.GOLD.toString()+location.getBlockX()+ChatColor.DARK_PURPLE+",";
-						String y=ChatColor.GOLD.toString()+location.getBlockY()+ChatColor.DARK_PURPLE+",";
-						String z=ChatColor.GOLD.toString()+location.getBlockZ()+ChatColor.DARK_PURPLE;
-						player.sendMessage(ChatColor.DARK_PURPLE+"["+r.getID()+"]["+x+y+z+"]<"
-								+ChatColor.GOLD+r.getUser()+ChatColor.DARK_PURPLE+"> "+ChatColor.WHITE
-								+r.getMessage());
-					}
-				}
-			}
-			else{
-				String action=args[0].toLowerCase();
-				if(action.equals("close")){
-					if(args.length>2){
-						int id=Integer.parseInt(args[1]);
-						if(id!=0){
-							this.reports.close(id, playerName, this.combineSplit(2, args, " "));
-							player.sendMessage(ChatColor.DARK_PURPLE+"Report closed");
-						}
-					}
-					else{
-						player.sendMessage(ChatColor.DARK_PURPLE+"/r close ID reason");
-					}
-				}
-				if(action.equals("tp")){
-					if(args.length>1){
-						Report report=this.reports.getReport(Integer.valueOf(args[1]));
-						if(report!=null){
-							safePort(player, report.getLocation());
-							player.sendMessage(ChatColor.DARK_PURPLE+"Wheeeeeeeee");
-						}
-						else{
-							player.sendMessage(ChatColor.DARK_PURPLE+"Report not found");
-						}
-					}
-					else{
-						player.sendMessage(ChatColor.DARK_PURPLE+"/r tp ID");
-					}
-				}
-			}
-
-			return true;
-		}
-		if(commandName.equals("g") && (!isPlayer ||hasFlag(player, Flag.ADMIN))){
-			if(args.length<1){
-				sender.sendMessage(ChatColor.RED+"Usage: /g Message");
-				return true;
-			}
-			String text = "";
-			text+=combineSplit(0, args, " ");
-			chat.globalAdminMessage(playerName,text);
-			return true;
-		}
-		if((commandName.equals("ban")||commandName.equals("b")) && (!isPlayer || hasFlag(player, Flag.ADMIN))){
-			if(args.length < 2){
-				sender.sendMessage(ChatColor.RED+"Usage: /ban playername reason");
-				sender.sendMessage(ChatColor.RED+"       reason can have spaces in it");
-				return true;
-			}
-			Location loc;
-			if(!isPlayer){
-				loc=new Location(getServer().getWorlds().get(0),0,0,0);
-			}
-			else{
-				loc=player.getLocation();
-			}
-			kickbans.callBan(playerName,args,loc);
-			return true;
-		}
-		if((commandName.equals("kick")||commandName.equals("k")) && (!isPlayer || hasFlag(player, Flag.ADMIN))){
-			if(args.length < 2){
-				sender.sendMessage(ChatColor.RED+"Usage: /kick playername reason");
-				return true;
-			}
-			kickbans.callKick(args[0],playerName,combineSplit(1, args, " "));
-			return true;
-		}
-		if(commandName.equals("addban") && (!isPlayer || hasFlag(player, Flag.ADMIN))){
-			if(args.length < 2){
-				sender.sendMessage(ChatColor.RED+"Usage: /addban playername reason");
-				sender.sendMessage(ChatColor.RED+"        reason can have spaces in it");
-				return true;
-			}
-			Location loc;
-			if(!isPlayer){
-				loc=new Location(getServer().getWorlds().get(0),0,0,0);
-			}
-			else{
-				loc=player.getLocation();
-			}
-			kickbans.callAddBan(playerName,args,loc);
-			return true;
-		}
-
-		if((commandName.equals("unban") || commandName.equals("pardon")) && (!isPlayer || hasFlag(player, Flag.ADMIN))){
-			if(args.length < 1){
-				sender.sendMessage(ChatColor.RED+"Usage: /unban playername");
-				return true;
-			}
-			String name=args[0];
-			kickbans.unban(playerName, name);
-			return true;
-		}
-
-
-		if(isPlayer && commandName.equals("trust")){
-			if(this.hasFlag(player,Flag.ADMIN)){
-				if(args.length<2 || !(args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("drop"))){
-					player.sendMessage(ChatColor.RED+"Usage: /trust add/drop player");
-					return true;
-				}
-				String name=args[1];
-				if(args[0].equalsIgnoreCase("add")){
-					users.addFlag(name,Flag.TRUSTED);
-				}
-				else {
-					users.dropFlag(name,Flag.TRUSTED);
-				}
-				String tolog=ChatColor.RED+player.getName()+" changed flags: "+name + " "+ args[0] +" flag "+ Flag.TRUSTED.getDescription();
-				this.sendAdminPlusLog(tolog);
-			}
-			else{
-				player.sendMessage(ChatColor.AQUA+"Trusted status gives special privileges");
-				player.sendMessage(ChatColor.AQUA+"You want it? Visit our forums Minecraft section");
-				player.sendMessage(ChatColor.AQUA+"http://forums.joe.to");
-			}
-			return true;
-
-		}
-
-		if(commandName.equals("getflags") && (!isPlayer || hasFlag(player, Flag.ADMIN))){
-			if(args.length==0){
-				sender.sendMessage(ChatColor.RED+"/getflags playername");
-				return true;
-			}
-			List<Player> match = this.minitrue.matchPlayer(args[0],true);
-			if(match.size()!=1 || match.get(0)==null){
-				sender.sendMessage(ChatColor.RED+"Player not found");
-
-				return true;
-			}
-			Player who=match.get(0);
-			String message="Player "+match.get(0).getName()+": ";
-			for(Flag f: users.getAllFlags(who)){
-				message+=f.getDescription()+", ";
-			}
-			sender.sendMessage(ChatColor.RED+message);
-			this.log(playerName+" looked up "+ who.getName());
-			return true;
-		}
-
-		if(commandName.equals("getgroup")&&(!isPlayer||hasFlag(player,Flag.ADMIN))){
-			if(args.length==0){
-				sender.sendMessage(ChatColor.RED+"/getgroup playername");
-				return true;
-			}
-			List<Player> match = this.minitrue.matchPlayer(args[0],true);
-			if(match.size()!=1 || match.get(0)==null){
-				sender.sendMessage(ChatColor.RED+"Player not found");
-				return true;
-			}
-			Player who=match.get(0);
-			String message="Player "+match.get(0).getName()+": "+users.getUser(who).getGroup();
-			sender.sendMessage(ChatColor.RED+message);
-			this.log(playerName+" looked up "+ who.getName());
-			return true;
-		}
-
-		if (isPlayer && commandName.equals("me") && args.length>0)
-		{
-			this.chat.handleChat(player, this.combineSplit(0, args, " "), true);
-			return true;
-		}
-
-		/*if (commandName.equals("forcekick") && hasFlag(player, Flag.ADMIN)){
-			if(args.length==0){
-				player.sendMessage(ChatColor.RED+"Usage: /forcekick playername");
-				player.sendMessage(ChatColor.RED+"       Requires full name");
-
-				return true;
-			}
-			String name=args[0];
-			String reason="";
-			String admin=player.getName();
-			if(args.length>1)
-				reason=combineSplit(1, args, " ");
-			kickbans.forceKick(name,reason);
-			log.log(Level.INFO, "Kicking " + name + " by " + admin + ": " + reason);
-			chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
-			chat.msgByFlagless(Flag.ADMIN,ChatColor.RED + name+" kicked ("+reason+")");
-
-			return true;
-		}*/
 		if(commandName.equals("ircrefresh") && (!isPlayer ||hasFlag(player, Flag.SRSTAFF))){
 			irc.reloadIRCAdmins();
 			chat.messageByFlag(Flag.SRSTAFF, ChatColor.RED+"IRC admins reloaded by "+playerName);
@@ -1342,7 +868,7 @@ public class J2 extends JavaPlugin {
 					player.sendMessage(ChatColor.RED+"To go to a warp, say /warp warpname");
 
 				}else{
-					player.sendMessage("The are no warps available.");
+					player.sendMessage("There are no warps available.");
 				}
 			}
 			else{

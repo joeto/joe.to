@@ -264,6 +264,20 @@ public class Minitrue {
 		}
 		return players;
 	}
+	
+	/**
+	 * It's getPlayer with protection
+	 * @param name
+	 * @param isAdmin
+	 * @return
+	 */
+	public Player getPlayer(String name, boolean isAdmin){
+		Player target=this.j2.getServer().getPlayer(name);
+		if(target!=null&&target.isOnline()&&!this.invisible(target)){
+			return target;
+		}
+		return null;
+	}
 
 	/**
 	 * Invisibility filter for getOnlinePlayers
