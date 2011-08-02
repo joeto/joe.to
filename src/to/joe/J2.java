@@ -2082,6 +2082,31 @@ public class J2 extends JavaPlugin {
 			}
 			return true;
 		}
+		if(isPlayer&&commandName.equals("trustreq")){
+			if(this.hasFlag(player, Flag.TRUSTED)){
+				if(this.hasFlag(player, Flag.TRUSTREQ)){
+					this.users.dropFlag(playerName, Flag.TRUSTREQ);
+					player.sendMessage(ChatColor.AQUA + "No longer recieving trusted requests.");
+				}
+				else{
+					this.users.addFlag(playerName, Flag.TRUSTREQ);
+					player.sendMessage(ChatColor.AQUA + "You are now recieving trusted requests.");
+				}
+			}
+			else{
+				if(args.length==0){
+					player.sendMessage(ChatColor.RED + "Usage: /trustreq");
+					player.sendMessage(ChatColor.RED + "Usage: Request trusted assistance.");
+					player.sendMessage(ChatColor.RED + "Ex: /trustreq need some water please");
+				}
+				else{
+					String message=this.combineSplit(0, args, " ");
+					this.chat.messageByFlag(Flag.TRUSTREQ, ChatColor.AQUA + "[TRUSTED REQUEST] <"+ChatColor.DARK_AQUA + playerName + ChatColor.AQUA+"> "+message);
+					player.sendMessage(ChatColor.AQUA + "Request sent. Be patient :)");
+				}
+			}
+			return true;
+		}
 		return true;
 	}
 

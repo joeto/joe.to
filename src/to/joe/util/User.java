@@ -147,7 +147,7 @@ public class User {
 	 */
 	public int spamCheck(String message){
 		boolean isIt=this.chatSpeed(10000L);
-		if(!isIt&&!(message.startsWith("/")&&!(message.startsWith("/report")||message.startsWith("/note")||message.startsWith("/anote")||message.startsWith("/msg")))){
+		if(!isIt&&!(message.startsWith("/")&&!(message.startsWith("/trustreq")||message.startsWith("/report")||message.startsWith("/note")||message.startsWith("/anote")||message.startsWith("/msg")))){
 			isIt=message.equals(this.lastMessage);
 		}
 		if(!isIt){

@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 1.0.6
+version: 1.0.7
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -366,3 +366,8 @@ commands:
     description: Set max playercount
     usage: |
             maxplayers
+  trustreq:
+    description: Request trusted help or toggle receiving requests
+    usage: |
+            trustreq
+            trustreq water please

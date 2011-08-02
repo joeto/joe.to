@@ -19,6 +19,7 @@ public enum Flag {
 	NSA('N',"Listening In"),//admin listening to msg
 	BARRED_MC1('p',"Banned from mc1"),// Cannot join mc1 no matter what.
 	SILENT_JOIN('q',"Silent but deadly"),//invisadmin
+	TRUSTREQ('r',"Accepting trustreq"),
 	SRSTAFF('s', "Senior Staff"),//senior staff
 	TRUSTED('t', "Trusted"),//trusted
 	TOOLS('T',"Tool mode"),//admin tool mode
