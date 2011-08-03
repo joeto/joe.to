@@ -146,6 +146,10 @@ public class User {
 	 * @return if message is a repeat
 	 */
 	public int spamCheck(String message){
+		String group=this.getGroup();
+		if(group.equals("admins")||group.equals("srstaff")){
+			return 0;
+		}
 		boolean isIt=this.chatSpeed(10000L);
 		if(!isIt&&!(message.startsWith("/")&&!(message.startsWith("/trustreq")||message.startsWith("/report")||message.startsWith("/note")||message.startsWith("/anote")||message.startsWith("/msg")))){
 			isIt=message.equals(this.lastMessage);

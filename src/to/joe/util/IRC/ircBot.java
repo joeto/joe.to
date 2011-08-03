@@ -9,28 +9,30 @@ import to.joe.util.Flag;
 public class ircBot extends PircBot {
 
 	private IRC irc;
-	public ircBot(String mah_name,boolean msgenabled,IRC j) {
+	public ircBot(String mah_name,boolean msgenabled,IRC irc) {
 		this.setName(mah_name);
 		this.setAutoNickChange(true);
-		ircMsg=msgenabled;
-		irc=j;
+		this.ircMsg=msgenabled;
+		this.irc=irc;
 		this.setMessageDelay(1100);
 	}
+	@Override
 	public void onDisconnect(){
-		if(irc.getJ2().ircEnable){
-			irc.restart=true;
-			irc.getJ2().ircEnable=false;
+		if(this.irc.getJ2().ircEnable){
+			this.irc.restart=true;
+			this.irc.getJ2().ircEnable=false;
 			this.dispose();
 		}
 	}
+	@Override
 	public void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel)  
 	{
-		if(targetNick.equalsIgnoreCase(this.getNick())&&channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
+		if(targetNick.equalsIgnoreCase(this.getNick())&&channel.equalsIgnoreCase(this.irc.getJ2().ircAdminChannel)){
 			this.joinChannel(channel);
 		}
 	}
-	public void onMessage(String channel, String sender,
-			String login, String hostname, String message) {
+	@Override
+	public void onMessage(String channel, String sender, String login, String hostname, String message) {
 		if(message.charAt(0)=='!'){
 			String[] parts=message.split(" ");
 			if (parts[0].toLowerCase().equals("!help")) {
@@ -40,11 +42,11 @@ public class ircBot extends PircBot {
 				String curPlayers = "";
 				int cPlayers=0;
 				Player[] players;
-				if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
-					players=irc.getJ2().getServer().getOnlinePlayers();
+				if(channel.equalsIgnoreCase(this.irc.getJ2().ircAdminChannel)){
+					players=this.irc.getJ2().getServer().getOnlinePlayers();
 				}
 				else{
-					players=irc.getJ2().minitrue.getOnlinePlayers();
+					players=this.irc.getJ2().minitrue.getOnlinePlayers();
 				}
 				for (Player p : players) {
 					if (p != null){
@@ -57,19 +59,22 @@ public class ircBot extends PircBot {
 						cPlayers++;
 					}
 				}
-				if(curPlayers=="")
-					sendMessage(channel,"No players online.");
+				if(curPlayers==""){
+					this.sendMessage(channel,"No players online.");
+				}
 				else{
-					if(message.equalsIgnoreCase("!players"))
-						sendMessage(channel,"Currently "+ cPlayers +" of "+ irc.getJ2().playerLimit +" on the server");
-					else
-						sendMessage(channel,"Players ("+ cPlayers +" of "+ irc.getJ2().playerLimit + "): " + curPlayers);
+					if(message.equalsIgnoreCase("!players")){
+						this.sendMessage(channel,"Currently "+ cPlayers +" of "+ this.irc.getJ2().playerLimit +" on the server");
+					}
+					else{
+						this.sendMessage(channel,"Players ("+ cPlayers +" of "+ this.irc.getJ2().playerLimit + "): " + curPlayers);
+					}
 				}
 			}
 			else if (message.equalsIgnoreCase("!admins")) {
 				String curAdmins = "Admins: ";
-				for (Player p : irc.getJ2().getServer().getOnlinePlayers()) {
-					if (p != null && (irc.getJ2().hasFlag(p,Flag.ADMIN))) {
+				for (Player p : this.irc.getJ2().getServer().getOnlinePlayers()) {
+					if (p != null && (this.irc.getJ2().hasFlag(p,Flag.ADMIN))) {
 						if(curAdmins=="Admins: "){
 							curAdmins+=p.getName();
 						}
@@ -79,57 +84,46 @@ public class ircBot extends PircBot {
 					}
 				}
 				boolean adminsOnline=!curAdmins.equals("Admins: ");
-				if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
+				if(channel.equalsIgnoreCase(this.irc.getJ2().ircAdminChannel)){
 					if(!adminsOnline){
-						sendMessage(channel,"No admins online.");
+						this.sendMessage(channel,"No admins online.");
 					}
 					else {
-						sendMessage(channel,curAdmins);
+						this.sendMessage(channel,curAdmins);
 					}
 				}
 				else{
 					if(!adminsOnline){
-						sendMessage(channel,"No admins online. Find one on #joe.to or #minecraft");
+						this.sendMessage(channel,"No admins online. Find one on #joe.to or #minecraft");
 					}
 					else {
-					sendMessage(channel,"There are admins online!");
+						this.sendMessage(channel,"There are admins online!");
 					}
 				}
 			}
-			else if (ircMsg && parts[0].equalsIgnoreCase("!msg")){
+			else if (this.ircMsg && parts[0].equalsIgnoreCase("!msg")){
 				if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
-					sendMessage(channel,"Try that in the other channel.");
+					this.sendMessage(channel,"Try that in the other channel.");
 				}
 				else{
-					String damessage = "";
-					for(int $x=1;$x<parts.length;$x++)
-					{
-						damessage+=" "+parts[$x];
-					}
-					doMsg(channel,sender,damessage);
+					this.doMsg(channel,sender,this.irc.getJ2().combineSplit(1, parts, " "));
 				}
 			}
-			else if (ircMsg && parts[0].equalsIgnoreCase("!broadcast")){
+			else if (parts[0].equalsIgnoreCase("!broadcast")){
 				if(!channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
 					sendMessage(channel,"Try that in the other channel.");
 				}
 				else{
-					String damessage = "";
-					for(int $x=1;$x<parts.length;$x++)
-					{
-						damessage+=" "+parts[$x];
-					}
-					this.irc.getJ2().chat.handleBroadcastFromIRC(sender, damessage);
+					this.irc.getJ2().chat.handleBroadcastFromIRC(sender, this.irc.getJ2().combineSplit(1, parts, " "));
 				}
 			}
-			else if (ircMsg && parts[0].equalsIgnoreCase("!reports")){
+			else if (parts[0].equalsIgnoreCase("!reports")){
 				if(!channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
-					sendMessage(channel,"Try that in the other channel.");
+					this.sendMessage(channel,"Try that in the other channel.");
 				}
 				else{
 					String response = "";
-
-					int size = irc.getJ2().reports.getReports().size();
+					int size = this.irc.getJ2().reports.getReports().size();
 					response = "There are currently " + size + " reports open. ";
 					switch(size){
 					case 0:
@@ -151,62 +145,63 @@ public class ircBot extends PircBot {
 						response += "Seriously guys? Start cleaning up.";
 						break;
 					}
-					sendMessage(channel, response);
+					this.sendMessage(channel, response);
 				}
 			}
-			else if (ircMsg && parts[0].equalsIgnoreCase("!me")){
+			else if (this.ircMsg && parts[0].equalsIgnoreCase("!me")){
 				if(channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
-					sendMessage(channel,"Try that in the other channel.");
+					this.sendMessage(channel,"Try that in the other channel.");
 				}
-				String damessage = "";
-				for(int $x=1;$x<parts.length;$x++)
-				{
-					damessage+=" "+parts[$x];
+				this.doMeMsg(channel,sender,this.irc.getJ2().combineSplit(1, parts, " "));
+			}
+			else if (parts[0].equalsIgnoreCase("!has")){
+				if(!channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)){
+					this.sendMessage(channel,"Try that in the other channel.");
 				}
-				doMeMsg(channel,sender,damessage);
+				String has=null;
+				for(Player player:this.irc.getJ2().getServer().getOnlinePlayers()){
+					String name=player.getName();
+					if(name.equalsIgnoreCase(parts[1])){
+						has=name;
+					}
+				}
+				if(has!=null){
+					this.sendMessage(channel, "I have "+has+"!");
+				}
 			}
 			return;
 		}
-		if(message.charAt(0)=='.' && channel.equalsIgnoreCase(irc.getJ2().ircChannel)){
+		if(message.charAt(0)=='.' && channel.equalsIgnoreCase(this.irc.getJ2().ircChannel)){
 			String[] parts=message.split(" ");
 			if(irc.ircCommand(hostname,sender, parts)){
-				//sendMessage(sender,"Done :)");
-				sendRawLine("NOTICE "+sender+" :Done");
+				this.sendRawLine("NOTICE "+sender+" :Done");
 			}
-			else{
-				if (!ircMsg){
-					doMsg(channel,sender," "+message);
-				}
-				//sendMessage(channel,"You don't have access to that command :(");
+			else if (!this.ircMsg){
+				this.doMsg(channel,sender," "+message);
 			}
 			return;
 		}
-		if(message.equals("A MAN IN BRAZIL IS COUGHING") && channel.equalsIgnoreCase(irc.getJ2().ircChannel)){
+		if(message.equals("A MAN IN BRAZIL IS COUGHING")){
 			this.irc.cough(hostname);
 		}
-		if (!ircMsg){
-			doMsg(channel,sender," "+message);
+		if (!this.ircMsg){
+			this.doMsg(channel,sender," "+message);
 		}
-
 	}
-	public void doMsg(String channel, String sender, String message){
+	private void doMsg(String channel, String sender, String message){
 		this.irc.getJ2().chat.handleIRCChat(sender, message, false,channel);
 	}
-	public void doMeMsg(String channel, String sender, String message){
+	private void doMeMsg(String channel, String sender, String message){
 		this.irc.getJ2().chat.handleIRCChat(sender, message, true,channel);
 	}
-
+	@Override
 	protected void onPrivateMessage(String sender,String login,String hostname,String message){
 		if(irc.ircCommand(hostname,sender,message.split(" "))){
-			//sendMessage(sender,"Done :)");
-			sendRawLine("NOTICE "+sender+" :Done");
+			this.sendRawLine("NOTICE "+sender+" :Done");
 		}
 		else{
-			//sendMessage(sender,"You don't have access to that command :(");
-			sendRawLine("NOTICE "+sender+" :No access to that command");
+			this.sendRawLine("NOTICE "+sender+" :No access to that command");
 		}
 	}
-
-
 	private boolean ircMsg;
 }

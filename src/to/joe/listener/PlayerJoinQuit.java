@@ -125,6 +125,9 @@ public class PlayerJoinQuit extends PlayerListener {
 		}
 		if(j2.trustedonly && (!isTrusted || isPrivBlocked) ){
 			reason="Trusted only. http://forums.joe.to";
+			if(isPrivBlocked){
+				reason="You are barred from joining this server";
+			}
 			event.setKickMessage(reason);
 			event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, reason);
 			incoming=false;
