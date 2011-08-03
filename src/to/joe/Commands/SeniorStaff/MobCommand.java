@@ -11,31 +11,30 @@ import to.joe.J2;
 import to.joe.Commands.MasterCommand;
 import to.joe.util.Flag;
 
-public class MobCommand extends MasterCommand{
+public class MobCommand extends MasterCommand {
 
-	public MobCommand(J2 j2) {
-		super(j2);
-	}
+    public MobCommand(J2 j2) {
+        super(j2);
+    }
 
-	@Override
-	public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
-		if(isPlayer && this.j2.hasFlag(player, Flag.SRSTAFF)){
-			if(args.length==0){
-				player.sendMessage(ChatColor.RED+"/mob mobname");
-			}
-			else {
-				CreatureType creat=CreatureType.fromName(args[0]);
-				if(creat!=null){
-					Block block=player.getTargetBlock(null, 50);
-					if(block!=null){
-						Location bloc=block.getLocation();
-						if(bloc.getY()<126){
-							Location loc=new Location(bloc.getWorld(),bloc.getX(),bloc.getY()+1,bloc.getZ());
-							player.getWorld().spawnCreature(loc, CreatureType.fromName(args[0]));
-						}
-					}
-				}
-			}
-		}
-	}
+    @Override
+    public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
+        if (isPlayer && this.j2.hasFlag(player, Flag.SRSTAFF)) {
+            if (args.length == 0) {
+                player.sendMessage(ChatColor.RED + "/mob mobname");
+            } else {
+                CreatureType creat = CreatureType.fromName(args[0]);
+                if (creat != null) {
+                    Block block = player.getTargetBlock(null, 50);
+                    if (block != null) {
+                        Location bloc = block.getLocation();
+                        if (bloc.getY() < 126) {
+                            Location loc = new Location(bloc.getWorld(), bloc.getX(), bloc.getY() + 1, bloc.getZ());
+                            player.getWorld().spawnCreature(loc, CreatureType.fromName(args[0]));
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

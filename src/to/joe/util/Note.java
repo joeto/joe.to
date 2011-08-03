@@ -6,27 +6,28 @@ import org.bukkit.ChatColor;
 
 /**
  * User to user notes
- *
+ * 
  */
 public class Note {
-	private String sender;
-	private String message;
-	private Date time;
-	boolean adminBusiness;
-	public Note(String sender, String message, Date time, boolean adminBusiness){
-		this.sender=sender;
-		this.message=message;
-		this.time=time;
-		this.adminBusiness=adminBusiness;
-	}
-	public String toString(){
-		String from;
-		if(this.adminBusiness){
-			from="ADMIN";
-		}
-		else{
-			from=this.sender;
-		}
-		return ChatColor.AQUA+"["+this.time+"] <"+from+"> "+ChatColor.DARK_AQUA+this.message;
-	}
+    private String sender;
+    private String message;
+    private Date time;
+    boolean adminBusiness;
+
+    public Note(String sender, String message, Date time, boolean adminBusiness) {
+        this.sender = sender;
+        this.message = message;
+        this.time = time;
+        this.adminBusiness = adminBusiness;
+    }
+
+    public String toString() {
+        String from;
+        if (this.adminBusiness) {
+            from = "ADMIN";
+        } else {
+            from = this.sender;
+        }
+        return ChatColor.AQUA + "[" + this.time + "] <" + from + "> " + ChatColor.DARK_AQUA + this.message;
+    }
 }

@@ -9,7 +9,7 @@ import java.util.Properties;
 
 /**
  * Properties file handling
- *
+ * 
  */
 public final class Property {
     private String name;
@@ -34,13 +34,13 @@ public final class Property {
 
     public void save() {
         try {
-        this.property.store(new FileOutputStream(this.name), null);
-        }catch(IOException ex) {
+            this.property.store(new FileOutputStream(this.name), null);
+        } catch (IOException ex) {
         }
     }
 
     @SuppressWarnings("unchecked")
-	public Map<String, String> returnMap() throws Exception {
+    public Map<String, String> returnMap() throws Exception {
         return (Map<String, String>) this.property.clone();
     }
 
@@ -49,7 +49,7 @@ public final class Property {
     }
 
     public String getProperty(String var) {
-        return (String)this.property.getProperty(var);
+        return (String) this.property.getProperty(var);
     }
 
     public void removeKey(String var) {
@@ -70,7 +70,7 @@ public final class Property {
 
         return "";
     }
-    
+
     public String getString(String key, String value) {
         if (this.containsKey(key)) {
             return this.getProperty(key);
@@ -80,8 +80,8 @@ public final class Property {
     }
 
     public void setString(String key, String value) {
-    	this.property.put(key, value);
-    	this.save();
+        this.property.put(key, value);
+        this.save();
     }
 
     public int getInt(String key) {
@@ -101,8 +101,8 @@ public final class Property {
     }
 
     public void setInt(String key, int value) {
-    	this.property.put(key, String.valueOf(value));
-    	this.save();
+        this.property.put(key, String.valueOf(value));
+        this.save();
     }
 
     public double getDouble(String key) {
@@ -121,8 +121,8 @@ public final class Property {
     }
 
     public void setDouble(String key, double value) {
-    	this.property.put(key, String.valueOf(value));
-    	this.save();
+        this.property.put(key, String.valueOf(value));
+        this.save();
     }
 
     public long getLong(String key) {
@@ -141,8 +141,8 @@ public final class Property {
     }
 
     public void setLong(String key, long value) {
-    	this.property.put(key, String.valueOf(value));
-    	this.save();
+        this.property.put(key, String.valueOf(value));
+        this.save();
     }
 
     public boolean getBoolean(String key) {
@@ -161,8 +161,7 @@ public final class Property {
     }
 
     public void setBoolean(String key, boolean value) {
-    	this.property.put(key, String.valueOf(value));
-    	this.save();
+        this.property.put(key, String.valueOf(value));
+        this.save();
     }
 }
-

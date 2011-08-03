@@ -9,14 +9,14 @@ import to.joe.util.Flag;
 
 public class MadagascarCommand extends MasterCommand {
 
-	public MadagascarCommand(J2 j2) {
-		super(j2);
-	}
+    public MadagascarCommand(J2 j2) {
+        super(j2);
+    }
 
-	@Override
-	public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
-		if(!isPlayer ||this.j2.hasFlag(player, Flag.SRSTAFF)){
-			this.j2.madagascar(playerName);
-		}
-	}
+    @Override
+    public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
+        if (!isPlayer || this.j2.hasFlag(player, Flag.SRSTAFF)) {
+            this.j2.madagascar(playerName);
+        }
+    }
 }
