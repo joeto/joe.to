@@ -66,7 +66,7 @@ public enum Flag {
      * @return
      */
     public static Flag byChar(final char Char) {
-        return flags.get(Char);
+        return Flag.flags.get(Char);
     }
 
     /**
@@ -76,12 +76,12 @@ public enum Flag {
      * @return
      */
     public static boolean isFlagChar(char Char) {
-        return flags.containsKey(Char);
+        return Flag.flags.containsKey(Char);
     }
 
     static {
-        for (Flag f : Flag.values()) {
-            flags.put(f.getChar(), f);
+        for (final Flag f : Flag.values()) {
+            Flag.flags.put(f.getChar(), f);
         }
     }
 }

@@ -19,10 +19,10 @@ public abstract class MasterCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        String commandName = command.getName().toLowerCase();
+        final String commandName = command.getName().toLowerCase();
         Player player = null;
         String playerName = "Console";
-        boolean isPlayer = (sender instanceof Player);
+        final boolean isPlayer = (sender instanceof Player);
         if (isPlayer) {
             player = (Player) sender;
             playerName = player.getName();

@@ -21,7 +21,7 @@ public class LookupCommand extends MasterCommand {
                 player.sendMessage(ChatColor.LIGHT_PURPLE + "/lookup player");
                 return;
             }
-            String name = args[0];
+            final String name = args[0];
             this.j2.log(ChatColor.LIGHT_PURPLE + playerName + " looked up " + name);
             this.j2.banCoop.lookup(name, player);
         }

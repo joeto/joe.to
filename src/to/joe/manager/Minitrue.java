@@ -2,9 +2,11 @@ package to.joe.manager;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import to.joe.J2;
 import to.joe.util.Flag;
 import to.joe.util.Vanish;
@@ -40,9 +42,9 @@ public class Minitrue {
      *            The player who is joining.
      */
     public void processJoin(Player player, boolean quiet) {
-        if (!quiet)
+        if (!quiet) {
             this.announceJoin(player.getName(), false);
-        else if (this.j2.hasFlag(player, Flag.SILENT_JOIN) && !this.invisible(player)) {
+        } else if (this.j2.hasFlag(player, Flag.SILENT_JOIN) && !this.invisible(player)) {
             this.vanish.callVanish(player);
         }
     }
@@ -71,7 +73,7 @@ public class Minitrue {
      *            User who is changing visibility
      */
     public void vanish(Player player) {
-        vanish.callVanish(player);
+        this.vanish.callVanish(player);
         if (this.invisible(player)) {// assume player is NOW invisible
             this.announceLeave(player.getName(), true);
             this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.YELLOW + player.getName() + " is now SUPER STEALTHILY INVISIBLE");
@@ -89,7 +91,7 @@ public class Minitrue {
      * @return if player is invisible
      */
     public boolean invisible(Player player) {
-        return vanish.invisible.contains(player);
+        return this.vanish.invisible.contains(player);
     }
 
     /**
@@ -101,11 +103,11 @@ public class Minitrue {
      *            If true, only tell admins the player has joined.
      */
     public void announceJoin(String playerName, boolean sneaky) {
-        String message = ChatColor.YELLOW + "Joining: " + playerName;
+        final String message = ChatColor.YELLOW + "Joining: " + playerName;
         if (sneaky) {
-            j2.chat.messageByFlagless(Flag.ADMIN, message);
+            this.j2.chat.messageByFlagless(Flag.ADMIN, message);
         } else {
-            j2.chat.messageAll(message);
+            this.j2.chat.messageAll(message);
         }
     }
 
@@ -118,12 +120,12 @@ public class Minitrue {
      *            If true, only tell admins.
      */
     public void announceLeave(String playerName, boolean sneaky) {
-        String message = ChatColor.YELLOW + "Leaving: " + playerName;
+        final String message = ChatColor.YELLOW + "Leaving: " + playerName;
         if (sneaky) {
-            j2.chat.messageByFlagless(Flag.ADMIN, message);
+            this.j2.chat.messageByFlagless(Flag.ADMIN, message);
         } else {
-            if (j2.users.isOnline(playerName)) {
-                j2.chat.messageAll(message);
+            if (this.j2.users.isOnline(playerName)) {
+                this.j2.chat.messageAll(message);
             }
         }
     }
@@ -141,7 +143,7 @@ public class Minitrue {
      */
     public boolean chat(Player player, String message) {
         if (this.invisible(player)) {
-            j2.chat.adminOnlyMessage(player.getName(), message);
+            this.j2.chat.adminOnlyMessage(player.getName(), message);
             return true;
         }
         return false;
@@ -161,69 +163,71 @@ public class Minitrue {
      * @param sender
      */
     public void who(CommandSender sender) {
-        Player[] players = j2.getServer().getOnlinePlayers();
-        boolean isAdmin = this.qualified(sender);
+        final Player[] players = this.j2.getServer().getOnlinePlayers();
+        final boolean isAdmin = this.qualified(sender);
         int curlen = 0;
-        int maxlen = 320;
+        final int maxlen = 320;
         int playercount = players.length;
-        if (!isAdmin)
+        if (!isAdmin) {
             playercount -= this.invisibleCount();
-        String msg = "Players (" + playercount + "/" + j2.playerLimit + "):";
+        }
+        String msg = "Players (" + playercount + "/" + this.j2.playerLimit + "):";
 
-        for (char ch : msg.toCharArray()) {
-            curlen += Chats.characterWidths[(int) ch];
+        for (final char ch : msg.toCharArray()) {
+            curlen += Chats.characterWidths[ch];
         } // now we have our base length
 
-        for (Player p : players) {
+        for (final Player p : players) {
             if (!p.isOnline()) {
                 continue;
             }
-            boolean invis = j2.minitrue.invisible(p);
+            final boolean invis = this.j2.minitrue.invisible(p);
             if (!invis || isAdmin) {
-                String name = p.getName();
+                final String name = p.getName();
                 String cname = ChatColor.WHITE + name;
                 try {
-                    cname = j2.users.getUser(name).getColorName();
-                } catch (Exception e) {
+                    cname = this.j2.users.getUser(name).getColorName();
+                } catch (final Exception e) {
                     this.j2.users.addUser(name);
                     this.j2.users.processJoin(p, true);
                     cname = ChatColor.GREEN + name;
                 }
                 if (isAdmin) {
-                    if (j2.hasFlag(p, Flag.TRUSTED)) {
+                    if (this.j2.hasFlag(p, Flag.TRUSTED)) {
                         cname = ChatColor.DARK_GREEN + name;
                     }
-                    if (j2.hasFlag(p, Flag.ADMIN)) {
-                        if (invis)
+                    if (this.j2.hasFlag(p, Flag.ADMIN)) {
+                        if (invis) {
                             cname = ChatColor.AQUA + name;
-                        else
+                        } else {
                             cname = ChatColor.RED + name;
+                        }
                     }
-                    if (j2.hasFlag(p, Flag.MUTED)) {
+                    if (this.j2.hasFlag(p, Flag.MUTED)) {
                         cname = ChatColor.YELLOW + name;
                     }
-                    if (j2.hasFlag(p, Flag.NSA)) {
+                    if (this.j2.hasFlag(p, Flag.NSA)) {
                         cname += ChatColor.DARK_AQUA + "«»";
                     }
-                    if (j2.hasFlag(p, Flag.THOR)) {
+                    if (this.j2.hasFlag(p, Flag.THOR)) {
                         cname += ChatColor.WHITE + "/";
                     }
-                    if (j2.hasFlag(p, Flag.GODMODE)) {
+                    if (this.j2.hasFlag(p, Flag.GODMODE)) {
                         cname += ChatColor.DARK_RED + "⌂";
                     }
-                    if (j2.hasFlag(p, Flag.TOOLS)) {
+                    if (this.j2.hasFlag(p, Flag.TOOLS)) {
                         cname += ChatColor.AQUA + "¬";
                     }
-                    if (j2.hasFlag(p, Flag.JAILED)) {
+                    if (this.j2.hasFlag(p, Flag.JAILED)) {
                         cname += ChatColor.GRAY + "[ø]";
                     }
                 }
                 cname += ChatColor.WHITE.toString();
                 int thislen = 0;
-                for (char ch : name.toCharArray()) {
-                    thislen += Chats.characterWidths[(int) ch];
+                for (final char ch : name.toCharArray()) {
+                    thislen += Chats.characterWidths[ch];
                 }
-                if (thislen + 1 + curlen > maxlen) {
+                if ((thislen + 1 + curlen) > maxlen) {
                     this.send(sender, msg);
                     msg = cname;
                 } else {
@@ -258,7 +262,7 @@ public class Minitrue {
      * @return if CommandSender has admin rights.
      */
     public boolean qualified(CommandSender sender) {
-        if (sender != null && sender instanceof Player) {
+        if ((sender != null) && (sender instanceof Player)) {
             return this.j2.hasFlag((Player) sender, Flag.ADMIN);
         } else {
             return true;
@@ -276,11 +280,11 @@ public class Minitrue {
      * @return a list of player matches, filtered for invisibility
      */
     public List<Player> matchPlayer(String name, boolean isAdmin) {
-        List<Player> players = j2.getServer().matchPlayer(name);
+        final List<Player> players = this.j2.getServer().matchPlayer(name);
         if (!isAdmin) {
-            ArrayList<Player> toremove = new ArrayList<Player>();
-            for (Player p : players) {
-                if (p != null && this.invisible(p)) {
+            final ArrayList<Player> toremove = new ArrayList<Player>();
+            for (final Player p : players) {
+                if ((p != null) && this.invisible(p)) {
                     toremove.add(p);
                 }
             }
@@ -297,8 +301,8 @@ public class Minitrue {
      * @return
      */
     public Player getPlayer(String name, boolean isAdmin) {
-        Player target = this.j2.getServer().getPlayer(name);
-        if (target != null && target.isOnline() && !this.invisible(target)) {
+        final Player target = this.j2.getServer().getPlayer(name);
+        if ((target != null) && target.isOnline() && !this.invisible(target)) {
             return target;
         }
         return null;
@@ -310,10 +314,10 @@ public class Minitrue {
      * @return A filtered online list
      */
     public Player[] getOnlinePlayers() {
-        Player[] players = j2.getServer().getOnlinePlayers();
-        Player[] toreturn = new Player[players.length - this.invisibleCount()];
+        final Player[] players = this.j2.getServer().getOnlinePlayers();
+        final Player[] toreturn = new Player[players.length - this.invisibleCount()];
         int cur = 0;
-        for (Player p : players) {
+        for (final Player p : players) {
             if (!this.invisible(p)) {
                 toreturn[cur++] = p;
             }

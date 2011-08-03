@@ -38,29 +38,29 @@ public class ItemCommand extends MasterCommand {
                 }
                 itemMaterial = Material.matchMaterial(idDamageSplit[0]);
                 if (idDamageSplit.length == 2) {
-                    String damageString = idDamageSplit[1];
+                    final String damageString = idDamageSplit[1];
                     if (this.matchesWoolColor(damageString)) {
                         itemDamage = this.woolColorToByte(damageString);
                     } else {
                         try {
                             itemDamage = Byte.valueOf(damageString);
-                        } catch (NumberFormatException e) {
+                        } catch (final NumberFormatException e) {
                             player.sendMessage("No such damage value. Giving you damage=0");
                         }
                     }
                 }
             }
             if (args.length > 1) {
-                String countString = args[1];
+                final String countString = args[1];
                 try {
                     itemCount = Integer.parseInt(countString);
-                } catch (NumberFormatException ex) {
+                } catch (final NumberFormatException ex) {
                     player.sendMessage(ChatColor.RED + countString + " is not a number");
                     return;
                 }
             }
-            if (args.length == 3 && this.j2.hasFlag(playerName, Flag.ADMIN)) {
-                String targetName = args[2];
+            if ((args.length == 3) && this.j2.hasFlag(playerName, Flag.ADMIN)) {
+                final String targetName = args[2];
                 targetPlayer = this.j2.getServer().getPlayer(targetName);
                 if (targetPlayer == null) {
                     player.sendMessage(ChatColor.RED + targetName + " is not a player");
@@ -82,7 +82,7 @@ public class ItemCommand extends MasterCommand {
             }
             player.sendMessage("Given " + targetPlayer.getDisplayName() + " " + itemCount + " " + itemMaterial.toString());
             this.j2.log("Giving " + playerName + " " + itemCount + " " + itemMaterial.toString());
-            if ((this.j2.isOnWatchlist(itemMaterial.getId())) && (itemCount > 10 || itemCount < 1)) {
+            if ((this.j2.isOnWatchlist(itemMaterial.getId())) && ((itemCount > 10) || (itemCount < 1))) {
                 this.j2.irc.messageAdmins("Detecting summon of " + itemCount + " " + itemMaterial.toString() + " by " + playerName);
                 this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE + "Detecting summon of " + ChatColor.WHITE + itemCount + " " + ChatColor.LIGHT_PURPLE + itemMaterial.toString() + " by " + ChatColor.WHITE + playerName);
             }

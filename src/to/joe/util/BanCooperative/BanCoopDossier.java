@@ -7,11 +7,11 @@ import java.util.Map;
 import org.bukkit.ChatColor;
 
 public class BanCoopDossier {
-    private EnumMap<BanCoopType, Integer> count;
-    private EnumMap<BanCoopType, ArrayList<BanCoopBan>> bans;
-    private double mcbans_rep;
-    private String name;
-    private int significantCount;
+    private final EnumMap<BanCoopType, Integer> count;
+    private final EnumMap<BanCoopType, ArrayList<BanCoopBan>> bans;
+    private final double mcbans_rep;
+    private final String name;
+    private final int significantCount;
 
     public BanCoopDossier(String name, EnumMap<BanCoopType, Integer> count, int significantCount, EnumMap<BanCoopType, ArrayList<BanCoopBan>> bans, double mcbans_rep) {
         this.count = count;
@@ -22,12 +22,12 @@ public class BanCoopDossier {
     }
 
     public String oneLiner() {
-        return ChatColor.GREEN + name + ChatColor.AQUA + " has " + ChatColor.GREEN + this.totalBans() + ChatColor.AQUA + " bans. MCBans rep " + ChatColor.GREEN + this.mcbans_rep + ChatColor.AQUA + "/10";
+        return ChatColor.GREEN + this.name + ChatColor.AQUA + " has " + ChatColor.GREEN + this.totalBans() + ChatColor.AQUA + " bans. MCBans rep " + ChatColor.GREEN + this.mcbans_rep + ChatColor.AQUA + "/10";
     }
 
     public int totalBans() {
         int total = 0;
-        for (Integer i : count.values()) {
+        for (final Integer i : this.count.values()) {
             total += i.intValue();
         }
         return total;
@@ -42,14 +42,14 @@ public class BanCoopDossier {
     }
 
     public ArrayList<String> full() {
-        ArrayList<String> result = new ArrayList<String>();
+        final ArrayList<String> result = new ArrayList<String>();
         result.add(this.oneLiner());
-        for (Map.Entry<BanCoopType, ArrayList<BanCoopBan>> ban : bans.entrySet()) {
+        for (final Map.Entry<BanCoopType, ArrayList<BanCoopBan>> ban : this.bans.entrySet()) {
             int total = this.count.get(ban.getKey());
             if (total > 3) {
                 total = 3;
             }
-            ArrayList<BanCoopBan> typeBans = ban.getValue();
+            final ArrayList<BanCoopBan> typeBans = ban.getValue();
             for (int x = 0; x < total; x++) {
                 result.add(typeBans.get(x).toString());
             }

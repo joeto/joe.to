@@ -11,18 +11,18 @@ import to.joe.util.Flag;
 
 public class PlayerChat extends PlayerListener {
     private final J2 j2;
-    private String plugins;
+    private final String plugins;
 
     public PlayerChat(J2 instance) {
-        j2 = instance;
-        StringBuilder pluginList = new StringBuilder();
-        String[] plugins = new String[5];
+        this.j2 = instance;
+        final StringBuilder pluginList = new StringBuilder();
+        final String[] plugins = new String[5];
         plugins[0] = "Bob";
         plugins[1] = "joe.to";
         plugins[2] = "Optimism";
         plugins[3] = "Misery";
         plugins[4] = "Cake";
-        for (String plugin : plugins) {
+        for (final String plugin : plugins) {
             if (pluginList.length() > 0) {
                 pluginList.append(ChatColor.WHITE);
                 pluginList.append(", ");
@@ -36,36 +36,36 @@ public class PlayerChat extends PlayerListener {
 
     @Override
     public void onPlayerChat(PlayerChatEvent event) {
-        Player player = event.getPlayer();
-        String message = event.getMessage();
+        final Player player = event.getPlayer();
+        final String message = event.getMessage();
         if (this.j2.chat.isSpam(player, message) || !this.j2.panda.chat(player, message)) {
             event.setCancelled(true);
             return;
         }
-        j2.activity.update(player);
-        j2.chat.handleChat(player, message, false);
+        this.j2.activity.update(player);
+        this.j2.chat.handleChat(player, message, false);
         event.setCancelled(true);
     }
 
     @Override
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        Player player = event.getPlayer();
-        String name = player.getName();
-        String message = event.getMessage();
+        final Player player = event.getPlayer();
+        final String name = player.getName();
+        final String message = event.getMessage();
         if (this.j2.chat.isSpam(player, message) || !this.j2.panda.chat(player, message)) {
             event.setCancelled(true);
             return;
         }
-        j2.activity.update(player);
-        String[] split = message.split(" ");
-        String command = split[0].trim().substring(1).toLowerCase();
-        j2.log(ChatColor.WHITE + "[J2CMD] " + name + " command " + message);
-        if ((command.equals("plugins") || command.equals("pl")) && !j2.hasFlag(player, Flag.SRSTAFF)) {
+        this.j2.activity.update(player);
+        final String[] split = message.split(" ");
+        final String command = split[0].trim().substring(1).toLowerCase();
+        this.j2.log(ChatColor.WHITE + "[J2CMD] " + name + " command " + message);
+        if ((command.equals("plugins") || command.equals("pl")) && !this.j2.hasFlag(player, Flag.SRSTAFF)) {
             player.sendMessage("Plugins: " + this.plugins);
             event.setCancelled(true);
             return;
         }
-        if ((command.equals("version") || command.equals("ver") || command.equals("about")) && !j2.hasFlag(player, Flag.SRSTAFF)) {
+        if ((command.equals("version") || command.equals("ver") || command.equals("about")) && !this.j2.hasFlag(player, Flag.SRSTAFF)) {
             if (split.length == 0) {
                 player.sendMessage("This server is running " + ChatColor.GREEN + "CraftBukkit" + ChatColor.WHITE + " version " + ChatColor.GREEN + "joe.to");
             } else {
@@ -76,14 +76,14 @@ public class PlayerChat extends PlayerListener {
             return;
         }
         if (command.equals("reload") || command.equals("rl")) {
-            if (j2.hasFlag(player, Flag.SRSTAFF)) {
+            if (this.j2.hasFlag(player, Flag.SRSTAFF)) {
                 player.sendMessage(ChatColor.GREEN + "YOU MONSTER");
             }
             event.setCancelled(true);
             event.setMessage(null);
             return;
         }
-        if ((command.equals("bb") || command.equals("nocheat") || command.equals("vanish")) && !j2.hasFlag(player, Flag.ADMIN)) {
+        if ((command.equals("bb") || command.equals("nocheat") || command.equals("vanish")) && !this.j2.hasFlag(player, Flag.ADMIN)) {
             event.setCancelled(true);
             event.setMessage(null);
             return;

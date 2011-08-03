@@ -19,12 +19,12 @@ import java.util.regex.Pattern;
  */
 public class MCLogFilter implements Filter {
 
-    private ArrayList<String> strings;
-    private SecondaryLog slog;
+    private final ArrayList<String> strings;
+    private final SecondaryLog slog;
 
     public MCLogFilter() {
-        strings = new ArrayList<String>();
-        strings.add("Can't keep up! Did the system time change, or is the server overloaded?");
+        this.strings = new ArrayList<String>();
+        this.strings.add("Can't keep up! Did the system time change, or is the server overloaded?");
         this.slog = new SecondaryLog();
     }
 
@@ -32,12 +32,12 @@ public class MCLogFilter implements Filter {
 
     @Override
     public boolean isLoggable(LogRecord logRecord) {
-        String message = logRecord.getMessage();
-        Matcher m1 = p1.matcher(message);
+        final String message = logRecord.getMessage();
+        final Matcher m1 = this.p1.matcher(message);
         if (m1.find() || message.startsWith("* ") || message.contains("[J2CMD]") || message.contains("[HARASS]BLOCKED")) {
-            slog.add(message);
+            this.slog.add(message);
         }
-        return !strings.contains(message);
+        return !this.strings.contains(message);
     }
 
     /**
@@ -45,7 +45,7 @@ public class MCLogFilter implements Filter {
      * 
      */
     private class SecondaryLog {
-        private Logger log;
+        private final Logger log;
         private FileHandler fh;
         private boolean canLog;
 
@@ -54,9 +54,9 @@ public class MCLogFilter implements Filter {
             this.log = Logger.getLogger("j2log");
             try {
                 this.fh = new FileHandler("secondary.log", true);
-            } catch (SecurityException e) {
+            } catch (final SecurityException e) {
                 this.canLog = false;
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 this.canLog = false;
             }
             this.fh.setFormatter(new j2Formatter());
@@ -80,7 +80,7 @@ public class MCLogFilter implements Filter {
 
             @Override
             public String format(LogRecord lr) {
-                return dateformat.format(new Date(lr.getMillis())) + " " + lr.getMessage() + "\n";
+                return this.dateformat.format(new Date(lr.getMillis())) + " " + lr.getMessage() + "\n";
             }
         }
     }

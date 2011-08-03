@@ -19,13 +19,13 @@ public class SpawnCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (!isPlayer || this.j2.hasFlag(player, Flag.FUN)) {
-            if (isPlayer && (!this.j2.hasFlag(player, Flag.ADMIN) || args.length < 1)) {
+            if (isPlayer && (!this.j2.hasFlag(player, Flag.ADMIN) || (args.length < 1))) {
                 player.sendMessage(ChatColor.RED + "WHEEEEEEEEEEEEEEE");
                 this.j2.safePort(player, player.getWorld().getSpawnLocation());
             } else if (args.length == 1) {
-                List<Player> inquest = this.j2.getServer().matchPlayer(args[0]);
+                final List<Player> inquest = this.j2.getServer().matchPlayer(args[0]);
                 if (inquest.size() == 1) {
-                    Player inquestion = inquest.get(0);
+                    final Player inquestion = inquest.get(0);
                     this.j2.safePort(inquestion, inquestion.getWorld().getSpawnLocation());
                     inquestion.sendMessage(ChatColor.RED + "OH GOD I'M BEING PULLED TO SPAWN OH GOD");
                     this.j2.sendAdminPlusLog(ChatColor.RED + playerName + " pulled " + inquestion.getName() + " to spawn");

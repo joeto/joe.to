@@ -78,7 +78,7 @@ public class JSONWriter {
     /**
      * The object/array stack.
      */
-    private JSONObject stack[];
+    private final JSONObject stack[];
 
     /**
      * The stack top index. A value of 0 indicates that the stack is empty.
@@ -96,7 +96,7 @@ public class JSONWriter {
     public JSONWriter(Writer w) {
         this.comma = false;
         this.mode = 'i';
-        this.stack = new JSONObject[maxdepth];
+        this.stack = new JSONObject[JSONWriter.maxdepth];
         this.top = 0;
         this.writer = w;
     }
@@ -114,13 +114,13 @@ public class JSONWriter {
         if (string == null) {
             throw new JSONException("Null pointer");
         }
-        if (this.mode == 'o' || this.mode == 'a') {
+        if ((this.mode == 'o') || (this.mode == 'a')) {
             try {
-                if (this.comma && this.mode == 'a') {
+                if (this.comma && (this.mode == 'a')) {
                     this.writer.write(',');
                 }
                 this.writer.write(string);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new JSONException(e);
             }
             if (this.mode == 'o') {
@@ -144,7 +144,7 @@ public class JSONWriter {
      *             outermost array or object).
      */
     public JSONWriter array() throws JSONException {
-        if (this.mode == 'i' || this.mode == 'o' || this.mode == 'a') {
+        if ((this.mode == 'i') || (this.mode == 'o') || (this.mode == 'a')) {
             this.push(null);
             this.append("[");
             this.comma = false;
@@ -171,7 +171,7 @@ public class JSONWriter {
         this.pop(mode);
         try {
             this.writer.write(c);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new JSONException(e);
         }
         this.comma = true;
@@ -219,7 +219,7 @@ public class JSONWriter {
         }
         if (this.mode == 'k') {
             try {
-                stack[top - 1].putOnce(string, Boolean.TRUE);
+                this.stack[this.top - 1].putOnce(string, Boolean.TRUE);
                 if (this.comma) {
                     this.writer.write(',');
                 }
@@ -228,7 +228,7 @@ public class JSONWriter {
                 this.comma = false;
                 this.mode = 'o';
                 return this;
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new JSONException(e);
             }
         }
@@ -250,7 +250,7 @@ public class JSONWriter {
         if (this.mode == 'i') {
             this.mode = 'o';
         }
-        if (this.mode == 'o' || this.mode == 'a') {
+        if ((this.mode == 'o') || (this.mode == 'a')) {
             this.append("{");
             this.push(new JSONObject());
             this.comma = false;
@@ -272,7 +272,7 @@ public class JSONWriter {
         if (this.top <= 0) {
             throw new JSONException("Nesting error.");
         }
-        char m = this.stack[this.top - 1] == null ? 'a' : 'k';
+        final char m = this.stack[this.top - 1] == null ? 'a' : 'k';
         if (m != c) {
             throw new JSONException("Nesting error.");
         }
@@ -289,7 +289,7 @@ public class JSONWriter {
      *             If nesting is too deep.
      */
     private void push(JSONObject jo) throws JSONException {
-        if (this.top >= maxdepth) {
+        if (this.top >= JSONWriter.maxdepth) {
             throw new JSONException("Nesting too deep.");
         }
         this.stack[this.top] = jo;

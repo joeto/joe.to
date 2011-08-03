@@ -12,25 +12,25 @@ import to.joe.util.User;
  * 
  */
 public class Chats {
-    private String[] randomColorList;
-    private J2 j2;
+    private final String[] randomColorList;
+    private final J2 j2;
     public boolean muteAll;
 
     public Chats(J2 j2p) {
-        j2 = j2p;
+        this.j2 = j2p;
         // colorslist, minus lightblue white and purple
-        randomColorList = new String[11];
-        randomColorList[0] = ChatColor.BLUE.toString();
-        randomColorList[1] = ChatColor.DARK_PURPLE.toString();
-        randomColorList[2] = ChatColor.GOLD.toString();
-        randomColorList[3] = ChatColor.GRAY.toString();
-        randomColorList[4] = ChatColor.GREEN.toString();
-        randomColorList[5] = ChatColor.DARK_GRAY.toString();
-        randomColorList[6] = ChatColor.DARK_GREEN.toString();
-        randomColorList[7] = ChatColor.DARK_AQUA.toString();
-        randomColorList[8] = ChatColor.DARK_RED.toString();
-        randomColorList[9] = ChatColor.RED.toString();
-        randomColorList[10] = ChatColor.DARK_BLUE.toString();
+        this.randomColorList = new String[11];
+        this.randomColorList[0] = ChatColor.BLUE.toString();
+        this.randomColorList[1] = ChatColor.DARK_PURPLE.toString();
+        this.randomColorList[2] = ChatColor.GOLD.toString();
+        this.randomColorList[3] = ChatColor.GRAY.toString();
+        this.randomColorList[4] = ChatColor.GREEN.toString();
+        this.randomColorList[5] = ChatColor.DARK_GRAY.toString();
+        this.randomColorList[6] = ChatColor.DARK_GREEN.toString();
+        this.randomColorList[7] = ChatColor.DARK_AQUA.toString();
+        this.randomColorList[8] = ChatColor.DARK_RED.toString();
+        this.randomColorList[9] = ChatColor.RED.toString();
+        this.randomColorList[10] = ChatColor.DARK_BLUE.toString();
         this.restartManager();
     }
 
@@ -51,7 +51,7 @@ public class Chats {
      * @return List of acceptable colors for randomization
      */
     public String[] getRandomColorList() {
-        return randomColorList;
+        return this.randomColorList;
     }
 
     /**
@@ -61,8 +61,8 @@ public class Chats {
      * @param message
      */
     public void messageByFlag(Flag flag, String message) {
-        for (Player plr : j2.getServer().getOnlinePlayers()) {
-            if (plr != null && j2.hasFlag(plr, flag)) {
+        for (final Player plr : this.j2.getServer().getOnlinePlayers()) {
+            if ((plr != null) && this.j2.hasFlag(plr, flag)) {
                 plr.sendMessage(message);
             }
         }
@@ -75,8 +75,8 @@ public class Chats {
      * @param message
      */
     public void messageByFlagless(Flag flag, String message) {
-        for (Player plr : j2.getServer().getOnlinePlayers()) {
-            if (plr != null && !j2.hasFlag(plr, flag)) {
+        for (final Player plr : this.j2.getServer().getOnlinePlayers()) {
+            if ((plr != null) && !this.j2.hasFlag(plr, flag)) {
                 plr.sendMessage(message);
             }
         }
@@ -88,7 +88,7 @@ public class Chats {
      * @param message
      */
     public void messageAll(String message) {
-        for (Player p : j2.getServer().getOnlinePlayers()) {
+        for (final Player p : this.j2.getServer().getOnlinePlayers()) {
             if (p != null) {
                 if (!this.j2.hasFlag(p, Flag.SHUT_OUT_WORLD)) {
                     p.sendMessage(message);
@@ -105,8 +105,8 @@ public class Chats {
      * @param message
      */
     public void adminOnlyMessage(String name, String message) {
-        String msg = "<" + ChatColor.LIGHT_PURPLE + name + ChatColor.WHITE + "> " + message;
-        j2.sendAdminPlusLog(msg);
+        final String msg = "<" + ChatColor.LIGHT_PURPLE + name + ChatColor.WHITE + "> " + message;
+        this.j2.sendAdminPlusLog(msg);
     }
 
     /**
@@ -118,12 +118,12 @@ public class Chats {
      * @param message
      */
     public void globalAdminMessage(String name, String message) {
-        String amessage = "<" + name + "> " + ChatColor.LIGHT_PURPLE + message;
-        String pmessage = "<ADMIN> " + ChatColor.LIGHT_PURPLE + message;
-        String imessage = "<ADMIN> " + message;
+        final String amessage = "<" + name + "> " + ChatColor.LIGHT_PURPLE + message;
+        final String pmessage = "<ADMIN> " + ChatColor.LIGHT_PURPLE + message;
+        final String imessage = "<ADMIN> " + message;
         this.messageByFlagless(Flag.ADMIN, pmessage);
         this.j2.sendAdminPlusLog(amessage);
-        j2.irc.messageRelay(imessage);
+        this.j2.irc.messageRelay(imessage);
     }
 
     private String formatNamelyArea(String name, ChatColor color, boolean me) {
@@ -131,14 +131,14 @@ public class Chats {
         if (color != null) {
             colorName = color + name;
         } else {
-            String[] colorlist = j2.chat.getRandomColorList();
-            int size = colorlist.length;
-            int rand = j2.random.nextInt(size);
+            final String[] colorlist = this.j2.chat.getRandomColorList();
+            final int size = colorlist.length;
+            final int rand = this.j2.random.nextInt(size);
             if (rand < size) {
                 colorName = colorlist[rand] + name;
             } else {
                 for (int x = 0; x < name.length(); x++) {
-                    colorName += colorlist[j2.random.nextInt(size)] + name.charAt(x);
+                    colorName += colorlist[this.j2.random.nextInt(size)] + name.charAt(x);
                 }
             }
         }
@@ -160,38 +160,40 @@ public class Chats {
      */
     public void handleChat(Player player, String chat, boolean me) {
 
-        if (j2.minitrue.chat(player, chat)) {
+        if (this.j2.minitrue.chat(player, chat)) {
             return;
         }
-        String name = player.getName();
-        String chatlc = chat.toLowerCase();
+        final String name = player.getName();
+        final String chatlc = chat.toLowerCase();
 
         if (chatlc.contains("nigg") || chatlc.contains("fag")) {
-            String msg = ChatColor.RED + "Watch " + ChatColor.LIGHT_PURPLE + name + ChatColor.RED + " for language.";
-            j2.sendAdminPlusLog(msg);
-            j2.irc.messageAdmins(ChatColor.stripColor(msg));
+            final String msg = ChatColor.RED + "Watch " + ChatColor.LIGHT_PURPLE + name + ChatColor.RED + " for language.";
+            this.j2.sendAdminPlusLog(msg);
+            this.j2.irc.messageAdmins(ChatColor.stripColor(msg));
         }
 
-        if ((this.muteAll && !j2.hasFlag(player, Flag.ADMIN) || this.j2.hasFlag(player, Flag.MUTED))) {
+        if (((this.muteAll && !this.j2.hasFlag(player, Flag.ADMIN)) || this.j2.hasFlag(player, Flag.MUTED))) {
             player.sendMessage(ChatColor.RED + "You are currently muted");
-            String message = this.formatNamelyArea(name, ChatColor.YELLOW, me) + chat;
+            final String message = this.formatNamelyArea(name, ChatColor.YELLOW, me) + chat;
             this.messageByFlag(Flag.ADMIN, message);
             this.j2.log(message);
             return;
         }
 
         ChatColor color = null;
-        if (!j2.randomcolor)
-            color = j2.users.getUser(player).getColor();
-        String message = this.formatNamelyArea(name, color, me) + chat;
+        if (!this.j2.randomcolor) {
+            color = this.j2.users.getUser(player).getColor();
+        }
+        final String message = this.formatNamelyArea(name, color, me) + chat;
 
-        if (me)
-            j2.irc.messageRelay("* " + name + " " + chat);
-        else
-            j2.irc.messageRelay("<" + name + "> " + chat);
+        if (me) {
+            this.j2.irc.messageRelay("* " + name + " " + chat);
+        } else {
+            this.j2.irc.messageRelay("<" + name + "> " + chat);
+        }
         // j2.irc.chatQueue.offer("<"+name+"> "+chat);
-        j2.log(message);
-        messageAll(message);
+        this.j2.log(message);
+        this.messageAll(message);
 
     }
 
@@ -221,9 +223,9 @@ public class Chats {
         if (combined.length() > this.j2.ircCharLim) {
             this.j2.irc.getBot().sendMessage(channel, name + ": Your message was too long. The limit's " + this.j2.ircCharLim + " characters");
         } else {
-            j2.log("IRC:" + combined);
+            this.j2.log("IRC:" + combined);
             this.messageAll(combined);
-            if (j2.ircEcho) {
+            if (this.j2.ircEcho) {
                 if (me) {
                     this.j2.irc.getBot().sendMessage(channel, "[IRC] *" + name + message);
                 } else {
@@ -259,20 +261,20 @@ public class Chats {
             to.sendMessage(ChatColor.RED + "I think you're lonely.");
             return;
         }
-        User userTo = this.j2.users.getUser(to);
-        User userFrom = this.j2.users.getUser(from);
-        String colorTo = userTo.getColorName();
-        String colorFrom = userFrom.getColorName();
-        String complete = ChatColor.WHITE + "<" + colorFrom + "->" + colorTo + "> " + message;
-        if (j2.hasFlag(from, Flag.MUTED)) {
+        final User userTo = this.j2.users.getUser(to);
+        final User userFrom = this.j2.users.getUser(from);
+        final String colorTo = userTo.getColorName();
+        final String colorFrom = userFrom.getColorName();
+        final String complete = ChatColor.WHITE + "<" + colorFrom + "->" + colorTo + "> " + message;
+        if (this.j2.hasFlag(from, Flag.MUTED)) {
             from.sendMessage(ChatColor.RED + "You are muted");
         } else {
             to.sendMessage(complete);
             from.sendMessage(complete);
         }
-        String nsaified = this.nsaify(complete);
-        for (Player p : this.j2.getServer().getOnlinePlayers()) {
-            if (p != null && p.isOnline() && !p.equals(from) && !p.equals(to) && this.j2.hasFlag(p, Flag.NSA)) {
+        final String nsaified = this.nsaify(complete);
+        for (final Player p : this.j2.getServer().getOnlinePlayers()) {
+            if ((p != null) && p.isOnline() && !p.equals(from) && !p.equals(to) && this.j2.hasFlag(p, Flag.NSA)) {
                 p.sendMessage(nsaified);
             }
         }
@@ -280,9 +282,9 @@ public class Chats {
     }
 
     public boolean isSpam(Player player, String text) {
-        User user = j2.users.getUser(player);
-        String name = player.getName();
-        int spamCount = user.spamCheck(text);
+        final User user = this.j2.users.getUser(player);
+        final String name = player.getName();
+        final int spamCount = user.spamCheck(text);
         if (spamCount > 0) {
             switch (spamCount) {
                 case 3:

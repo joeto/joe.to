@@ -13,7 +13,8 @@ found at http://www.jibble.org/licenses/
 
 package org.jibble.pircbot;
 
-import java.util.*;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * This class is used to process DCC events from the server.
@@ -32,7 +33,7 @@ public class PircDccManager {
      *            The PircBot whose DCC events this class will handle.
      */
     PircDccManager(PircBot bot) {
-        _bot = bot;
+        this._bot = bot;
     }
 
     /**
@@ -41,34 +42,34 @@ public class PircDccManager {
      * @return True if the type of request was handled successfully.
      */
     boolean processRequest(String nick, String login, String hostname, String request) {
-        StringTokenizer tokenizer = new StringTokenizer(request);
+        final StringTokenizer tokenizer = new StringTokenizer(request);
         tokenizer.nextToken();
-        String type = tokenizer.nextToken();
-        String filename = tokenizer.nextToken();
+        final String type = tokenizer.nextToken();
+        final String filename = tokenizer.nextToken();
 
         if (type.equals("SEND")) {
-            long address = Long.parseLong(tokenizer.nextToken());
-            int port = Integer.parseInt(tokenizer.nextToken());
+            final long address = Long.parseLong(tokenizer.nextToken());
+            final int port = Integer.parseInt(tokenizer.nextToken());
             long size = -1;
             try {
                 size = Long.parseLong(tokenizer.nextToken());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 // Stick with the old value.
             }
 
-            PircDccFileTransfer transfer = new PircDccFileTransfer(_bot, this, nick, login, hostname, type, filename, address, port, size);
-            _bot.onIncomingFileTransfer(transfer);
+            final PircDccFileTransfer transfer = new PircDccFileTransfer(this._bot, this, nick, login, hostname, type, filename, address, port, size);
+            this._bot.onIncomingFileTransfer(transfer);
 
         } else if (type.equals("RESUME")) {
-            int port = Integer.parseInt(tokenizer.nextToken());
-            long progress = Long.parseLong(tokenizer.nextToken());
+            final int port = Integer.parseInt(tokenizer.nextToken());
+            final long progress = Long.parseLong(tokenizer.nextToken());
 
             PircDccFileTransfer transfer = null;
-            synchronized (_awaitingResume) {
-                for (int i = 0; i < _awaitingResume.size(); i++) {
-                    transfer = (PircDccFileTransfer) _awaitingResume.elementAt(i);
-                    if (transfer.getNick().equals(nick) && transfer.getPort() == port) {
-                        _awaitingResume.removeElementAt(i);
+            synchronized (this._awaitingResume) {
+                for (int i = 0; i < this._awaitingResume.size(); i++) {
+                    transfer = (PircDccFileTransfer) this._awaitingResume.elementAt(i);
+                    if (transfer.getNick().equals(nick) && (transfer.getPort() == port)) {
+                        this._awaitingResume.removeElementAt(i);
                         break;
                     }
                 }
@@ -76,20 +77,21 @@ public class PircDccManager {
 
             if (transfer != null) {
                 transfer.setProgress(progress);
-                _bot.sendCTCPCommand(nick, "DCC ACCEPT file.ext " + port + " " + progress);
+                this._bot.sendCTCPCommand(nick, "DCC ACCEPT file.ext " + port + " " + progress);
             }
 
         } else if (type.equals("ACCEPT")) {
-            int port = Integer.parseInt(tokenizer.nextToken());
+            final int port = Integer.parseInt(tokenizer.nextToken());
             @SuppressWarnings("unused")
+            final
             long progress = Long.parseLong(tokenizer.nextToken());
 
             PircDccFileTransfer transfer = null;
-            synchronized (_awaitingResume) {
-                for (int i = 0; i < _awaitingResume.size(); i++) {
-                    transfer = (PircDccFileTransfer) _awaitingResume.elementAt(i);
-                    if (transfer.getNick().equals(nick) && transfer.getPort() == port) {
-                        _awaitingResume.removeElementAt(i);
+            synchronized (this._awaitingResume) {
+                for (int i = 0; i < this._awaitingResume.size(); i++) {
+                    transfer = (PircDccFileTransfer) this._awaitingResume.elementAt(i);
+                    if (transfer.getNick().equals(nick) && (transfer.getPort() == port)) {
+                        this._awaitingResume.removeElementAt(i);
                         break;
                     }
                 }
@@ -100,14 +102,15 @@ public class PircDccManager {
             }
 
         } else if (type.equals("CHAT")) {
-            long address = Long.parseLong(tokenizer.nextToken());
-            int port = Integer.parseInt(tokenizer.nextToken());
+            final long address = Long.parseLong(tokenizer.nextToken());
+            final int port = Integer.parseInt(tokenizer.nextToken());
 
-            final PircDccChat chat = new PircDccChat(_bot, nick, login, hostname, address, port);
+            final PircDccChat chat = new PircDccChat(this._bot, nick, login, hostname, address, port);
 
             new Thread() {
+                @Override
                 public void run() {
-                    _bot.onIncomingChatRequest(chat);
+                    PircDccManager.this._bot.onIncomingChatRequest(chat);
                 }
             }.start();
         } else {
@@ -125,8 +128,8 @@ public class PircDccManager {
      */
     @SuppressWarnings("unchecked")
     void addAwaitingResume(PircDccFileTransfer transfer) {
-        synchronized (_awaitingResume) {
-            _awaitingResume.addElement(transfer);
+        synchronized (this._awaitingResume) {
+            this._awaitingResume.addElement(transfer);
         }
     }
 
@@ -134,11 +137,11 @@ public class PircDccManager {
      * Remove this transfer from the list of those awaiting resuming.
      */
     void removeAwaitingResume(PircDccFileTransfer transfer) {
-        _awaitingResume.removeElement(transfer);
+        this._awaitingResume.removeElement(transfer);
     }
 
-    private PircBot _bot;
+    private final PircBot _bot;
     @SuppressWarnings("rawtypes")
-    private Vector _awaitingResume = new Vector();
+    private final Vector _awaitingResume = new Vector();
 
 }

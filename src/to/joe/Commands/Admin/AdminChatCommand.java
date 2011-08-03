@@ -21,7 +21,7 @@ public class AdminChatCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "Usage: /a Message");
                 return;
             }
-            String message = this.j2.combineSplit(0, args, " ");
+            final String message = this.j2.combineSplit(0, args, " ");
             this.j2.chat.adminOnlyMessage(playerName, message);
         }
     }

@@ -16,7 +16,7 @@ import to.joe.J2;
  */
 public class Configurator {
 
-    private J2 j2;
+    private final J2 j2;
     Configuration conf;
 
     public Configurator(J2 j2) {
@@ -28,12 +28,12 @@ public class Configurator {
      * Create a fresh configuration.
      */
     public void newConf() {
-        HashMap<String, Object> conf_general = new HashMap<String, Object>();
-        HashMap<String, Object> conf_mysql = new HashMap<String, Object>();
-        HashMap<String, Object> conf_irc = new HashMap<String, Object>();
-        HashMap<String, Object> conf_tips = new HashMap<String, Object>();
-        HashMap<String, Object> conf_maint = new HashMap<String, Object>();
-        HashMap<String, Object> conf_blacklists = new HashMap<String, Object>();
+        final HashMap<String, Object> conf_general = new HashMap<String, Object>();
+        final HashMap<String, Object> conf_mysql = new HashMap<String, Object>();
+        final HashMap<String, Object> conf_irc = new HashMap<String, Object>();
+        final HashMap<String, Object> conf_tips = new HashMap<String, Object>();
+        final HashMap<String, Object> conf_maint = new HashMap<String, Object>();
+        final HashMap<String, Object> conf_blacklists = new HashMap<String, Object>();
         conf_general.put("debug-mode", false);
         conf_mysql.put("username", "root");
         conf_mysql.put("database", "minecraft");
@@ -72,28 +72,28 @@ public class Configurator {
         conf_general.put("mcbans-api", "");
         conf_general.put("mcbouncerapi", "");
         conf_general.put("jail-xyzpy", "10,10,10,0,0");
-        conf.setProperty("General", conf_general);
-        conf.setProperty("MySQL", conf_mysql);
-        conf.setProperty("IRC", conf_irc);
-        conf.setProperty("Maintenance", conf_maint);
-        conf.setProperty("Tips", conf_tips);
-        conf.setProperty("Blacklists", conf_blacklists);
-        conf.save();
+        this.conf.setProperty("General", conf_general);
+        this.conf.setProperty("MySQL", conf_mysql);
+        this.conf.setProperty("IRC", conf_irc);
+        this.conf.setProperty("Maintenance", conf_maint);
+        this.conf.setProperty("Tips", conf_tips);
+        this.conf.setProperty("Blacklists", conf_blacklists);
+        this.conf.save();
     }
 
     /**
      * Loads the config
      */
     public void load() {
-        conf.load();
-        ConfigurationNode general = conf.getNode("General");
+        this.conf.load();
+        final ConfigurationNode general = this.conf.getNode("General");
 
         this.general_allow_explosions = general.getBoolean("allow-explosions", true);
         this.general_block_nontrusted = general.getBoolean("block-nontrusted", false);
         this.general_debug_mode = general.getBoolean("debug-mode", false);
         this.general_disable_wolves = general.getBoolean("disable-wolves", false);
-        String jail = general.getString("jail-xyzpy", "1,1,1,1,1");
-        String[] jail_split = jail.split(",");
+        final String jail = general.getString("jail-xyzpy", "1,1,1,1,1");
+        final String[] jail_split = jail.split(",");
         this.general_jail_xyzpy = new Location(this.j2.getServer().getWorld("world"), Integer.valueOf(jail_split[0]), Integer.valueOf(jail_split[0]), Integer.valueOf(jail_split[0]), Integer.valueOf(jail_split[0]), Integer.valueOf(jail_split[0]));
         this.general_max_players = general.getInt("max-players", 30);
         this.general_mcbans_api = general.getString("mcbans-api", "");
@@ -102,7 +102,7 @@ public class Configurator {
         this.general_safemode = general.getBoolean("safemode", false);
         this.general_server_number = general.getInt("server-number", 0);
 
-        ConfigurationNode irc = conf.getNode("IRC");
+        final ConfigurationNode irc = this.conf.getNode("IRC");
 
         this.irc_admin_channel = irc.getString("admin-channel", "#aVeryMinecraftAdminChannel");
         this.irc_channel_join_message = irc.getString("channel-join-message", "Beep boop I am bot");
@@ -121,45 +121,45 @@ public class Configurator {
         this.irc_relay_channel = irc.getString("relay-channel", "#aVeryMinecraftRelay");
         this.irc_require_msg_cmd = irc.getBoolean("require-msg-cmd", true);
 
-        ConfigurationNode mysql = conf.getNode("MySQL");
+        final ConfigurationNode mysql = this.conf.getNode("MySQL");
 
         this.mysql_database = mysql.getString("database", "jdbc:mysql://localhost:3306/minecraft");
         this.mysql_password = mysql.getString("password", "root");
         this.mysql_username = mysql.getString("username", "root");
 
-        ConfigurationNode blacklists = conf.getNode("Blacklists");
+        final ConfigurationNode blacklists = this.conf.getNode("Blacklists");
 
-        String bl_trust = blacklists.getString("prevent-trusted", "0");
-        for (String s : bl_trust.split(",")) {
+        final String bl_trust = blacklists.getString("prevent-trusted", "0");
+        for (final String s : bl_trust.split(",")) {
             if (s != null) {
                 this.blacklist_prevent_trusted.add(Integer.valueOf(s));
             }
         }
-        String bl_reg = blacklists.getString("prevent-general", "0");
-        for (String s : bl_reg.split(",")) {
+        final String bl_reg = blacklists.getString("prevent-general", "0");
+        for (final String s : bl_reg.split(",")) {
             if (s != null) {
                 this.blacklist_prevent_general.add(Integer.valueOf(s));
             }
         }
-        String bl_watch = blacklists.getString("watchlist", "0");
-        for (String s : bl_watch.split(",")) {
+        final String bl_watch = blacklists.getString("watchlist", "0");
+        for (final String s : bl_watch.split(",")) {
             if (s != null) {
                 this.blacklist_watchlist.add(Integer.valueOf(s));
             }
         }
-        String bl_summon = blacklists.getString("prevent-summon", "0");
-        for (String s : bl_summon.split(",")) {
+        final String bl_summon = blacklists.getString("prevent-summon", "0");
+        for (final String s : bl_summon.split(",")) {
             if (s != null) {
-                blacklist_prevent_summon.add(Integer.valueOf(s));
+                this.blacklist_prevent_summon.add(Integer.valueOf(s));
             }
         }
 
-        ConfigurationNode tips = conf.getNode("Tips");
+        final ConfigurationNode tips = this.conf.getNode("Tips");
 
         this.tips_color = ChatColor.getByCode(tips.getInt("color", 11));
         this.tips_delay = tips.getInt("delay", 120);
 
-        ConfigurationNode maintenance = conf.getNode("Maintenance");
+        final ConfigurationNode maintenance = this.conf.getNode("Maintenance");
 
         this.maintenance_enable = maintenance.getBoolean("enable", false);
         this.maintenance_message = maintenance.getString("message", "Server offline for maintenance");

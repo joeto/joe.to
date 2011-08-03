@@ -13,7 +13,7 @@ public class MeCommand extends MasterCommand {
 
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
-        if (isPlayer && args.length > 0) {
+        if (isPlayer && (args.length > 0)) {
             this.j2.chat.handleChat(player, this.j2.combineSplit(0, args, " "), true);
         }
     }

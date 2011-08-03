@@ -13,8 +13,12 @@ found at http://www.jibble.org/licenses/
 
 package org.jibble.pircbot;
 
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * A simple IdentServer (also know as "The Identification Protocol"). An ident
@@ -58,18 +62,18 @@ public class PircIdentServer extends Thread {
      *            The login that the ident server will respond with.
      */
     PircIdentServer(PircBot bot, String login) {
-        _bot = bot;
-        _login = login;
+        this._bot = bot;
+        this._login = login;
 
         try {
-            _ss = new ServerSocket(113);
-            _ss.setSoTimeout(60000);
-        } catch (Exception e) {
-            _bot.log("*** Could not start the ident server on port 113.");
+            this._ss = new ServerSocket(113);
+            this._ss.setSoTimeout(60000);
+        } catch (final Exception e) {
+            this._bot.log("*** Could not start the ident server on port 113.");
             return;
         }
 
-        _bot.log("*** Ident server running on port 113 for the next 60 seconds...");
+        this._bot.log("*** Ident server running on port 113 for the next 60 seconds...");
         this.setName(this.getClass() + "-Thread");
         this.start();
     }
@@ -79,34 +83,35 @@ public class PircIdentServer extends Thread {
      * appropriate response. Note that this method is started by the class
      * constructor.
      */
+    @Override
     public void run() {
         try {
-            Socket socket = _ss.accept();
+            final Socket socket = this._ss.accept();
             socket.setSoTimeout(60000);
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
             String line = reader.readLine();
             if (line != null) {
-                _bot.log("*** Ident request received: " + line);
-                line = line + " : USERID : UNIX : " + _login;
+                this._bot.log("*** Ident request received: " + line);
+                line = line + " : USERID : UNIX : " + this._login;
                 writer.write(line + "\r\n");
                 writer.flush();
-                _bot.log("*** Ident reply sent: " + line);
+                this._bot.log("*** Ident reply sent: " + line);
                 writer.close();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // We're not really concerned with what went wrong, are we?
         }
 
         try {
-            _ss.close();
-        } catch (Exception e) {
+            this._ss.close();
+        } catch (final Exception e) {
             // Doesn't really matter...
         }
 
-        _bot.log("*** The Ident server has been shut down.");
+        this._bot.log("*** The Ident server has been shut down.");
     }
 
     private PircBot _bot;

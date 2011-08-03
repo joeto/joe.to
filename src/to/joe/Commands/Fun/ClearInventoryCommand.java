@@ -21,12 +21,12 @@ public class ClearInventoryCommand extends MasterCommand {
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (!isPlayer || this.j2.hasFlag(player, Flag.FUN)) {
             Player target = null;
-            if (isPlayer && args.length == 0) {
+            if (isPlayer && (args.length == 0)) {
                 target = player;
                 player.sendMessage(ChatColor.RED + "Inventory emptied");
                 this.j2.log(ChatColor.RED + player.getName() + " emptied inventory");
-            } else if (args.length == 1 && (!isPlayer || this.j2.hasFlag(player, Flag.ADMIN))) {
-                List<Player> targets = this.j2.minitrue.matchPlayer(args[0], true);
+            } else if ((args.length == 1) && (!isPlayer || this.j2.hasFlag(player, Flag.ADMIN))) {
+                final List<Player> targets = this.j2.minitrue.matchPlayer(args[0], true);
                 if (targets.size() == 1) {
                     target = targets.get(0);
                     target.sendMessage(ChatColor.RED + "Your inventory has been cleared by an admin");
@@ -36,7 +36,7 @@ public class ClearInventoryCommand extends MasterCommand {
                 }
             }
             if (target != null) {
-                PlayerInventory targetInventory = target.getInventory();
+                final PlayerInventory targetInventory = target.getInventory();
                 targetInventory.clear(36);
                 targetInventory.clear(37);
                 targetInventory.clear(38);

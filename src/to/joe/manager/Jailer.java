@@ -12,7 +12,7 @@ import to.joe.util.Flag;
  * 
  */
 public class Jailer {
-    private J2 j2;
+    private final J2 j2;
     private Location jailLocation;
 
     public Jailer(J2 j2) {
@@ -25,7 +25,7 @@ public class Jailer {
      * @param jail
      */
     public void jailSet(String[] jail) {
-        this.jailLocation = new Location(j2.getServer().getWorld("world"), Double.valueOf(jail[0]).doubleValue(), Double.valueOf(jail[1]).doubleValue(), Double.valueOf(jail[2]).doubleValue(), Float.valueOf(jail[3]).floatValue(), Float.valueOf(jail[4]).floatValue());
+        this.jailLocation = new Location(this.j2.getServer().getWorld("world"), Double.valueOf(jail[0]).doubleValue(), Double.valueOf(jail[1]).doubleValue(), Double.valueOf(jail[2]).doubleValue(), Float.valueOf(jail[3]).floatValue(), Float.valueOf(jail[4]).floatValue());
     }
 
     /**
@@ -37,7 +37,7 @@ public class Jailer {
         if (!this.isJailed(player)) {
             return;
         }
-        j2.safePort(player, this.jailLocation);
+        this.j2.safePort(player, this.jailLocation);
     }
 
     /**
@@ -67,7 +67,7 @@ public class Jailer {
      * @return
      */
     public boolean isJailed(String player) {
-        return j2.hasFlag(player, Flag.JAILED);
+        return this.j2.hasFlag(player, Flag.JAILED);
     }
 
     /**

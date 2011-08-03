@@ -42,7 +42,7 @@ public class Warp {
         return this.flag;
     }
 
-    private Location location;
-    private String name, player;
-    private Flag flag;
+    private final Location location;
+    private final String name, player;
+    private final Flag flag;
 }

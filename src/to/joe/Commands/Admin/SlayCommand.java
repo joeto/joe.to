@@ -23,7 +23,7 @@ public class SlayCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "I can't kill anyone if you don't tell me whom");
                 return;
             }
-            List<Player> list = this.j2.minitrue.matchPlayer(args[0], true);
+            final List<Player> list = this.j2.minitrue.matchPlayer(args[0], true);
             if (list.size() == 0) {
                 sender.sendMessage(ChatColor.RED + "That matches nobody, smart stuff");
                 return;
@@ -32,7 +32,7 @@ public class SlayCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "That matches more than one, smart stuff");
                 return;
             }
-            Player target = list.get(0);
+            final Player target = list.get(0);
             if (target != null) {
                 target.damage(9001);
                 target.sendMessage(ChatColor.RED + "You have been slayed");

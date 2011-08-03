@@ -30,7 +30,7 @@ public class TimeCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "Usage: /time day|night");
                 return;
             }
-            long curTime = this.j2.getServer().getWorlds().get(0).getTime();
+            final long curTime = this.j2.getServer().getWorlds().get(0).getTime();
             long margin = (desired - curTime) % 24000;
             if (margin < 0) {
                 margin += 24000;

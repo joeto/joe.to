@@ -8,7 +8,7 @@ import to.joe.J2;
  */
 @SuppressWarnings("unused")
 public class MoveTracker {
-    private J2 j2;
+    private final J2 j2;
 
     public MoveTracker(J2 j2) {
         this.j2 = j2;

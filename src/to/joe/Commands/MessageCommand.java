@@ -22,12 +22,12 @@ public class MessageCommand extends MasterCommand {
                 player.sendMessage(ChatColor.RED + "Correct usage: /msg player message");
                 return;
             }
-            String targetName = args[0];
-            boolean admin = this.j2.hasFlag(player, Flag.ADMIN);
+            final String targetName = args[0];
+            final boolean admin = this.j2.hasFlag(player, Flag.ADMIN);
             Player target = this.j2.minitrue.getPlayer(targetName, admin);
             if (target == null) {
-                List<Player> inquest = this.j2.minitrue.matchPlayer(args[0], admin);
-                int matches = inquest.size();
+                final List<Player> inquest = this.j2.minitrue.matchPlayer(args[0], admin);
+                final int matches = inquest.size();
                 if (matches > 1) {
                     player.sendMessage(ChatColor.RED + "That matches multiple names!");
                     return;

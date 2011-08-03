@@ -48,9 +48,9 @@ public class PircQueue {
      */
     @SuppressWarnings("unchecked")
     public void add(Object o) {
-        synchronized (_queue) {
-            _queue.addElement(o);
-            _queue.notify();
+        synchronized (this._queue) {
+            this._queue.addElement(o);
+            this._queue.notify();
         }
     }
 
@@ -62,9 +62,9 @@ public class PircQueue {
      */
     @SuppressWarnings("unchecked")
     public void addFront(Object o) {
-        synchronized (_queue) {
-            _queue.insertElementAt(o, 0);
-            _queue.notify();
+        synchronized (this._queue) {
+            this._queue.insertElementAt(o, 0);
+            this._queue.notify();
         }
     }
 
@@ -80,20 +80,20 @@ public class PircQueue {
         Object o = null;
 
         // Block if the Queue is empty.
-        synchronized (_queue) {
-            if (_queue.size() == 0) {
+        synchronized (this._queue) {
+            if (this._queue.size() == 0) {
                 try {
-                    _queue.wait();
-                } catch (InterruptedException e) {
+                    this._queue.wait();
+                } catch (final InterruptedException e) {
                     return null;
                 }
             }
 
             // Return the Object.
             try {
-                o = _queue.firstElement();
-                _queue.removeElementAt(0);
-            } catch (ArrayIndexOutOfBoundsException e) {
+                o = this._queue.firstElement();
+                this._queue.removeElementAt(0);
+            } catch (final ArrayIndexOutOfBoundsException e) {
                 throw new InternalError("Race hazard in Queue object.");
             }
         }
@@ -116,8 +116,8 @@ public class PircQueue {
      * Clears the contents of the Queue.
      */
     public void clear() {
-        synchronized (_queue) {
-            _queue.removeAllElements();
+        synchronized (this._queue) {
+            this._queue.removeAllElements();
         }
     }
 
@@ -127,10 +127,10 @@ public class PircQueue {
      * @return The current size of the queue.
      */
     public int size() {
-        return _queue.size();
+        return this._queue.size();
     }
 
     @SuppressWarnings("rawtypes")
-    private Vector _queue = new Vector();
+    private final Vector _queue = new Vector();
 
 }

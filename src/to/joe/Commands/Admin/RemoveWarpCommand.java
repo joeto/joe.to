@@ -20,7 +20,7 @@ public class RemoveWarpCommand extends MasterCommand {
             if (args.length == 0) {
                 player.sendMessage(ChatColor.RED + "Usage: /removewarp warpname");
             } else {
-                String toRemove = args[0];
+                final String toRemove = args[0];
                 player.sendMessage(ChatColor.RED + "Removing warp " + toRemove);
                 this.j2.warps.killWarp(this.j2.warps.getPublicWarp(toRemove));
             }

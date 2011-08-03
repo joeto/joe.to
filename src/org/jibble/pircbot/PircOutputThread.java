@@ -13,7 +13,7 @@ found at http://www.jibble.org/licenses/
 
 package org.jibble.pircbot;
 
-import java.io.*;
+import java.io.BufferedWriter;
 
 /**
  * A Thread which is responsible for sending messages to the IRC server.
@@ -39,8 +39,8 @@ public class PircOutputThread extends Thread {
      *            The Queue from which we will obtain our messages.
      */
     PircOutputThread(PircBot bot, PircQueue outQueue) {
-        _bot = bot;
-        _outQueue = outQueue;
+        this._bot = bot;
+        this._outQueue = outQueue;
         this.setName(this.getClass() + "-Thread");
     }
 
@@ -58,7 +58,7 @@ public class PircOutputThread extends Thread {
      *            The charset to use when encoing this string into a byte array.
      */
     static void sendRawLine(PircBot bot, BufferedWriter bwriter, String line) {
-        if (line.length() > bot.getMaxLineLength() - 2) {
+        if (line.length() > (bot.getMaxLineLength() - 2)) {
             line = line.substring(0, bot.getMaxLineLength() - 2);
         }
         synchronized (bwriter) {
@@ -66,7 +66,7 @@ public class PircOutputThread extends Thread {
                 bwriter.write(line + "\r\n");
                 bwriter.flush();
                 bot.log(">>>" + line);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 // Silent response - just lose the line.
             }
         }
@@ -76,21 +76,22 @@ public class PircOutputThread extends Thread {
      * This method starts the Thread consuming from the outgoing message Queue
      * and sending lines to the server.
      */
+    @Override
     public void run() {
         try {
             boolean running = true;
             while (running) {
                 // Small delay to prevent spamming of the channel
-                Thread.sleep(_bot.getMessageDelay());
+                Thread.sleep(this._bot.getMessageDelay());
 
-                String line = (String) _outQueue.next();
+                final String line = (String) this._outQueue.next();
                 if (line != null) {
-                    _bot.sendRawLine(line);
+                    this._bot.sendRawLine(line);
                 } else {
                     running = false;
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             // Just let the method return naturally...
         }
     }

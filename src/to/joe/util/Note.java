@@ -9,9 +9,9 @@ import org.bukkit.ChatColor;
  * 
  */
 public class Note {
-    private String sender;
-    private String message;
-    private Date time;
+    private final String sender;
+    private final String message;
+    private final Date time;
     boolean adminBusiness;
 
     public Note(String sender, String message, Date time, boolean adminBusiness) {
@@ -21,6 +21,7 @@ public class Note {
         this.adminBusiness = adminBusiness;
     }
 
+    @Override
     public String toString() {
         String from;
         if (this.adminBusiness) {

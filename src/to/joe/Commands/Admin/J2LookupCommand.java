@@ -25,24 +25,24 @@ public class J2LookupCommand extends MasterCommand {
                 player.sendMessage(ChatColor.LIGHT_PURPLE + "/j2lookup player");
                 return;
             }
-            String target = args[0];
+            final String target = args[0];
             this.j2.log(ChatColor.LIGHT_PURPLE + "[j2bans] " + playerName + " looked up " + target);
             String x = "";
             boolean allbans = false;
-            if (args.length > 1 && args[1].equalsIgnoreCase("all")) {
+            if ((args.length > 1) && args[1].equalsIgnoreCase("all")) {
                 allbans = true;
             }
-            ArrayList<Ban> bans = this.j2.mysql.getBans(target, allbans);
-            ArrayList<String> messages = new ArrayList<String>();
+            final ArrayList<Ban> bans = this.j2.mysql.getBans(target, allbans);
+            final ArrayList<String> messages = new ArrayList<String>();
             boolean banned = false;
-            for (Ban ban : bans) {
+            for (final Ban ban : bans) {
                 if (ban.isBanned()) {
                     x = ChatColor.DARK_RED + "X";
                     banned = true;
                 } else {
                     x = ChatColor.GREEN + "U";
                 }
-                String c = ChatColor.DARK_AQUA.toString();
+                final String c = ChatColor.DARK_AQUA.toString();
                 messages.add(c + "[" + x + c + "] " + this.j2.shortdateformat.format(new Date(ban.getTimeOfBan() * 1000)) + " " + ChatColor.GOLD + ban.getReason());
             }
             String c2 = ChatColor.GREEN.toString();
@@ -50,7 +50,7 @@ public class J2LookupCommand extends MasterCommand {
                 c2 = ChatColor.RED.toString();
             }
             player.sendMessage(ChatColor.AQUA + "Found " + ChatColor.GOLD + bans.size() + ChatColor.AQUA + " bans for " + c2 + target);
-            for (String message : messages) {
+            for (final String message : messages) {
                 player.sendMessage(message);
             }
         }

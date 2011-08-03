@@ -17,7 +17,7 @@ import to.joe.util.Flag;
  * 
  */
 public class KicksBans {
-    private J2 j2;
+    private final J2 j2;
     public ArrayList<Ban> bans;
     private ArrayList<String> xrayers;
     private HashMap<String, Integer> sessionSpamKicks;
@@ -46,26 +46,26 @@ public class KicksBans {
      *            location of admin
      */
     public void callBan(String adminName, String[] split, Location location) {
-        List<Player> toBanCandidates = j2.getServer().matchPlayer(split[0]);
+        final List<Player> toBanCandidates = this.j2.getServer().matchPlayer(split[0]);
         if (toBanCandidates.size() != 1) {
             if (!adminName.equalsIgnoreCase("console")) {
-                j2.getServer().getPlayer(adminName).sendMessage(ChatColor.RED + "Error:" + split[0] + " does not exist or fits multiple players");
+                this.j2.getServer().getPlayer(adminName).sendMessage(ChatColor.RED + "Error:" + split[0] + " does not exist or fits multiple players");
             }
             return;
         }
-        Player toBan = toBanCandidates.get(0);
+        final Player toBan = toBanCandidates.get(0);
         String banReason = "";
-        long banTime = 0;
-        banReason = j2.combineSplit(1, split, " ");
+        final long banTime = 0;
+        banReason = this.j2.combineSplit(1, split, " ");
         if (toBan != null) {
-            String name = toBan.getName();
+            final String name = toBan.getName();
             toBan.getWorld().strikeLightningEffect(toBan.getLocation());
-            j2.mysql.ban(name, banReason, banTime, adminName, location);
+            this.j2.mysql.ban(name, banReason, banTime, adminName, location);
             // if (split.length > 1) {
             toBan.kickPlayer("Banned: " + banReason);
-            j2.sendAdminPlusLog(ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
-            j2.chat.messageByFlagless(Flag.ADMIN, ChatColor.RED + name + " banned (" + banReason + ")");
-            j2.irc.messageRelay(name + " banned (" + banReason + ")");
+            this.j2.sendAdminPlusLog(ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
+            this.j2.chat.messageByFlagless(Flag.ADMIN, ChatColor.RED + name + " banned (" + banReason + ")");
+            this.j2.irc.messageRelay(name + " banned (" + banReason + ")");
             /*
              * } else { toBan.kickPlayer("Banned."); j2.log.log(Level.INFO,
              * "Banning " + name + " by " + adminName);
@@ -76,7 +76,7 @@ public class KicksBans {
              */
         } else {
             if (!adminName.equalsIgnoreCase("console")) {
-                j2.getServer().getPlayer(adminName).sendMessage(ChatColor.RED + "Error:" + split[0] + " does not exist or fits multiple players");
+                this.j2.getServer().getPlayer(adminName).sendMessage(ChatColor.RED + "Error:" + split[0] + " does not exist or fits multiple players");
             }
         }
     }
@@ -92,13 +92,13 @@ public class KicksBans {
      */
     public void callAddBan(String adminName, String[] split, Location location) {
         String banReason = "";
-        long banTime = 0;
-        banReason = j2.combineSplit(1, split, " ");
-        String name = split[0];
-        j2.mysql.ban(name, banReason, banTime, adminName, location);
-        forceKick(name, "Banned: " + banReason);
+        final long banTime = 0;
+        banReason = this.j2.combineSplit(1, split, " ");
+        final String name = split[0];
+        this.j2.mysql.ban(name, banReason, banTime, adminName, location);
+        this.forceKick(name, "Banned: " + banReason);
         // if (split.length > 1) {
-        j2.sendAdminPlusLog(ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
+        this.j2.sendAdminPlusLog(ChatColor.RED + "Banning " + name + " by " + adminName + ": " + banReason);
         /*
          * } else { j2.log.log(Level.INFO, "Banning " + name + " by " +
          * adminName); j2.chat.msgByFlag(Flag.ADMIN,ChatColor.RED + "Banning " +
@@ -126,31 +126,32 @@ public class KicksBans {
      * @param quiet
      */
     public void callKick(String pname, String admin, String reason, boolean quiet) {
-        List<Player> toKickCandidates = j2.getServer().matchPlayer(pname);
+        final List<Player> toKickCandidates = this.j2.getServer().matchPlayer(pname);
         if (toKickCandidates.size() != 1) {
             if (!admin.equalsIgnoreCase("console") && !quiet) {
-                j2.getServer().getPlayer(admin).sendMessage(ChatColor.RED + "Error:" + pname + " does not exist or fits multiple players");
+                this.j2.getServer().getPlayer(admin).sendMessage(ChatColor.RED + "Error:" + pname + " does not exist or fits multiple players");
             }
             return;
         }
-        Player toKick = toKickCandidates.get(0);
+        final Player toKick = toKickCandidates.get(0);
         if (toKick != null) {
             toKick.getWorld().strikeLightningEffect(toKick.getLocation());
-            String name = toKick.getName();
+            final String name = toKick.getName();
             if (reason != "") {
                 toKick.kickPlayer("Kicked: " + reason);
-                j2.sendAdminPlusLog(ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
-                j2.chat.messageByFlagless(Flag.ADMIN, ChatColor.RED + name + " kicked (" + reason + ")");
-                j2.irc.messageRelay(name + " kicked (" + reason + ")");
+                this.j2.sendAdminPlusLog(ChatColor.RED + "Kicking " + name + " by " + admin + ": " + reason);
+                this.j2.chat.messageByFlagless(Flag.ADMIN, ChatColor.RED + name + " kicked (" + reason + ")");
+                this.j2.irc.messageRelay(name + " kicked (" + reason + ")");
             } else {
                 toKick.kickPlayer("Kicked.");
-                j2.sendAdminPlusLog(ChatColor.RED + "Kicking " + name + " by " + admin);
-                j2.chat.messageByFlagless(Flag.ADMIN, ChatColor.RED + name + " kicked");
-                j2.irc.messageRelay(name + " kicked");
+                this.j2.sendAdminPlusLog(ChatColor.RED + "Kicking " + name + " by " + admin);
+                this.j2.chat.messageByFlagless(Flag.ADMIN, ChatColor.RED + name + " kicked");
+                this.j2.irc.messageRelay(name + " kicked");
             }
         } else {
-            if (!admin.equalsIgnoreCase("console") && !quiet)
-                j2.getServer().getPlayer(admin).sendMessage(ChatColor.RED + "Error:" + pname + " does not exist or fits multiple players");
+            if (!admin.equalsIgnoreCase("console") && !quiet) {
+                this.j2.getServer().getPlayer(admin).sendMessage(ChatColor.RED + "Error:" + pname + " does not exist or fits multiple players");
+            }
         }
     }
 
@@ -162,16 +163,17 @@ public class KicksBans {
      */
     public void forceKick(String name, String reason) {
         boolean msged = false;
-        for (Player p : j2.getServer().getOnlinePlayers()) {
-            if (p != null && p.getName().equalsIgnoreCase(name)) {
+        for (final Player p : this.j2.getServer().getOnlinePlayers()) {
+            if ((p != null) && p.getName().equalsIgnoreCase(name)) {
                 p.getWorld().strikeLightningEffect(p.getLocation());
                 p.kickPlayer(reason);
                 if (!msged) {
-                    if (reason != "")
-                        j2.irc.messageRelay(name + " kicked");
-                    else
-                        j2.irc.messageRelay(name + " kicked (" + reason + ")");
-                    j2.sendAdminPlusLog(ChatColor.RED + "Knocked " + name + " out of the server");
+                    if (reason != "") {
+                        this.j2.irc.messageRelay(name + " kicked");
+                    } else {
+                        this.j2.irc.messageRelay(name + " kicked (" + reason + ")");
+                    }
+                    this.j2.sendAdminPlusLog(ChatColor.RED + "Knocked " + name + " out of the server");
                     msged = !msged;
                 }
             }
@@ -185,7 +187,7 @@ public class KicksBans {
      * @param spammingWhat
      */
     public void spamKick(Player player) {
-        String name = player.getName();
+        final String name = player.getName();
         int count = 0;
         if (this.sessionSpamKicks.containsKey(name)) {
             count = this.sessionSpamKicks.get(name);
@@ -216,11 +218,11 @@ public class KicksBans {
      * @param reason
      */
     public void kickAll(String reason) {
-        j2.log(ChatColor.RED + "Kicking all players: " + reason);
+        this.j2.log(ChatColor.RED + "Kicking all players: " + reason);
         if (reason.equalsIgnoreCase("")) {
             reason = "Count to 30 and try again.";
         }
-        for (Player p : j2.getServer().getOnlinePlayers()) {
+        for (final Player p : this.j2.getServer().getOnlinePlayers()) {
             if (p != null) {
                 p.kickPlayer(reason);
             }
@@ -234,9 +236,9 @@ public class KicksBans {
      * @param name
      */
     public void unban(String adminName, String name) {
-        j2.mysql.unban(name);
-        j2.sendAdminPlusLog(ChatColor.RED + "Unbanning " + name + " by " + adminName);
-        j2.banCoop.processUnban(name, adminName);
+        this.j2.mysql.unban(name);
+        this.j2.sendAdminPlusLog(ChatColor.RED + "Unbanning " + name + " by " + adminName);
+        this.j2.banCoop.processUnban(name, adminName);
     }
 
     /**
@@ -247,13 +249,13 @@ public class KicksBans {
      */
     public synchronized void ixrai(String name, String commandName) {
         if (this.xrayers.contains(name)) {
-            this.callBan("BobTheVigilant", (name + " xray hacking").split(" "), new Location(j2.getServer().getWorld("world"), 0, 0, 0));
-            j2.log(ChatColor.AQUA + "[BOB] Detected /" + commandName + " from " + name + " and bant");
+            this.callBan("BobTheVigilant", (name + " xray hacking").split(" "), new Location(this.j2.getServer().getWorld("world"), 0, 0, 0));
+            this.j2.log(ChatColor.AQUA + "[BOB] Detected /" + commandName + " from " + name + " and bant");
             this.xrayers.remove(name);
         } else {
             this.xrayers.add(name);
             this.callKick(name, "BobTheVigilant", "Remove your hacks, then rejoin :)");
-            j2.log(ChatColor.AQUA + "[BOB] Detected /" + commandName + " from " + name + " and kicked");
+            this.j2.log(ChatColor.AQUA + "[BOB] Detected /" + commandName + " from " + name + " and kicked");
         }
     }
 }

@@ -27,7 +27,7 @@ public class SetWarpCommand extends MasterCommand {
                 if (args.length > 1) {
                     flag = Flag.byChar(args[1].charAt(0));
                 }
-                Warp newWarp = new Warp(args[0], player.getName(), player.getLocation(), flag);
+                final Warp newWarp = new Warp(args[0], player.getName(), player.getLocation(), flag);
                 this.j2.warps.addWarp(newWarp);
                 player.sendMessage(ChatColor.RED + "Warp created");
             }

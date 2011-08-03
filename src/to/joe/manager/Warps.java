@@ -33,7 +33,7 @@ public class Warps {
      * @param warp
      */
     public void addWarp(Warp warp) {
-        j2.mysql.addWarp(warp);
+        this.j2.mysql.addWarp(warp);
         this.addWarpInternal(warp);
     }
 
@@ -83,10 +83,11 @@ public class Warps {
      * @param playername
      */
     public void loadPlayer(String playername) {
-        ArrayList<Warp> playerhomes = this.j2.mysql.getHomes(playername);
+        final ArrayList<Warp> playerhomes = this.j2.mysql.getHomes(playername);
         synchronized (this.lock) {
-            if (playerhomes != null)
+            if (playerhomes != null) {
                 this.homes.addAll(playerhomes);
+            }
         }
     }
 
@@ -97,8 +98,8 @@ public class Warps {
      */
     public void dropPlayer(String playername) {
         synchronized (this.lock) {
-            ArrayList<Warp> toRemove = new ArrayList<Warp>();
-            for (Warp home : this.homes) {
+            final ArrayList<Warp> toRemove = new ArrayList<Warp>();
+            for (final Warp home : this.homes) {
                 if (home.getPlayer().equalsIgnoreCase(playername)) {
                     toRemove.add(home);
                 }
@@ -116,7 +117,7 @@ public class Warps {
      */
     public Warp getUserWarp(String playername, String warpname) {
         synchronized (this.lock) {
-            for (Warp warp : this.homes) {
+            for (final Warp warp : this.homes) {
 
                 if (warp.getName().equalsIgnoreCase(warpname) && warp.getPlayer().equalsIgnoreCase(playername)) {
                     return warp;
@@ -134,7 +135,7 @@ public class Warps {
      */
     public Warp getPublicWarp(String warpname) {
         synchronized (this.lock) {
-            for (Warp warp : this.warps) {
+            for (final Warp warp : this.warps) {
                 if (warp.getName().equalsIgnoreCase(warpname)) {
                     return warp;
                 }
@@ -151,9 +152,9 @@ public class Warps {
      */
     public ArrayList<Warp> getUserWarps(String playername) {
         synchronized (this.lock) {
-            ArrayList<Warp> toReturn = new ArrayList<Warp>();
+            final ArrayList<Warp> toReturn = new ArrayList<Warp>();
 
-            for (Warp home : this.homes) {
+            for (final Warp home : this.homes) {
                 if (home.getPlayer().equalsIgnoreCase(playername)) {
                     toReturn.add(home);
                 }
@@ -181,11 +182,11 @@ public class Warps {
      */
     public String listHomes(String playername) {
         synchronized (this.lock) {
-            ArrayList<Warp> homes_u = getUserWarps(playername);
+            final ArrayList<Warp> homes_u = this.getUserWarps(playername);
             String homes_s = "";
             if (homes_u != null) {
 
-                for (Warp home : homes_u) {
+                for (final Warp home : homes_u) {
                     if (home != null) {
                         homes_s += ", " + home.getName();
                     }
@@ -207,15 +208,15 @@ public class Warps {
      */
     public String listWarps(Player player) {
         synchronized (this.lock) {
-            ArrayList<Warp> warps_u = this.getPublicWarps();
+            final ArrayList<Warp> warps_u = this.getPublicWarps();
 
             String warps_s = "";
             if (warps_u != null) {
-                j2.debug("Found " + warps_u.size() + " warps");
-                for (Warp warp_i : warps_u) {
-                    Flag flag = warp_i.getFlag();
-                    j2.debug(warp_i.getName() + " has flag " + warp_i.getFlag().getChar());
-                    if (warp_i != null && (j2.hasFlag(player, flag) || flag.equals(Flag.PLAYER_WARP_PUBLIC))) {
+                this.j2.debug("Found " + warps_u.size() + " warps");
+                for (final Warp warp_i : warps_u) {
+                    final Flag flag = warp_i.getFlag();
+                    this.j2.debug(warp_i.getName() + " has flag " + warp_i.getFlag().getChar());
+                    if ((warp_i != null) && (this.j2.hasFlag(player, flag) || flag.equals(Flag.PLAYER_WARP_PUBLIC))) {
                         warps_s += ", " + warp_i.getName();
                     }
                 }
@@ -235,30 +236,30 @@ public class Warps {
      * @return
      */
     public Warp getClosestWarp(Location location) {
-        ArrayList<Warp> allWarps = this.getPublicWarps();
-        double xstart = location.getX();
-        double ystart = location.getY();
-        double zstart = location.getZ();
+        final ArrayList<Warp> allWarps = this.getPublicWarps();
+        final double xstart = location.getX();
+        final double ystart = location.getY();
+        final double zstart = location.getZ();
         int distance = 0;
         Warp solution = null;
-        for (Warp warp : allWarps) {
+        for (final Warp warp : allWarps) {
             if (warp != null) {
                 if (solution != null) {
-                    Location locwarp = warp.getLocation();
-                    double xwarp = locwarp.getX();
-                    double ywarp = locwarp.getY();
-                    double zwarp = locwarp.getZ();
-                    int dist = (int) Math.pow((Math.pow(xwarp - xstart, 2) + Math.pow(ywarp - ystart, 2) + Math.pow(zwarp - zstart, 2)), 0.5);
+                    final Location locwarp = warp.getLocation();
+                    final double xwarp = locwarp.getX();
+                    final double ywarp = locwarp.getY();
+                    final double zwarp = locwarp.getZ();
+                    final int dist = (int) Math.pow((Math.pow(xwarp - xstart, 2) + Math.pow(ywarp - ystart, 2) + Math.pow(zwarp - zstart, 2)), 0.5);
                     if (dist < distance) {
                         distance = dist;
                         solution = warp;
                     }
                 } else {
                     solution = warp;
-                    Location locwarp = warp.getLocation();
-                    double xwarp = locwarp.getX();
-                    double ywarp = locwarp.getY();
-                    double zwarp = locwarp.getZ();
+                    final Location locwarp = warp.getLocation();
+                    final double xwarp = locwarp.getX();
+                    final double ywarp = locwarp.getY();
+                    final double zwarp = locwarp.getZ();
                     distance = (int) Math.pow((Math.pow(xwarp - xstart, 2) + Math.pow(ywarp - ystart, 2) + Math.pow(zwarp - zstart, 2)), 0.5);
                 }
             }
@@ -268,6 +269,6 @@ public class Warps {
 
     private ArrayList<Warp> warps;
     private ArrayList<Warp> homes;
-    private J2 j2;
-    private Object lock = new Object();
+    private final J2 j2;
+    private final Object lock = new Object();
 }

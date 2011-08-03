@@ -42,11 +42,11 @@ public class XMLTokener extends JSONTokener {
 
     static {
         entity = new java.util.HashMap(8);
-        entity.put("amp", XML.AMP);
-        entity.put("apos", XML.APOS);
-        entity.put("gt", XML.GT);
-        entity.put("lt", XML.LT);
-        entity.put("quot", XML.QUOT);
+        XMLTokener.entity.put("amp", XML.AMP);
+        XMLTokener.entity.put("apos", XML.APOS);
+        XMLTokener.entity.put("gt", XML.GT);
+        XMLTokener.entity.put("lt", XML.LT);
+        XMLTokener.entity.put("quot", XML.QUOT);
     }
 
     /**
@@ -69,15 +69,15 @@ public class XMLTokener extends JSONTokener {
     public String nextCDATA() throws JSONException {
         char c;
         int i;
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         for (;;) {
-            c = next();
-            if (end()) {
-                throw syntaxError("Unclosed CDATA");
+            c = this.next();
+            if (this.end()) {
+                throw this.syntaxError("Unclosed CDATA");
             }
             sb.append(c);
             i = sb.length() - 3;
-            if (i >= 0 && sb.charAt(i) == ']' && sb.charAt(i + 1) == ']' && sb.charAt(i + 2) == '>') {
+            if ((i >= 0) && (sb.charAt(i) == ']') && (sb.charAt(i + 1) == ']') && (sb.charAt(i + 2) == '>')) {
                 sb.setLength(i);
                 return sb.toString();
             }
@@ -97,7 +97,7 @@ public class XMLTokener extends JSONTokener {
         char c;
         StringBuffer sb;
         do {
-            c = next();
+            c = this.next();
         } while (Character.isWhitespace(c));
         if (c == 0) {
             return null;
@@ -107,16 +107,16 @@ public class XMLTokener extends JSONTokener {
         }
         sb = new StringBuffer();
         for (;;) {
-            if (c == '<' || c == 0) {
-                back();
+            if ((c == '<') || (c == 0)) {
+                this.back();
                 return sb.toString().trim();
             }
             if (c == '&') {
-                sb.append(nextEntity(c));
+                sb.append(this.nextEntity(c));
             } else {
                 sb.append(c);
             }
-            c = next();
+            c = this.next();
         }
     }
 
@@ -131,19 +131,19 @@ public class XMLTokener extends JSONTokener {
      *             If missing ';' in XML entity.
      */
     public Object nextEntity(char ampersand) throws JSONException {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         for (;;) {
-            char c = next();
-            if (Character.isLetterOrDigit(c) || c == '#') {
+            final char c = this.next();
+            if (Character.isLetterOrDigit(c) || (c == '#')) {
                 sb.append(Character.toLowerCase(c));
             } else if (c == ';') {
                 break;
             } else {
-                throw syntaxError("Missing ';' in XML entity: &" + sb);
+                throw this.syntaxError("Missing ';' in XML entity: &" + sb);
             }
         }
-        String string = sb.toString();
-        Object object = entity.get(string);
+        final String string = sb.toString();
+        final Object object = XMLTokener.entity.get(string);
         return object != null ? object : ampersand + string + ";";
     }
 
@@ -162,11 +162,11 @@ public class XMLTokener extends JSONTokener {
         char c;
         char q;
         do {
-            c = next();
+            c = this.next();
         } while (Character.isWhitespace(c));
         switch (c) {
             case 0:
-                throw syntaxError("Misshaped meta tag");
+                throw this.syntaxError("Misshaped meta tag");
             case '<':
                 return XML.LT;
             case '>':
@@ -183,9 +183,9 @@ public class XMLTokener extends JSONTokener {
             case '\'':
                 q = c;
                 for (;;) {
-                    c = next();
+                    c = this.next();
                     if (c == 0) {
-                        throw syntaxError("Unterminated string");
+                        throw this.syntaxError("Unterminated string");
                     }
                     if (c == q) {
                         return Boolean.TRUE;
@@ -193,7 +193,7 @@ public class XMLTokener extends JSONTokener {
                 }
             default:
                 for (;;) {
-                    c = next();
+                    c = this.next();
                     if (Character.isWhitespace(c)) {
                         return Boolean.TRUE;
                     }
@@ -207,7 +207,7 @@ public class XMLTokener extends JSONTokener {
                         case '?':
                         case '"':
                         case '\'':
-                            back();
+                            this.back();
                             return Boolean.TRUE;
                     }
                 }
@@ -228,13 +228,13 @@ public class XMLTokener extends JSONTokener {
         char q;
         StringBuffer sb;
         do {
-            c = next();
+            c = this.next();
         } while (Character.isWhitespace(c));
         switch (c) {
             case 0:
-                throw syntaxError("Misshaped element");
+                throw this.syntaxError("Misshaped element");
             case '<':
-                throw syntaxError("Misplaced '<'");
+                throw this.syntaxError("Misplaced '<'");
             case '>':
                 return XML.GT;
             case '/':
@@ -253,15 +253,15 @@ public class XMLTokener extends JSONTokener {
                 q = c;
                 sb = new StringBuffer();
                 for (;;) {
-                    c = next();
+                    c = this.next();
                     if (c == 0) {
-                        throw syntaxError("Unterminated string");
+                        throw this.syntaxError("Unterminated string");
                     }
                     if (c == q) {
                         return sb.toString();
                     }
                     if (c == '&') {
-                        sb.append(nextEntity(c));
+                        sb.append(this.nextEntity(c));
                     } else {
                         sb.append(c);
                     }
@@ -273,7 +273,7 @@ public class XMLTokener extends JSONTokener {
                 sb = new StringBuffer();
                 for (;;) {
                     sb.append(c);
-                    c = next();
+                    c = this.next();
                     if (Character.isWhitespace(c)) {
                         return sb.toString();
                     }
@@ -287,12 +287,12 @@ public class XMLTokener extends JSONTokener {
                         case '?':
                         case '[':
                         case ']':
-                            back();
+                            this.back();
                             return sb.toString();
                         case '<':
                         case '"':
                         case '\'':
-                            throw syntaxError("Bad character in a name");
+                            throw this.syntaxError("Bad character in a name");
                     }
                 }
         }
@@ -312,8 +312,8 @@ public class XMLTokener extends JSONTokener {
         int i;
         int j;
         int offset = 0;
-        int length = to.length();
-        char[] circle = new char[length];
+        final int length = to.length();
+        final char[] circle = new char[length];
 
         /*
          * First fill the circle buffer with as many characters as are in the to
@@ -321,7 +321,7 @@ public class XMLTokener extends JSONTokener {
          */
 
         for (i = 0; i < length; i += 1) {
-            c = next();
+            c = this.next();
             if (c == 0) {
                 return false;
             }
@@ -355,7 +355,7 @@ public class XMLTokener extends JSONTokener {
             /*
              * Get the next character. If there isn't one, then defeat is ours.
              */
-            c = next();
+            c = this.next();
             if (c == 0) {
                 return false;
             }

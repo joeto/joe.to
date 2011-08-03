@@ -15,7 +15,7 @@ public class KickAllCommand extends MasterCommand {
 
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
-        if (!isPlayer || j2.hasFlag(player, Flag.SRSTAFF)) {
+        if (!isPlayer || this.j2.hasFlag(player, Flag.SRSTAFF)) {
             String reason = "";
             if (args.length > 0) {
                 reason = this.j2.combineSplit(0, args, " ");

@@ -23,10 +23,10 @@ public class WhereIsPlayerCommand extends MasterCommand {
             if (args.length == 0) {
                 sender.sendMessage(ChatColor.RED + "/whereis player");
             } else {
-                List<Player> possible = this.j2.getServer().matchPlayer(args[0]);
+                final List<Player> possible = this.j2.getServer().matchPlayer(args[0]);
                 if (possible.size() == 1) {
-                    Player who = possible.get(0);
-                    Location loc = who.getLocation();
+                    final Player who = possible.get(0);
+                    final Location loc = who.getLocation();
                     sender.sendMessage(ChatColor.RED + who.getName() + ": " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
                 } else {
                     sender.sendMessage(ChatColor.RED + args[0] + " does not work. Either 0 or 2+ matches.");

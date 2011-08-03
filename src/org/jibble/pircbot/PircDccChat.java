@@ -13,8 +13,12 @@ found at http://www.jibble.org/licenses/
 
 package org.jibble.pircbot;
 
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
 
 /**
  * This class is used to allow the bot to interact with a DCC Chat session.
@@ -43,13 +47,13 @@ public class PircDccChat {
      *             If the connection cannot be made.
      */
     PircDccChat(PircBot bot, String nick, String login, String hostname, long address, int port) {
-        _bot = bot;
-        _address = address;
-        _port = port;
-        _nick = nick;
-        _login = login;
-        _hostname = hostname;
-        _acceptable = true;
+        this._bot = bot;
+        this._address = address;
+        this._port = port;
+        this._nick = nick;
+        this._login = login;
+        this._hostname = hostname;
+        this._acceptable = true;
     }
 
     /**
@@ -68,12 +72,12 @@ public class PircDccChat {
      *             If the socket cannot be read from.
      */
     PircDccChat(PircBot bot, String nick, Socket socket) throws IOException {
-        _bot = bot;
-        _nick = nick;
-        _socket = socket;
-        _reader = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
-        _writer = new BufferedWriter(new OutputStreamWriter(_socket.getOutputStream()));
-        _acceptable = false;
+        this._bot = bot;
+        this._nick = nick;
+        this._socket = socket;
+        this._reader = new BufferedReader(new InputStreamReader(this._socket.getInputStream()));
+        this._writer = new BufferedWriter(new OutputStreamWriter(this._socket.getOutputStream()));
+        this._acceptable = false;
     }
 
     /**
@@ -83,13 +87,13 @@ public class PircDccChat {
      * 
      */
     public synchronized void accept() throws IOException {
-        if (_acceptable) {
-            _acceptable = false;
-            int[] ip = _bot.longToIp(_address);
-            String ipStr = ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
-            _socket = new Socket(ipStr, _port);
-            _reader = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
-            _writer = new BufferedWriter(new OutputStreamWriter(_socket.getOutputStream()));
+        if (this._acceptable) {
+            this._acceptable = false;
+            final int[] ip = this._bot.longToIp(this._address);
+            final String ipStr = ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
+            this._socket = new Socket(ipStr, this._port);
+            this._reader = new BufferedReader(new InputStreamReader(this._socket.getInputStream()));
+            this._writer = new BufferedWriter(new OutputStreamWriter(this._socket.getOutputStream()));
         }
     }
 
@@ -105,10 +109,10 @@ public class PircDccChat {
      *             If an I/O error occurs.
      */
     public String readLine() throws IOException {
-        if (_acceptable) {
+        if (this._acceptable) {
             throw new IOException("You must call the accept() method of the DccChat request before you can use it.");
         }
-        return _reader.readLine();
+        return this._reader.readLine();
     }
 
     /**
@@ -123,12 +127,12 @@ public class PircDccChat {
      *             If an I/O error occurs.
      */
     public void sendLine(String line) throws IOException {
-        if (_acceptable) {
+        if (this._acceptable) {
             throw new IOException("You must call the accept() method of the DccChat request before you can use it.");
         }
         // No need for synchronization here really...
-        _writer.write(line + "\r\n");
-        _writer.flush();
+        this._writer.write(line + "\r\n");
+        this._writer.flush();
     }
 
     /**
@@ -138,10 +142,10 @@ public class PircDccChat {
      *             If an I/O error occurs.
      */
     public void close() throws IOException {
-        if (_acceptable) {
+        if (this._acceptable) {
             throw new IOException("You must call the accept() method of the DccChat request before you can use it.");
         }
-        _socket.close();
+        this._socket.close();
     }
 
     /**
@@ -151,7 +155,7 @@ public class PircDccChat {
      * 
      */
     public String getNick() {
-        return _nick;
+        return this._nick;
     }
 
     /**
@@ -161,7 +165,7 @@ public class PircDccChat {
      * 
      */
     public String getLogin() {
-        return _login;
+        return this._login;
     }
 
     /**
@@ -171,7 +175,7 @@ public class PircDccChat {
      * 
      */
     public String getHostname() {
-        return _hostname;
+        return this._hostname;
     }
 
     /**
@@ -180,7 +184,7 @@ public class PircDccChat {
      * @return the BufferedReader used by this DCC Chat.
      */
     public BufferedReader getBufferedReader() {
-        return _reader;
+        return this._reader;
     }
 
     /**
@@ -189,7 +193,7 @@ public class PircDccChat {
      * @return the BufferedReader used by this DCC Chat.
      */
     public BufferedWriter getBufferedWriter() {
-        return _writer;
+        return this._writer;
     }
 
     /**
@@ -198,7 +202,7 @@ public class PircDccChat {
      * @return the raw Socket used by this DCC Chat.
      */
     public Socket getSocket() {
-        return _socket;
+        return this._socket;
     }
 
     /**
@@ -207,11 +211,11 @@ public class PircDccChat {
      * @return the address of the sender as a long.
      */
     public long getNumericalAddress() {
-        return _address;
+        return this._address;
     }
 
-    private PircBot _bot;
-    private String _nick;
+    private final PircBot _bot;
+    private final String _nick;
     private String _login = null;
     private String _hostname = null;
     private BufferedReader _reader;

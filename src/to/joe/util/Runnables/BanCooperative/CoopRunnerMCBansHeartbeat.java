@@ -17,21 +17,21 @@ public class CoopRunnerMCBansHeartbeat extends CoopRunner {
 
     @Override
     public void run() {
-        HashMap<String, String> postVars = new HashMap<String, String>();
+        final HashMap<String, String> postVars = new HashMap<String, String>();
         postVars.put("version", this.mcbans_version);
-        postVars.put("maxPlayers", String.valueOf(j2.playerLimit));
+        postVars.put("maxPlayers", String.valueOf(this.j2.playerLimit));
         postVars.put("exec", "callBack");
         postVars.put("playerList", this.playerList());
         this.mcbans_api(postVars);
     }
 
     private String playerList() {
-        StringBuilder playerList = new StringBuilder();
-        Player[] players = this.j2.getServer().getOnlinePlayers();
+        final StringBuilder playerList = new StringBuilder();
+        final Player[] players = this.j2.getServer().getOnlinePlayers();
         if (players == null) {
             return "";
         }
-        for (Player player : players) {
+        for (final Player player : players) {
             if (!playerList.equals("")) {
                 playerList.append(",");
             }

@@ -25,7 +25,7 @@ public class Vanish {
     public int RANGE = 512;
     public int TOTAL_REFRESHES = 10;
     public int REFRESH_TIMER = 2;
-    private Timer timer = new Timer();
+    private final Timer timer = new Timer();
 
     /**
      * List of all invisible players
@@ -33,7 +33,7 @@ public class Vanish {
     public List<Player> invisible = new ArrayList<Player>();
 
     private final Logger log = Logger.getLogger("Minecraft");
-    private Minitrue mini;
+    private final Minitrue mini;
 
     public Vanish(Minitrue mini) {
         this.mini = mini;
@@ -48,10 +48,11 @@ public class Vanish {
      *            Force even on admins.
      */
     private void invisible(Player hidePlayer, Player obliviousPlayer, boolean force) {
-        if (this.mini.j2.hasFlag(obliviousPlayer, Flag.ADMIN))
+        if (this.mini.j2.hasFlag(obliviousPlayer, Flag.ADMIN)) {
             return;
-        CraftPlayer hide = (CraftPlayer) hidePlayer;
-        CraftPlayer hideFrom = (CraftPlayer) obliviousPlayer;
+        }
+        final CraftPlayer hide = (CraftPlayer) hidePlayer;
+        final CraftPlayer hideFrom = (CraftPlayer) obliviousPlayer;
         hideFrom.getHandle().netServerHandler.sendPacket(new Packet29DestroyEntity(hide.getEntityId()));
     }
 
@@ -62,8 +63,8 @@ public class Vanish {
      * @param nowAwarePlayer
      */
     private void uninvisible(Player unHidingPlayer, Player nowAwarePlayer) {
-        CraftPlayer unHide = (CraftPlayer) unHidingPlayer;
-        CraftPlayer unHideFrom = (CraftPlayer) nowAwarePlayer;
+        final CraftPlayer unHide = (CraftPlayer) unHidingPlayer;
+        final CraftPlayer unHideFrom = (CraftPlayer) nowAwarePlayer;
         unHideFrom.getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(unHide.getHandle()));
     }
 
@@ -78,11 +79,12 @@ public class Vanish {
             return;
         }
         this.invisible.add(player);
-        Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
-        for (Player p : playerList) {
-            if ((getDistance(player, p) > this.RANGE) || (p.equals(player)))
+        final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
+        for (final Player p : playerList) {
+            if ((this.getDistance(player, p) > this.RANGE) || (p.equals(player))) {
                 continue;
-            invisible(player, p, false);
+            }
+            this.invisible(player, p, false);
         }
 
         this.log.info(player.getName() + " disappeared.");
@@ -90,16 +92,18 @@ public class Vanish {
     }
 
     private void callUnVanish(Player player) {
-        if (!this.invisible.contains(player))
+        if (!this.invisible.contains(player)) {
             return;
+        }
         this.invisible.remove(player);
 
-        updateInvisibleForPlayer(player, true);
-        Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
-        for (Player p : playerList) {
-            if ((getDistance(player, p) >= this.RANGE) || (p.equals(player)))
+        this.updateInvisibleForPlayer(player, true);
+        final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
+        for (final Player p : playerList) {
+            if ((this.getDistance(player, p) >= this.RANGE) || (p.equals(player))) {
                 continue;
-            uninvisible(player, p);
+            }
+            this.uninvisible(player, p);
         }
 
         this.log.info(player.getName() + " reappeared.");
@@ -107,29 +111,32 @@ public class Vanish {
     }
 
     private void updateInvisibleForPlayer(Player player, boolean force) {
-        Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
-        for (Player p : playerList) {
-            if ((getDistance(player, p) > this.RANGE) || (p.equals(player)))
+        final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
+        for (final Player p : playerList) {
+            if ((this.getDistance(player, p) > this.RANGE) || (p.equals(player))) {
                 continue;
-            invisible(player, p, force);
+            }
+            this.invisible(player, p, force);
         }
     }
 
     private void updateInvisibleForAll() {
-        Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
-        for (Player invisiblePlayer : this.invisible) {
-            for (Player p : playerList) {
-                if ((getDistance(invisiblePlayer, p) > this.RANGE) || (p.equals(invisiblePlayer)))
+        final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
+        for (final Player invisiblePlayer : this.invisible) {
+            for (final Player p : playerList) {
+                if ((this.getDistance(invisiblePlayer, p) > this.RANGE) || (p.equals(invisiblePlayer))) {
                     continue;
-                invisible(invisiblePlayer, p, false);
+                }
+                this.invisible(invisiblePlayer, p, false);
             }
         }
     }
 
     private void updateInvisibleForAll(boolean startTimer) {
-        updateInvisibleForAll();
-        if (!startTimer)
+        this.updateInvisibleForAll();
+        if (!startTimer) {
             return;
+        }
         this.timer.schedule(new UpdateInvisibleTimerTask(true), 60000 * this.REFRESH_TIMER);
     }
 
@@ -139,16 +146,17 @@ public class Vanish {
      * @param player
      */
     public void updateInvisible(Player player) {
-        for (Player invisiblePlayer : this.invisible) {
-            if ((getDistance(invisiblePlayer, player) > this.RANGE) || (player.equals(invisiblePlayer)))
+        for (final Player invisiblePlayer : this.invisible) {
+            if ((this.getDistance(invisiblePlayer, player) > this.RANGE) || (player.equals(invisiblePlayer))) {
                 continue;
-            invisible(invisiblePlayer, player, false);
+            }
+            this.invisible(invisiblePlayer, player, false);
         }
     }
 
     private double getDistance(Player player1, Player player2) {
-        Location loc1 = player1.getLocation();
-        Location loc2 = player1.getLocation();
+        final Location loc1 = player1.getLocation();
+        final Location loc2 = player1.getLocation();
         return Math.sqrt(Math.pow(loc1.getX() - loc2.getX(), 2.0D) + Math.pow(loc1.getY() - loc2.getY(), 2.0D) + Math.pow(loc1.getZ() - loc2.getZ(), 2.0D));
     }
 
@@ -156,8 +164,8 @@ public class Vanish {
      * Update invisible timed.
      */
     public void updateInvisibleOnTimer() {
-        updateInvisibleForAll();
-        Timer timer = new Timer();
+        this.updateInvisibleForAll();
+        final Timer timer = new Timer();
         int i = 0;
         while (i < this.TOTAL_REFRESHES) {
             ++i;
@@ -175,6 +183,7 @@ public class Vanish {
             this.startTimer = startTimer;
         }
 
+        @Override
         public void run() {
             Vanish.this.updateInvisibleForAll(this.startTimer);
         }

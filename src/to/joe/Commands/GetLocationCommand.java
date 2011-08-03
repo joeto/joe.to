@@ -16,10 +16,10 @@ public class GetLocationCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer) {
-            Location loc = player.getLocation();
-            String x = "" + ChatColor.GOLD + (int) loc.getX() + ChatColor.DARK_AQUA;
-            String y = "" + ChatColor.GOLD + (int) loc.getY() + ChatColor.DARK_AQUA;
-            String z = "" + ChatColor.GOLD + (int) loc.getZ();
+            final Location loc = player.getLocation();
+            final String x = "" + ChatColor.GOLD + (int) loc.getX() + ChatColor.DARK_AQUA;
+            final String y = "" + ChatColor.GOLD + (int) loc.getY() + ChatColor.DARK_AQUA;
+            final String z = "" + ChatColor.GOLD + (int) loc.getZ();
             player.sendMessage(ChatColor.DARK_AQUA + "You are at X:" + x + " Y:" + y + " Z:" + z);
         }
     }

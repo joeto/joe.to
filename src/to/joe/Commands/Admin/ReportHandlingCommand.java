@@ -22,27 +22,27 @@ public class ReportHandlingCommand extends MasterCommand {
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer && this.j2.hasFlag(player, Flag.ADMIN)) {
             if (args.length == 0) {
-                ArrayList<Report> reps = this.j2.reports.getReports();
-                int size = reps.size();
+                final ArrayList<Report> reps = this.j2.reports.getReports();
+                final int size = reps.size();
                 if (size == 0) {
                     player.sendMessage(ChatColor.RED + "No reports. Hurray!");
                     return;
                 }
                 player.sendMessage(ChatColor.DARK_PURPLE + "Found " + size + " reports:");
-                for (Report r : reps) {
+                for (final Report r : reps) {
                     if (!r.closed()) {
-                        Location location = r.getLocation();
-                        String x = ChatColor.GOLD.toString() + location.getBlockX() + ChatColor.DARK_PURPLE + ",";
-                        String y = ChatColor.GOLD.toString() + location.getBlockY() + ChatColor.DARK_PURPLE + ",";
-                        String z = ChatColor.GOLD.toString() + location.getBlockZ() + ChatColor.DARK_PURPLE;
+                        final Location location = r.getLocation();
+                        final String x = ChatColor.GOLD.toString() + location.getBlockX() + ChatColor.DARK_PURPLE + ",";
+                        final String y = ChatColor.GOLD.toString() + location.getBlockY() + ChatColor.DARK_PURPLE + ",";
+                        final String z = ChatColor.GOLD.toString() + location.getBlockZ() + ChatColor.DARK_PURPLE;
                         player.sendMessage(ChatColor.DARK_PURPLE + "[" + r.getID() + "][" + x + y + z + "]<" + ChatColor.GOLD + r.getUser() + ChatColor.DARK_PURPLE + "> " + ChatColor.WHITE + r.getMessage());
                     }
                 }
             } else {
-                String action = args[0].toLowerCase();
+                final String action = args[0].toLowerCase();
                 if (action.equals("close")) {
                     if (args.length > 2) {
-                        int id = Integer.parseInt(args[1]);
+                        final int id = Integer.parseInt(args[1]);
                         if (id != 0) {
                             this.j2.reports.close(id, playerName, this.j2.combineSplit(2, args, " "));
                             player.sendMessage(ChatColor.DARK_PURPLE + "Report closed");
@@ -53,7 +53,7 @@ public class ReportHandlingCommand extends MasterCommand {
                 }
                 if (action.equals("tp")) {
                     if (args.length > 1) {
-                        Report report = this.j2.reports.getReport(Integer.valueOf(args[1]));
+                        final Report report = this.j2.reports.getReport(Integer.valueOf(args[1]));
                         if (report != null) {
                             this.j2.safePort(player, report.getLocation());
                             player.sendMessage(ChatColor.DARK_PURPLE + "Wheeeeeeeee");

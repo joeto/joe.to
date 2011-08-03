@@ -23,14 +23,14 @@ public class GetFlagsCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "/getflags playername");
                 return;
             }
-            List<Player> match = this.j2.minitrue.matchPlayer(args[0], true);
-            if (match.size() != 1 || match.get(0) == null) {
+            final List<Player> match = this.j2.minitrue.matchPlayer(args[0], true);
+            if ((match.size() != 1) || (match.get(0) == null)) {
                 sender.sendMessage(ChatColor.RED + "Player not found");
                 return;
             }
-            Player who = match.get(0);
+            final Player who = match.get(0);
             String message = "Player " + match.get(0).getName() + ": ";
-            for (Flag f : this.j2.users.getAllFlags(who)) {
+            for (final Flag f : this.j2.users.getAllFlags(who)) {
                 message += f.getDescription() + ", ";
             }
             sender.sendMessage(ChatColor.RED + message);

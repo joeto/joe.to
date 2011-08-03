@@ -17,10 +17,10 @@ public class StationCommand extends MasterCommand {
 
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
-        if (isPlayer && this.j2.hasFlag(player, Flag.FUN) && this.j2.servernumber == 2) {
-            Warp target = this.j2.warps.getClosestWarp(player.getLocation());
-            String name = target.getName();
-            if (args.length == 1 && args[0].equalsIgnoreCase("go")) {
+        if (isPlayer && this.j2.hasFlag(player, Flag.FUN) && (this.j2.servernumber == 2)) {
+            final Warp target = this.j2.warps.getClosestWarp(player.getLocation());
+            final String name = target.getName();
+            if ((args.length == 1) && args[0].equalsIgnoreCase("go")) {
                 this.j2.safePort(player, target.getLocation());
                 player.sendMessage(ChatColor.AQUA + "You are now at " + ChatColor.DARK_AQUA + "Station " + name);
                 player.sendMessage(ChatColor.AQUA + "You can return here by saying " + ChatColor.DARK_AQUA + "/warp " + name);

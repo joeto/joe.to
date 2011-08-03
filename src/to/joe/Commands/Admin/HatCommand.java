@@ -18,8 +18,8 @@ public class HatCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer && this.j2.hasFlag(player, Flag.ADMIN)) {
-            ItemStack meow = player.getItemInHand();
-            if (meow.getAmount() > 0 && meow.getTypeId() < 256) {
+            final ItemStack meow = player.getItemInHand();
+            if ((meow.getAmount() > 0) && (meow.getTypeId() < 256)) {
                 player.getInventory().setHelmet(new ItemStack(meow.getType(), 1));
                 meow.setAmount(meow.getAmount() - 1);
                 player.sendMessage(ChatColor.RED + "You pat your new helmet");

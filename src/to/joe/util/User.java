@@ -44,8 +44,10 @@ public class User {
         this.blocksTravelled.add(world.getBlockAt(0, 1, 0));
         this.safeWord = safeWord;
         if (safeWord == null)
+         {
             this.safeWord = "";
         // this.channel=channel;
+        }
     }
 
     /**
@@ -54,7 +56,7 @@ public class User {
      * @param Group
      */
     public void setGroup(String Group) {
-        group = Group;
+        this.group = Group;
     }
 
     /**
@@ -79,42 +81,42 @@ public class User {
      * Bring back color from backups
      */
     public void restoreColor() {
-        this.color = backup;
+        this.color = this.backup;
     }
 
     /**
      * @return user's name
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
      * @return user's name with coloring
      */
     public String getColorName() {
-        return color + name + ChatColor.WHITE;
+        return this.color + this.name + ChatColor.WHITE;
     }
 
     /**
      * @return user's color
      */
     public ChatColor getColor() {
-        return color;
+        return this.color;
     }
 
     /**
      * @return user's group
      */
     public String getGroup() {
-        return group;
+        return this.group;
     }
 
     /**
      * @return list of user's flags
      */
     public ArrayList<Flag> getUserFlags() {
-        return extraFlags;
+        return this.extraFlags;
     }
 
     /**
@@ -124,8 +126,8 @@ public class User {
      * @return if it was freshly added
      */
     public boolean addFlag(Flag flag) {
-        if (!extraFlags.contains(flag)) {
-            extraFlags.add(flag);
+        if (!this.extraFlags.contains(flag)) {
+            this.extraFlags.add(flag);
             return true;
         }
         return false;
@@ -138,8 +140,8 @@ public class User {
      * @return if it was freshly removed
      */
     public boolean dropFlag(Flag flag) {
-        if (extraFlags.contains(flag)) {
-            extraFlags.remove(flag);
+        if (this.extraFlags.contains(flag)) {
+            this.extraFlags.remove(flag);
             return true;
         }
         return false;
@@ -150,11 +152,11 @@ public class User {
      * @return if speed is too quick
      */
     private boolean chatSpeed(long time) {
-        long cur = (new Date()).getTime();
+        final long cur = (new Date()).getTime();
         if ((this.lastChat.get(0) + time) > cur) {
             return true;
         }
-        this.lastChat.remove((int) 0);
+        this.lastChat.remove(0);
         this.lastChat.add(cur);
         return false;
     }
@@ -166,7 +168,7 @@ public class User {
      * @return if message is a repeat
      */
     public int spamCheck(String message) {
-        String group = this.getGroup();
+        final String group = this.getGroup();
         if (group.equals("admins") || group.equals("srstaff")) {
             return 0;
         }
@@ -203,12 +205,13 @@ public class User {
      * this.blocksTravelled.add(block); }
      */
 
-    private ArrayList<Block> blocksTravelled;
+    private final ArrayList<Block> blocksTravelled;
     private ArrayList<Flag> extraFlags;
-    private String name;
-    private ChatColor color, backup;
+    private final String name;
+    private ChatColor color;
+    private final ChatColor backup;
     private String group;
-    private ArrayList<Long> lastChat;
+    private final ArrayList<Long> lastChat;
     private String lastMessage;
     private int spamCount;
     private String safeWord;

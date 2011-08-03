@@ -19,7 +19,7 @@ import to.joe.J2;
  * 
  */
 public class WebPage {
-    private J2 j2;
+    private final J2 j2;
     private int servernum;
 
     public WebPage(J2 j2) {
@@ -33,7 +33,7 @@ public class WebPage {
      *            Server number
      */
     public void go(int servnum) {
-        startUpdateTimer1();
+        this.startUpdateTimer1();
         this.servernum = servnum;
         // startUpdateTimer2();
     }
@@ -42,16 +42,16 @@ public class WebPage {
     public boolean restart = false;
 
     private void startUpdateTimer1() {
-        stop = false;
+        this.stop = false;
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (stop) {
+                if (WebPage.this.stop) {
                     timer.cancel();
                     return;
                 }
-                update5Second();
+                WebPage.this.update5Second();
             }
         }, 1000, 5000);
     }
@@ -64,21 +64,21 @@ public class WebPage {
      * update20(); } }, 1000, 5000); }
      */
     private void update5Second() {
-        ArrayList<Integer> watched = new ArrayList<Integer>(j2.watchlist);
-        HashMap<Integer, String> output = new HashMap<Integer, String>();
-        for (Integer i : watched) {
+        final ArrayList<Integer> watched = new ArrayList<Integer>(this.j2.watchlist);
+        final HashMap<Integer, String> output = new HashMap<Integer, String>();
+        for (final Integer i : watched) {
             output.put(i, "");
         }
         String playerlist = "";
         int playercount = 0;
         String aliaslist = "";
-        for (Player p : j2.getServer().getOnlinePlayers()) {
+        for (final Player p : this.j2.getServer().getOnlinePlayers()) {
             if (p != null) {
                 playercount++;
                 playerlist += " " + p.getDisplayName();
-                Inventory check = p.getInventory();
-                String name = p.getName();
-                for (Integer i : watched) {
+                final Inventory check = p.getInventory();
+                final String name = p.getName();
+                for (final Integer i : watched) {
                     if (check.contains(i, 10)) {
                         String temp = new String(output.get(i));
                         output.remove(i);
@@ -86,17 +86,17 @@ public class WebPage {
                         output.put(i, temp);
                     }
                 }
-                String known = j2.ip.getKnown(p.getName());
+                final String known = this.j2.ip.getKnown(p.getName());
                 if (!known.equals("")) {
                     aliaslist += known + "<br>";
                 }
             }
         }
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter("/home/minecraft/public_html/detector/" + servernum + "/current.txt"));
-            out.write("Players(" + playercount + "/" + j2.playerLimit + "):" + playerlist + "<br /><br /><br />");
+            final BufferedWriter out = new BufferedWriter(new FileWriter("/home/minecraft/public_html/detector/" + this.servernum + "/current.txt"));
+            out.write("Players(" + playercount + "/" + this.j2.playerLimit + "):" + playerlist + "<br /><br /><br />");
             out.write("<table>");
-            for (Integer i : watched) {
+            for (final Integer i : watched) {
                 out.write("<tr><td>" + Material.getMaterial(i) + "</td><td>" + output.get(i) + "</td></tr>");
             }
             out.write("</table><br />");
@@ -107,22 +107,22 @@ public class WebPage {
                 out.write("</table>");
             }
             out.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter("/home/minecraft/public_html/" + servernum + "/current.txt"));
-            out.write("Players(" + playercount + "/" + j2.playerLimit + "):" + playerlist + "<br />");
+            final BufferedWriter out = new BufferedWriter(new FileWriter("/home/minecraft/public_html/" + this.servernum + "/current.txt"));
+            out.write("Players(" + playercount + "/" + this.j2.playerLimit + "):" + playerlist + "<br />");
             out.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter("/home/minecraft/public_html/" + servernum + "/players.txt"));
-            out.write(playercount + "/" + j2.playerLimit);
+            final BufferedWriter out = new BufferedWriter(new FileWriter("/home/minecraft/public_html/" + this.servernum + "/players.txt"));
+            out.write(playercount + "/" + this.j2.playerLimit);
             out.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }

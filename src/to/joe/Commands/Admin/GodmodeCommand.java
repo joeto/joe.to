@@ -20,14 +20,15 @@ public class GodmodeCommand extends MasterCommand {
         if (isPlayer && this.j2.hasFlag(player, Flag.ADMIN)) {
             if (commandName.equals("kibbles")) {
                 this.j2.sendAdminPlusLog(ChatColor.RED + playerName + " enabled GODMODE");
-                if (args.length > 0 && args[0].equalsIgnoreCase("a"))
+                if ((args.length > 0) && args[0].equalsIgnoreCase("a")) {
                     this.j2.chat.messageAll(ChatColor.RED + "    " + playerName + " is an admin. Pay attention to " + playerName);
+                }
                 this.j2.users.getUser(playerName).tempSetColor(ChatColor.RED);
                 this.j2.damage.protect(playerName);
                 player.getInventory().setHelmet(new ItemStack(51));
                 this.j2.users.addFlagLocal(playerName, Flag.GODMODE);
             } else if (commandName.equals("bits")) {
-                String name = player.getName();
+                final String name = player.getName();
                 player.sendMessage(ChatColor.RED + "You fizzle out");
                 this.j2.sendAdminPlusLog(ChatColor.RED + playerName + " disabled GODMODE");
                 this.j2.users.getUser(name).restoreColor();

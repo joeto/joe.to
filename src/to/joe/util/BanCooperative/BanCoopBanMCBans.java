@@ -7,7 +7,7 @@ public class BanCoopBanMCBans extends BanCoopBan {
     private mcbType type;
 
     public BanCoopBanMCBans(String mishmash, String type) {
-        super(split(mishmash)[0], split(mishmash)[1]);
+        super(BanCoopBanMCBans.split(mishmash)[0], BanCoopBanMCBans.split(mishmash)[1]);
         if (type.equals("g")) {
             this.type = mcbType.GLOBAL;
         } else if (type.equals("l")) {
@@ -18,8 +18,8 @@ public class BanCoopBanMCBans extends BanCoopBan {
     }
 
     private static String[] split(String mishmash) {
-        String[] split = mishmash.split(" .:. ");
-        String[] result = new String[2];
+        final String[] split = mishmash.split(" .:. ");
+        final String[] result = new String[2];
         if (split.length > 1) {
             result[0] = split[0];
             result[1] = split[1];
@@ -32,7 +32,7 @@ public class BanCoopBanMCBans extends BanCoopBan {
 
     @Override
     public String toString() {
-        return ChatColor.AQUA + "[MCBANS] " + ChatColor.GREEN + "[" + type + "]<" + this.getServer() + "> " + ChatColor.AQUA + this.getReason();
+        return ChatColor.AQUA + "[MCBANS] " + ChatColor.GREEN + "[" + this.type + "]<" + this.getServer() + "> " + ChatColor.AQUA + this.getReason();
     }
 
     private enum mcbType {
@@ -43,6 +43,7 @@ public class BanCoopBanMCBans extends BanCoopBan {
             this.type = type;
         }
 
+        @Override
         public String toString() {
             return this.type;
         }

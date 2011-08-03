@@ -12,14 +12,14 @@ import to.joe.J2;
 import to.joe.util.Flag;
 
 public class Voting {
-    private J2 j2;
+    private final J2 j2;
     private ArrayList<String> currentOptions;
     private String currentQuestion;
     private boolean voteInProgress;
     private HashMap<String, Integer> votes;
     private int tallyTaskNumber;
-    private Object votesSync = new Object();
-    private Object optionsSync = new Object();
+    private final Object votesSync = new Object();
+    private final Object optionsSync = new Object();
 
     public Voting(J2 j2) {
         this.j2 = j2;
@@ -33,7 +33,7 @@ public class Voting {
      * @param args
      */
     public void voteAdminCommand(Player player, String[] args) {
-        String name = player.getName();
+        final String name = player.getName();
         if (args.length < 1) {
             this.usageVoteAdmin(player);
             return;
@@ -56,7 +56,7 @@ public class Voting {
                     return;
                 }
                 if (bits.length < 2) {
-                    String q = bits[0];
+                    final String q = bits[0];
                     bits = new String[3];
                     bits[0] = q;
                     bits[1] = "Yes";
@@ -79,7 +79,7 @@ public class Voting {
                 this.j2.chat.muteAll = false;
                 this.votes = new HashMap<String, Integer>();
                 // Run the run() method of VoteTally in 30 seconds
-                this.tallyTaskNumber = this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(j2, new VoteTally(this.j2), 600L);
+                this.tallyTaskNumber = this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(this.j2, new VoteTally(this.j2), 600L);
             }
             if (args[0].equalsIgnoreCase("cancel")) {
                 if (this.voteInProgress) {
@@ -112,7 +112,7 @@ public class Voting {
      * @param args
      */
     public void voteCommand(Player player, String[] args) {
-        String name = player.getName();
+        final String name = player.getName();
         if (args.length == 0) {
             player.sendMessage(ChatColor.RED + "/vote #");
             return;
@@ -120,13 +120,13 @@ public class Voting {
         int option;
         try {
             option = Integer.parseInt(args[0]);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             player.sendMessage(ChatColor.RED + "That's not a number!");
             return;
         }
         if (!this.voteInProgress) {
             player.sendMessage(ChatColor.RED + "There is no voting in session.");
-        } else if (args.length != 1 || option > this.currentOptions.size()) {
+        } else if ((args.length != 1) || (option > this.currentOptions.size())) {
             player.sendMessage(ChatColor.RED + "Usage: /vote # - # must be a valid option.");
         } else {
             synchronized (this.votesSync) {
@@ -174,7 +174,7 @@ public class Voting {
     }
 
     private class VoteTally implements Runnable {
-        private J2 j2;
+        private final J2 j2;
 
         public VoteTally(J2 j2) {
             this.j2 = j2;
@@ -184,15 +184,15 @@ public class Voting {
         public void run() {
             this.j2.chat.muteAll = true;
             this.j2.chat.messageAll(ChatColor.AQUA + "Vote over! Tallying results...");
-            Collection<Integer> votes = this.j2.voting.getVotes().values();
-            ArrayList<String> options = this.j2.voting.getCurrentOptions();
+            final Collection<Integer> votes = this.j2.voting.getVotes().values();
+            final ArrayList<String> options = this.j2.voting.getCurrentOptions();
             int totalVotes = 0;
-            int[] tally = new int[options.size()];
+            final int[] tally = new int[options.size()];
             System.out.println(options.size() + " options");
             for (int x = 0; x < tally.length; x++) {
                 tally[x] = 0;
             }
-            Iterator<Integer> voterator = votes.iterator();
+            final Iterator<Integer> voterator = votes.iterator();
             while (voterator.hasNext()) {
                 totalVotes++;
                 tally[voterator.next() - 1]++;
@@ -210,7 +210,7 @@ public class Voting {
                 }
             }
             if (!tie) {
-                int percent = 100 * highest / totalVotes;
+                final int percent = (100 * highest) / totalVotes;
                 this.j2.chat.messageAll(ChatColor.DARK_AQUA + "Result of \"" + ChatColor.AQUA + this.j2.voting.getCurrentQuestion() + ChatColor.DARK_AQUA + "\" is:");
                 this.j2.chat.messageAll(ChatColor.DARK_AQUA + "(" + percent + "% of " + totalVotes + "): " + ChatColor.AQUA + options.get(winner));
             } else {

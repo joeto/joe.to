@@ -23,10 +23,10 @@ public class SmiteCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "/smite player");
                 return;
             }
-            List<Player> results = this.j2.minitrue.matchPlayer(args[0], true);
+            final List<Player> results = this.j2.minitrue.matchPlayer(args[0], true);
             if (results.size() == 1) {
-                Player target = results.get(0);
-                boolean weather = target.getWorld().isThundering();
+                final Player target = results.get(0);
+                final boolean weather = target.getWorld().isThundering();
                 this.j2.damage.danger(target.getName());
                 this.j2.damage.addToTimer(target.getName());
                 target.getWorld().strikeLightning(target.getLocation());

@@ -15,10 +15,10 @@ import to.joe.util.Flag;
  * 
  */
 public class ActivityTracker {
-    private J2 j2;
+    private final J2 j2;
 
     private HashMap<String, Long> activity;
-    private Object sync = new Object();
+    private final Object sync = new Object();
 
     public ActivityTracker(J2 j2) {
         this.j2 = j2;
@@ -31,8 +31,8 @@ public class ActivityTracker {
      *            Player being updated
      */
     public void update(Player player) {
-        long time = (new Date()).getTime();
-        synchronized (sync) {
+        final long time = (new Date()).getTime();
+        synchronized (this.sync) {
             this.activity.put(player.getName(), time);
         }
     }
@@ -44,7 +44,7 @@ public class ActivityTracker {
      * @return When the player last interacted with the server
      */
     public long getLast(String name) {
-        synchronized (sync) {
+        synchronized (this.sync) {
             return this.activity.get(name);
         }
     }
@@ -54,8 +54,8 @@ public class ActivityTracker {
      * @return seconds since name has done anything
      */
     public int secondsSince(String name) {
-        synchronized (sync) {
-            long diff = (new Date()).getTime() - this.activity.get(name);
+        synchronized (this.sync) {
+            final long diff = (new Date()).getTime() - this.activity.get(name);
             return (int) diff / 1000;
         }
     }
@@ -66,13 +66,13 @@ public class ActivityTracker {
      * @param name
      */
     public void delete(String name) {
-        synchronized (sync) {
+        synchronized (this.sync) {
             this.activity.remove(name);
         }
     }
 
     public HashSet<String> getNames() {
-        synchronized (sync) {
+        synchronized (this.sync) {
             return new HashSet<String>(this.activity.keySet());
         }
     }
@@ -82,11 +82,11 @@ public class ActivityTracker {
      */
     public void restartManager() {
         this.activity = new HashMap<String, Long>();
-        this.j2.getServer().getScheduler().scheduleAsyncRepeatingTask(j2, new activityCheck(j2), 1, 1200);
+        this.j2.getServer().getScheduler().scheduleAsyncRepeatingTask(this.j2, new activityCheck(this.j2), 1, 1200);
     }
 
     private class activityCheck implements Runnable {
-        private J2 j2;
+        private final J2 j2;
 
         public activityCheck(J2 j2) {
             this.j2 = j2;
@@ -94,10 +94,10 @@ public class ActivityTracker {
 
         @Override
         public void run() {
-            HashSet<String> names = this.j2.activity.getNames();
-            for (String name : names) {
-                Player player = this.j2.getServer().getPlayer(name);
-                if (player != null && player.isOnline() && !this.j2.hasFlag(player, Flag.ADMIN)) {
+            final HashSet<String> names = this.j2.activity.getNames();
+            for (final String name : names) {
+                final Player player = this.j2.getServer().getPlayer(name);
+                if ((player != null) && player.isOnline() && !this.j2.hasFlag(player, Flag.ADMIN)) {
                     if (this.j2.activity.secondsSince(name) > 200) {
                         this.j2.minitrue.processLeave(player);
                         player.kickPlayer("You have been idle. Rejoin :)");

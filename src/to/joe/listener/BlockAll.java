@@ -1,10 +1,14 @@
 package to.joe.listener;
 
-import org.bukkit.entity.*;
 import org.bukkit.ChatColor;
-import org.bukkit.block.*;
-import org.bukkit.event.block.*;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.block.BlockListener;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import to.joe.J2;
 import to.joe.util.Flag;
@@ -32,14 +36,14 @@ public class BlockAll extends BlockListener {
 
     @Override
     public void onBlockIgnite(BlockIgniteEvent event) {
-        if (j2.safemode && !(event.getCause().equals(IgniteCause.FLINT_AND_STEEL))) {
+        if (this.j2.safemode && !(event.getCause().equals(IgniteCause.FLINT_AND_STEEL))) {
             event.setCancelled(true);
         }
     }
 
     @Override
     public void onBlockBurn(BlockBurnEvent event) {
-        if (j2.safemode) {
+        if (this.j2.safemode) {
             event.setCancelled(true);
         }
     }
@@ -54,17 +58,17 @@ public class BlockAll extends BlockListener {
 
     @Override
     public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         if (!this.j2.panda.blockHurt(player, event.getBlock().getLocation())) {
             event.setCancelled(true);
             return;
         }
-        if (!j2.hasFlag(player, Flag.MODWORLD)) {
+        if (!this.j2.hasFlag(player, Flag.MODWORLD)) {
             player.sendMessage("You don't have permission to do that");
             event.setCancelled(true);
             return;
         }
-        j2.activity.update(player);
+        this.j2.activity.update(player);
         /*
          * BlockRow changed; Block smacked = event.getBlock(); changed = new
          * BlockRow
@@ -79,17 +83,17 @@ public class BlockAll extends BlockListener {
 
     @Override
     public void onBlockPlace(BlockPlaceEvent event) {
-        Player player = event.getPlayer();
-        Block blockPlaced = event.getBlockPlaced();
+        final Player player = event.getPlayer();
+        final Block blockPlaced = event.getBlockPlaced();
         if (!this.j2.panda.blockPlace(player, blockPlaced.getLocation())) {
             event.setCancelled(true);
             return;
         }
-        j2.activity.update(player);
+        this.j2.activity.update(player);
         // BlockState old=event.getBlockReplacedState();
-        int type = blockPlaced.getTypeId();
+        final int type = blockPlaced.getTypeId();
 
-        if (!j2.hasFlag(player, Flag.MODWORLD)) {
+        if (!this.j2.hasFlag(player, Flag.MODWORLD)) {
             player.sendMessage("You don't have permission to do that");
             event.setCancelled(true);
             return;
@@ -105,12 +109,12 @@ public class BlockAll extends BlockListener {
          * ()/1000L),null); managerBlockLog.bqueue.offer(test);
          */
 
-        if (j2.hasFlag(player, Flag.TRUSTED) && !j2.hasFlag(player, Flag.ADMIN) && j2.isOnSuperBlacklist(type)) {
+        if (this.j2.hasFlag(player, Flag.TRUSTED) && !this.j2.hasFlag(player, Flag.ADMIN) && this.j2.isOnSuperBlacklist(type)) {
             player.sendMessage(ChatColor.RED + "Even trusted have limits. Can't place that block type");
             event.setCancelled(true);
             return;
         }
-        if (!j2.hasFlag(player, Flag.TRUSTED) && (j2.isOnRegularBlacklist(type) || j2.isOnSuperBlacklist(type))) {
+        if (!this.j2.hasFlag(player, Flag.TRUSTED) && (this.j2.isOnRegularBlacklist(type) || this.j2.isOnSuperBlacklist(type))) {
             player.sendMessage(ChatColor.RED + "You need to be trusted or higher to place that block type");
             player.sendMessage(ChatColor.RED + "To find out how to get trusted, say " + ChatColor.AQUA + "/trust");
             event.setCancelled(true);

@@ -20,11 +20,11 @@ public class TeleportHereCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer && this.j2.hasFlag(player, Flag.ADMIN)) {
-            String targetName = args[0];
+            final String targetName = args[0];
             Player target = this.j2.getServer().getPlayer(targetName);
             if (target == null) {
-                List<Player> inquest = this.j2.getServer().matchPlayer(args[0]);
-                int matches = inquest.size();
+                final List<Player> inquest = this.j2.getServer().matchPlayer(args[0]);
+                final int matches = inquest.size();
                 if (matches == 1) {
                     target = inquest.get(0);
                 } else if (matches > 1) {

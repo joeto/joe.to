@@ -30,7 +30,7 @@ public class TrustedRequestCommand extends MasterCommand {
                     player.sendMessage(ChatColor.RED + "Usage: Request trusted assistance.");
                     player.sendMessage(ChatColor.RED + "Ex: /trustreq need some water please");
                 } else {
-                    String message = this.j2.combineSplit(0, args, " ");
+                    final String message = this.j2.combineSplit(0, args, " ");
                     this.j2.chat.messageByFlag(Flag.TRUSTREQ, ChatColor.AQUA + "[TRUSTED REQUEST] <" + ChatColor.DARK_AQUA + playerName + ChatColor.AQUA + "> " + message);
                     player.sendMessage(ChatColor.AQUA + "Request sent. Be patient :)");
                 }

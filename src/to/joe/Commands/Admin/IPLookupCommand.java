@@ -21,15 +21,15 @@ public class IPLookupCommand extends MasterCommand {
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer && this.j2.hasFlag(player, Flag.ADMIN)) {
             if (args.length == 1) {
-                String lastIP = this.j2.mysql.IPGetLast(args[0]);
+                final String lastIP = this.j2.mysql.IPGetLast(args[0]);
                 if (!lastIP.isEmpty()) {
                     player.sendMessage(ChatColor.AQUA + "IPLookup on " + ChatColor.WHITE + args[0] + ChatColor.AQUA + "\'s last IP: " + ChatColor.WHITE + lastIP);
-                    HashMap<String, Long> nameDates = this.j2.mysql.IPGetNamesOnIP(lastIP);
+                    final HashMap<String, Long> nameDates = this.j2.mysql.IPGetNamesOnIP(lastIP);
                     if (!nameDates.isEmpty()) {
-                        for (String key : nameDates.keySet()) {
-                            if (!key.isEmpty() && key.toLowerCase() != "null") {
-                                Long time = nameDates.get(key);
-                                Date date = new Date(time);
+                        for (final String key : nameDates.keySet()) {
+                            if (!key.isEmpty() && (key.toLowerCase() != "null")) {
+                                final Long time = nameDates.get(key);
+                                final Date date = new Date(time);
                                 player.sendMessage(ChatColor.AQUA + key + " : " + ChatColor.BLUE + date);
                             }
                         }

@@ -8,10 +8,10 @@ import org.bukkit.Location;
  */
 public class Report {
     private int id;
-    private String message, username;
-    private Location location;
-    private long time;
-    private boolean closed;
+    private final String message, username;
+    private final Location location;
+    private final long time;
+    private final boolean closed;
 
     public Report(int ID, Location loc, String User, String Message, long time, boolean closed) {
         this.id = ID;

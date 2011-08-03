@@ -19,7 +19,7 @@ public class HomeCommand extends MasterCommand {
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer && this.j2.hasFlag(player, Flag.FUN)) {
             if (args.length == 0) {
-                String homes_s = this.j2.warps.listHomes(player.getName());
+                final String homes_s = this.j2.warps.listHomes(player.getName());
                 if (!homes_s.equalsIgnoreCase("")) {
                     player.sendMessage(ChatColor.RED + "Homes: " + ChatColor.WHITE + homes_s);
                     player.sendMessage(ChatColor.RED + "To go to a home, say /home homename");
@@ -28,7 +28,7 @@ public class HomeCommand extends MasterCommand {
                     player.sendMessage(ChatColor.RED + "Use the command /sethome");
                 }
             } else {
-                Warp home = this.j2.warps.getUserWarp(player.getName(), args[0]);
+                final Warp home = this.j2.warps.getUserWarp(player.getName(), args[0]);
                 if (home != null) {
                     player.sendMessage(ChatColor.RED + "Whoosh!");
                     this.j2.safePort(player, home.getLocation());

@@ -1,9 +1,9 @@
 package to.joe.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.FileInputStream;
 import java.util.Map;
 import java.util.Properties;
 
@@ -12,19 +12,19 @@ import java.util.Properties;
  * 
  */
 public final class Property {
-    private String name;
-    private Properties property = new Properties();
+    private final String name;
+    private final Properties property = new Properties();
 
     public Property(String name) {
         this.name = name;
-        File file = new File(name);
+        final File file = new File(name);
         try {
             if (file.exists()) {
                 this.load();
             } else {
                 this.save();
             }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
         }
     }
 
@@ -35,7 +35,7 @@ public final class Property {
     public void save() {
         try {
             this.property.store(new FileOutputStream(this.name), null);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
         }
     }
 
@@ -49,7 +49,7 @@ public final class Property {
     }
 
     public String getProperty(String var) {
-        return (String) this.property.getProperty(var);
+        return this.property.getProperty(var);
     }
 
     public void removeKey(String var) {
@@ -60,7 +60,7 @@ public final class Property {
     }
 
     public boolean keyExists(String key) {
-        return containsKey(key);
+        return this.containsKey(key);
     }
 
     public String getString(String key) {
@@ -75,7 +75,7 @@ public final class Property {
         if (this.containsKey(key)) {
             return this.getProperty(key);
         }
-        setString(key, value);
+        this.setString(key, value);
         return value;
     }
 

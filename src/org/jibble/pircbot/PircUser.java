@@ -36,9 +36,9 @@ public class PircUser {
      *            The nick of the user.
      */
     PircUser(String prefix, String nick) {
-        _prefix = prefix;
-        _nick = nick;
-        _lowerNick = nick.toLowerCase();
+        this._prefix = prefix;
+        this._nick = nick;
+        this._lowerNick = nick.toLowerCase();
     }
 
     /**
@@ -50,7 +50,7 @@ public class PircUser {
      *         String is returned.
      */
     public String getPrefix() {
-        return _prefix;
+        return this._prefix;
     }
 
     /**
@@ -62,7 +62,7 @@ public class PircUser {
      * @return true if the user is an operator in the channel.
      */
     public boolean isOp() {
-        return _prefix.indexOf('@') >= 0;
+        return this._prefix.indexOf('@') >= 0;
     }
 
     /**
@@ -73,7 +73,7 @@ public class PircUser {
      * @return true if the user has voice in the channel.
      */
     public boolean hasVoice() {
-        return _prefix.indexOf('+') >= 0;
+        return this._prefix.indexOf('+') >= 0;
     }
 
     /**
@@ -82,7 +82,7 @@ public class PircUser {
      * @return The user's nick.
      */
     public String getNick() {
-        return _nick;
+        return this._nick;
     }
 
     /**
@@ -91,6 +91,7 @@ public class PircUser {
      * 
      * @return The user's prefix and nick.
      */
+    @Override
     public String toString() {
         return this.getPrefix() + this.getNick();
     }
@@ -102,7 +103,7 @@ public class PircUser {
      * @return true if the nicks are identical (case insensitive).
      */
     public boolean equals(String nick) {
-        return nick.toLowerCase().equals(_lowerNick);
+        return nick.toLowerCase().equals(this._lowerNick);
     }
 
     /**
@@ -112,10 +113,11 @@ public class PircUser {
      * 
      * @return true if o is a User object with a matching lowercase nick.
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof PircUser) {
-            PircUser other = (PircUser) o;
-            return other._lowerNick.equals(_lowerNick);
+            final PircUser other = (PircUser) o;
+            return other._lowerNick.equals(this._lowerNick);
         }
         return false;
     }
@@ -125,8 +127,9 @@ public class PircUser {
      * 
      * @return the hash code of the User object.
      */
+    @Override
     public int hashCode() {
-        return _lowerNick.hashCode();
+        return this._lowerNick.hashCode();
     }
 
     /**
@@ -137,14 +140,14 @@ public class PircUser {
      */
     public int compareTo(Object o) {
         if (o instanceof PircUser) {
-            PircUser other = (PircUser) o;
-            return other._lowerNick.compareTo(_lowerNick);
+            final PircUser other = (PircUser) o;
+            return other._lowerNick.compareTo(this._lowerNick);
         }
         return -1;
     }
 
-    private String _prefix;
-    private String _nick;
-    private String _lowerNick;
+    private final String _prefix;
+    private final String _nick;
+    private final String _lowerNick;
 
 }

@@ -22,7 +22,7 @@ import to.joe.util.Runnables.PremiumCheck;
  * 
  */
 public class Users {
-    private J2 j2;
+    private final J2 j2;
 
     public Users(J2 J2) {
         this.j2 = J2;
@@ -53,7 +53,7 @@ public class Users {
      * @return
      */
     public boolean isAuthed(String name) {
-        synchronized (authlock) {
+        synchronized (this.authlock) {
             return this.authedAdmins.contains(name);
         }
     }
@@ -64,7 +64,7 @@ public class Users {
      * @param name
      */
     public void authenticatedAdmin(String name) {
-        synchronized (authlock) {
+        synchronized (this.authlock) {
             this.authedAdmins.add(name);
         }
     }
@@ -75,7 +75,7 @@ public class Users {
      * @param name
      */
     public void resetAuthentication(Player player) {
-        String name = player.getName();
+        final String name = player.getName();
         if (this.j2.hasFlag(name, Flag.GODMODE)) {
 
         }
@@ -92,7 +92,7 @@ public class Users {
      * @param name
      */
     public void dropAuthentication(String name) {
-        synchronized (authlock) {
+        synchronized (this.authlock) {
             this.authedAdmins.remove(name);
         }
     }
@@ -105,9 +105,10 @@ public class Users {
      */
     public User getUser(String name) {
         synchronized (this.userlock) {
-            for (User u : this.users) {
-                if (u.getName().equalsIgnoreCase(name))
+            for (final User u : this.users) {
+                if (u.getName().equalsIgnoreCase(name)) {
                     return u;
+                }
             }
             return null;
         }
@@ -121,7 +122,7 @@ public class Users {
      */
     public boolean isOnline(String playername) {
         synchronized (this.userlock) {
-            for (User u : this.users) {
+            for (final User u : this.users) {
                 if (u.getName().equalsIgnoreCase(playername)) {
                     return true;
                 }
@@ -137,7 +138,7 @@ public class Users {
      * @return
      */
     public User getUser(Player player) {
-        return getUser(player.getName());
+        return this.getUser(player.getName());
     }
 
     /**
@@ -147,10 +148,10 @@ public class Users {
      */
     public void addUser(String playerName) {
         synchronized (this.userlock) {
-            User user = this.j2.mysql.getUser(playerName);
-            if (user != null)
+            final User user = this.j2.mysql.getUser(playerName);
+            if (user != null) {
                 this.users.add(user);
-            else {
+            } else {
                 this.j2.logWarn("Tried to add user \"" + playerName + "\" and got null");
             }
         }
@@ -164,12 +165,14 @@ public class Users {
     public void delUser(String name) {
         synchronized (this.userlock) {
             User toremove = null;
-            for (User user : this.users) {
-                if (user.getName().equalsIgnoreCase(name))
+            for (final User user : this.users) {
+                if (user.getName().equalsIgnoreCase(name)) {
                     toremove = user;
+                }
             }
-            if (toremove != null)
+            if (toremove != null) {
                 this.users.remove(toremove);
+            }
         }
     }
 
@@ -180,12 +183,12 @@ public class Users {
      * @param flag
      */
     public void addFlag(String name, Flag flag) {
-        User user = getUser(name);
+        User user = this.getUser(name);
         if (user == null) {
             user = this.j2.mysql.getUser(name);
         }
         user.addFlag(flag);
-        j2.debug("Adding flag " + flag.getChar() + " for " + name);
+        this.j2.debug("Adding flag " + flag.getChar() + " for " + name);
         this.j2.mysql.setFlags(name, user.getUserFlags());
     }
 
@@ -196,7 +199,7 @@ public class Users {
      * @param flag
      */
     public void addFlagLocal(String name, Flag flag) {
-        User user = getUser(name);
+        final User user = this.getUser(name);
         if (user != null) {
             user.addFlag(flag);
         }
@@ -209,12 +212,12 @@ public class Users {
      * @param flag
      */
     public void dropFlag(String name, Flag flag) {
-        User user = getUser(name);
+        User user = this.getUser(name);
         if (user == null) {
             user = this.j2.mysql.getUser(name);
         }
         user.dropFlag(flag);
-        j2.debug("Dropping flag " + flag.getChar() + " for " + name);
+        this.j2.debug("Dropping flag " + flag.getChar() + " for " + name);
         this.j2.mysql.setFlags(name, user.getUserFlags());
     }
 
@@ -225,7 +228,7 @@ public class Users {
      * @param flag
      */
     public void dropFlagLocal(String name, Flag flag) {
-        User user = getUser(name);
+        final User user = this.getUser(name);
         if (user != null) {
             user.dropFlag(flag);
         }
@@ -268,10 +271,10 @@ public class Users {
      * @return
      */
     public ArrayList<Flag> getAllFlags(Player player) {
-        ArrayList<Flag> all = new ArrayList<Flag>();
-        User user = getUser(player);
+        final ArrayList<Flag> all = new ArrayList<Flag>();
+        final User user = this.getUser(player);
         all.addAll(user.getUserFlags());
-        all.addAll(getGroupFlags(user.getGroup()));
+        all.addAll(this.getGroupFlags(user.getGroup()));
         return all;
 
     }
@@ -284,14 +287,14 @@ public class Users {
      * @param admin
      */
     public void jail(String name, String reason, String admin) {
-        if (isOnline(name)) {
-            addFlag(name, Flag.JAILED);
+        if (this.isOnline(name)) {
+            this.addFlag(name, Flag.JAILED);
         } else {
-            j2.mysql.getUser(name);
-            addFlag(name, Flag.JAILED);
-            delUser(name);
+            this.j2.mysql.getUser(name);
+            this.addFlag(name, Flag.JAILED);
+            this.delUser(name);
         }
-        synchronized (jaillock) {
+        synchronized (this.jaillock) {
             this.jailReasons.put(name, reason);
         }
         // j2.mysql.jail(name,reason,admin);
@@ -303,14 +306,14 @@ public class Users {
      * @param name
      */
     public void unJail(String name) {
-        if (isOnline(name)) {
-            dropFlag(name, Flag.JAILED);
+        if (this.isOnline(name)) {
+            this.dropFlag(name, Flag.JAILED);
         } else {
-            j2.mysql.getUser(name);
-            dropFlag(name, Flag.JAILED);
-            delUser(name);
+            this.j2.mysql.getUser(name);
+            this.dropFlag(name, Flag.JAILED);
+            this.delUser(name);
         }
-        synchronized (jaillock) {
+        synchronized (this.jaillock) {
             this.jailReasons.remove(name);
         }
         // j2.mysql.unJail(name);
@@ -338,25 +341,25 @@ public class Users {
     private boolean stop = true;
 
     private void startTimer() {
-        stop = false;
+        this.stop = false;
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (stop) {
+                if (Users.this.stop) {
                     timer.cancel();
                     return;
                 }
-                checkOnline();
+                Users.this.checkOnline();
             }
         }, 10000, 10000);
     }
 
     private void checkOnline() {
         synchronized (this.userlock) {
-            for (User u : new ArrayList<User>(this.users)) {
-                Player p = j2.getServer().getPlayer(u.getName());
-                if (p == null || !p.isOnline()) {
+            for (final User u : new ArrayList<User>(this.users)) {
+                final Player p = this.j2.getServer().getPlayer(u.getName());
+                if ((p == null) || !p.isOnline()) {
                     this.users.remove(u);
                     if (p != null) {
                         p.kickPlayer("You have glitched. Rejoin");
@@ -377,44 +380,44 @@ public class Users {
         if (!player.isOnline()) {
             return;
         }
-        boolean stealthy = this.j2.hasFlag(player, Flag.SILENT_JOIN);
-        String name = player.getName();
+        final boolean stealthy = this.j2.hasFlag(player, Flag.SILENT_JOIN);
+        final String name = player.getName();
         this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(this.j2, new PremiumCheck(name, this.j2));
-        j2.irc.processJoin(name);
-        j2.ip.processJoin(name);
-        j2.warps.processJoin(name);
-        j2.damage.processJoin(name);
-        j2.jail.processJoin(player);
+        this.j2.irc.processJoin(name);
+        this.j2.ip.processJoin(name);
+        this.j2.warps.processJoin(name);
+        this.j2.damage.processJoin(name);
+        this.j2.jail.processJoin(player);
         if (player.getInventory().getHelmet().getTypeId() == Material.FIRE.getId()) {
             player.getInventory().setHelmet(new ItemStack(Material.GRASS));
             player.sendMessage(ChatColor.RED + "You fizzle out");
         }
-        if (j2.maintenance) {
+        if (this.j2.maintenance) {
             player.sendMessage(ChatColor.YELLOW + "We are in maintenance mode");
         }
         if (!quiet) {
-            j2.banCoop.processJoin(player);
+            this.j2.banCoop.processJoin(player);
         }
-        for (String line : j2.motd) {
+        for (final String line : this.j2.motd) {
             player.sendMessage(line);
         }
-        if (j2.reallyHasFlag(name, Flag.ADMIN)) {
-            int count = this.j2.reports.numReports();
+        if (this.j2.reallyHasFlag(name, Flag.ADMIN)) {
+            final int count = this.j2.reports.numReports();
             player.sendMessage(ChatColor.LIGHT_PURPLE + "There are " + count + " reports. ");
         }
-        j2.minitrue.processJoin(player, stealthy);
+        this.j2.minitrue.processJoin(player, stealthy);
         if (stealthy) {
             this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.YELLOW + "Stealthy join by " + name);
             this.dropFlag(name, Flag.SILENT_JOIN);
         }
-        if (j2.hasFlag(player, Flag.CONTRIBUTOR)) {
+        if (this.j2.hasFlag(player, Flag.CONTRIBUTOR)) {
             player.sendMessage(ChatColor.LIGHT_PURPLE + "We think you're an " + ChatColor.GOLD + "AMAZING CONTRIBUTOR");
             player.sendMessage(ChatColor.LIGHT_PURPLE + "to the minecraft community as a whole! " + ChatColor.RED + "<3");
         }
-        ArrayList<Note> notes = this.j2.mysql.getNotes(name);
+        final ArrayList<Note> notes = this.j2.mysql.getNotes(name);
         if (notes.size() > 0) {
             player.sendMessage(ChatColor.DARK_AQUA + "You have notes!");
-            for (Note note : notes) {
+            for (final Note note : notes) {
                 if (note != null) {
                     player.sendMessage(note.toString());
                 }
@@ -425,7 +428,7 @@ public class Users {
     public Location jail;
     private ArrayList<User> users;
     private HashMap<String, ArrayList<Flag>> groups;
-    private Object userlock = new Object(), jaillock = new Object(), authlock = new Object();
+    private final Object userlock = new Object(), jaillock = new Object(), authlock = new Object();
     private HashMap<String, String> jailReasons;
     private ArrayList<String> authedAdmins;
 }

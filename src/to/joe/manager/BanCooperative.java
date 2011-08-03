@@ -1,11 +1,17 @@
 package to.joe.manager;
 
 import java.util.HashMap;
+
 import org.bukkit.entity.Player;
 
 import to.joe.J2;
 import to.joe.util.BanCooperative.BanCoopDossier;
-import to.joe.util.Runnables.BanCooperative.*;
+import to.joe.util.Runnables.BanCooperative.CoopRunnerBan;
+import to.joe.util.Runnables.BanCooperative.CoopRunnerDisconnect;
+import to.joe.util.Runnables.BanCooperative.CoopRunnerJoin;
+import to.joe.util.Runnables.BanCooperative.CoopRunnerLookup;
+import to.joe.util.Runnables.BanCooperative.CoopRunnerMCBansHeartbeat;
+import to.joe.util.Runnables.BanCooperative.CoopRunnerUnban;
 
 /**
  * System for interfacing with MCBans and MCBouncer Easy to incorporate
@@ -13,7 +19,7 @@ import to.joe.util.Runnables.BanCooperative.*;
  * 
  */
 public class BanCooperative {
-    private J2 j2;
+    private final J2 j2;
 
     /**
      * Mapped dossiers by name
@@ -29,7 +35,7 @@ public class BanCooperative {
      * Starts the MCBans callBack.
      */
     public void startCallback() {
-        this.j2.getServer().getScheduler().scheduleAsyncRepeatingTask(this.j2, new CoopRunnerMCBansHeartbeat(j2, this), 60000, 60000);
+        this.j2.getServer().getScheduler().scheduleAsyncRepeatingTask(this.j2, new CoopRunnerMCBansHeartbeat(this.j2, this), 60000, 60000);
     }
 
     /**
@@ -38,7 +44,7 @@ public class BanCooperative {
      * @param player
      */
     public void processJoin(Player player) {
-        CoopRunnerJoin runner = new CoopRunnerJoin(j2, this, player.getName(), player);
+        final CoopRunnerJoin runner = new CoopRunnerJoin(this.j2, this, player.getName(), player);
         new Thread(runner).start();
     }
 
@@ -48,7 +54,7 @@ public class BanCooperative {
      * @param name
      */
     public void disconnect(String name) {
-        CoopRunnerDisconnect runner = new CoopRunnerDisconnect(j2, this, name);
+        final CoopRunnerDisconnect runner = new CoopRunnerDisconnect(this.j2, this, name);
         new Thread(runner).start();
     }
 
@@ -59,7 +65,7 @@ public class BanCooperative {
      * @param admin
      */
     public void lookup(String name, Player admin) {
-        CoopRunnerLookup runner = new CoopRunnerLookup(j2, this, name, admin);
+        final CoopRunnerLookup runner = new CoopRunnerLookup(this.j2, this, name, admin);
         new Thread(runner).start();
     }
 
@@ -71,7 +77,7 @@ public class BanCooperative {
      * @param reason
      */
     public void processBan(String name, String admin, String reason) {
-        CoopRunnerBan runner = new CoopRunnerBan(j2, this, name, admin, reason);
+        final CoopRunnerBan runner = new CoopRunnerBan(this.j2, this, name, admin, reason);
         new Thread(runner).start();
     }
 
@@ -82,7 +88,7 @@ public class BanCooperative {
      * @param admin
      */
     public void processUnban(String name, String admin) {
-        CoopRunnerUnban runner = new CoopRunnerUnban(j2, this, name, admin);
+        final CoopRunnerUnban runner = new CoopRunnerUnban(this.j2, this, name, admin);
         new Thread(runner).start();
     }
 

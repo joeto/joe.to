@@ -1,14 +1,14 @@
 package to.joe.util.IRC;
 
-import org.bukkit.entity.*;
-import org.jibble.pircbot.*;
+import org.bukkit.entity.Player;
+import org.jibble.pircbot.PircBot;
 
 import to.joe.manager.IRC;
 import to.joe.util.Flag;
 
 public class ircBot extends PircBot {
 
-    private IRC irc;
+    private final IRC irc;
 
     public ircBot(String mah_name, boolean msgenabled, IRC irc) {
         this.setName(mah_name);
@@ -37,7 +37,7 @@ public class ircBot extends PircBot {
     @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         if (message.charAt(0) == '!') {
-            String[] parts = message.split(" ");
+            final String[] parts = message.split(" ");
             if (parts[0].toLowerCase().equals("!help")) {
                 this.sendNotice(sender, "!msg - Send a message to players on the server | !players - Get current playercount | !playerlist - List players online");
             } else if (message.equalsIgnoreCase("!players") || message.equalsIgnoreCase("!playerlist")) {
@@ -49,7 +49,7 @@ public class ircBot extends PircBot {
                 } else {
                     players = this.irc.getJ2().minitrue.getOnlinePlayers();
                 }
-                for (Player p : players) {
+                for (final Player p : players) {
                     if (p != null) {
                         if (curPlayers.equals("")) {
                             curPlayers += p.getName();
@@ -70,8 +70,8 @@ public class ircBot extends PircBot {
                 }
             } else if (message.equalsIgnoreCase("!admins")) {
                 String curAdmins = "Admins: ";
-                for (Player p : this.irc.getJ2().getServer().getOnlinePlayers()) {
-                    if (p != null && (this.irc.getJ2().hasFlag(p, Flag.ADMIN))) {
+                for (final Player p : this.irc.getJ2().getServer().getOnlinePlayers()) {
+                    if ((p != null) && (this.irc.getJ2().hasFlag(p, Flag.ADMIN))) {
                         if (curAdmins == "Admins: ") {
                             curAdmins += p.getName();
                         } else {
@@ -79,7 +79,7 @@ public class ircBot extends PircBot {
                         }
                     }
                 }
-                boolean adminsOnline = !curAdmins.equals("Admins: ");
+                final boolean adminsOnline = !curAdmins.equals("Admins: ");
                 if (channel.equalsIgnoreCase(this.irc.getJ2().ircAdminChannel)) {
                     if (!adminsOnline) {
                         this.sendMessage(channel, "No admins online.");
@@ -94,23 +94,23 @@ public class ircBot extends PircBot {
                     }
                 }
             } else if (this.ircMsg && parts[0].equalsIgnoreCase("!msg")) {
-                if (channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)) {
+                if (channel.equalsIgnoreCase(this.irc.getJ2().ircAdminChannel)) {
                     this.sendMessage(channel, "Try that in the other channel.");
                 } else {
                     this.doMsg(channel, sender, this.irc.getJ2().combineSplit(1, parts, " "));
                 }
             } else if (parts[0].equalsIgnoreCase("!broadcast")) {
-                if (!channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)) {
-                    sendMessage(channel, "Try that in the other channel.");
+                if (!channel.equalsIgnoreCase(this.irc.getJ2().ircAdminChannel)) {
+                    this.sendMessage(channel, "Try that in the other channel.");
                 } else {
                     this.irc.getJ2().chat.handleBroadcastFromIRC(sender, this.irc.getJ2().combineSplit(1, parts, " "));
                 }
             } else if (parts[0].equalsIgnoreCase("!reports")) {
-                if (!channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)) {
+                if (!channel.equalsIgnoreCase(this.irc.getJ2().ircAdminChannel)) {
                     this.sendMessage(channel, "Try that in the other channel.");
                 } else {
                     String response = "";
-                    int size = this.irc.getJ2().reports.getReports().size();
+                    final int size = this.irc.getJ2().reports.getReports().size();
                     response = "There are currently " + size + " reports open. ";
                     switch (size) {
                         case 0:
@@ -135,17 +135,17 @@ public class ircBot extends PircBot {
                     this.sendMessage(channel, response);
                 }
             } else if (this.ircMsg && parts[0].equalsIgnoreCase("!me")) {
-                if (channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)) {
+                if (channel.equalsIgnoreCase(this.irc.getJ2().ircAdminChannel)) {
                     this.sendMessage(channel, "Try that in the other channel.");
                 }
                 this.doMeMsg(channel, sender, this.irc.getJ2().combineSplit(1, parts, " "));
             } else if (parts[0].equalsIgnoreCase("!has")) {
-                if (!channel.equalsIgnoreCase(irc.getJ2().ircAdminChannel)) {
+                if (!channel.equalsIgnoreCase(this.irc.getJ2().ircAdminChannel)) {
                     this.sendMessage(channel, "Try that in the other channel.");
                 }
                 String has = null;
-                for (Player player : this.irc.getJ2().getServer().getOnlinePlayers()) {
-                    String name = player.getName();
+                for (final Player player : this.irc.getJ2().getServer().getOnlinePlayers()) {
+                    final String name = player.getName();
                     if (name.equalsIgnoreCase(parts[1])) {
                         has = name;
                     }
@@ -156,9 +156,9 @@ public class ircBot extends PircBot {
             }
             return;
         }
-        if (message.charAt(0) == '.' && channel.equalsIgnoreCase(this.irc.getJ2().ircChannel)) {
-            String[] parts = message.split(" ");
-            if (irc.ircCommand(hostname, sender, parts)) {
+        if ((message.charAt(0) == '.') && channel.equalsIgnoreCase(this.irc.getJ2().ircChannel)) {
+            final String[] parts = message.split(" ");
+            if (this.irc.ircCommand(hostname, sender, parts)) {
                 this.sendRawLine("NOTICE " + sender + " :Done");
             } else if (!this.ircMsg) {
                 this.doMsg(channel, sender, " " + message);
@@ -183,12 +183,12 @@ public class ircBot extends PircBot {
 
     @Override
     protected void onPrivateMessage(String sender, String login, String hostname, String message) {
-        if (irc.ircCommand(hostname, sender, message.split(" "))) {
+        if (this.irc.ircCommand(hostname, sender, message.split(" "))) {
             this.sendRawLine("NOTICE " + sender + " :Done");
         } else {
             this.sendRawLine("NOTICE " + sender + " :No access to that command");
         }
     }
 
-    private boolean ircMsg;
+    private final boolean ircMsg;
 }

@@ -88,8 +88,8 @@ public class HTTP {
      * @throws JSONException
      */
     public static JSONObject toJSONObject(String string) throws JSONException {
-        JSONObject jo = new JSONObject();
-        HTTPTokener x = new HTTPTokener(string);
+        final JSONObject jo = new JSONObject();
+        final HTTPTokener x = new HTTPTokener(string);
         String token;
 
         token = x.nextToken();
@@ -114,7 +114,7 @@ public class HTTP {
         // Fields
 
         while (x.more()) {
-            String name = x.nextTo(':');
+            final String name = x.nextTo(':');
             x.next(':');
             jo.put(name, x.nextTo('\0'));
             x.next();
@@ -154,9 +154,10 @@ public class HTTP {
      */
     public static String toString(JSONObject jo) throws JSONException {
         @SuppressWarnings("rawtypes")
+        final
         Iterator keys = jo.keys();
         String string;
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         if (jo.has("Status-Code") && jo.has("Reason-Phrase")) {
             sb.append(jo.getString("HTTP-Version"));
             sb.append(' ');
@@ -174,17 +175,17 @@ public class HTTP {
         } else {
             throw new JSONException("Not enough material for an HTTP header.");
         }
-        sb.append(CRLF);
+        sb.append(HTTP.CRLF);
         while (keys.hasNext()) {
             string = keys.next().toString();
             if (!string.equals("HTTP-Version") && !string.equals("Status-Code") && !string.equals("Reason-Phrase") && !string.equals("Method") && !string.equals("Request-URI") && !jo.isNull(string)) {
                 sb.append(string);
                 sb.append(": ");
                 sb.append(jo.getString(string));
-                sb.append(CRLF);
+                sb.append(HTTP.CRLF);
             }
         }
-        sb.append(CRLF);
+        sb.append(HTTP.CRLF);
         return sb.toString();
     }
 }

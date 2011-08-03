@@ -12,8 +12,8 @@ public class CoopRunnerDisconnect extends CoopRunner {
     }
 
     private void mcbans_disconnect() {
-        HashMap<String, String> postVars = new HashMap<String, String>();
-        postVars.put("player", name);
+        final HashMap<String, String> postVars = new HashMap<String, String>();
+        postVars.put("player", this.name);
         postVars.put("exec", "playerDisconnect");
         this.mcbans_api(postVars);
     }

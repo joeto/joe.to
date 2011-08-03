@@ -169,8 +169,8 @@ public class PircColors {
      * @return the same text, but with all colours removed.
      */
     public static String removeColors(String line) {
-        int length = line.length();
-        StringBuffer buffer = new StringBuffer();
+        final int length = line.length();
+        final StringBuffer buffer = new StringBuffer();
         int i = 0;
         while (i < length) {
             char ch = line.charAt(i);
@@ -235,11 +235,11 @@ public class PircColors {
      * @return the same text, but without any bold, underlining, reverse, etc.
      */
     public static String removeFormatting(String line) {
-        int length = line.length();
-        StringBuffer buffer = new StringBuffer();
+        final int length = line.length();
+        final StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < length; i++) {
-            char ch = line.charAt(i);
-            if (ch == '\u000f' || ch == '\u0002' || ch == '\u001f' || ch == '\u0016') {
+            final char ch = line.charAt(i);
+            if ((ch == '\u000f') || (ch == '\u0002') || (ch == '\u001f') || (ch == '\u0016')) {
                 // Don't add this character.
             } else {
                 buffer.append(ch);
@@ -260,7 +260,7 @@ public class PircColors {
      * 
      */
     public static String removeFormattingAndColors(String line) {
-        return removeFormatting(removeColors(line));
+        return PircColors.removeFormatting(PircColors.removeColors(line));
     }
 
 }

@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-//import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,10 +27,10 @@ import to.joe.util.Warp;
  * 
  */
 public class MySQL {
-    private String user, pass, db;
-    private int serverNumber;
-    private J2 j2;
-    private String aliasdb = "alias";
+    private final String user, pass, db;
+    private final int serverNumber;
+    private final J2 j2;
+    private final String aliasdb = "alias";
 
     // private SimpleDateFormat formatter = new SimpleDateFormat("MM-dd hh:mm");
     /**
@@ -44,11 +43,11 @@ public class MySQL {
      * @param J2
      */
     public MySQL(String User, String Pass, String DB, int ServerNumber, J2 J2) {
-        user = User;
-        pass = Pass;
-        db = DB;
-        serverNumber = ServerNumber;
-        j2 = J2;
+        this.user = User;
+        this.pass = Pass;
+        this.db = DB;
+        this.serverNumber = ServerNumber;
+        this.j2 = J2;
     }
 
     /**
@@ -60,12 +59,12 @@ public class MySQL {
         try {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-            } catch (ClassNotFoundException ex) {
-                j2.logWarn(ChatColor.RED + "SQL FAIL D:");
+            } catch (final ClassNotFoundException ex) {
+                this.j2.logWarn(ChatColor.RED + "SQL FAIL D:");
             }
-            return DriverManager.getConnection(db + "?autoReconnect=true&user=" + user + "&password=" + pass);
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "SQL FAIL :(");
+            return DriverManager.getConnection(this.db + "?autoReconnect=true&user=" + this.user + "&password=" + this.pass);
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "SQL FAIL :(");
         }
         return null;
     }
@@ -129,30 +128,30 @@ public class MySQL {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = getConnection();
-            String state = "SELECT * FROM j2users WHERE name=\"" + name + "\"";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "SELECT * FROM j2users WHERE name=\"" + name + "\"";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             rs = ps.executeQuery();
             if (rs.next()) {
-                String Flags = rs.getString("flags");
-                ArrayList<Flag> flags = new ArrayList<Flag>();
+                final String Flags = rs.getString("flags");
+                final ArrayList<Flag> flags = new ArrayList<Flag>();
                 for (int x = 0; x < Flags.length(); x++) {
                     flags.add(Flag.byChar(Flags.charAt(x)));
                 }
-                j2.debug("User " + name + " in " + rs.getString("group") + " with " + Flags);
-                return new User(name, toColor(rs.getInt("color")), rs.getString("group"), flags, j2.getServer().getWorld("world"), rs.getString("safeword"));
+                this.j2.debug("User " + name + " in " + rs.getString("group") + " with " + Flags);
+                return new User(name, this.toColor(rs.getInt("color")), rs.getString("group"), flags, this.j2.getServer().getWorld("world"), rs.getString("safeword"));
             } else {
-                String state2 = "INSERT INTO j2users (`name`,`group`,`color`,`flags`) values (\"" + name + "\",\"regular\",10,\"n\")";
-                j2.debug("Query: " + state2);
+                final String state2 = "INSERT INTO j2users (`name`,`group`,`color`,`flags`) values (\"" + name + "\",\"regular\",10,\"n\")";
+                this.j2.debug("Query: " + state2);
                 ps = conn.prepareStatement(state2);
                 ps.executeUpdate();
-                ArrayList<Flag> f = new ArrayList<Flag>();
+                final ArrayList<Flag> f = new ArrayList<Flag>();
                 f.add(Flag.NEW);
-                return new User(name, ChatColor.GREEN, "regular", f, j2.getServer().getWorld("world"), "");
+                return new User(name, ChatColor.GREEN, "regular", f, this.j2.getServer().getWorld("world"), "");
             }
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load user " + name + " from MySQL. Oh hell");
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load user " + name + " from MySQL. Oh hell");
         } finally {
             try {
                 if (ps != null) {
@@ -164,11 +163,11 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
-                j2.logWarn(ChatColor.RED + "Unable to load user " + name + " from MySQL. Oh hell");
+            } catch (final SQLException ex) {
+                this.j2.logWarn(ChatColor.RED + "Unable to load user " + name + " from MySQL. Oh hell");
             }
         }
-        j2.logWarn(ChatColor.RED + "Unable to load user " + name + " from MySQL. Oh hell");
+        this.j2.logWarn(ChatColor.RED + "Unable to load user " + name + " from MySQL. Oh hell");
         return null;
     }
 
@@ -179,23 +178,23 @@ public class MySQL {
      * @param flags
      */
     public void setFlags(String name, ArrayList<Flag> flags) {
-        j2.debug("Calling setFlags");
+        this.j2.debug("Calling setFlags");
         Connection conn = null;
         PreparedStatement ps = null;
-        name = stringClean(name);
+        name = this.stringClean(name);
         String flaglist = "";
         if (!flags.isEmpty()) {
-            for (Flag f : flags) {
+            for (final Flag f : flags) {
                 flaglist += f.getChar();
             }
         }
         try {
-            conn = getConnection();
-            String state = "UPDATE j2users SET flags=\"" + flaglist + "\" WHERE name=\"" + name + "\"";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "UPDATE j2users SET flags=\"" + flaglist + "\" WHERE name=\"" + name + "\"";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             ps.executeUpdate();
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
 
         } finally {
             try {
@@ -205,7 +204,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
@@ -219,15 +218,15 @@ public class MySQL {
     public void setGroup(String name, String group) {
         Connection conn = null;
         PreparedStatement ps = null;
-        name = stringClean(name);
-        group = stringClean(group);
+        name = this.stringClean(name);
+        group = this.stringClean(group);
         try {
-            conn = getConnection();
-            String state = "UPDATE j2users SET group=\"" + group + "\" WHERE name=\"" + name + "\"";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "UPDATE j2users SET group=\"" + group + "\" WHERE name=\"" + name + "\"";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             ps.executeUpdate();
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
 
         } finally {
             try {
@@ -237,7 +236,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
@@ -253,8 +252,8 @@ public class MySQL {
      * @param location
      */
     public void ban(String name, String reason, long time, String admin, Location location) {
-        j2.banCoop.processBan(name, admin, reason);
-        j2.panda.remove(name);
+        this.j2.banCoop.processBan(name, admin, reason);
+        this.j2.panda.remove(name);
         if (this.serverNumber == 1) {
             this.j2.users.addFlag(name, Flag.BARRED_MC1);
         }
@@ -272,20 +271,21 @@ public class MySQL {
             world = location.getWorld().getName();
         }
         try {
-            conn = getConnection();
-            Date curTime = new Date();
-            long timeNow = curTime.getTime() / 1000;
+            conn = this.getConnection();
+            final Date curTime = new Date();
+            final long timeNow = curTime.getTime() / 1000;
             long unBanTime;
-            if (time == 0)
+            if (time == 0) {
                 unBanTime = 0;
-            else
+            } else {
                 unBanTime = timeNow + (60 * time);
-            String state = "INSERT INTO j2bans (name,reason,admin,unbantime,timeofban,x,y,z,pitch,yaw,world,server) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-            j2.debug("Query: " + state);
+            }
+            final String state = "INSERT INTO j2bans (name,reason,admin,unbantime,timeofban,x,y,z,pitch,yaw,world,server) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
-            ps.setString(1, stringClean(name.toLowerCase()));
-            ps.setString(2, stringClean(reason));
-            ps.setString(3, stringClean(admin));
+            ps.setString(1, this.stringClean(name.toLowerCase()));
+            ps.setString(2, this.stringClean(reason));
+            ps.setString(3, this.stringClean(admin));
             ps.setLong(4, unBanTime);
             ps.setLong(5, timeNow);
             ps.setDouble(6, x);
@@ -296,10 +296,10 @@ public class MySQL {
             ps.setString(11, world);
             ps.setInt(12, this.serverNumber);
             ps.executeUpdate();
-            Ban newban = new Ban(name.toLowerCase(), reason, unBanTime, timeNow, timeNow, false);
-            j2.kickbans.bans.add(newban);
+            final Ban newban = new Ban(name.toLowerCase(), reason, unBanTime, timeNow, timeNow, false);
+            this.j2.kickbans.bans.add(newban);
 
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
 
         } finally {
             try {
@@ -309,7 +309,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
@@ -321,20 +321,20 @@ public class MySQL {
      * @return
      */
     public String checkBans(String username) {
-        Date curTime = new Date();
-        long timeNow = curTime.getTime() / 1000;
+        final Date curTime = new Date();
+        final long timeNow = curTime.getTime() / 1000;
         String reason = null;
-        ArrayList<Ban> banhat = new ArrayList<Ban>(j2.kickbans.bans);
-        for (Ban ban : banhat) {
-            if (ban.isBanned() && ban.isTemp() && ban.getTimeOfUnban() < timeNow) {
+        final ArrayList<Ban> banhat = new ArrayList<Ban>(this.j2.kickbans.bans);
+        for (final Ban ban : banhat) {
+            if (ban.isBanned() && ban.isTemp() && (ban.getTimeOfUnban() < timeNow)) {
                 // unban(user);
                 // tempbans
             }
-            if (ban.getTimeLoaded() > timeNow - 60 && ban.getName().equalsIgnoreCase(username) && ban.isBanned()) {
+            if ((ban.getTimeLoaded() > (timeNow - 60)) && ban.getName().equalsIgnoreCase(username) && ban.isBanned()) {
                 reason = "Banned: " + ban.getReason();
             }
-            if (ban.getTimeLoaded() < timeNow - 60) {
-                j2.kickbans.bans.remove(ban);
+            if (ban.getTimeLoaded() < (timeNow - 60)) {
+                this.j2.kickbans.bans.remove(ban);
             }
         }
         if (reason == null) {
@@ -342,19 +342,19 @@ public class MySQL {
             PreparedStatement ps = null;
             ResultSet rs = null;
             try {
-                conn = getConnection();
-                String state = "SELECT name,reason,unbantime,timeofban FROM j2bans WHERE unbanned=0 and name=\"" + username + "\"";
-                j2.debug("Query: " + state);
+                conn = this.getConnection();
+                final String state = "SELECT name,reason,unbantime,timeofban FROM j2bans WHERE unbanned=0 and name=\"" + username + "\"";
+                this.j2.debug("Query: " + state);
                 ps = conn.prepareStatement(state);
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     reason = rs.getString("reason");
-                    Ban ban = new Ban(rs.getString("name"), reason, rs.getLong("unbantime"), timeNow, rs.getLong("timeofban"), false);
-                    j2.kickbans.bans.add(ban);
+                    final Ban ban = new Ban(rs.getString("name"), reason, rs.getLong("unbantime"), timeNow, rs.getLong("timeofban"), false);
+                    this.j2.kickbans.bans.add(ban);
                     reason = "Banned: " + reason;
                 }
-            } catch (SQLException ex) {
-                j2.logWarn(ChatColor.RED + "Unable to load j2Bans. You're not going to like this.");
+            } catch (final SQLException ex) {
+                this.j2.logWarn(ChatColor.RED + "Unable to load j2Bans. You're not going to like this.");
             } finally {
                 try {
                     if (ps != null) {
@@ -366,7 +366,7 @@ public class MySQL {
                     if (conn != null) {
                         conn.close();
                     }
-                } catch (SQLException ex) {
+                } catch (final SQLException ex) {
                 }
             }
         }
@@ -384,22 +384,23 @@ public class MySQL {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String username = this.stringClean(playerName);
-        ArrayList<Ban> bans = new ArrayList<Ban>();
+        final String username = this.stringClean(playerName);
+        final ArrayList<Ban> bans = new ArrayList<Ban>();
         try {
-            conn = getConnection();
+            conn = this.getConnection();
             String notallbans = "";
-            if (!allbans)
+            if (!allbans) {
                 notallbans = " and unbanned=0";
-            String state = "SELECT name,reason,timeofban,unbantime,unbanned FROM j2bans WHERE name=\"" + username + "\"" + notallbans;
-            j2.debug("Query: " + state);
+            }
+            final String state = "SELECT name,reason,timeofban,unbantime,unbanned FROM j2bans WHERE name=\"" + username + "\"" + notallbans;
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             rs = ps.executeQuery();
             while (rs.next()) {
                 bans.add(new Ban(rs.getString("name"), rs.getString("reason"), rs.getLong("unbantime"), 0, rs.getLong("timeofban"), rs.getBoolean("unbanned")));
             }
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load j2Bans. You're not going to like this.");
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load j2Bans. You're not going to like this.");
         } finally {
             try {
                 if (ps != null) {
@@ -411,7 +412,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
         return bans;
@@ -425,20 +426,20 @@ public class MySQL {
     public void unban(String name) {
         Connection conn = null;
         PreparedStatement ps = null;
-        String clean_name = stringClean(name);
+        final String clean_name = this.stringClean(name);
         try {
-            conn = j2.mysql.getConnection();
+            conn = this.j2.mysql.getConnection();
 
-            for (Ban ban : j2.kickbans.bans) {
+            for (final Ban ban : this.j2.kickbans.bans) {
                 if (ban.getName().equalsIgnoreCase(clean_name)) {
                     ban.unBan();
                 }
             }
-            String state = "UPDATE j2bans SET unbanned=1 WHERE name=\"" + clean_name.toLowerCase() + "\"";
-            j2.debug("Query: " + state);
+            final String state = "UPDATE j2bans SET unbanned=1 WHERE name=\"" + clean_name.toLowerCase() + "\"";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             ps.executeUpdate();
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
 
         } finally {
             try {
@@ -448,7 +449,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
@@ -462,50 +463,50 @@ public class MySQL {
         ResultSet rs = null;
 
         try {
-            conn = getConnection();
-            HashMap<String, ArrayList<Flag>> groups = new HashMap<String, ArrayList<Flag>>();
-            String state = "SELECT name,flags FROM j2groups where server=" + serverNumber;
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final HashMap<String, ArrayList<Flag>> groups = new HashMap<String, ArrayList<Flag>>();
+            final String state = "SELECT name,flags FROM j2groups where server=" + this.serverNumber;
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             rs = ps.executeQuery();
             while (rs.next()) {
-                String name = rs.getString("name");
+                final String name = rs.getString("name");
 
-                String Flags = rs.getString("flags");
-                j2.debug("Group: " + name + " with flags " + Flags);
-                ArrayList<Flag> flags = new ArrayList<Flag>();
+                final String Flags = rs.getString("flags");
+                this.j2.debug("Group: " + name + " with flags " + Flags);
+                final ArrayList<Flag> flags = new ArrayList<Flag>();
                 for (int x = 0; x < Flags.length(); x++) {
                     flags.add(Flag.byChar(Flags.charAt(x)));
                 }
                 groups.put(name, flags);
             }
-            j2.debug("Loaded " + groups.size() + " groups");
-            j2.users.setGroups(groups);
+            this.j2.debug("Loaded " + groups.size() + " groups");
+            this.j2.users.setGroups(groups);
 
             // reports
-            String state2 = "SELECT id,user,x,y,z,pitch,yaw,message,world,time,closed from reports where server=" + serverNumber + " and closed=0";
+            final String state2 = "SELECT id,user,x,y,z,pitch,yaw,message,world,time,closed from reports where server=" + this.serverNumber + " and closed=0";
             ps = conn.prepareStatement(state2);
-            j2.debug("Query: " + state2);
+            this.j2.debug("Query: " + state2);
             rs = ps.executeQuery();
             while (rs.next()) {
-                String user = rs.getString("user");
-                Location loc = new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
-                j2.reports.addReportViaSQL(new Report(rs.getInt("id"), loc, user, rs.getString("message"), rs.getLong("time"), rs.getBoolean("closed")));
-                j2.debug("Adding new report to list, user " + user);
+                final String user = rs.getString("user");
+                final Location loc = new Location(this.j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
+                this.j2.reports.addReportViaSQL(new Report(rs.getInt("id"), loc, user, rs.getString("message"), rs.getLong("time"), rs.getBoolean("closed")));
+                this.j2.debug("Adding new report to list, user " + user);
             }
 
             // warps
 
-            String state3 = "SELECT * FROM warps where server=" + serverNumber + " and flag!=\"w\"";
-            j2.debug("Query: " + state3);
+            final String state3 = "SELECT * FROM warps where server=" + this.serverNumber + " and flag!=\"w\"";
+            this.j2.debug("Query: " + state3);
             ps = conn.prepareStatement(state3);
             rs = ps.executeQuery();
             int count = 0;
             while (rs.next()) {
-                j2.warps.addWarpInternal(new Warp(rs.getString("name"), rs.getString("player"), new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw")), Flag.byChar(rs.getString("flag").charAt(0))));
+                this.j2.warps.addWarpInternal(new Warp(rs.getString("name"), rs.getString("player"), new Location(this.j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw")), Flag.byChar(rs.getString("flag").charAt(0))));
                 count++;
             }
-            j2.debug("Loaded " + count + " warps");
+            this.j2.debug("Loaded " + count + " warps");
 
             // jailing
 
@@ -521,9 +522,9 @@ public class MySQL {
              * j2.users.jailSet(tempjail);
              */
 
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load base data from MySQL. Oh hell");
-            j2.maintenance = true;
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load base data from MySQL. Oh hell");
+            this.j2.maintenance = true;
         } finally {
             try {
                 if (ps != null) {
@@ -535,7 +536,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
@@ -550,13 +551,13 @@ public class MySQL {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = getConnection();
-            Location loc = report.getLocation();
-            long time = report.getTime();
+            conn = this.getConnection();
+            final Location loc = report.getLocation();
+            final long time = report.getTime();
             // String
             // state="INSERT INTO reports (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('?','?',?,?,?,?,?,?,'?',?)";
-            String state = "INSERT INTO `reports` (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('" + stringClean(report.getUser()) + "','" + stringClean(report.getMessage()) + "'," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getPitch() + "," + loc.getYaw() + "," + serverNumber + ",'" + loc.getWorld().getName() + "'," + time + ");";
-            j2.debug("Query: " + state);
+            final String state = "INSERT INTO `reports` (`user`,`message`,`x`,`y`,`z`,`pitch`,`yaw`,`server`,`world`,`time`) VALUES ('" + this.stringClean(report.getUser()) + "','" + this.stringClean(report.getMessage()) + "'," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getPitch() + "," + loc.getYaw() + "," + this.serverNumber + ",'" + loc.getWorld().getName() + "'," + time + ");";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             // j2.log.info(report.getUser());
             // String cleanUser=stringClean(report.getUser());
@@ -570,17 +571,17 @@ public class MySQL {
              * ps.setString(9, loc.getWorld().getName()); ps.setLong(10, time);
              */
             ps.executeUpdate();
-            String state2 = "SELECT id,user,x,y,z,pitch,yaw,message,world,time,closed from reports where server=" + serverNumber + " and closed=0 and id>" + j2.reports.maxid;
+            final String state2 = "SELECT id,user,x,y,z,pitch,yaw,message,world,time,closed from reports where server=" + this.serverNumber + " and closed=0 and id>" + this.j2.reports.maxid;
             ps = conn.prepareStatement(state2);
-            j2.debug("Query: " + state2);
+            this.j2.debug("Query: " + state2);
             rs = ps.executeQuery();
             while (rs.next()) {
-                String user = rs.getString("user");
-                Location loc2 = new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
-                j2.reports.addReportAndAlert(new Report(rs.getInt("id"), loc2, user, rs.getString("message"), rs.getLong("time"), rs.getBoolean("closed")));
-                j2.debug("Adding new report to list, user " + user);
+                final String user = rs.getString("user");
+                final Location loc2 = new Location(this.j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
+                this.j2.reports.addReportAndAlert(new Report(rs.getInt("id"), loc2, user, rs.getString("message"), rs.getLong("time"), rs.getBoolean("closed")));
+                this.j2.debug("Adding new report to list, user " + user);
             }
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
 
         } finally {
             try {
@@ -590,7 +591,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
@@ -606,16 +607,16 @@ public class MySQL {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = getConnection();
-            String state = "UPDATE reports SET closed=1,admin=?,reason=? where id=?";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "UPDATE reports SET closed=1,admin=?,reason=? where id=?";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             ps.setString(1, admin);
             ps.setString(2, reason);
             ps.setInt(3, id);
             ps.executeUpdate();
-            j2.debug("Report " + id + " closed by " + admin);
-        } catch (SQLException ex) {
+            this.j2.debug("Report " + id + " closed by " + admin);
+        } catch (final SQLException ex) {
 
         } finally {
             try {
@@ -625,7 +626,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
@@ -640,23 +641,23 @@ public class MySQL {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        ArrayList<Warp> homes = new ArrayList<Warp>();
+        final ArrayList<Warp> homes = new ArrayList<Warp>();
         try {
-            conn = getConnection();
-            String state = "SELECT * FROM warps where server=? and flag=? and player=?";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "SELECT * FROM warps where server=? and flag=? and player=?";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
-            ps.setInt(1, serverNumber);
+            ps.setInt(1, this.serverNumber);
             ps.setString(2, String.valueOf(Flag.PLAYER_HOME.getChar()));
             ps.setString(3, playername);
             rs = ps.executeQuery();
             while (rs.next()) {
-                homes.add(new Warp(rs.getString("name"), rs.getString("player"), new Location(j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw")), Flag.byChar(rs.getString("flag").charAt(0))));
+                homes.add(new Warp(rs.getString("name"), rs.getString("player"), new Location(this.j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw")), Flag.byChar(rs.getString("flag").charAt(0))));
             }
-            j2.debug("Loaded " + homes.size() + " warps");
+            this.j2.debug("Loaded " + homes.size() + " warps");
 
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load homes for " + playername + " from MySQL. Oh hell");
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load homes for " + playername + " from MySQL. Oh hell");
         } finally {
             try {
                 if (ps != null) {
@@ -668,7 +669,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
         return homes;
@@ -683,16 +684,16 @@ public class MySQL {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = getConnection();
-            String state = "DELETE FROM warps WHERE name=? and player=? and server=? and flag=?";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "DELETE FROM warps WHERE name=? and player=? and server=? and flag=?";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             ps.setString(1, warp.getName());
             ps.setString(2, warp.getPlayer());
-            ps.setInt(3, serverNumber);
+            ps.setInt(3, this.serverNumber);
             ps.setString(4, String.valueOf(warp.getFlag().getChar()));
             ps.executeUpdate();
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
 
         } finally {
             try {
@@ -702,7 +703,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
@@ -716,15 +717,15 @@ public class MySQL {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = getConnection();
-            String state = "INSERT INTO warps (name,player,server,flag,world,x,y,z,pitch,yaw) VALUES (?,?,?,?,?,?,?,?,?,?)";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "INSERT INTO warps (name,player,server,flag,world,x,y,z,pitch,yaw) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
-            ps.setString(1, stringClean(warp.getName()));
-            ps.setString(2, stringClean(warp.getPlayer()));
-            ps.setInt(3, serverNumber);
+            ps.setString(1, this.stringClean(warp.getName()));
+            ps.setString(2, this.stringClean(warp.getPlayer()));
+            ps.setInt(3, this.serverNumber);
             ps.setString(4, String.valueOf(warp.getFlag().getChar()));
-            Location loc = warp.getLocation();
+            final Location loc = warp.getLocation();
             ps.setString(5, loc.getWorld().getName());
             ps.setDouble(6, loc.getX());
             ps.setDouble(7, loc.getY());
@@ -732,7 +733,7 @@ public class MySQL {
             ps.setFloat(9, loc.getPitch());
             ps.setFloat(10, loc.getPitch());
             ps.executeUpdate();
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
 
         } finally {
             try {
@@ -742,7 +743,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
@@ -758,25 +759,25 @@ public class MySQL {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = getConnection();
+            conn = this.getConnection();
             // String ip=address.getAddress().getHostAddress();
-            String state = "SELECT * FROM " + aliasdb + " WHERE Name=\"" + name + "\" and IP=\"" + ip + "\"";
-            j2.debug("Query: " + state);
+            final String state = "SELECT * FROM " + this.aliasdb + " WHERE Name=\"" + name + "\" and IP=\"" + ip + "\"";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             rs = ps.executeQuery();
             if (rs.next()) {
                 int count = rs.getInt("Logins");
                 count++;
-                ps = conn.prepareStatement("UPDATE " + aliasdb + " set Logins=" + count + ",Time=now() where Name=\"" + name + "\" and IP=\"" + ip + "\"");
+                ps = conn.prepareStatement("UPDATE " + this.aliasdb + " set Logins=" + count + ",Time=now() where Name=\"" + name + "\" and IP=\"" + ip + "\"");
                 ps.executeUpdate();
             } else {
-                String state2 = "INSERT INTO " + aliasdb + " (`Name`,`IP`,`Time`,`Logins`) values (\"" + name + "\",\"" + ip + "\",now(),1)";
-                j2.debug("Query: " + state2);
+                final String state2 = "INSERT INTO " + this.aliasdb + " (`Name`,`IP`,`Time`,`Logins`) values (\"" + name + "\",\"" + ip + "\",now(),1)";
+                this.j2.debug("Query: " + state2);
                 ps = conn.prepareStatement(state2);
                 ps.executeUpdate();
             }
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
         } finally {
             try {
                 if (ps != null) {
@@ -788,7 +789,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
@@ -800,21 +801,21 @@ public class MySQL {
      * @return
      */
     public ArrayList<String> IPGetIPs(String name) {
-        ArrayList<String> IPs = new ArrayList<String>();
+        final ArrayList<String> IPs = new ArrayList<String>();
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = getConnection();
-            String state = "SELECT IP FROM " + aliasdb + " WHERE Name=\"" + name + "\"";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "SELECT IP FROM " + this.aliasdb + " WHERE Name=\"" + name + "\"";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             rs = ps.executeQuery();
             while (rs.next()) {
                 IPs.add(rs.getString("IP"));
             }
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
         } finally {
             try {
                 if (ps != null) {
@@ -826,7 +827,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
         return IPs;
@@ -839,21 +840,21 @@ public class MySQL {
      * @return
      */
     public ArrayList<String> IPGetNames(String IP) {
-        ArrayList<String> names = new ArrayList<String>();
+        final ArrayList<String> names = new ArrayList<String>();
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = getConnection();
-            String state = "SELECT Name FROM " + aliasdb + " WHERE IP=\"" + IP + "\"";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "SELECT Name FROM " + this.aliasdb + " WHERE IP=\"" + IP + "\"";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             rs = ps.executeQuery();
             while (rs.next()) {
                 names.add(rs.getString("Name"));
             }
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
         } finally {
             try {
                 if (ps != null) {
@@ -865,7 +866,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
         return names;
@@ -878,23 +879,23 @@ public class MySQL {
      * @return
      */
     public HashMap<String, Long> IPGetNamesOnIP(String IP) {
-        HashMap<String, Long> nameDates = new HashMap<String, Long>();
+        final HashMap<String, Long> nameDates = new HashMap<String, Long>();
 
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = getConnection();
-            String state = "SELECT `Name`, `Time` FROM " + aliasdb + " WHERE IP=\"" + IP + "\" ORDER BY `Time` DESC LIMIT 5";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "SELECT `Name`, `Time` FROM " + this.aliasdb + " WHERE IP=\"" + IP + "\" ORDER BY `Time` DESC LIMIT 5";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             rs = ps.executeQuery();
             while (rs.next()) {
                 nameDates.put(rs.getString("Name"), rs.getTimestamp("Time").getTime());
             }
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
-            j2.debug("Exception: " + ex.getMessage());
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
+            this.j2.debug("Exception: " + ex.getMessage());
         } finally {
             try {
                 if (ps != null) {
@@ -906,7 +907,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
         return nameDates;
@@ -925,16 +926,16 @@ public class MySQL {
         name = name.split(" ")[0];
         String result = "";
         try {
-            conn = getConnection();
-            String state = "SELECT IP FROM " + aliasdb + " WHERE Name='" + name + "' order by Time desc limit 1";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "SELECT IP FROM " + this.aliasdb + " WHERE Name='" + name + "' order by Time desc limit 1";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             rs = ps.executeQuery();
             if (rs.next()) {
                 result = rs.getString("IP");
             }
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
         } finally {
             try {
                 if (ps != null) {
@@ -946,7 +947,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
         return result;
@@ -958,24 +959,24 @@ public class MySQL {
      * @return
      */
     public HashMap<String, Flag> getPerms() {
-        HashMap<String, Flag> perms = new HashMap<String, Flag>();
+        final HashMap<String, Flag> perms = new HashMap<String, Flag>();
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = getConnection();
-            String state = "SELECT permission,flag FROM perms where server=?";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "SELECT permission,flag FROM perms where server=?";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
-            ps.setInt(1, serverNumber);
+            ps.setInt(1, this.serverNumber);
             rs = ps.executeQuery();
             while (rs.next()) {
                 perms.put(rs.getString("permission"), Flag.byChar(rs.getString("flag").charAt(0)));
             }
-            j2.debug("Loaded " + perms.size() + " permissions");
+            this.j2.debug("Loaded " + perms.size() + " permissions");
 
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load user/ip from MySQL. Oh hell");
         } finally {
             try {
                 if (ps != null) {
@@ -987,30 +988,30 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
         return perms;
     }
 
     public HashMap<String, String> getIRCAdmins() {
-        HashMap<String, String> admins = new HashMap<String, String>();
+        final HashMap<String, String> admins = new HashMap<String, String>();
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = getConnection();
-            String state = "SELECT name,hostname FROM j2users where hostname!=''";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "SELECT name,hostname FROM j2users where hostname!=''";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             rs = ps.executeQuery();
             while (rs.next()) {
                 admins.put(rs.getString("hostname"), rs.getString("name"));
             }
-            j2.debug("Loaded " + admins.size() + " irc admins");
+            this.j2.debug("Loaded " + admins.size() + " irc admins");
 
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load irc admins from MySQL. Oh hell");
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load irc admins from MySQL. Oh hell");
         } finally {
             try {
                 if (ps != null) {
@@ -1022,7 +1023,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
         return admins;
@@ -1032,17 +1033,17 @@ public class MySQL {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = getConnection();
-            String state = "INSERT INTO notes (`from`,`to`,`message`,`time`,`adminBusiness`) VALUES (?,?,?,?,?);";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "INSERT INTO notes (`from`,`to`,`message`,`time`,`adminBusiness`) VALUES (?,?,?,?,?);";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
-            ps.setString(1, stringClean(sender));
-            ps.setString(2, stringClean(recipient));
-            ps.setString(3, stringClean(message));
+            ps.setString(1, this.stringClean(sender));
+            ps.setString(2, this.stringClean(recipient));
+            ps.setString(3, this.stringClean(message));
             ps.setTimestamp(4, new Timestamp(new Date().getTime()));
             ps.setBoolean(5, adminBusiness);
             ps.executeUpdate();
-        } catch (SQLException ex) {
+        } catch (final SQLException ex) {
             this.j2.logWarn("Failure recording a note");
         } finally {
             try {
@@ -1052,31 +1053,31 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
     }
 
     public ArrayList<Note> getNotes(String name) {
-        ArrayList<Note> notes = new ArrayList<Note>();
+        final ArrayList<Note> notes = new ArrayList<Note>();
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = getConnection();
-            String state = "SELECT * FROM notes where received=0 and `to`=\"" + name + "\"";
-            j2.debug("Query: " + state);
+            conn = this.getConnection();
+            final String state = "SELECT * FROM notes where received=0 and `to`=\"" + name + "\"";
+            this.j2.debug("Query: " + state);
             ps = conn.prepareStatement(state);
             rs = ps.executeQuery();
             while (rs.next()) {
                 notes.add(new Note(rs.getString("from"), rs.getString("message"), new Date(rs.getTimestamp("time").getTime()), rs.getBoolean("adminBusiness")));
             }
-            j2.debug("Loaded " + notes.size() + " notes");
+            this.j2.debug("Loaded " + notes.size() + " notes");
             ps = conn.prepareStatement("UPDATE notes SET received=1 where `to`=\"" + name + "\"");
             ps.executeUpdate();
-        } catch (SQLException ex) {
-            j2.logWarn(ChatColor.RED + "Unable to load user notes from MySQL. Oh hell");
-            j2.debug(ex.getMessage());
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Unable to load user notes from MySQL. Oh hell");
+            this.j2.debug(ex.getMessage());
         } finally {
             try {
                 if (ps != null) {
@@ -1088,7 +1089,7 @@ public class MySQL {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException ex) {
+            } catch (final SQLException ex) {
             }
         }
         return notes;

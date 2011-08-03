@@ -2,8 +2,8 @@ package to.joe.util.BanCooperative;
 
 public abstract class BanCoopBan {
 
-    private String reason;
-    private String server;
+    private final String reason;
+    private final String server;
 
     public BanCoopBan(String server, String reason) {
         this.server = server;
@@ -18,6 +18,7 @@ public abstract class BanCoopBan {
         return this.server;
     }
 
+    @Override
     public abstract String toString();
 
 }

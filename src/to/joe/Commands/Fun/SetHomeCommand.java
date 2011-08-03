@@ -21,7 +21,7 @@ public class SetHomeCommand extends MasterCommand {
             if (args.length == 0) {
                 player.sendMessage(ChatColor.RED + "Usage: /sethome name");
             } else {
-                Warp newWarp = new Warp(args[0], player.getName(), player.getLocation(), Flag.PLAYER_HOME);
+                final Warp newWarp = new Warp(args[0], player.getName(), player.getLocation(), Flag.PLAYER_HOME);
                 this.j2.warps.addWarp(newWarp);
                 player.sendMessage(ChatColor.RED + "Home created");
             }

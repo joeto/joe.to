@@ -24,9 +24,9 @@ public class MuteCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "Requires a name. /mute name");
                 return;
             }
-            String targetString = args[0];
-            List<Player> matches = this.j2.getServer().matchPlayer(targetString);
-            if (matches == null || matches.size() == 0) {
+            final String targetString = args[0];
+            final List<Player> matches = this.j2.getServer().matchPlayer(targetString);
+            if ((matches == null) || (matches.size() == 0)) {
                 sender.sendMessage(ChatColor.RED + "No matches for " + targetString);
                 return;
             }
@@ -34,9 +34,9 @@ public class MuteCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + String.valueOf(matches.size()) + " matches for " + targetString);
                 return;
             }
-            Player target = matches.get(0);
-            String targetName = target.getName();
-            boolean muted = this.j2.hasFlag(targetName, Flag.MUTED);
+            final Player target = matches.get(0);
+            final String targetName = target.getName();
+            final boolean muted = this.j2.hasFlag(targetName, Flag.MUTED);
             if (muted) {
                 messageBit = "un";
                 this.j2.users.dropFlagLocal(targetName, Flag.MUTED);

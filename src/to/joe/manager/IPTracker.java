@@ -15,7 +15,7 @@ import to.joe.util.Flag;
  * 
  */
 public class IPTracker {
-    private J2 j2;
+    private final J2 j2;
     private HashMap<String, String> html, nameslist;
     private HashMap<String, Integer> totalcount, bannedcount;
     public ArrayList<String> badlist;
@@ -43,28 +43,28 @@ public class IPTracker {
      * @param IP
      */
     public void incoming(String name, String IP) {
-        j2.debug("Checking " + name);
-        j2.mysql.userIP(name, IP);
+        this.j2.debug("Checking " + name);
+        this.j2.mysql.userIP(name, IP);
         HashMap<String, Boolean> names = new HashMap<String, Boolean>();
         HashMap<String, Boolean> ips = new HashMap<String, Boolean>();
         names.put(name, false);
-        ips = getIPs(names, ips);
-        names = getNames(names, ips);
-        ips = getIPs(names, ips);
-        names = getNames(names, ips);
-        ips = getIPs(names, ips);
-        names = getNames(names, ips);
-        ips = getIPs(names, ips);
-        names = getNames(names, ips);
-        html.remove(name);
-        totalcount.remove(name);
-        bannedcount.remove(name);
+        ips = this.getIPs(names, ips);
+        names = this.getNames(names, ips);
+        ips = this.getIPs(names, ips);
+        names = this.getNames(names, ips);
+        ips = this.getIPs(names, ips);
+        names = this.getNames(names, ips);
+        ips = this.getIPs(names, ips);
+        names = this.getNames(names, ips);
+        this.html.remove(name);
+        this.totalcount.remove(name);
+        this.bannedcount.remove(name);
         if (names.size() > 1) {
             String nameslist_s = "";
             int ohnoes = 0;
-            for (String n : names.keySet()) {
+            for (final String n : names.keySet()) {
                 if (!n.equalsIgnoreCase(name)) {
-                    if (j2.mysql.checkBans(n) == null) {
+                    if (this.j2.mysql.checkBans(n) == null) {
                         nameslist_s += n + " ";
                     } else {
                         nameslist_s += "<span style='color:red'>" + n + "</span> ";
@@ -72,17 +72,17 @@ public class IPTracker {
                     }
                 }
             }
-            String newknown = "<tr><td><a href='../alias/detector.php?name=" + name + "'>" + name + "</a></td><td>" + nameslist_s + "</td></tr>";
-            html.put(name, newknown);
+            final String newknown = "<tr><td><a href='../alias/detector.php?name=" + name + "'>" + name + "</a></td><td>" + nameslist_s + "</td></tr>";
+            this.html.put(name, newknown);
             this.nameslist.put(name, nameslist_s);
-            totalcount.put(name, names.size());
-            bannedcount.put(name, ohnoes);
+            this.totalcount.put(name, names.size());
+            this.bannedcount.put(name, ohnoes);
             if (ohnoes > 0) {
-                badlist.add(name);
+                this.badlist.add(name);
             }
-            j2.debug("Adding to list");
+            this.j2.debug("Adding to list");
         } else {
-            j2.debug("Not enough to add");
+            this.j2.debug("Not enough to add");
         }
     }
 
@@ -94,15 +94,15 @@ public class IPTracker {
      * @return
      */
     public HashMap<String, Boolean> getIPs(HashMap<String, Boolean> names, HashMap<String, Boolean> ips) {
-        Set<String> keyset = names.keySet();
-        ArrayList<String> newips = new ArrayList<String>();
-        ArrayList<String> searched = new ArrayList<String>();
-        for (String key : keyset) {
+        final Set<String> keyset = names.keySet();
+        final ArrayList<String> newips = new ArrayList<String>();
+        final ArrayList<String> searched = new ArrayList<String>();
+        for (final String key : keyset) {
             if (!names.get(key)) {
                 searched.add(key);
                 // System.out.println("Searching "+key);
-                ArrayList<String> tempips = j2.mysql.IPGetIPs(key);
-                for (String i : tempips) {
+                final ArrayList<String> tempips = this.j2.mysql.IPGetIPs(key);
+                for (final String i : tempips) {
                     if (!i.equals("") && !newips.contains(i) && !keyset.contains(i)) {
                         newips.add(i);
                         // System.out.println("Found: "+i);
@@ -110,12 +110,12 @@ public class IPTracker {
                 }
             }
         }
-        for (String s : searched) {
+        for (final String s : searched) {
             ips.remove(s);
             ips.put(s, true);
         }
-        for (String ip : newips) {
-            j2.debug("Found IP: " + ip);
+        for (final String ip : newips) {
+            this.j2.debug("Found IP: " + ip);
             ips.put(ip, false);
         }
         return ips;
@@ -129,15 +129,15 @@ public class IPTracker {
      * @return
      */
     public HashMap<String, Boolean> getNames(HashMap<String, Boolean> names, HashMap<String, Boolean> ips) {
-        Set<String> keyset = ips.keySet();
-        ArrayList<String> newnames = new ArrayList<String>();
-        ArrayList<String> searched = new ArrayList<String>();
-        for (String key : keyset) {
+        final Set<String> keyset = ips.keySet();
+        final ArrayList<String> newnames = new ArrayList<String>();
+        final ArrayList<String> searched = new ArrayList<String>();
+        for (final String key : keyset) {
             if (!ips.get(key)) {
                 searched.add(key);
                 // System.out.println("Searching "+key);
-                ArrayList<String> tempnames = j2.mysql.IPGetNames(key);
-                for (String i : tempnames) {
+                final ArrayList<String> tempnames = this.j2.mysql.IPGetNames(key);
+                for (final String i : tempnames) {
                     if (!i.equals("") && !newnames.contains(i) && !keyset.contains(i)) {
                         newnames.add(i);
                         // System.out.println("Found: "+i);
@@ -145,12 +145,12 @@ public class IPTracker {
                 }
             }
         }
-        for (String s : searched) {
+        for (final String s : searched) {
             ips.remove(s);
             ips.put(s, true);
         }
-        for (String name : newnames) {
-            j2.debug("Found Name: " + name);
+        for (final String name : newnames) {
+            this.j2.debug("Found Name: " + name);
             names.put(name, false);
         }
         return names;
@@ -163,8 +163,8 @@ public class IPTracker {
      * @return
      */
     public String getKnown(String name) {
-        if (html.containsKey(name)) {
-            return html.get(name);
+        if (this.html.containsKey(name)) {
+            return this.html.get(name);
         }
         return "";
     }
@@ -176,8 +176,8 @@ public class IPTracker {
      * @return
      */
     public int getTotal(String name) {
-        if (totalcount.containsKey(name)) {
-            return totalcount.get(name);
+        if (this.totalcount.containsKey(name)) {
+            return this.totalcount.get(name);
         }
         return 0;
     }
@@ -189,8 +189,8 @@ public class IPTracker {
      * @return
      */
     public int getBanned(String name) {
-        if (bannedcount.containsKey(name)) {
-            return bannedcount.get(name);
+        if (this.bannedcount.containsKey(name)) {
+            return this.bannedcount.get(name);
         }
         return 0;
     }
@@ -202,13 +202,13 @@ public class IPTracker {
      * @param name
      */
     public void processJoin(String name) {
-        if (badlist.contains(name)) {
-            int total = this.getTotal(name) - 1;
-            int banned = this.getBanned(name);
-            if (!j2.hasFlag(name, Flag.QUIETERJOIN_NOIRC)) {
-                j2.irc.messageAdmins("[J2BANS] " + name + " matches " + total + " others: " + banned + " banned");
+        if (this.badlist.contains(name)) {
+            final int total = this.getTotal(name) - 1;
+            final int banned = this.getBanned(name);
+            if (!this.j2.hasFlag(name, Flag.QUIETERJOIN_NOIRC)) {
+                this.j2.irc.messageAdmins("[J2BANS] " + name + " matches " + total + " others: " + banned + " banned");
             }
-            j2.chat.messageByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE + "[J2BANS] " + ChatColor.WHITE + name + ChatColor.LIGHT_PURPLE + " matches " + total + " others: " + banned + " banned");
+            this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE + "[J2BANS] " + ChatColor.WHITE + name + ChatColor.LIGHT_PURPLE + " matches " + total + " others: " + banned + " banned");
         }
     }
 }

@@ -21,7 +21,7 @@ public class SayCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "Dude, you gotta /say SOMETHING");
                 return;
             }
-            String message = ChatColor.LIGHT_PURPLE + "[SERVER] " + this.j2.combineSplit(0, args, " ");
+            final String message = ChatColor.LIGHT_PURPLE + "[SERVER] " + this.j2.combineSplit(0, args, " ");
             this.j2.log(message);
             this.j2.chat.messageAll(message);
         }

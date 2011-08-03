@@ -21,8 +21,8 @@ public class HarassCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.AQUA + "Missing a name!");
                 return;
             }
-            Player target = this.j2.getServer().getPlayer(args[0]);
-            if (target == null || !target.isOnline()) {
+            final Player target = this.j2.getServer().getPlayer(args[0]);
+            if ((target == null) || !target.isOnline()) {
                 sender.sendMessage(ChatColor.AQUA + "Fail. No such user \"" + args[0] + "\"");
                 return;
             }

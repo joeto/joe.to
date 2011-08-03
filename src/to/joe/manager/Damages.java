@@ -44,7 +44,7 @@ public class Damages {
      * @param name
      */
     public void processJoin(String name) {
-        if (j2.safemode) {
+        if (this.j2.safemode) {
             this.protect(name);
         }
     }
@@ -124,28 +124,29 @@ public class Damages {
      * @return
      */
     public boolean woof(String target) {
-        List<Player> list = j2.getServer().matchPlayer(target);
-        if (list.size() != 1)
+        final List<Player> list = this.j2.getServer().matchPlayer(target);
+        if (list.size() != 1) {
             return false;
-        Player player = list.get(0);
+        }
+        final Player player = list.get(0);
         this.danger(player.getName());
-        ArrayList<Wolf> wlist = new ArrayList<Wolf>();
-        boolean hated = j2.ihatewolves;
-        PlayerInventory i = player.getInventory();
+        final ArrayList<Wolf> wlist = new ArrayList<Wolf>();
+        final boolean hated = this.j2.ihatewolves;
+        final PlayerInventory i = player.getInventory();
         i.clear();
         i.setBoots(null);
         i.setChestplate(null);
         i.setHelmet(null);
         i.setLeggings(null);
-        j2.ihatewolves = false;
+        this.j2.ihatewolves = false;
         for (int x = 0; x < 10; x++) {
-            Wolf bob = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
+            final Wolf bob = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
             wlist.add(bob);
             bob.setAngry(true);
             bob.setTarget(player);
         }
-        j2.ihatewolves = hated;
-        allWolf.put(player.getName(), wlist);
+        this.j2.ihatewolves = hated;
+        this.allWolf.put(player.getName(), wlist);
         return true;
     }
 
@@ -155,12 +156,12 @@ public class Damages {
      * @param target
      */
     public void arf(String target) {
-        if (allWolf.containsKey(target)) {
-            for (Wolf i : allWolf.get(target)) {
+        if (this.allWolf.containsKey(target)) {
+            for (final Wolf i : this.allWolf.get(target)) {
                 i.damage(100);
             }
-            allWolf.remove(target);
-            if (j2.safemode) {
+            this.allWolf.remove(target);
+            if (this.j2.safemode) {
                 this.protect(target);
             }
         }
@@ -177,35 +178,35 @@ public class Damages {
      * @param name
      */
     public void addToTimer(String name) {
-        synchronized (sync) {
-            timer1.add(name);
+        synchronized (this.sync) {
+            this.timer1.add(name);
         }
     }
 
     private void startDamageTimer() {
-        stop = false;
+        this.stop = false;
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (stop) {
+                if (Damages.this.stop) {
                     timer.cancel();
                     return;
                 }
-                update();
+                Damages.this.update();
             }
         }, 1000, 1000);
     }
 
     private void update() {
-        synchronized (sync) {
-            for (String n : timer2) {
+        synchronized (this.sync) {
+            for (final String n : this.timer2) {
                 this.processJoin(n);
             }
-            timer2 = new ArrayList<String>(timer1);
-            timer1 = new ArrayList<String>();
+            this.timer2 = new ArrayList<String>(this.timer1);
+            this.timer1 = new ArrayList<String>();
         }
     }
 
-    private Object sync = new Object();
+    private final Object sync = new Object();
 }

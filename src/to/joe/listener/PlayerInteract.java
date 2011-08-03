@@ -2,17 +2,14 @@ package to.joe.listener;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
-//import org.bukkit.Location;
 import org.bukkit.Material;
-//import org.bukkit.World;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
-import org.bukkit.event.player.PlayerListener;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.ItemStack;
-//import org.bukkit.inventory.ItemStack;
 
 import to.joe.J2;
 import to.joe.util.Flag;
@@ -21,69 +18,70 @@ public class PlayerInteract extends PlayerListener {
     private final J2 j2;
 
     public PlayerInteract(J2 instance) {
-        j2 = instance;
+        this.j2 = instance;
     }
 
     @Override
     public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        Material material = event.getMaterial();
-        if (j2.jail.processAction(player)) {
+        final Player player = event.getPlayer();
+        final Material material = event.getMaterial();
+        if (this.j2.jail.processAction(player)) {
             event.setCancelled(true);
             return;
         }
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-            int type = material.getId();
+            final int type = material.getId();
             if (type == 0) {
                 return;
             }
-            if (!j2.hasFlag(player, Flag.MODWORLD)) {
+            if (!this.j2.hasFlag(player, Flag.MODWORLD)) {
                 player.sendMessage("You don't have permission to do that");
                 event.setCancelled(true);
                 return;
             }
-            if (j2.hasFlag(player, Flag.TRUSTED) && !j2.hasFlag(player, Flag.ADMIN) && j2.isOnSuperBlacklist(type)) {
+            if (this.j2.hasFlag(player, Flag.TRUSTED) && !this.j2.hasFlag(player, Flag.ADMIN) && this.j2.isOnSuperBlacklist(type)) {
                 player.sendMessage(ChatColor.RED + "Even trusted have limits. Can't do that.");
                 event.setCancelled(true);
                 return;
             }
-            if (!j2.hasFlag(player, Flag.TRUSTED) && (j2.isOnRegularBlacklist(type) || j2.isOnSuperBlacklist(type))) {
+            if (!this.j2.hasFlag(player, Flag.TRUSTED) && (this.j2.isOnRegularBlacklist(type) || this.j2.isOnSuperBlacklist(type))) {
                 player.sendMessage(ChatColor.RED + "You need to be trusted or higher to do that.");
                 player.sendMessage(ChatColor.RED + "To find out how to get trusted, say " + ChatColor.AQUA + "/trust");
                 event.setCancelled(true);
                 return;
             }
         }
-        if (material.equals(Material.STICK) && j2.hasFlag(player, Flag.TOOLS)) {
+        if (material.equals(Material.STICK) && this.j2.hasFlag(player, Flag.TOOLS)) {
             if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                j2.debug(player.getName() + " used a stick");
+                this.j2.debug(player.getName() + " used a stick");
                 event.setCancelled(true);
                 // managerBlockLog.bqueue.offer(new
                 // BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ(),(System.currentTimeMillis()/1000L),null));
                 event.getClickedBlock().setTypeId(0);
             }
         }
-        if (material.equals(Material.SLIME_BALL) && j2.hasFlag(player, Flag.TOOLS)) {
+        if (material.equals(Material.SLIME_BALL) && this.j2.hasFlag(player, Flag.TOOLS)) {
             if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                Block b = event.getClickedBlock();
+                final Block b = event.getClickedBlock();
                 event.getPlayer().sendMessage("Boom");
-                int x = b.getX();
-                int z = b.getZ();
+                final int x = b.getX();
+                final int z = b.getZ();
                 int y = b.getY();
-                j2.log("1X1 by " + player.getName() + " at " + x + " " + y + " " + z);
+                this.j2.log("1X1 by " + player.getName() + " at " + x + " " + y + " " + z);
                 while (y < 128) {
                     b.getWorld().getBlockAt(x, y, z).setTypeId(0);
                     y++;
                 }
             }
             if ((event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
-                Block targetb = player.getTargetBlock(null, 50);
+                final Block targetb = player.getTargetBlock(null, 50);
                 if (targetb != null) {
                     event.getPlayer().sendMessage("bloop!");
-                    World world = targetb.getWorld();
-                    Location location = targetb.getLocation();
-                    for (int x = 0; x < 5; x++)
+                    final World world = targetb.getWorld();
+                    final Location location = targetb.getLocation();
+                    for (int x = 0; x < 5; x++) {
                         world.dropItemNaturally(location, new ItemStack(Material.SLIME_BALL, 1));
+                    }
                 }
             }
         }
@@ -97,14 +95,14 @@ public class PlayerInteract extends PlayerListener {
          * for(int x=0;x<5;x++) world.dropItemNaturally(location, new
          * ItemStack(Material.PORK,1)); } }
          */
-        if (j2.hasFlag(player, Flag.THOR) && event.hasItem() && material.equals(Material.IRON_SWORD)) {
-            boolean weather = player.getWorld().isThundering();
+        if (this.j2.hasFlag(player, Flag.THOR) && event.hasItem() && material.equals(Material.IRON_SWORD)) {
+            final boolean weather = player.getWorld().isThundering();
             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 player.getWorld().strikeLightning(event.getClickedBlock().getLocation());
                 player.getWorld().setStorm(weather);
             }
             if (event.getAction().equals(Action.LEFT_CLICK_AIR)) {
-                Block target = player.getTargetBlock(null, 50);
+                final Block target = player.getTargetBlock(null, 50);
                 if (target != null) {
                     player.getWorld().strikeLightning(target.getLocation());
                     player.getWorld().setStorm(weather);

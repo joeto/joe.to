@@ -25,8 +25,8 @@ public class HomeInvasionCommand extends MasterCommand {
                 player.sendMessage(ChatColor.RED + "      to visit a specific home");
             }
             if (args.length == 1) {
-                String target = args[0];
-                boolean isOnline = this.j2.users.isOnline(target);
+                final String target = args[0];
+                final boolean isOnline = this.j2.users.isOnline(target);
                 if (!isOnline) {
                     this.j2.warps.loadPlayer(target);
                 }
@@ -36,12 +36,12 @@ public class HomeInvasionCommand extends MasterCommand {
                 }
             }
             if (args.length == 2) {
-                String target = args[0];
-                boolean isOnline = this.j2.users.isOnline(target);
+                final String target = args[0];
+                final boolean isOnline = this.j2.users.isOnline(target);
                 if (!isOnline) {
                     this.j2.warps.loadPlayer(target);
                 }
-                Warp warptarget = this.j2.warps.getUserWarp(target, args[1]);
+                final Warp warptarget = this.j2.warps.getUserWarp(target, args[1]);
                 if (warptarget != null) {
                     player.sendMessage(ChatColor.RED + "Whooooosh!  *crash*");
                     this.j2.safePort(player, warptarget.getLocation());

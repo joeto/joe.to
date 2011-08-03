@@ -15,7 +15,7 @@ public class RulesCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer) {
-            for (String line : this.j2.rules) {
+            for (final String line : this.j2.rules) {
                 player.sendMessage(line);
             }
         }

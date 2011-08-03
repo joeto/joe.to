@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import to.joe.J2;
-import to.joe.Commands.MasterCommand;
 import to.joe.util.Flag;
 
 public class FlexCommand extends MasterCommand {
@@ -36,10 +35,11 @@ public class FlexCommand extends MasterCommand {
                     break;
             }
             if (playerName.equalsIgnoreCase("MrBlip") && this.j2.random.nextBoolean()) {
-                if (this.j2.random.nextBoolean())
+                if (this.j2.random.nextBoolean()) {
                     message = ChatColor.GOLD + "MrBlip shows off his chin";
-                else
+                } else {
                     message = ChatColor.GOLD + "MrBlip shows off his hat";
+                }
             }
             this.j2.chat.messageAll(message);
             this.j2.log(ChatColor.GOLD + playerName + " flexed.");

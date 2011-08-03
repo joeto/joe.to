@@ -21,7 +21,7 @@ public class UnBanCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "Usage: /unban playername");
                 return;
             }
-            String name = args[0];
+            final String name = args[0];
             this.j2.kickbans.unban(playerName, name);
         }
     }

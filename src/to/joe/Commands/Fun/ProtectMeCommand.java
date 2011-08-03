@@ -17,12 +17,12 @@ public class ProtectMeCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer && this.j2.hasFlag(playerName, Flag.TRUSTED)) {
-            String playersName = player.getName().toLowerCase();
-            if (j2.tpProtect.getBoolean(playersName, false)) {
-                j2.tpProtect.setBoolean(playersName, false);
+            final String playersName = player.getName().toLowerCase();
+            if (this.j2.tpProtect.getBoolean(playersName, false)) {
+                this.j2.tpProtect.setBoolean(playersName, false);
                 player.sendMessage(ChatColor.RED + "You are now no longer protected from teleportation");
             } else {
-                j2.tpProtect.setBoolean(playersName, true);
+                this.j2.tpProtect.setBoolean(playersName, true);
                 player.sendMessage(ChatColor.RED + "You are protected from teleportation");
             }
         }

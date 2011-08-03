@@ -19,19 +19,19 @@ public class Reports {
      * current highest report id
      */
     public int maxid;
-    private Object sync = new Object();
+    private final Object sync = new Object();
 
     public Reports(J2 j2) {
         this.j2 = j2;
         this.restartManager();
-        maxid = -1;
+        this.maxid = -1;
     }
 
     /**
      * Reset manager
      */
     public void restartManager() {
-        synchronized (sync) {
+        synchronized (this.sync) {
             this.reports = new ArrayList<Report>();
         }
     }
@@ -51,7 +51,7 @@ public class Reports {
      * @param report
      */
     public void addReportAndAlert(Report report) {
-        this.j2.irc.messageAdmins(ChatColor.stripColor(addReportViaSQL(report)));
+        this.j2.irc.messageAdmins(ChatColor.stripColor(this.addReportViaSQL(report)));
     }
 
     /**
@@ -62,17 +62,17 @@ public class Reports {
      */
     public String addReportViaSQL(Report report) {
         this.reports.add(report);
-        if (report.getID() > maxid) {
-            maxid = report.getID();
+        if (report.getID() > this.maxid) {
+            this.maxid = report.getID();
         }
-        Location location = report.getLocation();
-        String pc = ChatColor.DARK_PURPLE.toString();
-        String gc = ChatColor.GOLD.toString();
-        String wc = ChatColor.WHITE.toString();
-        String x = gc + location.getBlockX() + pc + ",";
-        String y = gc + location.getBlockY() + pc + ",";
-        String z = gc + location.getBlockZ() + pc;
-        String message = pc + "[" + wc + "NEW REPORT" + pc + "][" + report.getID() + "][" + x + y + z + "]<" + gc + report.getUser() + pc + "> " + wc + report.getMessage();
+        final Location location = report.getLocation();
+        final String pc = ChatColor.DARK_PURPLE.toString();
+        final String gc = ChatColor.GOLD.toString();
+        final String wc = ChatColor.WHITE.toString();
+        final String x = gc + location.getBlockX() + pc + ",";
+        final String y = gc + location.getBlockY() + pc + ",";
+        final String z = gc + location.getBlockZ() + pc;
+        final String message = pc + "[" + wc + "NEW REPORT" + pc + "][" + report.getID() + "][" + x + y + z + "]<" + gc + report.getUser() + pc + "> " + wc + report.getMessage();
         this.j2.sendAdminPlusLog(message);
         return message;
     }
@@ -85,12 +85,12 @@ public class Reports {
      * @param reason
      */
     public void close(int id, String admin, String reason) {
-        synchronized (sync) {
-            Report r = getReport(id);
+        synchronized (this.sync) {
+            final Report r = this.getReport(id);
             if (r != null) {
                 this.j2.debug("Closing report " + id);
                 this.j2.mysql.closeReport(id, admin, reason);
-                reports.remove(r);
+                this.reports.remove(r);
             }
         }
     }
@@ -102,8 +102,8 @@ public class Reports {
      * @return
      */
     public Report getReport(int id) {
-        synchronized (sync) {
-            for (Report r : this.reports) {
+        synchronized (this.sync) {
+            for (final Report r : this.reports) {
                 if (r.getID() == id) {
                     return r;
                 }
@@ -118,8 +118,8 @@ public class Reports {
      * @return
      */
     public int numReports() {
-        synchronized (sync) {
-            int answer = this.reports.size();
+        synchronized (this.sync) {
+            final int answer = this.reports.size();
             this.j2.debug("Reporting " + answer + " reports");
             return answer;
         }

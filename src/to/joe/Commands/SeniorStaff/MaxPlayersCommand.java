@@ -16,11 +16,11 @@ public class MaxPlayersCommand extends MasterCommand {
 
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
-        if (!isPlayer || this.j2.hasFlag(player, Flag.SRSTAFF) && args.length > 0) {
+        if (!isPlayer || (this.j2.hasFlag(player, Flag.SRSTAFF) && (args.length > 0))) {
             int newCount;
             try {
                 newCount = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 newCount = this.j2.playerLimit;
             }
             this.j2.playerLimit = newCount;

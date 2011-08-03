@@ -7,22 +7,24 @@ package to.joe.util;
  */
 
 public class Ban {
-    private String name, reason;
+    private final String name;
+    private String reason;
     private boolean unbanned, temp;
-    private long timeOfUnban, timeLoaded, timeOfBan;
+    private final long timeOfUnban, timeLoaded, timeOfBan;
 
     public Ban(String name, String reason, long timeOfUnban, long timeLoaded, long timeOfBan, boolean unbanned) {
         this.name = name;
         this.reason = reason;
-        if (this.reason == null || this.reason == "") {
+        if ((this.reason == null) || (this.reason == "")) {
             this.reason = "Banned";
         }
         this.timeOfUnban = timeOfUnban;
         this.unbanned = unbanned;
-        if (timeOfUnban == 0)
+        if (timeOfUnban == 0) {
             this.temp = false;
-        else
+        } else {
             this.temp = true;
+        }
         this.timeLoaded = timeLoaded;
         this.timeOfBan = timeOfBan;
     }
@@ -31,55 +33,55 @@ public class Ban {
      * @return Name of banned player
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
      * @return Reason for this ban
      */
     public String getReason() {
-        return reason;
+        return this.reason;
     }
 
     /**
      * @return time when the user will be unbanned.
      */
     public long getTimeOfUnban() {
-        return timeOfUnban;
+        return this.timeOfUnban;
     }
 
     /**
      * @return time the user was banned
      */
     public long getTimeOfBan() {
-        return timeOfBan;
+        return this.timeOfBan;
     }
 
     /**
      * @return when the ban was loaded into the system
      */
     public long getTimeLoaded() {
-        return timeLoaded;
+        return this.timeLoaded;
     }
 
     /**
      * @return if this is a temp ban
      */
     public boolean isTemp() {
-        return temp;
+        return this.temp;
     }
 
     /**
      * @return is this still a ban?
      */
     public boolean isBanned() {
-        return !unbanned;
+        return !this.unbanned;
     }
 
     /**
      * Unban!
      */
     public void unBan() {
-        unbanned = true;
+        this.unbanned = true;
     }
 }

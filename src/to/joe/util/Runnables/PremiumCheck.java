@@ -11,8 +11,8 @@ import to.joe.J2;
 
 public class PremiumCheck implements Runnable {
 
-    private String username;
-    private J2 j2;
+    private final String username;
+    private final J2 j2;
 
     public PremiumCheck(String username, J2 j2) {
         this.username = username;
@@ -22,8 +22,8 @@ public class PremiumCheck implements Runnable {
     @Override
     public void run() {
         try {
-            URL url = new URL("http://www.minecraft.net/haspaid.jsp?user=" + this.username);
-            URLConnection connection = url.openConnection();
+            final URL url = new URL("http://www.minecraft.net/haspaid.jsp?user=" + this.username);
+            final URLConnection connection = url.openConnection();
             connection.setDoOutput(true);
             connection.setConnectTimeout(8000);
             connection.setReadTimeout(15000);
@@ -32,8 +32,8 @@ public class PremiumCheck implements Runnable {
             // OutputStreamWriter(connection.getOutputStream());
             // writer.write(POSTstring);
             // writer.flush();
-            StringBuilder stringBuilder = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            final StringBuilder stringBuilder = new StringBuilder();
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
@@ -41,7 +41,7 @@ public class PremiumCheck implements Runnable {
             // writer.close();
             reader.close();
             accountStatus status = accountStatus.WTF;
-            String result = stringBuilder.toString();
+            final String result = stringBuilder.toString();
             if (result.contains("true")) {
                 status = accountStatus.PREMIUM;
             }
@@ -70,7 +70,7 @@ public class PremiumCheck implements Runnable {
             } else {
                 this.j2.log(message);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
 
         }
     }

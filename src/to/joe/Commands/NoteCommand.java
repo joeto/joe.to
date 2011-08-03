@@ -28,13 +28,13 @@ public class NoteCommand extends MasterCommand {
                     adminMode = true;
                 }
             }
-            String targetName = args[0];
-            String message = this.j2.combineSplit(1, args, " ");
-            List<Player> match = this.j2.getServer().matchPlayer(targetName);
+            final String targetName = args[0];
+            final String message = this.j2.combineSplit(1, args, " ");
+            final List<Player> match = this.j2.getServer().matchPlayer(targetName);
             Player targetPlayer = null;
             if (match.size() > 0) {
-                for (Player p : match) {
-                    if (p != null && p.isOnline() && p.getName().toLowerCase().equals(targetName.toLowerCase())) {
+                for (final Player p : match) {
+                    if ((p != null) && p.isOnline() && p.getName().toLowerCase().equals(targetName.toLowerCase())) {
                         targetPlayer = p;
                     }
                 }
@@ -42,8 +42,8 @@ public class NoteCommand extends MasterCommand {
             if (this.j2.minitrue.invisible(targetPlayer) && !this.j2.hasFlag(player, Flag.ADMIN)) {
                 targetPlayer = null;
             }
-            String a = ChatColor.AQUA.toString();
-            String da = ChatColor.DARK_AQUA.toString();
+            final String a = ChatColor.AQUA.toString();
+            final String da = ChatColor.DARK_AQUA.toString();
             if (targetPlayer != null) {
                 if (adminMode) {
                     targetPlayer.sendMessage(a + "HEY " + ChatColor.RED + targetPlayer.getName() + a + ": " + message);
@@ -54,7 +54,7 @@ public class NoteCommand extends MasterCommand {
             } else {
                 this.j2.mysql.addNote(playerName, targetName, message, adminMode);
                 player.sendMessage(ChatColor.AQUA + "Note left for " + args[0]);
-                String bit = a + "Note <" + da + playerName + a + "->" + da + targetName + a + "> " + message;
+                final String bit = a + "Note <" + da + playerName + a + "->" + da + targetName + a + "> " + message;
                 this.j2.log(bit);
                 if (adminMode) {
                     this.j2.chat.messageByFlag(Flag.ADMIN, bit);

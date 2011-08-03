@@ -12,7 +12,11 @@ package to.joe.listener;
 import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import to.joe.J2;
 import to.joe.util.Flag;
@@ -25,7 +29,7 @@ public class PlayerJoinQuit extends PlayerListener {
     // private ArrayList<String> theList;
 
     public PlayerJoinQuit(J2 instance) {
-        j2 = instance;
+        this.j2 = instance;
         // theList=new ArrayList<String>();
 
     }
@@ -33,7 +37,7 @@ public class PlayerJoinQuit extends PlayerListener {
     @Override
     public void onPlayerJoin(PlayerJoinEvent event) {
         event.setJoinMessage(null);
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         this.j2.users.processJoin(player, false);
 
         /*
@@ -55,72 +59,73 @@ public class PlayerJoinQuit extends PlayerListener {
         // j2.mysql.userIP(player.getName(), player.getAddress());
         // theList.remove(player.getName());
         // }
-        String name = event.getPlayer().getName();
-        kicked.add(name);
-        j2.damage.arf(event.getPlayer().getName());
+        final String name = event.getPlayer().getName();
+        this.kicked.add(name);
+        this.j2.damage.arf(event.getPlayer().getName());
         event.setLeaveMessage(null);
     }
 
     @Override
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        String name = player.getName();
+        final Player player = event.getPlayer();
+        final String name = player.getName();
 
-        if (!kicked.contains(name)) {
-            j2.minitrue.processLeave(player);
+        if (!this.kicked.contains(name)) {
+            this.j2.minitrue.processLeave(player);
         } else {
-            kicked.remove(name);
+            this.kicked.remove(name);
         }
-        if (j2.users.getUser(player) != null) {
-            j2.users.delUser(name);
-            j2.warps.dropPlayer(name);
-            j2.irc.processLeave(name);
+        if (this.j2.users.getUser(player) != null) {
+            this.j2.users.delUser(name);
+            this.j2.warps.dropPlayer(name);
+            this.j2.irc.processLeave(name);
         }
         event.setQuitMessage(null);
-        j2.damage.arf(name);
-        j2.users.dropAuthentication(name);
+        this.j2.damage.arf(name);
+        this.j2.users.dropAuthentication(name);
         this.j2.minitrue.vanish.invisible.remove(player);
         this.j2.banCoop.disconnect(name);
     }
 
     @Override
     public void onPlayerPreLogin(PlayerPreLoginEvent event) {
-        String name = event.getName();
-        String ip = event.getAddress().getHostAddress();
+        final String name = event.getName();
+        final String ip = event.getAddress().getHostAddress();
         // System.out.println("IP: \""+ip+"\"");
-        j2.debug("Incoming player: " + name + " on " + ip);
+        this.j2.debug("Incoming player: " + name + " on " + ip);
         String reason = null;
         try {
-            reason = j2.mysql.checkBans(name);
-        } catch (Exception e) {
+            reason = this.j2.mysql.checkBans(name);
+        } catch (final Exception e) {
             reason = "Try again. Ban system didn't like you.";
         }
         // j2.mysql.userIP(name,player.getAddress().getHostName());
         // if(event.getResult().equals(Result.ALLOWED)){
-        j2.ip.incoming(name, ip);
+        this.j2.ip.incoming(name, ip);
         // }
-        User user = j2.mysql.getUser(name);
-        boolean isAdmin = (user.getUserFlags().contains(Flag.ADMIN) || j2.users.groupHasFlag(user.getGroup(), Flag.ADMIN));
-        boolean isDonor = (user.getUserFlags().contains(Flag.DONOR) || j2.users.groupHasFlag(user.getGroup(), Flag.DONOR));
-        boolean isContributor = (user.getUserFlags().contains(Flag.CONTRIBUTOR) || j2.users.groupHasFlag(user.getGroup(), Flag.CONTRIBUTOR));
-        boolean isTrusted = (user.getUserFlags().contains(Flag.TRUSTED) || j2.users.groupHasFlag(user.getGroup(), Flag.TRUSTED));
-        boolean isPrivBlocked = user.getUserFlags().contains(Flag.BARRED_MC1);
+        final User user = this.j2.mysql.getUser(name);
+        final boolean isAdmin = (user.getUserFlags().contains(Flag.ADMIN) || this.j2.users.groupHasFlag(user.getGroup(), Flag.ADMIN));
+        final boolean isDonor = (user.getUserFlags().contains(Flag.DONOR) || this.j2.users.groupHasFlag(user.getGroup(), Flag.DONOR));
+        final boolean isContributor = (user.getUserFlags().contains(Flag.CONTRIBUTOR) || this.j2.users.groupHasFlag(user.getGroup(), Flag.CONTRIBUTOR));
+        final boolean isTrusted = (user.getUserFlags().contains(Flag.TRUSTED) || this.j2.users.groupHasFlag(user.getGroup(), Flag.TRUSTED));
+        final boolean isPrivBlocked = user.getUserFlags().contains(Flag.BARRED_MC1);
         boolean incoming = true;
         if (reason != null) {
-            if (!reason.equals("Try again. Ban system hiccup."))
+            if (!reason.equals("Try again. Ban system hiccup.")) {
                 reason = "Visit http://forums.joe.to for unban";
+            }
             event.setKickMessage(reason);
             event.disallow(PlayerPreLoginEvent.Result.KICK_BANNED, reason);
             incoming = false;
         }
-        if (j2.maintenance && !isAdmin) {
-            reason = j2.maintmessage;
+        if (this.j2.maintenance && !isAdmin) {
+            reason = this.j2.maintmessage;
             event.setKickMessage(reason);
             event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, reason);
             // j2.users.delUser(name);
             incoming = false;
         }
-        if (j2.trustedonly && (!isTrusted || isPrivBlocked)) {
+        if (this.j2.trustedonly && (!isTrusted || isPrivBlocked)) {
             reason = "Trusted only. http://forums.joe.to";
             if (isPrivBlocked) {
                 reason = "You are barred from joining this server";
@@ -129,14 +134,14 @@ public class PlayerJoinQuit extends PlayerListener {
             event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, reason);
             incoming = false;
         }
-        if (j2.users.getUser(name) != null) {
+        if (this.j2.users.getUser(name) != null) {
             event.setKickMessage("Already logged in. If not, wait a minute and try again.");
             event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, "Already logged in.If not, wait a minute and try again.");
             // j2.kickbans.callKick(player.getName(), "CONSOLE",
             // "Logged in on another Minecraft");
             incoming = false;
         }
-        if (!isAdmin && !isDonor && !isContributor && j2.getServer().getOnlinePlayers().length >= j2.playerLimit) {
+        if (!isAdmin && !isDonor && !isContributor && (this.j2.getServer().getOnlinePlayers().length >= this.j2.playerLimit)) {
             event.setKickMessage("Server Full");
             event.disallow(PlayerPreLoginEvent.Result.KICK_FULL, "Server full");
             // j2.users.delUser(name);
@@ -145,8 +150,8 @@ public class PlayerJoinQuit extends PlayerListener {
         if (!incoming) {
             return;
         }
-        j2.users.addUser(name);
+        this.j2.users.addUser(name);
         event.allow();
-        j2.debug("Player " + name + " allowed in");
+        this.j2.debug("Player " + name + " allowed in");
     }
 }

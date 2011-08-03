@@ -21,19 +21,19 @@ public class FlagsCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "Usage: /flags player add/drop flag");
                 return;
             }
-            String action = args[1];
+            final String action = args[1];
             if (!(action.equalsIgnoreCase("add") || action.equalsIgnoreCase("drop"))) {
                 sender.sendMessage(ChatColor.RED + "Usage: /flags player add/drop flag");
                 return;
             }
-            String name = args[0];
-            char flag = args[2].charAt(0);
+            final String name = args[0];
+            final char flag = args[2].charAt(0);
             if (action.equalsIgnoreCase("add")) {
                 this.j2.users.addFlag(name, Flag.byChar(flag));
             } else {
                 this.j2.users.dropFlag(name, Flag.byChar(flag));
             }
-            String tolog = ChatColor.RED + playerName + " changed flags: " + name + " " + action + " flag " + Flag.byChar(flag).getDescription();
+            final String tolog = ChatColor.RED + playerName + " changed flags: " + name + " " + action + " flag " + Flag.byChar(flag).getDescription();
             this.j2.chat.messageByFlag(Flag.ADMIN, tolog);
             this.j2.log(tolog);
         }

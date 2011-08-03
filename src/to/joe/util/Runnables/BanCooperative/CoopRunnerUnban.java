@@ -9,7 +9,7 @@ import to.joe.manager.BanCooperative;
 
 public class CoopRunnerUnban extends CoopRunner {
 
-    private String admin;
+    private final String admin;
 
     public CoopRunnerUnban(J2 j2, BanCooperative coop, String name, String admin) {
         super(j2, coop, name);
@@ -22,15 +22,15 @@ public class CoopRunnerUnban extends CoopRunner {
     }
 
     private void mcbans_unban() {
-        HashMap<String, String> postVars = new HashMap<String, String>();
-        postVars.put("player", name);
+        final HashMap<String, String> postVars = new HashMap<String, String>();
+        postVars.put("player", this.name);
         postVars.put("exec", "unBan");
-        postVars.put("admin", admin);
-        HashMap<String, String> result = JSONToHashMap(this.mcbans_api(postVars));
+        postVars.put("admin", this.admin);
+        final HashMap<String, String> result = this.JSONToHashMap(this.mcbans_api(postVars));
         if ((result.get("result")).equalsIgnoreCase("y")) {
-            j2.log(ChatColor.RED + "[mcbans] Unbanned " + name);
+            this.j2.log(ChatColor.RED + "[mcbans] Unbanned " + this.name);
         } else {
-            j2.log(ChatColor.RED + "[mcbans] Failed to unban " + name);
+            this.j2.log(ChatColor.RED + "[mcbans] Failed to unban " + this.name);
         }
     }
 

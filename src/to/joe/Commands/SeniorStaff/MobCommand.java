@@ -23,13 +23,13 @@ public class MobCommand extends MasterCommand {
             if (args.length == 0) {
                 player.sendMessage(ChatColor.RED + "/mob mobname");
             } else {
-                CreatureType creat = CreatureType.fromName(args[0]);
+                final CreatureType creat = CreatureType.fromName(args[0]);
                 if (creat != null) {
-                    Block block = player.getTargetBlock(null, 50);
+                    final Block block = player.getTargetBlock(null, 50);
                     if (block != null) {
-                        Location bloc = block.getLocation();
+                        final Location bloc = block.getLocation();
                         if (bloc.getY() < 126) {
-                            Location loc = new Location(bloc.getWorld(), bloc.getX(), bloc.getY() + 1, bloc.getZ());
+                            final Location loc = new Location(bloc.getWorld(), bloc.getX(), bloc.getY() + 1, bloc.getZ());
                             player.getWorld().spawnCreature(loc, CreatureType.fromName(args[0]));
                         }
                     }

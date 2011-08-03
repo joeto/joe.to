@@ -10,7 +10,7 @@ import to.joe.manager.BanCooperative;
 public class CoopRunnerBan extends CoopRunner {
 
     private String admin;
-    private String reason;
+    private final String reason;
 
     private final String local = "localBan";
     private final String global = "globalBan";
@@ -28,28 +28,28 @@ public class CoopRunnerBan extends CoopRunner {
 
     private void mcbans_ban() {
         String banType = this.local;
-        String reason_lower = reason.toLowerCase();
+        final String reason_lower = this.reason.toLowerCase();
         if (reason_lower.contains("grief") && !(reason_lower.contains("fuck") || reason_lower.contains("shit") || reason_lower.contains("bitch"))) {
             banType = this.global;
         }
-        if (admin.toLowerCase().contains("bob")) {
-            admin = "mbaxter";
+        if (this.admin.toLowerCase().contains("bob")) {
+            this.admin = "mbaxter";
             banType = this.local;
         }
-        HashMap<String, String> postVars = new HashMap<String, String>();
-        postVars.put("player", name);
-        postVars.put("admin", admin);
-        postVars.put("reason", reason);
-        String ip = j2.mysql.IPGetLast(name);
+        final HashMap<String, String> postVars = new HashMap<String, String>();
+        postVars.put("player", this.name);
+        postVars.put("admin", this.admin);
+        postVars.put("reason", this.reason);
+        final String ip = this.j2.mysql.IPGetLast(this.name);
         postVars.put("playerip", ip);
         postVars.put("exec", banType);
-        HashMap<String, String> result = JSONToHashMap(this.mcbans_api(postVars));
+        final HashMap<String, String> result = this.JSONToHashMap(this.mcbans_api(postVars));
         if (result.get("result").equalsIgnoreCase("y")) {
-            j2.log(ChatColor.RED + "[mcbans] Added " + name);
+            this.j2.log(ChatColor.RED + "[mcbans] Added " + this.name);
         } else if (result.get("result").equalsIgnoreCase("a")) {
-            j2.log(ChatColor.RED + "[mcbans] Player " + name + " already on list");
+            this.j2.log(ChatColor.RED + "[mcbans] Player " + this.name + " already on list");
         } else if (result.get("result").equalsIgnoreCase("n")) {
-            j2.log(ChatColor.RED + "[mcbans] Could not add " + name);
+            this.j2.log(ChatColor.RED + "[mcbans] Could not add " + this.name);
         }
     }
 

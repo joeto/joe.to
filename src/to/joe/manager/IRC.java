@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import org.bukkit.Location;
 
 import to.joe.J2;
@@ -19,9 +20,9 @@ import to.joe.util.IRC.ircBot;
  * 
  */
 public class IRC {
-    private J2 j2;
+    private final J2 j2;
     private ircBot bot;
-    private Object adminsLock = new Object();
+    private final Object adminsLock = new Object();
     private HashMap<String, String> admins;// hostname->name
     private HashMap<String, Long> msgs;
     public LinkedBlockingQueue<String> chatQueue = new LinkedBlockingQueue<String>();
@@ -44,7 +45,7 @@ public class IRC {
     public void restartManager() {
         this.cleanStartup();
         if (this.bot != null) {
-            bot.quitServer("Restarting...");
+            this.bot.quitServer("Restarting...");
         }
         this.connectAndAuth();
     }
@@ -66,7 +67,7 @@ public class IRC {
      */
     private boolean goodToGo(String string) {
         if (string.startsWith("[J2BANS]") || string.startsWith("[BANS]")) {
-            long rightNow = (new Date()).getTime();
+            final long rightNow = (new Date()).getTime();
             if (this.msgs.containsKey(string)) {
                 if ((this.msgs.get(string).longValue() + 3600000L) < rightNow) {
                     this.msgs.remove(string);
@@ -90,9 +91,9 @@ public class IRC {
      * @param name
      */
     public void processJoin(String name) {
-        if (j2.ircEnable && j2.getServer().getOnlinePlayers().length < 2) {
+        if (this.j2.ircEnable && (this.j2.getServer().getOnlinePlayers().length < 2)) {
             // j2.irc.ircMsg(name+" has logged in");
-            j2.irc.adminChannel();
+            this.j2.irc.adminChannel();
         }
     }
 
@@ -102,7 +103,7 @@ public class IRC {
      * @param name
      */
     public void processLeave(String name) {
-        if (j2.ircEnable && j2.getServer().getOnlinePlayers().length < 10) {
+        if (this.j2.ircEnable && (this.j2.getServer().getOnlinePlayers().length < 10)) {
             // j2.irc.ircMsg(name+" has left the server");
         }
     }
@@ -112,23 +113,25 @@ public class IRC {
      */
     public void connectAndAuth() {
 
-        bot = new ircBot(j2.ircName, j2.ircMsg, this);
+        this.bot = new ircBot(this.j2.ircName, this.j2.ircMsg, this);
 
-        if (j2.ircDebug)
-            bot.setVerbose(true);
-        System.out.println("Connecting to " + j2.ircChannel + " on " + j2.ircHost + ":" + j2.ircPort + " as " + j2.ircName);
+        if (this.j2.ircDebug) {
+            this.bot.setVerbose(true);
+        }
+        System.out.println("Connecting to " + this.j2.ircChannel + " on " + this.j2.ircHost + ":" + this.j2.ircPort + " as " + this.j2.ircName);
         try {
-            bot.connect(j2.ircHost, j2.ircPort, j2.getServer().getIp());
-        } catch (Exception e) {
+            this.bot.connect(this.j2.ircHost, this.j2.ircPort, this.j2.getServer().getIp());
+        } catch (final Exception e) {
             e.printStackTrace();
         }
-        if (j2.gsAuth != "") {
-            bot.sendMessage("authserv@services.gamesurge.net", "auth " + j2.gsAuth + " " + j2.gsPass);
-            bot.sendMessage("ChanServ", "inviteme " + j2.ircAdminChannel);
+        if (this.j2.gsAuth != "") {
+            this.bot.sendMessage("authserv@services.gamesurge.net", "auth " + this.j2.gsAuth + " " + this.j2.gsPass);
+            this.bot.sendMessage("ChanServ", "inviteme " + this.j2.ircAdminChannel);
         }
-        bot.joinChannel(j2.ircChannel);
-        if (j2.ircOnJoin != "")
-            bot.sendMessage(j2.ircChannel, j2.ircOnJoin);
+        this.bot.joinChannel(this.j2.ircChannel);
+        if (this.j2.ircOnJoin != "") {
+            this.bot.sendMessage(this.j2.ircChannel, this.j2.ircOnJoin);
+        }
         this.reloadIRCAdmins();
     }
 
@@ -136,8 +139,9 @@ public class IRC {
      * Murder the bot
      */
     public void kill() {
-        if (bot != null)
-            bot.disconnect();
+        if (this.bot != null) {
+            this.bot.disconnect();
+        }
     }
 
     /**
@@ -146,18 +150,18 @@ public class IRC {
      * @return the bot
      */
     public ircBot getBot() {
-        return bot;
+        return this.bot;
     }
 
     /**
      * If not connected to admin channel, join it.
      */
     private void adminChannel() {
-        if (j2.ircEnable && !(new ArrayList<String>(Arrays.asList((bot.getChannels()))).contains(j2.ircAdminChannel))) {
-            if (j2.gsAuth != "") {
-                bot.sendMessage("authserv@services.gamesurge.net", "auth " + j2.gsAuth + " " + j2.gsPass);
-                bot.sendMessage("ChanServ", "inviteme " + j2.ircAdminChannel);
-                bot.joinChannel(j2.ircAdminChannel);
+        if (this.j2.ircEnable && !(new ArrayList<String>(Arrays.asList((this.bot.getChannels()))).contains(this.j2.ircAdminChannel))) {
+            if (this.j2.gsAuth != "") {
+                this.bot.sendMessage("authserv@services.gamesurge.net", "auth " + this.j2.gsAuth + " " + this.j2.gsPass);
+                this.bot.sendMessage("ChanServ", "inviteme " + this.j2.ircAdminChannel);
+                this.bot.joinChannel(this.j2.ircAdminChannel);
             }
         }
     }
@@ -169,7 +173,7 @@ public class IRC {
      * @return
      */
     private boolean isIRCAuth(String hostname) {
-        synchronized (adminsLock) {
+        synchronized (this.adminsLock) {
             return this.admins.containsKey(hostname);
         }
     }
@@ -181,8 +185,9 @@ public class IRC {
      * @param message
      */
     public void message(String target, String message) {
-        if (j2.ircEnable)
-            bot.sendMessage(target, message);
+        if (this.j2.ircEnable) {
+            this.bot.sendMessage(target, message);
+        }
     }
 
     /**
@@ -194,12 +199,13 @@ public class IRC {
      * @return
      */
     public boolean ircCommand(String hostname, String nick, String[] command) {
-        if (!j2.ircEnable)
+        if (!this.j2.ircEnable) {
             return false;
+        }
         @SuppressWarnings("unused")
         int lvl = 0;
-        String commands = j2.combineSplit(0, command, " ");
-        String[] args = new String[command.length - 1];
+        final String commands = this.j2.combineSplit(0, command, " ");
+        final String[] args = new String[command.length - 1];
         System.arraycopy(command, 1, args, 0, command.length - 1);
         String adminName = "";
         if (!this.isIRCAuth(hostname)) {
@@ -208,9 +214,9 @@ public class IRC {
         } else {
             adminName = this.admins.get(hostname);
         }
-        User user = this.j2.mysql.getUser(adminName);
-        String group = user.getGroup();
-        ArrayList<Flag> flags = this.j2.users.getGroupFlags(group);
+        final User user = this.j2.mysql.getUser(adminName);
+        final String group = user.getGroup();
+        final ArrayList<Flag> flags = this.j2.users.getGroupFlags(group);
         flags.addAll(user.getUserFlags());
         if (flags.contains(Flag.SRSTAFF)) {
             lvl = 2;
@@ -223,32 +229,32 @@ public class IRC {
         if (command[0].charAt(0) == '.') {
             command[0] = command[0].substring(1);
         }
-        String com = command[0].toLowerCase();
+        final String com = command[0].toLowerCase();
         boolean done = false;
-        if (com.equals("kick") && command.length > 2) {
-            j2.kickbans.callKick(command[1], adminName, j2.combineSplit(2, command, " "));
+        if (com.equals("kick") && (command.length > 2)) {
+            this.j2.kickbans.callKick(command[1], adminName, this.j2.combineSplit(2, command, " "));
             // j2.kickbans.forceKick(command[1],
             // j2.combineSplit(2,command," "));
             done = true;
         }
-        if (com.equals("ban") && command.length > 2) {
-            j2.kickbans.callBan(adminName, args, new Location(j2.getServer().getWorlds().get(0), 0, 0, 0, 0, 0));
+        if (com.equals("ban") && (command.length > 2)) {
+            this.j2.kickbans.callBan(adminName, args, new Location(this.j2.getServer().getWorlds().get(0), 0, 0, 0, 0, 0));
             done = true;
         }
-        if (com.equals("g") && command.length > 1) {
-            j2.chat.globalAdminMessage(adminName, j2.combineSplit(1, command, " "));
+        if (com.equals("g") && (command.length > 1)) {
+            this.j2.chat.globalAdminMessage(adminName, this.j2.combineSplit(1, command, " "));
             done = true;
         }
-        if (com.equals("a") && command.length > 1) {
-            j2.chat.adminOnlyMessage(adminName, j2.combineSplit(1, command, " "));
+        if (com.equals("a") && (command.length > 1)) {
+            this.j2.chat.adminOnlyMessage(adminName, this.j2.combineSplit(1, command, " "));
             done = true;
         }
-        if (com.equals("addban") && command.length > 2) {
-            j2.kickbans.callAddBan(adminName, args, new Location(j2.getServer().getWorlds().get(0), 0, 0, 0, 0, 0));
+        if (com.equals("addban") && (command.length > 2)) {
+            this.j2.kickbans.callAddBan(adminName, args, new Location(this.j2.getServer().getWorlds().get(0), 0, 0, 0, 0, 0));
             done = true;
         }
-        if (com.equals("unban") && command.length > 1) {
-            j2.kickbans.unban(adminName, command[1]);
+        if (com.equals("unban") && (command.length > 1)) {
+            this.j2.kickbans.unban(adminName, command[1]);
             done = true;
         }
         if (com.equals("q")) {
@@ -256,9 +262,9 @@ public class IRC {
             done = true;
         }
         if (done) {
-            j2.log("IRC admin " + adminName + "(" + nick + "@" + hostname + ") used command: " + commands);
+            this.j2.log("IRC admin " + adminName + "(" + nick + "@" + hostname + ") used command: " + commands);
         } else {
-            j2.log("IRC admin " + adminName + "(" + nick + "@" + hostname + ") tried: " + commands);
+            this.j2.log("IRC admin " + adminName + "(" + nick + "@" + hostname + ") tried: " + commands);
         }
 
         return done;
@@ -308,8 +314,9 @@ public class IRC {
      * @param message
      */
     public void messageRelay(String message) {
-        if (j2.ircEnable)
-            bot.sendMessage(j2.ircChannel, message);
+        if (this.j2.ircEnable) {
+            this.bot.sendMessage(this.j2.ircChannel, message);
+        }
     }
 
     /**
@@ -318,15 +325,16 @@ public class IRC {
      * @param message
      */
     public void messageAdmins(String message) {
-        if (j2.ircEnable && this.goodToGo(message))
-            bot.sendMessage(j2.ircAdminChannel, message);
+        if (this.j2.ircEnable && this.goodToGo(message)) {
+            this.bot.sendMessage(this.j2.ircAdminChannel, message);
+        }
     }
 
     /**
      * @return the manager's J2
      */
     public J2 getJ2() {
-        return j2;
+        return this.j2;
     }
 
     private boolean stop;
@@ -336,25 +344,25 @@ public class IRC {
      * Start 10 second checks to see if online, if in channels, etc.
      */
     public void startIRCTimer() {
-        stop = false;
+        this.stop = false;
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (stop) {
+                if (IRC.this.stop) {
                     timer.cancel();
                     return;
                 }
-                checkStatus();
+                IRC.this.checkStatus();
             }
         }, 1000, 10000);
     }
 
     private void checkStatus() {
-        if (!j2.ircEnable && restart) {
-            connectAndAuth();
-            restart = false;
-            j2.ircEnable = true;
+        if (!this.j2.ircEnable && this.restart) {
+            this.connectAndAuth();
+            this.restart = false;
+            this.j2.ircEnable = true;
         } else {
             this.adminChannel();
         }

@@ -23,13 +23,13 @@ public class GetGroupCommand extends MasterCommand {
                 sender.sendMessage(ChatColor.RED + "/getgroup playername");
                 return;
             }
-            List<Player> match = this.j2.minitrue.matchPlayer(args[0], true);
-            if (match.size() != 1 || match.get(0) == null) {
+            final List<Player> match = this.j2.minitrue.matchPlayer(args[0], true);
+            if ((match.size() != 1) || (match.get(0) == null)) {
                 sender.sendMessage(ChatColor.RED + "Player not found");
                 return;
             }
-            Player who = match.get(0);
-            String message = "Player " + match.get(0).getName() + ": " + this.j2.users.getUser(who).getGroup();
+            final Player who = match.get(0);
+            final String message = "Player " + match.get(0).getName() + ": " + this.j2.users.getUser(who).getGroup();
             sender.sendMessage(ChatColor.RED + message);
             this.j2.log(playerName + " looked up " + who.getName());
         }

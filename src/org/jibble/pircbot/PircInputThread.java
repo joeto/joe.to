@@ -13,9 +13,13 @@ found at http://www.jibble.org/licenses/
 
 package org.jibble.pircbot;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InterruptedIOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.Socket;
+import java.util.StringTokenizer;
 
 /**
  * A Thread which reads lines from the IRC server. It then passes these lines to
@@ -41,10 +45,10 @@ public class PircInputThread extends Thread {
      *            The BufferedWriter that sends lines to the server.
      */
     PircInputThread(PircBot bot, Socket socket, BufferedReader breader, BufferedWriter bwriter) {
-        _bot = bot;
-        _socket = socket;
-        _breader = breader;
-        _bwriter = bwriter;
+        this._bot = bot;
+        this._socket = socket;
+        this._breader = breader;
+        this._bwriter = bwriter;
         this.setName(this.getClass() + "-Thread");
     }
 
@@ -56,7 +60,7 @@ public class PircInputThread extends Thread {
      *            The raw line to send to the IRC server.
      */
     void sendRawLine(String line) {
-        PircOutputThread.sendRawLine(_bot, _bwriter, line);
+        PircOutputThread.sendRawLine(this._bot, this._bwriter, line);
     }
 
     /**
@@ -67,7 +71,7 @@ public class PircInputThread extends Thread {
      * @return True if still connected.
      */
     boolean isConnected() {
-        return _isConnected;
+        return this._isConnected;
     }
 
     /**
@@ -80,31 +84,32 @@ public class PircInputThread extends Thread {
      * after such a problem, but the existance of any uncaught exceptions in
      * your code is something you should really fix.
      */
+    @Override
     public void run() {
         try {
             boolean running = true;
             while (running) {
                 try {
                     String line = null;
-                    while ((line = _breader.readLine()) != null) {
+                    while ((line = this._breader.readLine()) != null) {
                         try {
-                            _bot.handleLine(line);
-                        } catch (Throwable t) {
+                            this._bot.handleLine(line);
+                        } catch (final Throwable t) {
                             // Stick the whole stack trace into a String so we
                             // can output it nicely.
-                            StringWriter sw = new StringWriter();
-                            PrintWriter pw = new PrintWriter(sw);
+                            final StringWriter sw = new StringWriter();
+                            final PrintWriter pw = new PrintWriter(sw);
                             t.printStackTrace(pw);
                             pw.flush();
-                            StringTokenizer tokenizer = new StringTokenizer(sw.toString(), "\r\n");
-                            synchronized (_bot) {
-                                _bot.log("### Your implementation of PircBot is faulty and you have");
-                                _bot.log("### allowed an uncaught Exception or Error to propagate in your");
-                                _bot.log("### code. It may be possible for PircBot to continue operating");
-                                _bot.log("### normally. Here is the stack trace that was produced: -");
-                                _bot.log("### ");
+                            final StringTokenizer tokenizer = new StringTokenizer(sw.toString(), "\r\n");
+                            synchronized (this._bot) {
+                                this._bot.log("### Your implementation of PircBot is faulty and you have");
+                                this._bot.log("### allowed an uncaught Exception or Error to propagate in your");
+                                this._bot.log("### code. It may be possible for PircBot to continue operating");
+                                this._bot.log("### normally. Here is the stack trace that was produced: -");
+                                this._bot.log("### ");
                                 while (tokenizer.hasMoreTokens()) {
-                                    _bot.log("### " + tokenizer.nextToken());
+                                    this._bot.log("### " + tokenizer.nextToken());
                                 }
                             }
                         }
@@ -113,7 +118,7 @@ public class PircInputThread extends Thread {
                         // The server must have disconnected us.
                         running = false;
                     }
-                } catch (InterruptedIOException iioe) {
+                } catch (final InterruptedIOException iioe) {
                     // This will happen if we haven't received anything from the
                     // server for a while.
                     // So we shall send it a ping to check that we are still
@@ -122,21 +127,21 @@ public class PircInputThread extends Thread {
                     // Now we go back to listening for stuff from the server...
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // Do nothing.
         }
 
         // If we reach this point, then we must have disconnected.
         try {
-            _socket.close();
-        } catch (Exception e) {
+            this._socket.close();
+        } catch (final Exception e) {
             // Just assume the socket was already closed.
         }
 
-        if (!_disposed) {
-            _bot.log("*** Disconnected.");
-            _isConnected = false;
-            _bot.onDisconnect();
+        if (!this._disposed) {
+            this._bot.log("*** Disconnected.");
+            this._isConnected = false;
+            this._bot.onDisconnect();
         }
 
     }
@@ -146,9 +151,9 @@ public class PircInputThread extends Thread {
      */
     public void dispose() {
         try {
-            _disposed = true;
-            _socket.close();
-        } catch (Exception e) {
+            this._disposed = true;
+            this._socket.close();
+        } catch (final Exception e) {
             // Do nothing.
         }
     }
