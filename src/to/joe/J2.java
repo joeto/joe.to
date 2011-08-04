@@ -380,6 +380,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("nsa").setExecutor(new NSACommand(this));
         this.getCommand("station").setExecutor(new StationCommand(this));
         this.getCommand("voteadmin").setExecutor(new VoteAdminCommand(this));
+        this.getCommand("va").setExecutor(new VoteAdminCommand(this));
         this.getCommand("vote").setExecutor(new VoteCommand(this));
         this.getCommand("maxplayers").setExecutor(new MaxPlayersCommand(this));
         this.getCommand("shush").setExecutor(new ShushCommand(this));
