@@ -473,7 +473,7 @@ public class MySQL {
                 final String name = rs.getString("name");
 
                 final String Flags = rs.getString("flags");
-                this.j2.debug("Group: " + name + " with flags " + Flags);
+                this.j2.log("Group: " + name + " with flags " + Flags);
                 final ArrayList<Flag> flags = new ArrayList<Flag>();
                 for (int x = 0; x < Flags.length(); x++) {
                     flags.add(Flag.byChar(Flags.charAt(x)));
