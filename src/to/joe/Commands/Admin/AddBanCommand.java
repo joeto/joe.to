@@ -15,6 +15,9 @@ public class AddBanCommand extends MasterCommand {
         super(j2);
     }
 
+    
+    
+    
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (!isPlayer || this.j2.hasFlag(player, Flag.ADMIN)) {
