@@ -27,7 +27,7 @@ public class SmiteCommand extends MasterCommand {
             if (results.size() == 1) {
                 final Player target = results.get(0);
                 final boolean weather = target.getWorld().isThundering();
-                this.j2.damage.danger(target.getName());
+                this.j2.damage.endanger(target.getName());
                 this.j2.damage.addToTimer(target.getName());
                 target.getWorld().strikeLightning(target.getLocation());
                 // player.sendMessage(ChatColor.RED+"Judgment enacted");

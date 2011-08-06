@@ -83,8 +83,7 @@ public class PircDccManager {
         } else if (type.equals("ACCEPT")) {
             final int port = Integer.parseInt(tokenizer.nextToken());
             @SuppressWarnings("unused")
-            final
-            long progress = Long.parseLong(tokenizer.nextToken());
+            final long progress = Long.parseLong(tokenizer.nextToken());
 
             PircDccFileTransfer transfer = null;
             synchronized (this._awaitingResume) {

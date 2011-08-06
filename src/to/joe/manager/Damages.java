@@ -55,8 +55,8 @@ public class Damages {
      * @param name
      */
     public void protect(String name) {
-        this.protectP(name);
-        this.protectE(name);
+        this.protectPvP(name);
+        this.protectPvE(name);
     }
 
     /**
@@ -64,7 +64,7 @@ public class Damages {
      * 
      * @param name
      */
-    public void protectP(String name) {
+    public void protectPvP(String name) {
         if (!this.PvPsafe.contains(name)) {
             this.PvPsafe.add(name);
         }
@@ -75,7 +75,7 @@ public class Damages {
      * 
      * @param name
      */
-    public void protectE(String name) {
+    public void protectPvE(String name) {
         if (!this.PvEsafe.contains(name)) {
             this.PvEsafe.add(name);
         }
@@ -86,9 +86,9 @@ public class Damages {
      * 
      * @param name
      */
-    public void danger(String name) {
-        this.dangerP(name);
-        this.dangerE(name);
+    public void endanger(String name) {
+        this.endangerPvP(name);
+        this.endangerPvE(name);
     }
 
     /**
@@ -96,7 +96,7 @@ public class Damages {
      * 
      * @param name
      */
-    public void dangerP(String name) {
+    public void endangerPvP(String name) {
         this.PvPsafe.remove(name);
     }
 
@@ -105,7 +105,7 @@ public class Damages {
      * 
      * @param name
      */
-    public void dangerE(String name) {
+    public void endangerPvE(String name) {
         this.PvEsafe.remove(name);
     }
 
@@ -129,21 +129,21 @@ public class Damages {
             return false;
         }
         final Player player = list.get(0);
-        this.danger(player.getName());
+        this.endanger(player.getName());
         final ArrayList<Wolf> wlist = new ArrayList<Wolf>();
         final boolean hated = this.j2.ihatewolves;
-        final PlayerInventory i = player.getInventory();
-        i.clear();
-        i.setBoots(null);
-        i.setChestplate(null);
-        i.setHelmet(null);
-        i.setLeggings(null);
+        final PlayerInventory targetInventory = player.getInventory();
+        targetInventory.clear(36);
+        targetInventory.clear(37);
+        targetInventory.clear(38);
+        targetInventory.clear(39);
+        targetInventory.clear();
         this.j2.ihatewolves = false;
         for (int x = 0; x < 10; x++) {
-            final Wolf bob = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
-            wlist.add(bob);
-            bob.setAngry(true);
-            bob.setTarget(player);
+            final Wolf wolf = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
+            wlist.add(wolf);
+            wolf.setAngry(true);
+            wolf.setTarget(player);
         }
         this.j2.ihatewolves = hated;
         this.allWolf.put(player.getName(), wlist);
@@ -157,8 +157,8 @@ public class Damages {
      */
     public void arf(String target) {
         if (this.allWolf.containsKey(target)) {
-            for (final Wolf i : this.allWolf.get(target)) {
-                i.damage(100);
+            for (final Wolf wolf : this.allWolf.get(target)) {
+                wolf.damage(100);
             }
             this.allWolf.remove(target);
             if (this.j2.safemode) {

@@ -34,7 +34,7 @@ public class GodmodeCommand extends MasterCommand {
                 this.j2.users.getUser(name).restoreColor();
                 player.getInventory().clear(39);
                 if (!this.j2.safemode) {
-                    this.j2.damage.danger(playerName);
+                    this.j2.damage.endanger(playerName);
                     player.sendMessage(ChatColor.RED + "You are no longer safe");
                 }
                 this.j2.users.dropFlagLocal(playerName, Flag.GODMODE);

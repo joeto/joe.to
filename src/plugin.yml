@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 1.1.0
+version: 1.1.1
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: >
@@ -322,10 +322,6 @@ commands:
     description: Voting on options
     usage: |
             vote x
-  voteadmin:
-    description: Admin control of voting
-    usage: |
-            voteadmin
   shush:
     description: Control the voices inside your head
     usage: |
@@ -351,3 +347,7 @@ commands:
     usage: |
             trustreq
             trustreq water please
+  woof:
+    description: Woof woof woof
+    usage: |
+            woof playername

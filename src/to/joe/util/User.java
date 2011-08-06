@@ -43,10 +43,9 @@ public class User {
         this.blocksTravelled.add(world.getBlockAt(0, 1, 0));
         this.blocksTravelled.add(world.getBlockAt(0, 1, 0));
         this.safeWord = safeWord;
-        if (safeWord == null)
-         {
+        if (safeWord == null) {
             this.safeWord = "";
-        // this.channel=channel;
+            // this.channel=channel;
         }
     }
 

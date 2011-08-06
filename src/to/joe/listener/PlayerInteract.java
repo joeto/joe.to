@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import to.joe.J2;
@@ -85,16 +86,6 @@ public class PlayerInteract extends PlayerListener {
                 }
             }
         }
-        /*
-         * if(material.equals(Material.PORK)&&j2.hasFlag(player, Flag.TOOLS)&&
-         * (event
-         * .getAction().equals(Action.LEFT_CLICK_AIR)||event.getAction().equals
-         * (Action.LEFT_CLICK_BLOCK))){ Block
-         * targetb=player.getTargetBlock(null, 50); if(targetb!=null){ World
-         * world=targetb.getWorld(); Location location=targetb.getLocation();
-         * for(int x=0;x<5;x++) world.dropItemNaturally(location, new
-         * ItemStack(Material.PORK,1)); } }
-         */
         if (this.j2.hasFlag(player, Flag.THOR) && event.hasItem() && material.equals(Material.IRON_SWORD)) {
             final boolean weather = player.getWorld().isThundering();
             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
@@ -111,54 +102,14 @@ public class PlayerInteract extends PlayerListener {
         }
     }
 
-    /*
-     * @Override public void onPlayerItem(PlayerItemEvent event){ Player player
-     * = event.getPlayer(); int type=event.getMaterial().getId();
-     * if(!j2.hasFlag(player, Flag.MODWORLD)){
-     * player.sendMessage("You don't have permission to do that");
-     * event.setCancelled(true); return; } if(j2.hasFlag(player, Flag.TRUSTED)
-     * && !j2.hasFlag(player,Flag.ADMIN) && j2.isOnSuperBlacklist(type)){
-     * player.
-     * sendMessage(ChatColor.RED+"Even trusted have limits. Can't do that.");
-     * event.setCancelled(true); return; } if(!j2.hasFlag(player, Flag.TRUSTED)
-     * && (j2.isOnRegularBlacklist(type)||j2.isOnSuperBlacklist(type))){
-     * player.sendMessage
-     * (ChatColor.RED+"You need to be trusted or higher to do that.");
-     * event.setCancelled(true); return; }
-     */
+    @Override
+    public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+        /*
+         * Let's block pickups for invisible players. Good? Good.
+         */
+        if (this.j2.minitrue.invisible(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
 
-    /*
-     * if(type==259||type==291||type==292||type==293||type==294||type==295||type==
-     * 321||type==324||type==325
-     * ||type==326||type==327||type==330||type==331||type
-     * ==354||type==355||type==356){ BlockRow changed; Block clicked =
-     * event.getBlockClicked(); BlockFace face=event.getBlockFace(); int
-     * x=clicked.getX()+face.getModX(); int y=clicked.getY()+face.getModY(); int
-     * z=clicked.getZ()+face.getModZ(); changed = new
-     * BlockRow(player.getDisplayName
-     * (),0,type,x,y,z,(System.currentTimeMillis()/1000L),null);
-     * managerBlockLog.bqueue.offer(changed); }
-     */
-    // }
-
-    // public void onBlockRightClick(BlockRightClickEvent event)
-    // {
-    // Player player = event.getPlayer();
-
-    /*
-     * if(event.getItemInHand().getTypeId() == 284 && j2.hasFlag(player,
-     * Flag.ADMIN)) { j2.debug(player.getName()+ " used gold shovel");
-     * this.j2.blogger.showBlockHistory(event.getPlayer(), event.getBlock()); }
-     */
-    // if(event.getItemInHand().getTypeId() == 280 && j2.hasFlag(player,
-    // Flag.ADMIN)){
-
-    // if(j2.debug)j2.log.info(player.getName()+" used a stick");
-    // managerBlockLog.bqueue.offer(new
-    // BlockRow(player.getDisplayName(),event.getBlock().getTypeId(),0,event.getBlock().getX(),event.getBlock().getY(),event.getBlock().getZ(),(System.currentTimeMillis()/1000L),null));
-    // event.getBlock().setTypeId(0);
-    // }
-    // System.out.println("Item type id ="+event.getItemInHand().getTypeId() );
-
-    // }
 }

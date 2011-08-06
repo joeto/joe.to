@@ -37,18 +37,6 @@ public class EntityAll extends EntityListener {
         final Entity smacked = event.getEntity();
         final DamageCause smacker = event.getCause();
 
-        // if(event.getEntity() instanceof Player && event instanceof
-        // EntityDamageByEntityEvent
-        // && ((EntityDamageByEntityEvent)event).getDamager() instanceof Player
-        // &&
-        // ((Player)((EntityDamageByEntityEvent)event).getDamager()).getInventory().getItemInHand().getType().equals(Material.IRON_AXE)
-        // /*&& PERMISSIONSCHECK*/){
-        // /*KICKCODE;
-        // * Such as*/
-        // ((Player)event.getEntity()).kickPlayer("IN DA FACE");
-        //
-        // }
-
         if (smacked instanceof Player) { // player has been hit!
             final Player player = (Player) smacked;
             if (event instanceof EntityDamageByEntityEvent) {// kickaxe time

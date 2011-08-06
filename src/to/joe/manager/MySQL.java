@@ -65,6 +65,7 @@ public class MySQL {
             return DriverManager.getConnection(this.db + "?autoReconnect=true&user=" + this.user + "&password=" + this.pass);
         } catch (final SQLException ex) {
             this.j2.logWarn(ChatColor.RED + "SQL FAIL :(");
+            ex.printStackTrace();
         }
         return null;
     }

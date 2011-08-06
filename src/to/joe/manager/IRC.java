@@ -13,7 +13,7 @@ import org.bukkit.Location;
 import to.joe.J2;
 import to.joe.util.Flag;
 import to.joe.util.User;
-import to.joe.util.IRC.ircBot;
+import to.joe.util.IRCBot;
 
 /**
  * Manager for the IRC relay
@@ -21,7 +21,7 @@ import to.joe.util.IRC.ircBot;
  */
 public class IRC {
     private final J2 j2;
-    private ircBot bot;
+    private IRCBot bot;
     private final Object adminsLock = new Object();
     private HashMap<String, String> admins;// hostname->name
     private HashMap<String, Long> msgs;
@@ -113,7 +113,7 @@ public class IRC {
      */
     public void connectAndAuth() {
 
-        this.bot = new ircBot(this.j2.ircName, this.j2.ircMsg, this);
+        this.bot = new IRCBot(this.j2.ircName, this.j2.ircMsg, this);
 
         if (this.j2.ircDebug) {
             this.bot.setVerbose(true);
@@ -149,7 +149,7 @@ public class IRC {
      * 
      * @return the bot
      */
-    public ircBot getBot() {
+    public IRCBot getBot() {
         return this.bot;
     }
 

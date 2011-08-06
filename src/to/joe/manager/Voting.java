@@ -26,76 +26,6 @@ public class Voting {
     }
 
     /**
-     * Called when a player does /voteadmin Player is already known to be an
-     * admin if this fires.
-     * 
-     * @param player
-     * @param args
-     */
-    public void voteAdminCommand(Player player, String[] args) {
-        final String name = player.getName();
-        if (args.length < 1) {
-            this.usageVoteAdmin(player);
-            return;
-        } else {
-            if (args[0].equalsIgnoreCase("start")) {
-                if (this.voteInProgress) {
-                    player.sendMessage(ChatColor.RED + "Vote already in progress");
-                }
-                String combined = this.j2.combineSplit(1, args, " ");
-                if (!combined.startsWith("\"") || !combined.endsWith("\"")) {
-                    this.usageVoteAdmin(player);
-                    return;
-                }
-
-                combined = combined.substring(1, combined.length() - 1);
-                String[] bits = combined.split("\" \"");
-
-                if (bits.length > 6) {
-                    player.sendMessage(ChatColor.RED + "Too many options");
-                    return;
-                }
-                if (bits.length < 2) {
-                    final String q = bits[0];
-                    bits = new String[3];
-                    bits[0] = q;
-                    bits[1] = "Yes";
-                    bits[2] = "No";
-                }
-                this.voteInProgress = true;
-                this.currentQuestion = bits[0];
-                this.j2.chat.muteAll = true;
-                this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.AQUA + name + " has started a vote.");
-                this.j2.chat.messageByFlagless(Flag.ADMIN, ChatColor.AQUA + "Admin has started a vote.");
-                this.j2.chat.messageAll(ChatColor.DARK_AQUA + "Question: " + ChatColor.AQUA + bits[0]);
-                synchronized (this.optionsSync) {
-                    this.currentOptions = new ArrayList<String>();
-                    for (int x = 1; x < bits.length; x++) {
-                        this.currentOptions.add(bits[x]);
-                        this.j2.chat.messageAll(ChatColor.DARK_AQUA.toString() + x + ". " + ChatColor.AQUA + bits[x]);
-                    }
-                }
-                this.j2.chat.messageAll(ChatColor.AQUA + "Say " + ChatColor.DARK_AQUA + "/vote x" + ChatColor.AQUA + " where x is the answer #");
-                this.j2.chat.muteAll = false;
-                this.votes = new HashMap<String, Integer>();
-                // Run the run() method of VoteTally in 30 seconds
-                this.tallyTaskNumber = this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(this.j2, new VoteTally(this.j2), 600L);
-            }
-            if (args[0].equalsIgnoreCase("cancel")) {
-                if (this.voteInProgress) {
-                    this.j2.getServer().getScheduler().cancelTask(this.tallyTaskNumber);
-                    this.tallyTaskNumber = -1;
-                    this.j2.sendAdminPlusLog(ChatColor.AQUA + name + " canceled the vote.");
-                    this.j2.chat.messageByFlagless(Flag.ADMIN, ChatColor.RED + "Admin canceled the voting.");
-                    this.cleanUp();
-                } else {
-                    player.sendMessage(ChatColor.RED + "You derp there isn't any vote");
-                }
-            }
-        }
-    }
-
-    /**
      * Tell player the usage.
      * 
      * @param player
@@ -116,6 +46,67 @@ public class Voting {
         if (args.length == 0) {
             player.sendMessage(ChatColor.RED + "/vote #");
             return;
+        }
+        final boolean adminStart = args[0].startsWith("\"");
+        if (adminStart || args[0].startsWith("cancel")) {
+            if (this.j2.hasFlag(name, Flag.ADMIN)) {
+                if (adminStart) {
+                    if (this.voteInProgress) {
+                        player.sendMessage(ChatColor.RED + "Vote already in progress");
+                    }
+                    String combined = this.j2.combineSplit(1, args, " ");
+                    if (!combined.startsWith("\"") || !combined.endsWith("\"")) {
+                        this.usageVoteAdmin(player);
+                        return;
+                    }
+
+                    combined = combined.substring(1, combined.length() - 1);
+                    String[] bits = combined.split("\" \"");
+
+                    if (bits.length > 6) {
+                        player.sendMessage(ChatColor.RED + "Too many options");
+                        return;
+                    }
+                    if (bits.length < 2) {
+                        final String q = bits[0];
+                        bits = new String[3];
+                        bits[0] = q;
+                        bits[1] = "Yes";
+                        bits[2] = "No";
+                    }
+                    this.voteInProgress = true;
+                    this.currentQuestion = bits[0];
+                    this.j2.chat.muteAll = true;
+                    this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.AQUA + name + " has started a vote.");
+                    this.j2.chat.messageByFlagless(Flag.ADMIN, ChatColor.AQUA + "Admin has started a vote.");
+                    this.j2.chat.messageAll(ChatColor.DARK_AQUA + "Question: " + ChatColor.AQUA + bits[0]);
+                    synchronized (this.optionsSync) {
+                        this.currentOptions = new ArrayList<String>();
+                        for (int x = 1; x < bits.length; x++) {
+                            this.currentOptions.add(bits[x]);
+                            this.j2.chat.messageAll(ChatColor.DARK_AQUA.toString() + x + ". " + ChatColor.AQUA + bits[x]);
+                        }
+                    }
+                    this.j2.chat.messageAll(ChatColor.AQUA + "Say " + ChatColor.DARK_AQUA + "/vote x" + ChatColor.AQUA + " where x is the answer #");
+                    this.j2.chat.muteAll = false;
+                    this.votes = new HashMap<String, Integer>();
+                    // Run the run() method of VoteTally in 30 seconds
+                    this.tallyTaskNumber = this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(this.j2, new VoteTally(this.j2), 600L);
+                } else {
+                    if (this.voteInProgress) {
+                        this.j2.getServer().getScheduler().cancelTask(this.tallyTaskNumber);
+                        this.tallyTaskNumber = -1;
+                        this.j2.sendAdminPlusLog(ChatColor.AQUA + name + " canceled the vote.");
+                        this.j2.chat.messageByFlagless(Flag.ADMIN, ChatColor.RED + "Admin canceled the voting.");
+                        this.cleanUp();
+                    } else {
+                        player.sendMessage(ChatColor.RED + "You derp there isn't any vote");
+                    }
+                }
+            } else {
+                player.sendMessage(ChatColor.RED + "That's not a number!");
+                return;
+            }
         }
         int option;
         try {

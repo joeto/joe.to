@@ -84,7 +84,6 @@ import to.joe.Commands.Admin.ThorCommand;
 import to.joe.Commands.Admin.TimeCommand;
 import to.joe.Commands.Admin.UnBanCommand;
 import to.joe.Commands.Admin.VanishCommand;
-import to.joe.Commands.Admin.VoteAdminCommand;
 import to.joe.Commands.Admin.WhereIsPlayerCommand;
 import to.joe.Commands.Fun.ClearInventoryCommand;
 import to.joe.Commands.Fun.HomeCommand;
@@ -282,6 +281,7 @@ public class J2 extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, this.plrlisChat, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_QUIT, this.plrlisJoinQuit, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_INTERACT, this.plrlisInteract, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this.plrlisInteract, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_CANBUILD, this.blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_BREAK, this.blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener, Priority.Normal, this);
@@ -379,7 +379,6 @@ public class J2 extends JavaPlugin {
         this.getCommand("say").setExecutor(new SayCommand(this));
         this.getCommand("nsa").setExecutor(new NSACommand(this));
         this.getCommand("station").setExecutor(new StationCommand(this));
-        this.getCommand("voteadmin").setExecutor(new VoteAdminCommand(this));
         this.getCommand("vote").setExecutor(new VoteCommand(this));
         this.getCommand("maxplayers").setExecutor(new MaxPlayersCommand(this));
         this.getCommand("shush").setExecutor(new ShushCommand(this));
