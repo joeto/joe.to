@@ -62,7 +62,7 @@ public class Minitrue {
         } else {
             this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.YELLOW + player.getName() + " quit, only admins saw");
         }
-        this.vanish.invisible.remove(player);
+        this.vanish.removeInvisibility(player);
     }
 
     /**
@@ -91,7 +91,7 @@ public class Minitrue {
      * @return if player is invisible
      */
     public boolean invisible(Player player) {
-        return this.vanish.invisible.contains(player);
+        return this.vanish.isInvisible(player);
     }
 
     /**
@@ -153,7 +153,7 @@ public class Minitrue {
      * @return How many people are invisible
      */
     public int invisibleCount() {
-        return this.vanish.invisible.size();
+        return this.vanish.invisibleCount();
     }
 
     /**

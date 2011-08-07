@@ -64,6 +64,9 @@ public class WebPage {
      * update20(); } }, 1000, 5000); }
      */
     private void update5Second() {
+        if(!this.j2.enableWebsite){
+            return;
+        }
         final ArrayList<Integer> watched = new ArrayList<Integer>(this.j2.watchlist);
         final HashMap<Integer, String> output = new HashMap<Integer, String>();
         for (final Integer i : watched) {

@@ -231,6 +231,7 @@ public class J2 extends JavaPlugin {
      * MySQL stuffs
      */
     public MySQL mysql;
+    public boolean enableWebsite;
 
     /*
      * (non-Javadoc)
@@ -437,6 +438,8 @@ public class J2 extends JavaPlugin {
             this.mysql.loadMySQLData();
             // mysql end
 
+            this.enableWebsite=j2properties.getBoolean("website-enable",false);
+            conf_general.put("website-enable", this.enableWebsite);
             this.playerLimit = j2properties.getInt("max-players", 20);
             conf_general.put("max-players", this.playerLimit);
             this.tips_delay = j2properties.getInt("tip-delay", 120);

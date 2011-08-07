@@ -83,7 +83,7 @@ public class PlayerJoinQuit extends PlayerListener {
         event.setQuitMessage(null);
         this.j2.damage.arf(name);
         this.j2.users.dropAuthentication(name);
-        this.j2.minitrue.vanish.invisible.remove(player);
+        this.j2.minitrue.vanish.removeInvisibility(player);
         this.j2.banCoop.disconnect(name);
     }
 

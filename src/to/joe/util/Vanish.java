@@ -30,13 +30,33 @@ public class Vanish {
     /**
      * List of all invisible players
      */
-    public List<Player> invisible = new ArrayList<Player>();
+    private List<Player> invisible = new ArrayList<Player>();
+
+    private Object sync = new Object();
 
     private final Logger log = Logger.getLogger("Minecraft");
     private final Minitrue mini;
 
     public Vanish(Minitrue mini) {
         this.mini = mini;
+    }
+
+    public boolean isInvisible(Player player) {
+        synchronized (sync) {
+            return this.invisible.contains(player);
+        }
+    }
+
+    public void removeInvisibility(Player player) {
+        synchronized (sync) {
+            this.invisible.remove(player);
+        }
+    }
+
+    public int invisibleCount() {
+        synchronized (sync) {
+            return this.invisible.size();
+        }
     }
 
     /**
@@ -92,10 +112,10 @@ public class Vanish {
     }
 
     private void callUnVanish(Player player) {
-        if (!this.invisible.contains(player)) {
+        if (!this.isInvisible(player)) {
             return;
         }
-        this.invisible.remove(player);
+        this.removeInvisibility(player);
 
         this.updateInvisibleForPlayer(player, true);
         final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
@@ -122,12 +142,14 @@ public class Vanish {
 
     private void updateInvisibleForAll() {
         final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
-        for (final Player invisiblePlayer : this.invisible) {
-            for (final Player p : playerList) {
-                if ((this.getDistance(invisiblePlayer, p) > this.RANGE) || (p.equals(invisiblePlayer))) {
-                    continue;
+        synchronized (sync) {
+            for (final Player invisiblePlayer : this.invisible) {
+                for (final Player p : playerList) {
+                    if ((this.getDistance(invisiblePlayer, p) > this.RANGE) || (p.equals(invisiblePlayer))) {
+                        continue;
+                    }
+                    this.invisible(invisiblePlayer, p, false);
                 }
-                this.invisible(invisiblePlayer, p, false);
             }
         }
     }
@@ -146,11 +168,13 @@ public class Vanish {
      * @param player
      */
     public void updateInvisible(Player player) {
-        for (final Player invisiblePlayer : this.invisible) {
-            if ((this.getDistance(invisiblePlayer, player) > this.RANGE) || (player.equals(invisiblePlayer))) {
-                continue;
+        synchronized (sync) {
+            for (final Player invisiblePlayer : this.invisible) {
+                if ((this.getDistance(invisiblePlayer, player) > this.RANGE) || (player.equals(invisiblePlayer))) {
+                    continue;
+                }
+                this.invisible(invisiblePlayer, player, false);
             }
-            this.invisible(invisiblePlayer, player, false);
         }
     }
 
