@@ -13,8 +13,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.getspout.spoutapi.SpoutManager;
+
 
 import to.joe.manager.Minitrue;
+import to.joe.util.Packeteer.*;
 
 /**
  * Vanishing handling
@@ -38,7 +41,21 @@ public class Vanish {
     private final Minitrue mini;
 
     public Vanish(Minitrue mini) {
+        this.eidVanished=new ArrayList<Integer>();
         this.mini = mini;
+        SpoutManager.getPacketManager().addListener(17, new Packeteer17(this));
+        SpoutManager.getPacketManager().addListener(18, new Packeteer18ArmAnimation(this));
+        SpoutManager.getPacketManager().addListener(19, new Packeteer19EntityAction(this));
+        SpoutManager.getPacketManager().addListener(20, new Packeteer20NamedEntitySpawn(this));
+        SpoutManager.getPacketManager().addListener(28, new Packeteer28EntityVelocity(this));
+        SpoutManager.getPacketManager().addListener(29, new Packeteer29DestroyEntity(this));
+        SpoutManager.getPacketManager().addListener(30, new Packeteer30Entity(this));
+        SpoutManager.getPacketManager().addListener(31, new Packeteer30Entity(this));
+        SpoutManager.getPacketManager().addListener(32, new Packeteer30Entity(this));
+        SpoutManager.getPacketManager().addListener(33, new Packeteer30Entity(this));
+        SpoutManager.getPacketManager().addListener(34, new Packeteer30Entity(this));
+        SpoutManager.getPacketManager().addListener(38, new Packeteer30Entity(this));
+        SpoutManager.getPacketManager().addListener(39, new Packeteer30Entity(this));
     }
 
     public boolean isInvisible(Player player) {
@@ -50,6 +67,9 @@ public class Vanish {
     public void removeInvisibility(Player player) {
         synchronized (sync) {
             this.invisible.remove(player);
+        }
+        synchronized(this.eidSync){
+            this.eidVanished.remove(((CraftPlayer)player).getEntityId());
         }
     }
 
@@ -99,6 +119,9 @@ public class Vanish {
             return;
         }
         this.invisible.add(player);
+        synchronized(this.eidSync){
+            this.eidVanished.add(((CraftPlayer)player).getEntityId());
+        }
         final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
         for (final Player p : playerList) {
             if ((this.getDistance(player, p) > this.RANGE) || (p.equals(player))) {
@@ -211,5 +234,33 @@ public class Vanish {
         public void run() {
             Vanish.this.updateInvisibleForAll(this.startTimer);
         }
+    }
+    
+    private Object eidSync = new Object();
+    private ArrayList<Integer> eidVanished;
+
+    public void addEIDVanished(int id) {
+        synchronized (eidSync) {
+            this.eidVanished.add(id);
+        }
+    }
+    
+    public void removeEIDVanished(int id){
+        synchronized(eidSync){
+            this.eidVanished.remove(id);
+        }
+    }
+    
+    public boolean isEIDVanished(int id){
+        synchronized (eidSync) {
+            return this.eidVanished.contains(id);
+        }
+    }
+    
+    public boolean shouldHide(Player from,int eid){
+        if(!this.mini.j2.hasFlag(from, Flag.ADMIN)){
+            return this.isEIDVanished(eid);
+        }
+        return false;
     }
 }
