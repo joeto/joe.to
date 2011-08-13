@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `j2groups` (
 
 INSERT INTO `j2groups` (`server`, `name`, `flags`) VALUES
 (0, 'regular', 'fm'),
-(0, 'admins', 'asftm'),
+(0, 'admins', 'asftm')
 ;
 
 
