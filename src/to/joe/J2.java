@@ -115,6 +115,7 @@ import to.joe.Commands.SeniorStaff.SetSpawnCommand;
 import to.joe.Commands.SeniorStaff.SmackIRCCommand;
 import to.joe.listener.BlockAll;
 import to.joe.listener.EntityAll;
+import to.joe.listener.MapListener;
 import to.joe.listener.PlayerChat;
 import to.joe.listener.PlayerInteract;
 import to.joe.listener.PlayerJoinQuit;
@@ -155,6 +156,7 @@ public class J2 extends JavaPlugin {
     private final BlockAll blockListener = new BlockAll(this);
     private final EntityAll entityListener = new EntityAll(this);
     private final PlayerMovement plrlisMovement = new PlayerMovement(this);
+    private final MapListener mapListener = new MapListener(this);
     /**
      * Chat manager
      */
@@ -300,6 +302,7 @@ public class J2 extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.plrlisMovement, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_MOVE, this.plrlisMovement, Priority.Normal, this);
         pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.MAP_INITIALIZE, this.mapListener, Priority.Normal, this);
         if (this.debug) {
             this.log("Events registered");
         }
