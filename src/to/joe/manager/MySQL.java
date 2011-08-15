@@ -117,7 +117,87 @@ public class MySQL {
     private String stringClean(String toClean) {
         return toClean.replace('\"', '_').replace('\'', '_').replace(';', '_').replace(',', '_');
     }
+    /**
+     * Trusted Methods
+     * - for teh lulz
+     * 
+     * 
+     */
+    public boolean isRegistered(String authcode){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = this.getConnection();
+            final String state = "SELECT * FROM minecraftusers WHERE minecraft_username <>\"\" AND authcode=\"" + authcode + "\"";
+            this.j2.debug("Query: " + state);
+            ps = conn.prepareStatement(state);
+            rs = ps.executeQuery();
+            while (rs.next ())
+            {
+            	return true;
+            }
+        }
+        catch (final SQLException ex) {
+            
+        }
+        return false;
 
+        }
+
+      
+    
+        public boolean authCorrect(String authcode){
+            Connection conn = null;
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            try {
+                conn = this.getConnection();
+                final String state = "SELECT * FROM minecraftusers WHERE minecraft_username <>\"\" AND authcode=\"" + authcode + "\"";
+                this.j2.debug("Query: " + state);
+                ps = conn.prepareStatement(state);
+                rs = ps.executeQuery();
+                while (rs.next ())
+                {
+                	return true;
+                }
+            }
+             catch (final SQLException ex) {
+                
+            }
+            return false;
+
+            }
+        
+    public void addLink(String playerName, String authcode){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = this.getConnection();
+            final String state = "SELECT * FROM minecraftusers WHERE minecraft_username <> \"\" AND authcode=\"" + authcode + "\"";
+            this.j2.debug("Query: " + state);
+            ps = conn.prepareStatement(state);
+            ps.executeUpdate();
+        } catch (final SQLException ex) {
+                this.j2.logWarn(ChatColor.RED + "Uh oh! An error occured while linking a forum account with a minecraft account");
+            } finally {
+                try {
+                    if (ps != null) {
+                        ps.close();
+                    }
+                    if (rs != null) {
+                        rs.close();
+                    }
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (final SQLException ex) {
+                    this.j2.logWarn(ChatColor.RED + "Uh oh! An error occured while linking a forum account with a minecraft account");
+                }
+
+            }
+    }
     /**
      * Get the User class of a username
      * 
