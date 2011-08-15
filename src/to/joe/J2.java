@@ -85,6 +85,7 @@ import to.joe.Commands.Admin.TimeCommand;
 import to.joe.Commands.Admin.UnBanCommand;
 import to.joe.Commands.Admin.VanishCommand;
 import to.joe.Commands.Admin.WhereIsPlayerCommand;
+import to.joe.Commands.Admin.WoofCommand;
 import to.joe.Commands.Fun.ClearInventoryCommand;
 import to.joe.Commands.Fun.HomeCommand;
 import to.joe.Commands.Fun.ItemCommand;
@@ -390,6 +391,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("note").setExecutor(new NoteCommand(this));
         this.getCommand("anote").setExecutor(new NoteCommand(this));
         this.getCommand("trustreq").setExecutor(new TrustedRequestCommand(this));
+        this.getCommand("woof").setExecutor(new WoofCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.servernumber);
