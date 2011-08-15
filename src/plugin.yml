@@ -351,3 +351,7 @@ commands:
     description: Woof woof woof
     usage: |
             woof playername
+  register:
+  	description: Link in-game account to forum account
+  	usage: |
+  			register authcode

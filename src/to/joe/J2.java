@@ -387,6 +387,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("note").setExecutor(new NoteCommand(this));
         this.getCommand("anote").setExecutor(new NoteCommand(this));
         this.getCommand("trustreq").setExecutor(new TrustedRequestCommand(this));
+        this.getCommand("register").setExecutor(new RegisterCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.servernumber);
