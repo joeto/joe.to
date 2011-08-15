@@ -121,55 +121,59 @@ public abstract class CoopRunner implements Runnable {
         final EnumMap<BanCoopType, ArrayList<BanCoopBan>> allBans = new EnumMap<BanCoopType, ArrayList<BanCoopBan>>(BanCoopType.class);
 
         int sigCount = 0;
-
-        final ArrayList<BanCoopBan> mcbans_bans = new ArrayList<BanCoopBan>();
-        final HashMap<String, String> postVars = new HashMap<String, String>();
-        postVars.put("player", this.name);
-        postVars.put("admin", "BobTheCurious");
-        postVars.put("exec", "playerLookup");
-        final JSONObject mcbans_json = this.mcbans_api(postVars);
-        if (mcbans_json == null) {
-            this.j2.logWarn("MCBans is DOWN");
-            return;
-        }
-        try {
-            final JSONArray local = mcbans_json.optJSONArray("local");
-            for (int i = 0; i < local.length(); i++) {
-                mcbans_bans.add(new BanCoopBanMCBans(local.getString(i), "l"));
+        final double mcbans_rep;
+        if (!this.j2.mcbansapi.equals("")) {
+            final ArrayList<BanCoopBan> mcbans_bans = new ArrayList<BanCoopBan>();
+            final HashMap<String, String> postVars = new HashMap<String, String>();
+            postVars.put("player", this.name);
+            postVars.put("admin", "BobTheCurious");
+            postVars.put("exec", "playerLookup");
+            final JSONObject mcbans_json = this.mcbans_api(postVars);
+            if (mcbans_json == null) {
+                this.j2.logWarn("MCBans is DOWN");
+                return;
             }
-            final JSONArray global = mcbans_json.optJSONArray("global");
-            for (int i = 0; i < global.length(); i++) {
-                mcbans_bans.add(new BanCoopBanMCBans(global.getString(i), "g"));
-                sigCount++;
+            try {
+                final JSONArray local = mcbans_json.optJSONArray("local");
+                for (int i = 0; i < local.length(); i++) {
+                    mcbans_bans.add(new BanCoopBanMCBans(local.getString(i), "l"));
+                }
+                final JSONArray global = mcbans_json.optJSONArray("global");
+                for (int i = 0; i < global.length(); i++) {
+                    mcbans_bans.add(new BanCoopBanMCBans(global.getString(i), "g"));
+                    sigCount++;
+                }
+            } catch (final JSONException e) {
+                e.printStackTrace();
             }
-        } catch (final JSONException e) {
-            e.printStackTrace();
-        }
-        final double mcbans_rep = mcbans_json.optDouble("reputation", 10.0);
-        int mcbans_count = mcbans_json.optInt("total", 0);
-        if (mcbans_count < mcbans_bans.size()) {
-            mcbans_count = mcbans_bans.size();
-        }
-        count.put(BanCoopType.MCBANS, mcbans_count);
-        allBans.put(BanCoopType.MCBANS, mcbans_bans);
-
-        final JSONObject mcbouncer = this.mcbouncer_getBans(this.name);
-        final ArrayList<BanCoopBan> mcbouncer_bans = new ArrayList<BanCoopBan>();
-        int mcbouncer_count = mcbouncer.optInt("totalcount", 0);
-        if (this.mcbouncer_success(mcbouncer)) {
-            final JSONArray daBans = (JSONArray) mcbouncer.opt("data");
-            if (daBans.length() > mcbouncer_count) {
-                mcbouncer_count = daBans.length();
+            mcbans_rep = mcbans_json.optDouble("reputation", 10.0);
+            int mcbans_count = mcbans_json.optInt("total", 0);
+            if (mcbans_count < mcbans_bans.size()) {
+                mcbans_count = mcbans_bans.size();
             }
-            for (int x = 0; x < daBans.length(); x++) {
-                final JSONObject ban = (JSONObject) daBans.opt(x);
-                mcbouncer_bans.add(new BanCoopBanMCBouncer(String.valueOf(ban.optString("server", "")), String.valueOf(ban.optString("reason", ""))));
-            }
+            count.put(BanCoopType.MCBANS, mcbans_count);
+            allBans.put(BanCoopType.MCBANS, mcbans_bans);
+        } else {
+            mcbans_rep = 0;
         }
-        count.put(BanCoopType.MCBOUNCER, mcbouncer_count);
-        sigCount += mcbouncer_count;
-        allBans.put(BanCoopType.MCBOUNCER, mcbouncer_bans);
-
+        if (!this.j2.mcbouncerapi.equals("")) {
+            final JSONObject mcbouncer = this.mcbouncer_getBans(this.name);
+            final ArrayList<BanCoopBan> mcbouncer_bans = new ArrayList<BanCoopBan>();
+            int mcbouncer_count = mcbouncer.optInt("totalcount", 0);
+            if (this.mcbouncer_success(mcbouncer)) {
+                final JSONArray daBans = (JSONArray) mcbouncer.opt("data");
+                if (daBans.length() > mcbouncer_count) {
+                    mcbouncer_count = daBans.length();
+                }
+                for (int x = 0; x < daBans.length(); x++) {
+                    final JSONObject ban = (JSONObject) daBans.opt(x);
+                    mcbouncer_bans.add(new BanCoopBanMCBouncer(String.valueOf(ban.optString("server", "")), String.valueOf(ban.optString("reason", ""))));
+                }
+            }
+            count.put(BanCoopType.MCBOUNCER, mcbouncer_count);
+            sigCount += mcbouncer_count;
+            allBans.put(BanCoopType.MCBOUNCER, mcbouncer_bans);
+        }
         this.coop.record.put(this.name, new BanCoopDossier(this.name, count, sigCount, allBans, mcbans_rep));
     }
 

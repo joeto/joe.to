@@ -31,7 +31,6 @@ public class AuthCommand extends MasterCommand {
                 this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE + "[J2AUTH] " + playerName + " deauthenticated");
             }
             this.j2.users.resetAuthentication(player);
-            this.j2.minitrue.vanish.updateInvisible(player);
         }
     }
 }

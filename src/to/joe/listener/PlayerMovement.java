@@ -32,7 +32,6 @@ public class PlayerMovement extends PlayerListener {
         final int chunkx = chunk.getX();
         final int chunkz = chunk.getZ();
         world.refreshChunk(chunkx, chunkz);
-        this.j2.minitrue.vanish.updateInvisibleOnTimer();
     }
 
     @Override

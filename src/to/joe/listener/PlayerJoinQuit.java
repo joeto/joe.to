@@ -47,7 +47,6 @@ public class PlayerJoinQuit extends PlayerListener {
          * player.sendMessage(ChatColor.RED+"To get out, talk to the jailer");
          * player.sendMessage(ChatColor.RED+"You need to punch him"); }
          */
-        this.j2.minitrue.vanish.updateInvisible(player);
     }
 
     ArrayList<String> kicked = new ArrayList<String>();

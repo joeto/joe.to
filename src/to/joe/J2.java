@@ -438,7 +438,7 @@ public class J2 extends JavaPlugin {
             this.mysql.loadMySQLData();
             // mysql end
 
-            this.enableWebsite=j2properties.getBoolean("website-enable",false);
+            this.enableWebsite = j2properties.getBoolean("website-enable", false);
             conf_general.put("website-enable", this.enableWebsite);
             this.playerLimit = j2properties.getInt("max-players", 20);
             conf_general.put("max-players", this.playerLimit);
