@@ -54,7 +54,7 @@ public class Voting {
                     if (this.voteInProgress) {
                         player.sendMessage(ChatColor.RED + "Vote already in progress");
                     }
-                    String combined = this.j2.combineSplit(1, args, " ");
+                    String combined = this.j2.combineSplit(0, args, " ");
                     if (!combined.startsWith("\"") || !combined.endsWith("\"")) {
                         this.usageVoteAdmin(player);
                         return;
@@ -92,6 +92,7 @@ public class Voting {
                     this.votes = new HashMap<String, Integer>();
                     // Run the run() method of VoteTally in 30 seconds
                     this.tallyTaskNumber = this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(this.j2, new VoteTally(this.j2), 600L);
+                    return;
                 } else {
                     if (this.voteInProgress) {
                         this.j2.getServer().getScheduler().cancelTask(this.tallyTaskNumber);
@@ -102,6 +103,7 @@ public class Voting {
                     } else {
                         player.sendMessage(ChatColor.RED + "You derp there isn't any vote");
                     }
+                    return;
                 }
             } else {
                 player.sendMessage(ChatColor.RED + "That's not a number!");
