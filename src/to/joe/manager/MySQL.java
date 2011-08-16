@@ -153,7 +153,7 @@ public class MySQL {
             ResultSet rs = null;
             try {
                 conn = this.getConnection();
-                final String state = "SELECT * FROM minecraftusers WHERE minecraft_username authcode=\"" + authcode + "\"";
+                final String state = "SELECT * FROM minecraftusers WHERE authcode=\"" + authcode + "\"";
                 this.j2.debug("Query: " + state);
                 ps = conn.prepareStatement(state);
                 rs = ps.executeQuery();
