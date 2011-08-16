@@ -1,5 +1,6 @@
 package to.joe.Commands.SeniorStaff;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -16,9 +17,9 @@ public class IRCAdminReloadCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (!isPlayer || this.j2.hasFlag(player, Flag.SRSTAFF)) {
-            this.j2.loadData();
-            this.j2.chat.messageByFlag(Flag.SRSTAFF, "j2 data reloaded by " + playerName);
-            this.j2.log("j2 data reloaded by " + playerName);
+            this.j2.irc.reloadIRCAdmins();
+            this.j2.chat.messageByFlag(Flag.SRSTAFF, ChatColor.RED + "IRC admins reloaded by " + playerName);
+            this.j2.log(playerName + " reloaded irc admins");
         }
     }
 }

@@ -2,7 +2,6 @@ package to.joe.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -123,12 +122,7 @@ public class Damages {
      * @param target
      * @return
      */
-    public boolean woof(String target) {
-        final List<Player> list = this.j2.getServer().matchPlayer(target);
-        if (list.size() != 1) {
-            return false;
-        }
-        final Player player = list.get(0);
+    public boolean woof(Player player) {
         this.endanger(player.getName());
         final ArrayList<Wolf> wlist = new ArrayList<Wolf>();
         final boolean hated = this.j2.ihatewolves;

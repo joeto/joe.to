@@ -1,5 +1,7 @@
 package to.joe.Commands.Admin;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,8 +22,14 @@ public class WoofCommand extends MasterCommand {
             if (args.length == 0) {
                 sender.sendMessage(ChatColor.RED + "/woof player");
             } else {
-                this.j2.damage.woof(args[0]);
-                this.j2.sendAdminPlusLog(ChatColor.RED + playerName + " has targeted " + args[0] + " for some fluffy lovin");
+                final List<Player> list = this.j2.getServer().matchPlayer(args[0]);
+                if (list.size() != 1) {
+
+                } else {
+                    final Player target = list.get(0);
+                    this.j2.damage.woof(target);
+                    this.j2.sendAdminPlusLog(ChatColor.RED + playerName + " has targeted " + target.getName() + " for some fluffy lovin");
+                }
             }
         }
     }
