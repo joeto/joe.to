@@ -25,6 +25,7 @@ public class RegisterCommand extends MasterCommand {
 		        }
 		        else{
 		            this.j2.mysql.addLink(playerName, args[0]);
+		            player.sendMessage(ChatColor.AQUA + "Success!... We hope. Thanks for linking your account.")
 		        }
 		    }
 		}
