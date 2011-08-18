@@ -120,6 +120,7 @@ import to.joe.listener.PlayerChat;
 import to.joe.listener.PlayerInteract;
 import to.joe.listener.PlayerJoinQuit;
 import to.joe.listener.PlayerMovement;
+import to.joe.listener.Weather;
 import to.joe.manager.ActivityTracker;
 import to.joe.manager.BanCooperative;
 import to.joe.manager.Chats;
@@ -157,6 +158,7 @@ public class J2 extends JavaPlugin {
     private final EntityAll entityListener = new EntityAll(this);
     private final PlayerMovement plrlisMovement = new PlayerMovement(this);
     private final MapListener mapListener = new MapListener(this);
+    private final Weather weatherListener = new Weather(this);
     /**
      * Chat manager
      */
@@ -303,6 +305,7 @@ public class J2 extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_MOVE, this.plrlisMovement, Priority.Normal, this);
         pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.MAP_INITIALIZE, this.mapListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.WEATHER_CHANGE, this.weatherListener, Priority.Normal, this);
         if (this.debug) {
             this.log("Events registered");
         }
@@ -443,6 +446,8 @@ public class J2 extends JavaPlugin {
             this.mysql.loadMySQLData();
             // mysql end
 
+            this.enableWeather = j2properties.getBoolean("weather-enable",true);
+            conf_general.put("weather-enable", this.enableWebsite);
             this.enableWebsite = j2properties.getBoolean("website-enable", false);
             conf_general.put("website-enable", this.enableWebsite);
             this.playerLimit = j2properties.getInt("max-players", 20);
@@ -1005,4 +1010,5 @@ public class J2 extends JavaPlugin {
     public int servernumber;
     ArrayList<String> srstaffList, adminsList, trustedList;
     public String mcbansapi, mcbouncerapi;
+    public boolean enableWeather;
 }

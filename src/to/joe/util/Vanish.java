@@ -39,6 +39,7 @@ public class Vanish {
     public Vanish(Minitrue mini) {
         this.eidVanished = new ArrayList<Integer>();
         this.mini = mini;
+        SpoutManager.getPacketManager().addListener(5, new Packeteer5EntityEquipment(this));
         SpoutManager.getPacketManager().addListener(17, new Packeteer17(this));
         SpoutManager.getPacketManager().addListener(18, new Packeteer18ArmAnimation(this));
         SpoutManager.getPacketManager().addListener(19, new Packeteer19EntityAction(this));

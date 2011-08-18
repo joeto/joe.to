@@ -227,9 +227,9 @@ public class Chats {
             this.messageAll(combined);
             if (this.j2.ircEcho) {
                 if (me) {
-                    this.j2.irc.getBot().sendMessage(channel, "[IRC] *" + name + message);
+                    this.j2.irc.getBot().sendMessage(channel, "[IRC] *" + name + " " + message);
                 } else {
-                    this.j2.irc.getBot().sendMessage(channel, "[IRC] <" + name + ">" + message);
+                    this.j2.irc.getBot().sendMessage(channel, "[IRC] <" + name + "> " + message);
                 }
             }
         }

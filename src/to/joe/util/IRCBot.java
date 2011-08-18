@@ -152,7 +152,7 @@ public class IRCBot extends PircBot {
                     }
                 }
                 if (playerName != null) {
-                    this.sendMessage(channel, "I have " + playerName + "!");
+                    this.sendMessage(channel, "I has " + playerName + "!");
                 }
             }
             return;
