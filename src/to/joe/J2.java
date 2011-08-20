@@ -52,6 +52,7 @@ import to.joe.Commands.ReportCommand;
 import to.joe.Commands.TrustCommand;
 import to.joe.Commands.TrustedRequestCommand;
 import to.joe.Commands.VoteCommand;
+import to.joe.Commands.RegisterCommand;
 import to.joe.Commands.Admin.AddBanCommand;
 import to.joe.Commands.Admin.AdminChatCommand;
 import to.joe.Commands.Admin.AdminGlobalChatCommand;
@@ -395,6 +396,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("anote").setExecutor(new NoteCommand(this));
         this.getCommand("trustreq").setExecutor(new TrustedRequestCommand(this));
         this.getCommand("woof").setExecutor(new WoofCommand(this));
+        this.getCommand("register").setExecutor(new RegisterCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.servernumber);
