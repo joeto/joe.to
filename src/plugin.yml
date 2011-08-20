@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 1.2.1
+version: 1.1.1
 website: http://forums.joe.to
 depend: [Spout]
 author: J2 Minecraft Plugin Team
@@ -351,4 +351,9 @@ commands:
   woof:
     description: Woof woof woof
     usage: |
+            woof playername
+  register:
+    description: Links forum account with minecraft account
+    usage: |
+            register authcode
             woof playername
