@@ -76,6 +76,7 @@ import to.joe.Commands.Admin.RemoveWarpCommand;
 import to.joe.Commands.Admin.ReportHandlingCommand;
 import to.joe.Commands.Admin.SetWarpCommand;
 import to.joe.Commands.Admin.ShushCommand;
+import to.joe.Commands.Admin.SlapCommand;
 import to.joe.Commands.Admin.SlayCommand;
 import to.joe.Commands.Admin.SmiteCommand;
 import to.joe.Commands.Admin.StormCommand;
@@ -396,6 +397,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("anote").setExecutor(new NoteCommand(this));
         this.getCommand("trustreq").setExecutor(new TrustedRequestCommand(this));
         this.getCommand("woof").setExecutor(new WoofCommand(this));
+        this.getCommand("slap").setExecutor(new SlapCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.servernumber);
