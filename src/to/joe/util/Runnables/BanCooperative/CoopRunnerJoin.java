@@ -27,7 +27,7 @@ public class CoopRunnerJoin extends CoopRunner {
         if (dox.totalBans() > 0) {
             this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE + "Player " + ChatColor.WHITE + this.name + ChatColor.LIGHT_PURPLE + " has " + ChatColor.WHITE + dox.totalBans() + ChatColor.LIGHT_PURPLE + " bans. MCBans rep " + ChatColor.WHITE + dox.getMCBansRep() + ChatColor.LIGHT_PURPLE + "/10");
             this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE + "To see the bans: /lookup " + ChatColor.WHITE + this.name);
-            if (!this.j2.hasFlag(this.name, Flag.QUIETERJOIN_NOIRC) && (dox.sigBans() > 0)) {
+            if (!this.j2.hasFlag(this.name, Flag.QUIET_IRC) && (dox.sigBans() > 0)) {
                 this.j2.irc.messageAdmins("[BANS] " + this.name + ": Bans: " + dox.totalBans() + ". MCBans Rep " + dox.getMCBansRep() + "/10");
             }
         }

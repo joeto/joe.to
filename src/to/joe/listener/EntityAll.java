@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.entity.ItemSpawnEvent;
 
 import to.joe.J2;
 import to.joe.util.Flag;
@@ -88,6 +89,13 @@ public class EntityAll extends EntityListener {
         final Entity died = event.getEntity();
         if (died instanceof Player) {
             this.j2.damage.arf(((Player) died).getName());
+        }
+    }
+    
+    @Override
+    public void onItemSpawn(ItemSpawnEvent event){
+        if(this.j2.servernumber==2){
+            event.setCancelled(true);
         }
     }
 }

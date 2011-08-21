@@ -304,6 +304,7 @@ public class J2 extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.plrlisMovement, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_MOVE, this.plrlisMovement, Priority.Normal, this);
         pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.ITEM_SPAWN, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.MAP_INITIALIZE, this.mapListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.WEATHER_CHANGE, this.weatherListener, Priority.Normal, this);
         if (this.debug) {
@@ -712,39 +713,6 @@ public class J2 extends JavaPlugin {
         return this.summonlist.contains(Integer.valueOf(id));
     }
 
-    /*
-     * public Block locationCheck(Player player,Block block,boolean placed){ int
-     * x,z;
-     * 
-     * if(block==null && !placed){ Location l=player.getLocation(); x=(int)l.x;
-     * z=(int)l.z; int minX=natureXmin-10; int maxX=natureXmax+10; int
-     * minZ=natureZmin-10; int maxZ=natureZmax+10; boolean pancakes=false; if(
-     * (x==minX || x==maxX) && z>minZ && z<maxZ){ pancakes=true; } if( (z==minZ
-     * || z==maxZ) && x>minX && x<maxX){ pancakes=true; } if(pancakes) {
-     * player.sendMessage
-     * (Colors.LightBlue+"IMPORTANT MESSAGE: "+Colors.LightGreen+"Nature");
-     * player.sendMessage(Colors.LightGreen+
-     * "You are 10 blocks from the nature conservatory");
-     * player.sendMessage(Colors
-     * .LightGreen+"DO NOT MODIFY, DO NOT BUILD. ONLY OBSERVE.");
-     * player.sendMessage
-     * (Colors.LightGreen+"Harsh punishments for damaging nature");
-     * player.sendMessage(Colors.LightGreen+"- Bob the Naturalist");
-     * //player.sendMessage
-     * (x+" "+z+" "+natureXmin+" "+natureXmax+" "+natureZmin+" "+natureZmax); }
-     * } else{ x=block.getX(); z=block.getZ(); if(x>(natureXmin) &&
-     * x<(natureXmax) && z>(natureZmin) && z<(natureZmax)) { int type=19;
-     * if(!placed) type=block.getType(); Block james=new
-     * Block(type,x,block.getY(),z); if(isJ2Admin(player)){
-     * player.sendMessage(Colors
-     * .LightBlue+"IMPORTANT MESSAGE: "+Colors.LightGreen+"Nature");
-     * player.sendMessage
-     * (Colors.LightGreen+"You just touched the conservatory");
-     * player.sendMessage(Colors.LightGreen+"Please undo what you changed");
-     * player.sendMessage(Colors.LightGreen+"- Bob the Naturalist"); return
-     * null; } return james; } } return null; }
-     */
-
     /**
      * Combine a String array from startIndex with separator
      * 
@@ -995,7 +963,6 @@ public class J2 extends JavaPlugin {
     public String[] ircLevel2;
     public boolean ircEnable;
     public ArrayList<Integer> itemblacklist, superblacklist, watchlist, summonlist;
-    // private int natureXmin,natureXmax,natureZmin,natureZmax;
     public boolean maintenance = false;
     public String maintmessage;
     public boolean safemode;

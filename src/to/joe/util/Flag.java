@@ -13,24 +13,23 @@ public enum Flag {
     FUN('f', "Fun commands"), // standard toolset for mc2. currently unused
     GODMODE('g', "Godmode"), // just for tracking, not 100% used yet
     JAILED('j', "Jailed"), // no get out of jail free card,
-    SHUT_OUT_WORLD('l', "Shutting out the world"), MODWORLD('m', "Can Modify"), // standard
-                                                                                // ability
-                                                                                // to
-                                                                                // edit
-                                                                                // blocks
+    SHUT_OUT_WORLD('l', "Shutting out the world"), //Temporary - /shush
+    MODWORLD('m', "Can Modify"), // standard ability to edit blocks
     NEW('n', "New"), // new player. currently unused
     NSA('N', "Listening In"), // admin listening to msg
     BARRED_MC1('p', "Banned from mc1"), // Cannot join mc1 no matter what.
     SILENT_JOIN('q', "Silent but deadly"), // invisadmin
-    TRUSTREQ('r', "Accepting trustreq"), SRSTAFF('s', "Senior Staff"), // senior
-                                                                       // staff
+    TRUSTREQ('r', "Accepting trustreq"), //Accept /trustreq (trusted only)
+    SRSTAFF('s', "Senior Staff"), // senior staff
     TRUSTED('t', "Trusted"), // trusted
     TOOLS('T', "Tool mode"), // admin tool mode
     THOR('x', "Thor Powers"), // admin lightning powers
     MUTED('X', "Muted"), // player muted
-    QUIETERJOIN_NOIRC('y', "No join alerts on IRC"), CUSTOM3('z', "Custom3"),
+    QUIET_IRC('y', "Minimal IRC alerts"), //Stop spamming IRC!
+    CUSTOM3('z', "Custom3"),
     // Numbers are reserved for internal programming.
-    PLAYER_HOME('0', "Home designation (internal)"), PLAYER_WARP_PUBLIC('1', "Unflagged warp designation (internal)");
+    PLAYER_HOME('0', "Home designation (internal)"), //homes
+    PLAYER_WARP_PUBLIC('1', "Unflagged warp designation (internal)");//warps
 
     private char flag;
     private String description;
