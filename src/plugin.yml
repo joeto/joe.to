@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 1.2.2
+version: 1.2.3
 website: http://forums.joe.to
 depend: [Spout]
 author: J2 Minecraft Plugin Team
@@ -355,3 +355,6 @@ commands:
   slap:
     description: slap!
     usage: slap
+  shower:
+    description: shower time!
+    usage: shower

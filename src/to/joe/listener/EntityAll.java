@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 
 import to.joe.J2;
@@ -40,6 +41,10 @@ public class EntityAll extends EntityListener {
 
         if (smacked instanceof Player) { // player has been hit!
             final Player player = (Player) smacked;
+            if (this.j2.minitrue.invisible(player)) {
+                event.setCancelled(true);
+                return;
+            }
             if (event instanceof EntityDamageByEntityEvent) {// kickaxe time
                 final EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) event;
                 final Entity damager = ev.getDamager();
@@ -48,6 +53,7 @@ public class EntityAll extends EntityListener {
                     if (this.j2.hasFlag(pd, Flag.SRSTAFF)) {
                         if (pd.getInventory().getItemInHand().getType().equals(Material.IRON_AXE)) {
                             this.j2.kickbans.callKick(player.getName(), pd.getName(), "IN DA FACE", true);
+                            return;
                         }
                     }
                 }
@@ -55,10 +61,23 @@ public class EntityAll extends EntityListener {
             if (smacker.equals(DamageCause.ENTITY_ATTACK)) {// pvp
                 if (this.j2.damage.PvPsafe.contains(player.getName())) {
                     event.setCancelled(true);
+                    return;
                 }
             } else {// pve
                 if (this.j2.damage.PvEsafe.contains(player.getName())) {
                     event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+        if (event instanceof EntityDamageByEntityEvent) {
+            final EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) event;
+            final Entity damager = ev.getDamager();
+            if (damager instanceof Player) {
+                final Player player = (Player) damager;
+                if (this.j2.minitrue.invisible(player)) {
+                    event.setCancelled(true);
+                    return;
                 }
             }
         }
@@ -91,11 +110,19 @@ public class EntityAll extends EntityListener {
             this.j2.damage.arf(((Player) died).getName());
         }
     }
-    
+
     @Override
-    public void onItemSpawn(ItemSpawnEvent event){
-        if(this.j2.servernumber==2){
+    public void onItemSpawn(ItemSpawnEvent event) {
+        if (this.j2.servernumber == 2) {
             event.setCancelled(true);
         }
     }
+
+    @Override
+    public void onEntityTarget(EntityTargetEvent event) {
+        if ((event.getTarget() instanceof Player) && this.j2.minitrue.invisible((Player) event.getTarget())) {
+            event.setCancelled(true);
+        }
+    }
+
 }

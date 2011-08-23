@@ -21,15 +21,14 @@ public class SlapCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (!isPlayer || this.j2.hasFlag(player, Flag.ADMIN)) {
-            float force=0;
+            float force = 0;
             if (args.length < 1) {
                 player.sendMessage(ChatColor.RED + "Usage: /slap player force");
             } else {
-                if(args.length==1){
-                    force=5;
-                }
-                else{
-                    force=new Float(args[1]);
+                if (args.length == 1) {
+                    force = 5;
+                } else {
+                    force = new Float(args[1]);
                 }
                 final List<Player> results = this.j2.minitrue.matchPlayer(args[0], true);
                 if (results.size() == 1) {
@@ -37,7 +36,7 @@ public class SlapCommand extends MasterCommand {
                     Vector newVelocity = new Vector((randomGen.nextFloat() * 1.5 - 0.75) * force, randomGen.nextFloat() / 2.5 + (0.4 * force), (randomGen.nextFloat() * 1.5 - 0.75) * force);
                     final Player target = results.get(0);
                     target.setVelocity(newVelocity);
-                    this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.RED+player.getName()+" slapped "+target.getName());
+                    this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.RED + player.getName() + " slapped " + target.getName());
                 } else if (results.size() > 1) {
                     sender.sendMessage(ChatColor.RED + "Matches too many players");
                 } else {

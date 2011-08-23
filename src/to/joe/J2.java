@@ -113,6 +113,7 @@ import to.joe.Commands.SeniorStaff.MaxPlayersCommand;
 import to.joe.Commands.SeniorStaff.MobCommand;
 import to.joe.Commands.SeniorStaff.SayCommand;
 import to.joe.Commands.SeniorStaff.SetSpawnCommand;
+import to.joe.Commands.SeniorStaff.ShowerCommand;
 import to.joe.Commands.SeniorStaff.SmackIRCCommand;
 import to.joe.listener.BlockAll;
 import to.joe.listener.EntityAll;
@@ -232,7 +233,6 @@ public class J2 extends JavaPlugin {
      * Vote manager
      */
     public final Voting voting = new Voting(this);
-    // public managerBlockLog blogger;
     /**
      * MySQL stuffs
      */
@@ -268,7 +268,6 @@ public class J2 extends JavaPlugin {
             this.irc.connectAndAuth();
         }
         this.irc.startIRCTimer();
-        // if(ircEnable)irc.startIRCTimer();
         this.debug("IRC up (or disabled)");
         // irc end
         this.loadTips();
@@ -276,12 +275,6 @@ public class J2 extends JavaPlugin {
         this.startTipsTimer();
         this.debug("Tips timer started");
 
-        // Initialize BlockLogger
-        // this.blogger = new
-        // managerBlockLog(this.mysql.getConnection(),this.mysql.servnum());
-        // if(debug)this.log("Blogger init");
-        // new Thread(blogger).start();
-        // if(debug)this.log("Blogger is go");
         // Register our events
         final PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvent(Event.Type.PLAYER_CHAT, this.plrlisChat, Priority.Normal, this);
@@ -296,6 +289,7 @@ public class J2 extends JavaPlugin {
         pm.registerEvent(Event.Type.BLOCK_BURN, this.blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.SIGN_CHANGE, this.blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_EXPLODE, this.entityListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.ENTITY_TARGET, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_DEATH, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_PRELOGIN, this.plrlisJoinQuit, Priority.Normal, this);
@@ -398,6 +392,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("trustreq").setExecutor(new TrustedRequestCommand(this));
         this.getCommand("woof").setExecutor(new WoofCommand(this));
         this.getCommand("slap").setExecutor(new SlapCommand(this));
+        //this.getCommand("shower").setExecutor(new ShowerCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.servernumber);
@@ -449,7 +444,7 @@ public class J2 extends JavaPlugin {
             this.mysql.loadMySQLData();
             // mysql end
 
-            this.enableWeather = j2properties.getBoolean("weather-enable",true);
+            this.enableWeather = j2properties.getBoolean("weather-enable", true);
             conf_general.put("weather-enable", this.enableWebsite);
             this.enableWebsite = j2properties.getBoolean("website-enable", false);
             conf_general.put("website-enable", this.enableWebsite);

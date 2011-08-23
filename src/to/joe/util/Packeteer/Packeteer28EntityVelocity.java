@@ -1,7 +1,5 @@
 package to.joe.util.Packeteer;
 
-import java.util.ArrayList;
-
 import net.minecraft.server.Packet28EntityVelocity;
 
 import org.bukkit.entity.Player;
@@ -16,23 +14,7 @@ public class Packeteer28EntityVelocity implements PacketListener {
     private final Vanish vanish;
 
     public Packeteer28EntityVelocity(Vanish vanish) {
-        this.eidVanished = new ArrayList<Integer>();
         this.vanish = vanish;
-    }
-
-    private final Object eidSync = new Object();
-    private final ArrayList<Integer> eidVanished;
-
-    public void addVanished(int id) {
-        synchronized (this.eidSync) {
-            this.eidVanished.add(id);
-        }
-    }
-
-    public void removeVanished(int id) {
-        synchronized (this.eidSync) {
-            this.eidVanished.remove(id);
-        }
     }
 
     /*

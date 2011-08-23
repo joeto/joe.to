@@ -205,7 +205,7 @@ public class IPTracker {
         if (this.badlist.contains(name)) {
             final int total = this.getTotal(name) - 1;
             final int banned = this.getBanned(name);
-            if (!this.j2.hasFlag(name, Flag.QUIET_IRC)&&!this.j2.hasFlag(name, Flag.TRUSTED)) {
+            if (!this.j2.hasFlag(name, Flag.QUIET_IRC) && !this.j2.hasFlag(name, Flag.TRUSTED)) {
                 this.j2.irc.messageAdmins("[J2BANS] " + name + " matches " + total + " others: " + banned + " banned");
             }
             this.j2.chat.messageByFlag(Flag.ADMIN, ChatColor.LIGHT_PURPLE + "[J2BANS] " + ChatColor.WHITE + name + ChatColor.LIGHT_PURPLE + " matches " + total + " others: " + banned + " banned");
