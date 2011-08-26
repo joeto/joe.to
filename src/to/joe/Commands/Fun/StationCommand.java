@@ -17,7 +17,7 @@ public class StationCommand extends MasterCommand {
 
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
-        if (isPlayer && this.j2.hasFlag(player, Flag.FUN) && (this.j2.servernumber == 2)) {
+        if (isPlayer && this.j2.hasFlag(player, Flag.FUN) && (this.j2.config.general_server_number == 2)) {
             final Warp target = this.j2.warps.getClosestWarp(player.getLocation());
             final String name = target.getName();
             if ((args.length == 1) && args[0].equalsIgnoreCase("go")) {

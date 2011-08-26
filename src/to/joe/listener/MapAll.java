@@ -17,14 +17,14 @@ import org.bukkit.map.MinecraftFont;
 
 import to.joe.J2;
 
-public class MapListener extends ServerListener {
+public class MapAll extends ServerListener {
 
     private final J2 j2;
     private final MapRenderer mapRenderer = new MapRend();
     private BufferedImage image = null;
     private final MinecraftFont font = new MinecraftFont();
 
-    public MapListener(J2 j2) {
+    public MapAll(J2 j2) {
         this.j2 = j2;
         try {
             this.image = ImageIO.read(new File("logo.png"));
@@ -34,7 +34,7 @@ public class MapListener extends ServerListener {
 
     @Override
     public void onMapInitialize(MapInitializeEvent event) {
-        if (this.j2.servernumber == 2) {
+        if (this.j2.config.general_server_number == 2) {
             final MapView mapView = event.getMap();
             final List<MapRenderer> rendererList = mapView.getRenderers();
             for (final MapRenderer renderer : rendererList) {
@@ -52,15 +52,15 @@ public class MapListener extends ServerListener {
 
         @Override
         public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
-            if (MapListener.this.image != null) {
-                mapCanvas.drawImage(0, 0, MapListener.this.image);
-                mapCanvas.drawText(20, 15, MapListener.this.font, "mc2.joe.to");
-                mapCanvas.drawText(0, 30, MapListener.this.font, "READ, " + player.getName());
-                mapCanvas.drawText(0, 50, MapListener.this.font, "Free items: /i");
-                mapCanvas.drawText(10, 60, MapListener.this.font, "Example: /i diamond 10");
-                mapCanvas.drawText(0, 80, MapListener.this.font, "For more information");
-                mapCanvas.drawText(0, 90, MapListener.this.font, "you MUST read the output from");
-                mapCanvas.drawText(20, 100, MapListener.this.font, "/intro");
+            if (MapAll.this.image != null) {
+                mapCanvas.drawImage(0, 0, MapAll.this.image);
+                mapCanvas.drawText(20, 15, MapAll.this.font, "mc2.joe.to");
+                mapCanvas.drawText(0, 30, MapAll.this.font, "READ, " + player.getName());
+                mapCanvas.drawText(0, 50, MapAll.this.font, "Free items: /i");
+                mapCanvas.drawText(10, 60, MapAll.this.font, "Example: /i diamond 10");
+                mapCanvas.drawText(0, 80, MapAll.this.font, "For more information");
+                mapCanvas.drawText(0, 90, MapAll.this.font, "you MUST read the output from");
+                mapCanvas.drawText(20, 100, MapAll.this.font, "/intro");
             }
         }
 

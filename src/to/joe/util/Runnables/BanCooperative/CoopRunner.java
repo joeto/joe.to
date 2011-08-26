@@ -122,7 +122,7 @@ public abstract class CoopRunner implements Runnable {
 
         int sigCount = 0;
         final double mcbans_rep;
-        if (!this.j2.mcbansapi.equals("")) {
+        if (!this.j2.config.bans_mcbans_api.equals("")) {
             final ArrayList<BanCoopBan> mcbans_bans = new ArrayList<BanCoopBan>();
             final HashMap<String, String> postVars = new HashMap<String, String>();
             postVars.put("player", this.name);
@@ -156,7 +156,7 @@ public abstract class CoopRunner implements Runnable {
         } else {
             mcbans_rep = 0;
         }
-        if (!this.j2.mcbouncerapi.equals("")) {
+        if (!this.j2.config.bans_mcbouncer_api.equals("")) {
             final JSONObject mcbouncer = this.mcbouncer_getBans(this.name);
             final ArrayList<BanCoopBan> mcbouncer_bans = new ArrayList<BanCoopBan>();
             int mcbouncer_count = mcbouncer.optInt("totalcount", 0);
@@ -186,7 +186,7 @@ public abstract class CoopRunner implements Runnable {
     }
 
     protected JSONObject mcbans_api(HashMap<String, String> postVars) {
-        return this.apiGet(this.mcbans_host, "/" + this.j2.mcbansapi, postVars);
+        return this.apiGet(this.mcbans_host, "/" + this.j2.config.bans_mcbans_api, postVars);
     }
 
     private JSONObject mcbouncer_getBans(String name) {
@@ -203,7 +203,7 @@ public abstract class CoopRunner implements Runnable {
     }
 
     private JSONObject mcbouncer_api(String action, String parameters) {
-        return this.apiGet(this.mcbouncer_host, action + "/" + this.j2.mcbouncerapi + "/" + parameters, new HashMap<String, String>());
+        return this.apiGet(this.mcbouncer_host, action + "/" + this.j2.config.bans_mcbouncer_api + "/" + parameters, new HashMap<String, String>());
     }
 
 }

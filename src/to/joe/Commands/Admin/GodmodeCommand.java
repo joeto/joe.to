@@ -33,7 +33,7 @@ public class GodmodeCommand extends MasterCommand {
                 this.j2.sendAdminPlusLog(ChatColor.RED + playerName + " disabled GODMODE");
                 this.j2.users.getUser(name).restoreColor();
                 player.getInventory().clear(39);
-                if (!this.j2.safemode) {
+                if (!this.j2.config.world_safemode) {
                     this.j2.damage.endanger(playerName);
                     player.sendMessage(ChatColor.RED + "You are no longer safe");
                 }

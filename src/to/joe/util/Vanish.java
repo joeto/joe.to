@@ -85,10 +85,7 @@ public class Vanish {
      * @param force
      *            Force even on admins.
      */
-    private void invisible(Player hidePlayer, Player obliviousPlayer, boolean force) {
-        if (this.mini.j2.hasFlag(obliviousPlayer, Flag.ADMIN)) {
-            return;
-        }
+    private void sendDestroyPacket(Player hidePlayer, Player obliviousPlayer) {
         final CraftPlayer hide = (CraftPlayer) hidePlayer;
         final CraftPlayer hideFrom = (CraftPlayer) obliviousPlayer;
         hideFrom.getHandle().netServerHandler.sendPacket(new Packet29DestroyEntity(hide.getEntityId()));
@@ -100,7 +97,7 @@ public class Vanish {
      * @param unHidingPlayer
      * @param nowAwarePlayer
      */
-    private void uninvisible(Player unHidingPlayer, Player nowAwarePlayer) {
+    private void sendSpawnPacket(Player unHidingPlayer, Player nowAwarePlayer) {
         final CraftPlayer unHide = (CraftPlayer) unHidingPlayer;
         final CraftPlayer unHideFrom = (CraftPlayer) nowAwarePlayer;
         unHideFrom.getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(unHide.getHandle()));
@@ -122,7 +119,10 @@ public class Vanish {
             if ((this.getDistance(player, p) > this.RANGE) || (p.equals(player))) {
                 continue;
             }
-            this.invisible(player, p, false);
+            this.sendDestroyPacket(player, p);
+            if(this.mini.j2.hasFlag(p, Flag.ADMIN)){
+                this.sendSpawnPacket(player, p);
+            }
         }
         this.addEIDVanished(((CraftPlayer) player).getEntityId());
         this.log.info(player.getName() + " disappeared.");
@@ -140,7 +140,10 @@ public class Vanish {
             if ((this.getDistance(player, p) >= this.RANGE) || (p.equals(player))) {
                 continue;
             }
-            this.uninvisible(player, p);
+            if(this.mini.j2.hasFlag(p, Flag.ADMIN)){
+                this.sendDestroyPacket(player, p);
+            }
+            this.sendSpawnPacket(player, p);
         }
 
         this.log.info(player.getName() + " reappeared.");

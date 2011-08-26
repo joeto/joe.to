@@ -43,7 +43,7 @@ public class Damages {
      * @param name
      */
     public void processJoin(String name) {
-        if (this.j2.safemode) {
+        if (this.j2.config.world_safemode) {
             this.protect(name);
         }
     }
@@ -125,21 +125,21 @@ public class Damages {
     public boolean woof(Player player) {
         this.endanger(player.getName());
         final ArrayList<Wolf> wlist = new ArrayList<Wolf>();
-        final boolean hated = this.j2.ihatewolves;
+        final boolean hated = this.j2.config.world_disable_wolves;
         final PlayerInventory targetInventory = player.getInventory();
         targetInventory.clear(36);
         targetInventory.clear(37);
         targetInventory.clear(38);
         targetInventory.clear(39);
         targetInventory.clear();
-        this.j2.ihatewolves = false;
+        this.j2.config.world_disable_wolves = false;
         for (int x = 0; x < 10; x++) {
             final Wolf wolf = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
             wlist.add(wolf);
             wolf.setAngry(true);
             wolf.setTarget(player);
         }
-        this.j2.ihatewolves = hated;
+        this.j2.config.world_disable_wolves = hated;
         this.allWolf.put(player.getName(), wlist);
         return true;
     }
@@ -155,7 +155,7 @@ public class Damages {
                 wolf.damage(100);
             }
             this.allWolf.remove(target);
-            if (this.j2.safemode) {
+            if (this.j2.config.world_safemode) {
                 this.protect(target);
             }
         }

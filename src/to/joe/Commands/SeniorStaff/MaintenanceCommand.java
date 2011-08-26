@@ -17,9 +17,9 @@ public class MaintenanceCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (!isPlayer || this.j2.hasFlag(player, Flag.SRSTAFF)) {
-            if (!this.j2.maintenance) {
+            if (!this.j2.config.maintenance_enable) {
                 this.j2.sendAdminPlusLog(ChatColor.AQUA + playerName + " has turned on maintenance mode");
-                this.j2.maintenance = true;
+                this.j2.config.maintenance_enable = true;
                 for (final Player p : this.j2.getServer().getOnlinePlayers()) {
                     if ((p != null) && !this.j2.hasFlag(p, Flag.ADMIN)) {
                         p.sendMessage(ChatColor.AQUA + "Server entering maintenance mode");
@@ -28,7 +28,7 @@ public class MaintenanceCommand extends MasterCommand {
                 }
             } else {
                 this.j2.sendAdminPlusLog(ChatColor.AQUA + playerName + " has turned off maintenance mode");
-                this.j2.maintenance = false;
+                this.j2.config.maintenance_enable = false;
             }
 
         }

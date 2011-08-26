@@ -91,7 +91,7 @@ public class IRC {
      * @param name
      */
     public void processJoin(String name) {
-        if (this.j2.ircEnable && (this.j2.getServer().getOnlinePlayers().length < 2)) {
+        if (this.j2.config.irc_enable && (this.j2.getServer().getOnlinePlayers().length < 2)) {
             // j2.irc.ircMsg(name+" has logged in");
             this.j2.irc.adminChannel();
         }
@@ -103,7 +103,7 @@ public class IRC {
      * @param name
      */
     public void processLeave(String name) {
-        if (this.j2.ircEnable && (this.j2.getServer().getOnlinePlayers().length < 10)) {
+        if (this.j2.config.irc_enable && (this.j2.getServer().getOnlinePlayers().length < 10)) {
             // j2.irc.ircMsg(name+" has left the server");
         }
     }
@@ -113,24 +113,24 @@ public class IRC {
      */
     public void connectAndAuth() {
 
-        this.bot = new IRCBot(this.j2.ircName, this.j2.ircMsg, this);
+        this.bot = new IRCBot(this.j2.config.irc_nick, this);
 
-        if (this.j2.ircDebug) {
+        if (this.j2.config.irc_debug_spam) {
             this.bot.setVerbose(true);
         }
-        System.out.println("Connecting to " + this.j2.ircChannel + " on " + this.j2.ircHost + ":" + this.j2.ircPort + " as " + this.j2.ircName);
+        System.out.println("Connecting to " + this.j2.config.irc_host + ":" + this.j2.config.irc_port + " as " + this.j2.config.irc_nick);
         try {
-            this.bot.connect(this.j2.ircHost, this.j2.ircPort, this.j2.getServer().getIp());
+            this.bot.connect(this.j2.config.irc_host, this.j2.config.irc_port, this.j2.getServer().getIp());
         } catch (final Exception e) {
             e.printStackTrace();
         }
-        if (this.j2.gsAuth != "") {
-            this.bot.sendMessage("authserv@services.gamesurge.net", "auth " + this.j2.gsAuth + " " + this.j2.gsPass);
-            this.bot.sendMessage("ChanServ", "inviteme " + this.j2.ircAdminChannel);
+        if (this.j2.config.irc_gamesurge_user != "") {
+            this.bot.sendMessage("authserv@services.gamesurge.net", "auth " + this.j2.config.irc_gamesurge_user + " " + this.j2.config.irc_gamesurge_pass);
+            this.bot.sendMessage("ChanServ", "inviteme " + this.j2.config.irc_admin_channel);
         }
-        this.bot.joinChannel(this.j2.ircChannel);
-        if (this.j2.ircOnJoin != "") {
-            this.bot.sendMessage(this.j2.ircChannel, this.j2.ircOnJoin);
+        this.bot.joinChannel(this.j2.config.irc_relay_channel);
+        if (this.j2.config.irc_channel_join_message != "") {
+            this.bot.sendMessage(this.j2.config.irc_relay_channel, this.j2.config.irc_channel_join_message);
         }
         this.reloadIRCAdmins();
     }
@@ -157,11 +157,11 @@ public class IRC {
      * If not connected to admin channel, join it.
      */
     private void adminChannel() {
-        if (this.j2.ircEnable && !(new ArrayList<String>(Arrays.asList((this.bot.getChannels()))).contains(this.j2.ircAdminChannel))) {
-            if (this.j2.gsAuth != "") {
-                this.bot.sendMessage("authserv@services.gamesurge.net", "auth " + this.j2.gsAuth + " " + this.j2.gsPass);
-                this.bot.sendMessage("ChanServ", "inviteme " + this.j2.ircAdminChannel);
-                this.bot.joinChannel(this.j2.ircAdminChannel);
+        if (this.j2.config.irc_enable && !(new ArrayList<String>(Arrays.asList((this.bot.getChannels()))).contains(this.j2.config.irc_admin_channel))) {
+            if (this.j2.config.irc_gamesurge_user != "") {
+                this.bot.sendMessage("authserv@services.gamesurge.net", "auth " + this.j2.config.irc_gamesurge_user + " " + this.j2.config.irc_gamesurge_pass);
+                this.bot.sendMessage("ChanServ", "inviteme " + this.j2.config.irc_admin_channel);
+                this.bot.joinChannel(this.j2.config.irc_admin_channel);
             }
         }
     }
@@ -185,7 +185,7 @@ public class IRC {
      * @param message
      */
     public void message(String target, String message) {
-        if (this.j2.ircEnable) {
+        if (this.j2.config.irc_enable) {
             this.bot.sendMessage(target, message);
         }
     }
@@ -199,7 +199,7 @@ public class IRC {
      * @return
      */
     public boolean ircCommand(String hostname, String nick, String[] command) {
-        if (!this.j2.ircEnable) {
+        if (!this.j2.config.irc_enable) {
             return false;
         }
         @SuppressWarnings("unused")
@@ -314,8 +314,8 @@ public class IRC {
      * @param message
      */
     public void messageRelay(String message) {
-        if (this.j2.ircEnable) {
-            this.bot.sendMessage(this.j2.ircChannel, message);
+        if (this.j2.config.irc_enable) {
+            this.bot.sendMessage(this.j2.config.irc_relay_channel, message);
         }
     }
 
@@ -325,8 +325,8 @@ public class IRC {
      * @param message
      */
     public void messageAdmins(String message) {
-        if (this.j2.ircEnable && this.goodToGo(message)) {
-            this.bot.sendMessage(this.j2.ircAdminChannel, message);
+        if (this.j2.config.irc_enable && this.goodToGo(message)) {
+            this.bot.sendMessage(this.j2.config.irc_admin_channel, message);
         }
     }
 
@@ -359,10 +359,10 @@ public class IRC {
     }
 
     private void checkStatus() {
-        if (!this.j2.ircEnable && this.restart) {
+        if (!this.j2.config.irc_enable && this.restart) {
             this.connectAndAuth();
             this.restart = false;
-            this.j2.ircEnable = true;
+            this.j2.config.irc_enable = true;
         } else {
             this.adminChannel();
         }

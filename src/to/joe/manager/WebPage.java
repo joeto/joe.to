@@ -64,10 +64,10 @@ public class WebPage {
      * update20(); } }, 1000, 5000); }
      */
     private void update5Second() {
-        if (!this.j2.enableWebsite) {
+        if (!this.j2.config.general_website_enable) {
             return;
         }
-        final ArrayList<Integer> watched = new ArrayList<Integer>(this.j2.watchlist);
+        final ArrayList<Integer> watched = new ArrayList<Integer>(this.j2.config.blacklist_watchlist);
         final HashMap<Integer, String> output = new HashMap<Integer, String>();
         for (final Integer i : watched) {
             output.put(i, "");
@@ -97,7 +97,7 @@ public class WebPage {
         }
         try {
             final BufferedWriter out = new BufferedWriter(new FileWriter("/home/minecraft/public_html/detector/" + this.servernum + "/current.txt"));
-            out.write("Players(" + playercount + "/" + this.j2.playerLimit + "):" + playerlist + "<br /><br /><br />");
+            out.write("Players(" + playercount + "/" + this.j2.config.access_max_players + "):" + playerlist + "<br /><br /><br />");
             out.write("<table>");
             for (final Integer i : watched) {
                 out.write("<tr><td>" + Material.getMaterial(i) + "</td><td>" + output.get(i) + "</td></tr>");
@@ -116,14 +116,14 @@ public class WebPage {
 
         try {
             final BufferedWriter out = new BufferedWriter(new FileWriter("/home/minecraft/public_html/" + this.servernum + "/current.txt"));
-            out.write("Players(" + playercount + "/" + this.j2.playerLimit + "):" + playerlist + "<br />");
+            out.write("Players(" + playercount + "/" + this.j2.config.access_max_players + "):" + playerlist + "<br />");
             out.close();
         } catch (final IOException e) {
             e.printStackTrace();
         }
         try {
             final BufferedWriter out = new BufferedWriter(new FileWriter("/home/minecraft/public_html/" + this.servernum + "/players.txt"));
-            out.write(playercount + "/" + this.j2.playerLimit);
+            out.write(playercount + "/" + this.j2.config.access_max_players);
             out.close();
         } catch (final IOException e) {
             e.printStackTrace();

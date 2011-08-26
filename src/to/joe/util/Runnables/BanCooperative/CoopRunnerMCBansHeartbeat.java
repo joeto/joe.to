@@ -19,7 +19,7 @@ public class CoopRunnerMCBansHeartbeat extends CoopRunner {
     public void run() {
         final HashMap<String, String> postVars = new HashMap<String, String>();
         postVars.put("version", this.mcbans_version);
-        postVars.put("maxPlayers", String.valueOf(this.j2.playerLimit));
+        postVars.put("maxPlayers", String.valueOf(this.j2.config.access_max_players));
         postVars.put("exec", "callBack");
         postVars.put("playerList", this.playerList());
         this.mcbans_api(postVars);

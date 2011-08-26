@@ -171,7 +171,7 @@ public class Minitrue {
         if (!isAdmin) {
             playercount -= this.invisibleCount();
         }
-        String msg = "Players (" + playercount + "/" + this.j2.playerLimit + "):";
+        String msg = "Players (" + playercount + "/" + this.j2.config.access_max_players + "):";
 
         for (final char ch : msg.toCharArray()) {
             curlen += Chats.characterWidths[ch];

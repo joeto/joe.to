@@ -181,7 +181,7 @@ public class Chats {
         }
 
         ChatColor color = null;
-        if (!this.j2.randomcolor) {
+        if (!this.j2.config.general_random_namecolor) {
             color = this.j2.users.getUser(player).getColor();
         }
         final String message = this.formatNamelyArea(name, color, me) + chat;
@@ -215,17 +215,17 @@ public class Chats {
         }
         String combined;
         if (me) {
-            combined = "* " + this.j2.ircUserColor + name + ChatColor.WHITE + message;
+            combined = "* " + this.j2.config.irc_ingame_color + name + ChatColor.WHITE + message;
         } else {
-            combined = this.j2.ircSeparator[0] + this.j2.ircUserColor + name + ChatColor.WHITE + this.j2.ircSeparator[1] + message;
+            combined = this.j2.config.irc_ingame_separator[0] + this.j2.config.irc_ingame_color + name + ChatColor.WHITE + this.j2.config.irc_ingame_separator[1] + message;
         }
 
-        if (combined.length() > this.j2.ircCharLim) {
-            this.j2.irc.getBot().sendMessage(channel, name + ": Your message was too long. The limit's " + this.j2.ircCharLim + " characters");
+        if (combined.length() > this.j2.config.irc_char_limit) {
+            this.j2.irc.getBot().sendMessage(channel, name + ": Your message was too long. The limit's " + this.j2.config.irc_char_limit + " characters");
         } else {
             this.j2.log("IRC:" + combined);
             this.messageAll(combined);
-            if (this.j2.ircEcho) {
+            if (this.j2.config.irc_echo_messages) {
                 if (me) {
                     this.j2.irc.getBot().sendMessage(channel, "[IRC] *" + name + " " + message);
                 } else {

@@ -117,14 +117,14 @@ public class PlayerJoinQuit extends PlayerListener {
             event.disallow(PlayerPreLoginEvent.Result.KICK_BANNED, reason);
             incoming = false;
         }
-        if (this.j2.maintenance && !isAdmin) {
-            reason = this.j2.maintmessage;
+        if (this.j2.config.maintenance_enable && !isAdmin) {
+            reason = this.j2.config.maintenance_message;
             event.setKickMessage(reason);
             event.disallow(PlayerPreLoginEvent.Result.KICK_OTHER, reason);
             // j2.users.delUser(name);
             incoming = false;
         }
-        if (this.j2.trustedonly && (!isTrusted || isPrivBlocked)) {
+        if (this.j2.config.access_block_nontrusted && (!isTrusted || isPrivBlocked)) {
             reason = "Trusted only. http://forums.joe.to";
             if (isPrivBlocked) {
                 reason = "You are barred from joining this server";
@@ -140,7 +140,7 @@ public class PlayerJoinQuit extends PlayerListener {
             // "Logged in on another Minecraft");
             incoming = false;
         }
-        if (!isAdmin && !isDonor && !isContributor && (this.j2.getServer().getOnlinePlayers().length >= this.j2.playerLimit)) {
+        if (!isAdmin && !isDonor && !isContributor && (this.j2.getServer().getOnlinePlayers().length >= this.j2.config.access_max_players)) {
             event.setKickMessage("Server Full");
             event.disallow(PlayerPreLoginEvent.Result.KICK_FULL, "Server full");
             // j2.users.delUser(name);

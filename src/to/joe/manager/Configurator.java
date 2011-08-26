@@ -1,12 +1,10 @@
 package to.joe.manager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.util.config.Configuration;
-import org.bukkit.util.config.ConfigurationNode;
 
 import to.joe.J2;
 
@@ -17,152 +15,91 @@ import to.joe.J2;
 public class Configurator {
 
     private final J2 j2;
-    Configuration conf;
 
     public Configurator(J2 j2) {
         this.j2 = j2;
-        this.conf = this.j2.getConfiguration();
     }
 
-    /**
-     * Create a fresh configuration.
-     */
-    public void newConf() {
-        final HashMap<String, Object> conf_general = new HashMap<String, Object>();
-        final HashMap<String, Object> conf_mysql = new HashMap<String, Object>();
-        final HashMap<String, Object> conf_irc = new HashMap<String, Object>();
-        final HashMap<String, Object> conf_tips = new HashMap<String, Object>();
-        final HashMap<String, Object> conf_maint = new HashMap<String, Object>();
-        final HashMap<String, Object> conf_blacklists = new HashMap<String, Object>();
-        conf_general.put("debug-mode", false);
-        conf_mysql.put("username", "root");
-        conf_mysql.put("database", "minecraft");
-        conf_mysql.put("password", "root");
-        conf_general.put("server-number", 0);
-        conf_general.put("max-players", 30);
-        conf_tips.put("delay", 120);
-        conf_tips.put("color", 12);
-        conf_irc.put("host", "localhost");
-        conf_irc.put("nick", "aMinecraftBot");
-        conf_irc.put("relay-channel", "#minecraftServ");
-        conf_irc.put("admin-channel", "#minecraftServA");
-        conf_irc.put("ingame-color", 12);
-        conf_irc.put("ingame-separator", "<,>");
-        conf_irc.put("char-limit", 390);
-        conf_irc.put("require-msg-cmd", false);
-        conf_irc.put("enable", false);
-        conf_irc.put("echo-messages", false);
-        conf_irc.put("port", 6667);
-        conf_irc.put("debug-spam", false);
-        conf_irc.put("channel-join-message", "Hi durr");
-        conf_irc.put("gamesurge-user", "");
-        conf_irc.put("gamesurge-pass", "");
-        conf_irc.put("level2-commands", "kick");
-        conf_general.put("safemode", false);
-        conf_general.put("allow-explosions", true);
-        conf_general.put("disable-wolves", false);
-        conf_maint.put("enable", false);
-        conf_maint.put("message", "We will be back");
-        conf_general.put("block-nontrusted", false);
-        conf_general.put("random-namecolor", false);
-        conf_blacklists.put("prevent-trusted", "0");
-        conf_blacklists.put("prevent-general", "0");
-        conf_blacklists.put("watchlist", "0");
-        conf_blacklists.put("prevent-summon", "0");
-        conf_general.put("mcbans-api", "");
-        conf_general.put("mcbouncerapi", "");
-        conf_general.put("jail-xyzpy", "10,10,10,0,0");
-        this.conf.setProperty("General", conf_general);
-        this.conf.setProperty("MySQL", conf_mysql);
-        this.conf.setProperty("IRC", conf_irc);
-        this.conf.setProperty("Maintenance", conf_maint);
-        this.conf.setProperty("Tips", conf_tips);
-        this.conf.setProperty("Blacklists", conf_blacklists);
-        this.conf.save();
-    }
 
     /**
      * Loads the config
      */
     public void load() {
-        this.conf.load();
-        final ConfigurationNode general = this.conf.getNode("General");
+        Configuration conf = this.j2.getConfiguration();
+        conf.load();
 
-        this.general_allow_explosions = general.getBoolean("allow-explosions", true);
-        this.general_block_nontrusted = general.getBoolean("block-nontrusted", false);
-        this.general_debug_mode = general.getBoolean("debug-mode", false);
-        this.general_disable_wolves = general.getBoolean("disable-wolves", false);
-        final String jail = general.getString("jail-xyzpy", "1,1,1,1,1");
+        this.access_block_nontrusted = conf.getBoolean("Access.block-nontrusted", false);
+        this.access_max_players = conf.getInt("Access.max-players", 30);
+        
+        this.world_weather_enable = conf.getBoolean("World.weather", false);
+        this.world_disable_wolves = conf.getBoolean("World.disable-wolves", false);
+        this.world_allow_explosions = conf.getBoolean("World.allow-explosions", true);
+        this.world_safemode = conf.getBoolean("World.safemode", false);
+        
+        this.bans_mcbans_api = conf.getString("Bans.mcbans-api", "");
+        this.bans_mcbouncer_api = conf.getString("Bans.mcbouncer-api", "");
+        
+        this.general_website_enable = conf.getBoolean("General.website", false);
+        this.general_debug_mode = conf.getBoolean("General.debug-mode", false);
+        final String jail = conf.getString("General.jail-xyzpy", "1,1,1,1,1");
         final String[] jail_split = jail.split(",");
         this.general_jail_xyzpy = new Location(this.j2.getServer().getWorld("world"), Integer.valueOf(jail_split[0]), Integer.valueOf(jail_split[0]), Integer.valueOf(jail_split[0]), Integer.valueOf(jail_split[0]), Integer.valueOf(jail_split[0]));
-        this.general_max_players = general.getInt("max-players", 30);
-        this.general_mcbans_api = general.getString("mcbans-api", "");
-        this.general_mcbouncer_api = general.getString("mcbouncer-api", "");
-        this.general_random_namecolor = general.getBoolean("random-namecolor", false);
-        this.general_safemode = general.getBoolean("safemode", false);
-        this.general_server_number = general.getInt("server-number", 0);
+        this.general_random_namecolor = conf.getBoolean("General.random-namecolor", false);
+        this.general_server_number = conf.getInt("General.server-number", 0);
+        
 
-        final ConfigurationNode irc = this.conf.getNode("IRC");
+        this.irc_admin_channel = conf.getString("IRC.Channels.admin", "#aVeryMinecraftAdminChannel");
+        this.irc_relay_channel = conf.getString("IRC.Channels.relay", "#aVeryMinecraftRelay");
+        
+        this.irc_host = conf.getString("IRC.Connect.host", "localhost");
+        this.irc_nick = conf.getString("IRC.Connect.nick", "iAmBot");
+        this.irc_port = conf.getInt("IRC.Connect.port", 6667);
+        
+        this.irc_gamesurge_pass = conf.getString("IRC.GameSurge.pass", "");
+        this.irc_gamesurge_user = conf.getString("IRC.GameSurge.user", "");
+        
+        this.irc_channel_join_message = conf.getString("IRC.Setting.channel-join-message", "Beep boop I am bot");
+        this.irc_char_limit = conf.getInt("IRC.Setting.char-limit", 390);
+        this.irc_debug_spam = conf.getBoolean("IRC.Setting.debug-spam", false);
+        this.irc_echo_messages = conf.getBoolean("IRC.Setting.echo-messages", true);
+        this.irc_enable = conf.getBoolean("IRC.enable", false);
+        this.irc_ingame_color = ChatColor.getByCode(conf.getInt("IRC.Setting.ingame-color", 11));
+        this.irc_ingame_separator = conf.getString("IRC.Setting.ingame-separator", "<,>").split(",");
+        this.irc_require_msg_cmd = conf.getBoolean("IRC.Setting.require-msg-cmd", true);
 
-        this.irc_admin_channel = irc.getString("admin-channel", "#aVeryMinecraftAdminChannel");
-        this.irc_channel_join_message = irc.getString("channel-join-message", "Beep boop I am bot");
-        this.irc_char_limit = irc.getInt("char-limit", 390);
-        this.irc_debug_spam = irc.getBoolean("debug-spam", false);
-        this.irc_echo_messages = irc.getBoolean("echo-messages", true);
-        this.irc_enable = irc.getBoolean("enable", false);
-        this.irc_gamesurge_pass = irc.getString("gamesurge-pass", "");
-        this.irc_gamesurge_user = irc.getString("gamesurge-user", "");
-        this.irc_host = irc.getString("host", "localhost");
-        this.irc_ingame_color = ChatColor.getByCode(irc.getInt("ingame-color", 11));
-        this.irc_ingame_separator = irc.getString("ingame-separator", "<,>").split(",");
-        this.irc_level2_commands = irc.getString("level2-commands", "").split(",");
-        this.irc_nick = irc.getString("nick", "iAmBot");
-        this.irc_port = irc.getInt("port", 6667);
-        this.irc_relay_channel = irc.getString("relay-channel", "#aVeryMinecraftRelay");
-        this.irc_require_msg_cmd = irc.getBoolean("require-msg-cmd", true);
+        this.mysql_database = conf.getString("MySQL.database", "jdbc:mysql://localhost:3306/minecraft");
+        this.mysql_password = conf.getString("MySQL.password", "root");
+        this.mysql_username = conf.getString("MySQL.username", "root");
 
-        final ConfigurationNode mysql = this.conf.getNode("MySQL");
-
-        this.mysql_database = mysql.getString("database", "jdbc:mysql://localhost:3306/minecraft");
-        this.mysql_password = mysql.getString("password", "root");
-        this.mysql_username = mysql.getString("username", "root");
-
-        final ConfigurationNode blacklists = this.conf.getNode("Blacklists");
-
-        final String bl_trust = blacklists.getString("prevent-trusted", "0");
+        final String bl_trust = conf.getString("Blacklists.prevent-trusted", "0");
         for (final String s : bl_trust.split(",")) {
             if (s != null) {
                 this.blacklist_prevent_trusted.add(Integer.valueOf(s));
             }
         }
-        final String bl_reg = blacklists.getString("prevent-general", "0");
+        final String bl_reg = conf.getString("Blacklists.prevent-general", "0");
         for (final String s : bl_reg.split(",")) {
             if (s != null) {
                 this.blacklist_prevent_general.add(Integer.valueOf(s));
             }
         }
-        final String bl_watch = blacklists.getString("watchlist", "0");
+        final String bl_watch = conf.getString("Blacklists.watchlist", "0");
         for (final String s : bl_watch.split(",")) {
             if (s != null) {
                 this.blacklist_watchlist.add(Integer.valueOf(s));
             }
         }
-        final String bl_summon = blacklists.getString("prevent-summon", "0");
+        final String bl_summon = conf.getString("Blacklists.prevent-summon", "0");
         for (final String s : bl_summon.split(",")) {
             if (s != null) {
-                this.blacklist_prevent_summon.add(Integer.valueOf(s));
+                this.blacklist_summon.add(Integer.valueOf(s));
             }
         }
 
-        final ConfigurationNode tips = this.conf.getNode("Tips");
-
-        this.tips_color = ChatColor.getByCode(tips.getInt("color", 11));
-        this.tips_delay = tips.getInt("delay", 120);
-
-        final ConfigurationNode maintenance = this.conf.getNode("Maintenance");
-
-        this.maintenance_enable = maintenance.getBoolean("enable", false);
-        this.maintenance_message = maintenance.getString("message", "Server offline for maintenance");
+        this.maintenance_enable = conf.getBoolean("Access.Maintenance.enable", false);
+        this.maintenance_message = conf.getString("Access.Maintenance.message", "Server offline for maintenance");
+        
+        conf.save();
     }
 
     public String irc_relay_channel;
@@ -180,31 +117,29 @@ public class Configurator {
     public boolean irc_echo_messages;
     public boolean irc_require_msg_cmd;
     public boolean irc_debug_spam;
-    public String[] irc_level2_commands;
 
     public String mysql_username;
     public String mysql_password;
     public String mysql_database;
 
     public boolean general_random_namecolor;
-    public boolean general_allow_explosions;
+    public boolean world_allow_explosions;
     public boolean general_debug_mode;
     public Location general_jail_xyzpy;
     public int general_server_number;
-    public boolean general_disable_wolves;
-    public int general_max_players;
-    public String general_mcbans_api;
-    public String general_mcbouncer_api;
-    public boolean general_safemode;
-    public boolean general_block_nontrusted;
+    public boolean world_disable_wolves;
+    public int access_max_players;
+    public String bans_mcbans_api;
+    public String bans_mcbouncer_api;
+    public boolean world_safemode;
+    public boolean access_block_nontrusted;
+    public boolean world_weather_enable;
+    public boolean general_website_enable;
 
-    public ArrayList<Integer> blacklist_prevent_summon;
+    public ArrayList<Integer> blacklist_summon;
     public ArrayList<Integer> blacklist_watchlist;
     public ArrayList<Integer> blacklist_prevent_trusted;
     public ArrayList<Integer> blacklist_prevent_general;
-
-    public ChatColor tips_color;
-    public int tips_delay;
 
     public String maintenance_message;
     public boolean maintenance_enable;

@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -38,7 +37,6 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
 
 import to.joe.Commands.AmITrustedCommand;
 import to.joe.Commands.FlexCommand;
@@ -113,19 +111,19 @@ import to.joe.Commands.SeniorStaff.MaxPlayersCommand;
 import to.joe.Commands.SeniorStaff.MobCommand;
 import to.joe.Commands.SeniorStaff.SayCommand;
 import to.joe.Commands.SeniorStaff.SetSpawnCommand;
-import to.joe.Commands.SeniorStaff.ShowerCommand;
 import to.joe.Commands.SeniorStaff.SmackIRCCommand;
 import to.joe.listener.BlockAll;
 import to.joe.listener.EntityAll;
-import to.joe.listener.MapListener;
+import to.joe.listener.MapAll;
 import to.joe.listener.PlayerChat;
 import to.joe.listener.PlayerInteract;
 import to.joe.listener.PlayerJoinQuit;
 import to.joe.listener.PlayerMovement;
-import to.joe.listener.Weather;
+import to.joe.listener.WeatherAll;
 import to.joe.manager.ActivityTracker;
 import to.joe.manager.BanCooperative;
 import to.joe.manager.Chats;
+import to.joe.manager.Configurator;
 import to.joe.manager.CraftualHarassmentPanda;
 import to.joe.manager.Damages;
 import to.joe.manager.IPTracker;
@@ -153,14 +151,14 @@ import to.joe.util.Runnables.AutoSave;
  * 
  */
 public class J2 extends JavaPlugin {
-    private final PlayerChat plrlisChat = new PlayerChat(this);
-    private final PlayerInteract plrlisInteract = new PlayerInteract(this);
-    private final PlayerJoinQuit plrlisJoinQuit = new PlayerJoinQuit(this);
     private final BlockAll blockListener = new BlockAll(this);
     private final EntityAll entityListener = new EntityAll(this);
-    private final PlayerMovement plrlisMovement = new PlayerMovement(this);
-    private final MapListener mapListener = new MapListener(this);
-    private final Weather weatherListener = new Weather(this);
+    private final MapAll mapListener = new MapAll(this);
+    private final PlayerChat playerListenerChat = new PlayerChat(this);
+    private final PlayerInteract playerListenerInteract = new PlayerInteract(this);
+    private final PlayerJoinQuit playerListenerJoinQuit = new PlayerJoinQuit(this);
+    private final PlayerMovement playerListenerMovement = new PlayerMovement(this);
+    private final WeatherAll weatherListener = new WeatherAll(this);
     /**
      * Chat manager
      */
@@ -237,7 +235,10 @@ public class J2 extends JavaPlugin {
      * MySQL stuffs
      */
     public MySQL mysql;
-    public boolean enableWebsite;
+    /**
+     * Configuration
+     */
+    public Configurator config=new Configurator(this);
 
     /*
      * (non-Javadoc)
@@ -264,7 +265,7 @@ public class J2 extends JavaPlugin {
         this.loadData();
         this.debug("Data loaded");
         // irc start
-        if (this.ircEnable) {
+        if (this.config.irc_enable) {
             this.irc.connectAndAuth();
         }
         this.irc.startIRCTimer();
@@ -277,11 +278,11 @@ public class J2 extends JavaPlugin {
 
         // Register our events
         final PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvent(Event.Type.PLAYER_CHAT, this.plrlisChat, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, this.plrlisChat, Priority.Monitor, this);
-        pm.registerEvent(Event.Type.PLAYER_QUIT, this.plrlisJoinQuit, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_INTERACT, this.plrlisInteract, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this.plrlisInteract, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListenerChat, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, this.playerListenerChat, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListenerJoinQuit, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListenerInteract, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this.playerListenerInteract, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_CANBUILD, this.blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_BREAK, this.blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener, Priority.Normal, this);
@@ -292,19 +293,19 @@ public class J2 extends JavaPlugin {
         pm.registerEvent(Event.Type.ENTITY_TARGET, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_DEATH, this.entityListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_PRELOGIN, this.plrlisJoinQuit, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_QUIT, this.plrlisJoinQuit, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_JOIN, this.plrlisJoinQuit, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_KICK, this.plrlisJoinQuit, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.plrlisMovement, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_MOVE, this.plrlisMovement, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_PRELOGIN, this.playerListenerJoinQuit, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListenerJoinQuit, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListenerJoinQuit, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_KICK, this.playerListenerJoinQuit, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListenerMovement, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListenerMovement, Priority.Normal, this);
         pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ITEM_SPAWN, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.MAP_INITIALIZE, this.mapListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.WEATHER_CHANGE, this.weatherListener, Priority.Normal, this);
-        if (this.debug) {
-            this.log("Events registered");
-        }
+            
+        this.debug("Events registered");
+        
         this.getCommand("kickall").setExecutor(new KickAllCommand(this));
         this.getCommand("smackirc").setExecutor(new SmackIRCCommand(this));
         this.getCommand("blacklist").setExecutor(new BlacklistCommand(this));
@@ -395,15 +396,15 @@ public class J2 extends JavaPlugin {
         //this.getCommand("shower").setExecutor(new ShowerCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
-        this.webpage.go(this.servernumber);
+        this.webpage.go(this.config.general_server_number);
         this.recipes.addRecipes();
         this.minitrue.restartManager();
         this.activity.restartManager();
         this.banCoop.startCallback();
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new AutoSave(this), 1, 6000);// Saves
-                                                                                                     // every
-                                                                                                     // 5
-                                                                                                     // minutes
+        // every
+        // 5
+        // minutes
     }
 
     /**
@@ -415,154 +416,26 @@ public class J2 extends JavaPlugin {
         this.intro = this.readDaFile("intro.txt");
         this.motd = this.readDaFile("motd.txt");
         this.help = this.readDaFile("help.txt");
-        final Property j2properties = new Property("j2.properties");
-        final Configuration conf = this.getConfiguration();
-        final HashMap<String, Object> conf_general = new HashMap<String, Object>();
-        final HashMap<String, Object> conf_mysql = new HashMap<String, Object>();
-        final HashMap<String, Object> conf_irc = new HashMap<String, Object>();
-        final HashMap<String, Object> conf_tips = new HashMap<String, Object>();
-        final HashMap<String, Object> conf_maint = new HashMap<String, Object>();
-        final HashMap<String, Object> conf_blacklists = new HashMap<String, Object>();
+        this.config.load();
 
-        try {
-            this.debug = j2properties.getBoolean("debug", false);
-            conf_general.put("debug-mode", this.debug);
-            // mysql start
-            final String mysql_username = j2properties.getString("user", "root");
-            final String mysql_password = j2properties.getString("pass", "root");
-            final String mysql_db = j2properties.getString("db", "jdbc:mysql://localhost:3306/minecraft");
-            conf_mysql.put("username", mysql_username);
-            conf_mysql.put("database", mysql_db);
-            conf_mysql.put("password", mysql_password);
-            // chatTable = properties.getString("chat","chat");
-            this.servernumber = j2properties.getInt("server-number", 0);
-            conf_general.put("server-number", this.servernumber);
-            this.mysql = new MySQL(mysql_username, mysql_password, mysql_db, this.servernumber, this);
-            this.warps.restartManager();
-            this.reports.restartManager();
-            this.users.restartGroups();
-            this.mysql.loadMySQLData();
-            // mysql end
-
-            this.enableWeather = j2properties.getBoolean("weather-enable", true);
-            conf_general.put("weather-enable", this.enableWebsite);
-            this.enableWebsite = j2properties.getBoolean("website-enable", false);
-            conf_general.put("website-enable", this.enableWebsite);
-            this.playerLimit = j2properties.getInt("max-players", 20);
-            conf_general.put("max-players", this.playerLimit);
-            this.tips_delay = j2properties.getInt("tip-delay", 120);
-            this.tips_color = "\u00A7" + j2properties.getString("tip-color", "b");
-            conf_tips.put("delay", this.tips_delay);
-            conf_tips.put("color", this.tips_color);
-            this.ircHost = j2properties.getString("irc-host", "localhost");
-            conf_irc.put("host", this.ircHost);
-            this.ircName = j2properties.getString("irc-name", "aMinecraftBot");
-            conf_irc.put("nick", this.ircName);
-            this.ircChannel = j2properties.getString("irc-channel", "#minecraftbot");
-            conf_irc.put("relay-channel", this.ircChannel);
-            this.ircAdminChannel = j2properties.getString("irc-adminchannel", "#minecraftbotadmin");
-            conf_irc.put("admin-channel", this.ircAdminChannel);
-            final int ircuc = j2properties.getInt("irc-usercolor", 15);
-            conf_irc.put("ingame-color", ircuc);
-            this.ircUserColor = this.mysql.toColor(ircuc);
-            this.ircSeparator = j2properties.getString("irc-separator", "<,>").split(",");
-            conf_irc.put("ingame-separator", j2properties.getString("irc-separator", "<,>"));
-            this.ircCharLim = j2properties.getInt("irc-charlimit", 390);
-            conf_irc.put("char-limit", this.ircCharLim);
-            this.ircMsg = j2properties.getBoolean("irc-msg-enable", false);
-            conf_irc.put("require-msg-cmd", this.ircMsg);
-            this.ircEnable = j2properties.getBoolean("irc-enable", false);
-            conf_irc.put("enable", this.ircEnable);
-            this.ircEcho = j2properties.getBoolean("irc-echo", false);
-            conf_irc.put("echo-messages", this.ircEcho);
-            this.ircPort = j2properties.getInt("irc-port", 6667);
-            conf_irc.put("port", this.ircPort);
-            this.ircDebug = j2properties.getBoolean("irc-debug", false);
-            conf_irc.put("debug-spam", this.ircDebug);
-            this.ircOnJoin = j2properties.getString("irc-onjoin", "");
-            conf_irc.put("channel-join-message", this.ircOnJoin);
-            this.gsAuth = j2properties.getString("gs-auth", "");
-            conf_irc.put("gamesurge-user", this.gsAuth);
-            this.gsPass = j2properties.getString("gs-pass", "");
-            conf_irc.put("gamesurge-pass", this.gsPass);
-            this.ircLevel2 = j2properties.getString("irc-level2", "").split(",");
-            conf_irc.put("level2-commands", j2properties.getString("irc-level2"));
-            this.safemode = j2properties.getBoolean("safemode", false);
-            conf_general.put("safemode", this.safemode);
-            this.explodeblocks = j2properties.getBoolean("explodeblocks", true);
-            conf_general.put("allow-explosions", this.explodeblocks);
-            this.ihatewolves = j2properties.getBoolean("ihatewolves", false);
-            conf_general.put("disable-wolves", this.ihatewolves);
-            this.maintenance = j2properties.getBoolean("maintenance", false);
-            conf_maint.put("enable", this.maintenance);
-            this.maintmessage = j2properties.getString("maintmessage", "Server offline for maintenance");
-            conf_maint.put("message", this.maintmessage);
-            this.trustedonly = j2properties.getBoolean("trustedonly", false);
-            conf_general.put("block-nontrusted", this.trustedonly);
-            this.randomcolor = j2properties.getBoolean("randcolor", false);
-            conf_general.put("random-namecolor", this.randomcolor);
-            final String superBlacklist = j2properties.getString("superblacklist", "0");
-            conf_blacklists.put("prevent-trusted", superBlacklist);
-            final String regBlacklist = j2properties.getString("regblacklist", "0");
-            conf_blacklists.put("prevent-general", regBlacklist);
-            final String watchList = j2properties.getString("watchlist", "0");
-            conf_blacklists.put("watchlist", this.watchlist);
-            final String summonList = j2properties.getString("summonlist", "0");
-            conf_blacklists.put("prevent-summon", summonList);
-            this.mcbansapi = j2properties.getString("mcbans-api", "");
-            conf_general.put("mcbans-api", this.mcbansapi);
-            this.mcbouncerapi = j2properties.getString("mcbouncer-api", "");
-            conf_general.put("mcbouncer-api", this.mcbouncerapi);
-            final String[] jail = j2properties.getString("jail", "10,11,10,0,0").split(",");
-            conf_general.put("jail-xyzpy", j2properties.getString("jail"));
-            this.jail.jailSet(jail);
-            this.superblacklist = new ArrayList<Integer>();
-            this.itemblacklist = new ArrayList<Integer>();
-            this.watchlist = new ArrayList<Integer>();
-            this.summonlist = new ArrayList<Integer>();
-            for (final String s : superBlacklist.split(",")) {
-                if (s != null) {
-                    this.superblacklist.add(Integer.valueOf(s));
-                }
-            }
-            for (final String s : regBlacklist.split(",")) {
-                if (s != null) {
-                    this.itemblacklist.add(Integer.valueOf(s));
-                }
-            }
-            for (final String s : watchList.split(",")) {
-                if (s != null) {
-                    this.watchlist.add(Integer.valueOf(s));
-                }
-            }
-            for (final String s : summonList.split(",")) {
-                if (s != null) {
-                    this.summonlist.add(Integer.valueOf(s));
-                }
-            }
-            if (this.safemode) {
-                final Player[] online = this.getServer().getOnlinePlayers();
-                if (online.length > 0) {
-                    for (final Player p : online) {
-                        if (p != null) {
-                            this.damage.protect(p.getName());
-                        }
+        this.mysql = new MySQL(this.config.mysql_username, this.config.mysql_password, this.config.mysql_database, this.config.general_server_number, this);
+        this.warps.restartManager();
+        this.reports.restartManager();
+        this.users.restartGroups();
+        this.mysql.loadMySQLData();
+        if (this.config.world_safemode) {
+            final Player[] online = this.getServer().getOnlinePlayers();
+            if (online.length > 0) {
+                for (final Player p : online) {
+                    if (p != null) {
+                        this.damage.protect(p.getName());
                     }
                 }
-            } else {
-                this.damage.clear();
             }
-        } catch (final Exception e) {
-            this.log.log(Level.SEVERE, "Exception while reading from j2.properties", e);
+        } else {
+            this.damage.clear();
         }
-        conf.setProperty("General", conf_general);
-        conf.setProperty("MySQL", conf_mysql);
-        conf.setProperty("IRC", conf_irc);
-        conf.setProperty("Maintenance", conf_maint);
-        conf.setProperty("Tips", conf_tips);
-        conf.setProperty("Blacklists", conf_blacklists);
-        conf.save();
-        if (this.safemode) {
+        if (this.config.world_safemode) {
             final Player[] online = this.getServer().getOnlinePlayers();
             if (online.length > 0) {
                 for (final Player p : online) {
@@ -626,7 +499,7 @@ public class J2 extends JavaPlugin {
                 }
                 J2.this.broadcastTip();
             }
-        }, 3000, this.tips_delay * 1000);
+        }, 3000, 120 * 1000);
     }
 
     private void stopTimer() {
@@ -677,7 +550,7 @@ public class J2 extends JavaPlugin {
      * @return
      */
     public boolean isOnSuperBlacklist(int id) {
-        return this.superblacklist.contains(Integer.valueOf(id));
+        return this.config.blacklist_prevent_trusted.contains(Integer.valueOf(id));
     }
 
     /**
@@ -687,7 +560,7 @@ public class J2 extends JavaPlugin {
      * @return
      */
     public boolean isOnRegularBlacklist(int id) {
-        return this.itemblacklist.contains(Integer.valueOf(id));
+        return this.config.blacklist_prevent_general.contains(Integer.valueOf(id));
     }
 
     /**
@@ -697,7 +570,7 @@ public class J2 extends JavaPlugin {
      * @return
      */
     public boolean isOnWatchlist(int id) {
-        return this.watchlist.contains(Integer.valueOf(id));
+        return this.config.blacklist_watchlist.contains(Integer.valueOf(id));
     }
 
     /**
@@ -707,7 +580,7 @@ public class J2 extends JavaPlugin {
      * @return
      */
     public boolean isOnSummonlist(int id) {
-        return this.summonlist.contains(Integer.valueOf(id));
+        return this.config.blacklist_summon.contains(Integer.valueOf(id));
     }
 
     /**
@@ -799,14 +672,10 @@ public class J2 extends JavaPlugin {
      * @param tag
      */
     public void craftIRC_sendMessageToTag(String message, String tag) {
-        if (this.debug) {
-            this.log("J2: Got message, tag \"" + tag + "\"");
-        }
+        this.debug("J2: Got message, tag \"" + tag + "\"");
         if (tag.equalsIgnoreCase("nocheat")) {
             this.irc.messageAdmins(message);
-            if (this.debug) {
-                this.log("J2.2: Got message, tag \"" + tag + "\"");
-            }
+            this.debug("J2.2: Got message, tag \"" + tag + "\"");
         }
     }
 
@@ -889,7 +758,7 @@ public class J2 extends JavaPlugin {
      * @param message
      */
     public void debug(String message) {
-        if (this.debug) {
+        if (this.config.general_debug_mode) {
             this.log(message);
         }
     }
@@ -912,14 +781,14 @@ public class J2 extends JavaPlugin {
      */
     public void madagascar(String name) {
         this.sendAdminPlusLog(name + " wants to SHUT. DOWN. EVERYTHING.");
-        if (this.ircEnable) {
+        if (this.config.irc_enable) {
             if (name.equalsIgnoreCase("console")) {
-                this.irc.getBot().sendMessage(this.ircAdminChannel, "A MAN IN BRAZIL IS COUGHING");
+                this.irc.getBot().sendMessage(this.config.irc_admin_channel, "A MAN IN BRAZIL IS COUGHING");
             }
-            this.ircEnable = false;
+            this.config.irc_enable = false;
             this.irc.getBot().quitServer("SHUT. DOWN. EVERYTHING.");
         }
-        this.maintenance = true;
+        this.config.maintenance_enable = true;
         this.kickbans.kickAll("We'll be back after these brief messages");
         this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
     }
@@ -940,39 +809,13 @@ public class J2 extends JavaPlugin {
     }
 
     public SimpleDateFormat shortdateformat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-    private boolean debug;
     private Logger log;
-
     public ArrayList<String> protectedUsers;
     public String[] rules, blacklist, intro, motd, help;
-
-    public String ircName, ircHost, ircChannel, ircOnJoin, gsAuth, gsPass, ircAdminChannel;
-    public ChatColor ircUserColor;
-    public boolean ircMsg, ircEcho, ircDebug;
-    public int ircCharLim, ircPort;
-    public String[] ircSeparator;
     private final String tips_location = "tips.txt";
-    private String tips_color = ChatColor.AQUA.toString();
     private boolean tips_stopTimer = false;
-    private int tips_delay = 120;
     private ArrayList<String> tips;
     private int curTipNum = 0;
-    public String[] ircLevel2;
-    public boolean ircEnable;
-    public ArrayList<Integer> itemblacklist, superblacklist, watchlist, summonlist;
-    public boolean maintenance = false;
-    public String maintmessage;
-    public boolean safemode;
-    public boolean explodeblocks;
-    public boolean ihatewolves;
-    public boolean trustedonly;
     public Property tpProtect = new Property("tpProtect.list");
-    public Player OneByOne = null;
-    public boolean randomcolor;
     public Random random = new Random();
-    public int playerLimit;
-    public int servernumber;
-    ArrayList<String> srstaffList, adminsList, trustedList;
-    public String mcbansapi, mcbouncerapi;
-    public boolean enableWeather;
 }

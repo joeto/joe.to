@@ -29,7 +29,7 @@ public class EntityAll extends EntityListener {
 
     @Override
     public void onEntityExplode(EntityExplodeEvent event) {
-        if (!this.j2.explodeblocks) {
+        if (!this.j2.config.world_allow_explosions) {
             event.setCancelled(true);
         }
     }
@@ -98,7 +98,7 @@ public class EntityAll extends EntityListener {
 
     @Override
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        if (event.getCreatureType().equals(CreatureType.WOLF) && this.j2.ihatewolves) {
+        if (event.getCreatureType().equals(CreatureType.WOLF) && this.j2.config.world_disable_wolves) {
             event.setCancelled(true);
         }
     }
@@ -113,7 +113,7 @@ public class EntityAll extends EntityListener {
 
     @Override
     public void onItemSpawn(ItemSpawnEvent event) {
-        if (this.j2.servernumber == 2) {
+        if (this.j2.config.general_server_number == 2) {
             event.setCancelled(true);
         }
     }

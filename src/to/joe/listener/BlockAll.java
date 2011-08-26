@@ -36,14 +36,14 @@ public class BlockAll extends BlockListener {
 
     @Override
     public void onBlockIgnite(BlockIgniteEvent event) {
-        if (this.j2.safemode && !(event.getCause().equals(IgniteCause.FLINT_AND_STEEL))) {
+        if (this.j2.config.world_safemode && !(event.getCause().equals(IgniteCause.FLINT_AND_STEEL))) {
             event.setCancelled(true);
         }
     }
 
     @Override
     public void onBlockBurn(BlockBurnEvent event) {
-        if (this.j2.safemode) {
+        if (this.j2.config.world_safemode) {
             event.setCancelled(true);
         }
     }

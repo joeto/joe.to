@@ -17,7 +17,7 @@ public class SmackIRCCommand extends MasterCommand {
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (!isPlayer || this.j2.hasFlag(player, Flag.SRSTAFF)) {
             this.j2.irc.getBot().quitServer("Back in a moment <3");
-            this.j2.ircEnable = false;
+            this.j2.config.irc_enable = false;
             this.j2.irc.restart = true;
         }
     }

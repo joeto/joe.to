@@ -21,10 +21,10 @@ public class MaxPlayersCommand extends MasterCommand {
             try {
                 newCount = Integer.parseInt(args[0]);
             } catch (final NumberFormatException e) {
-                newCount = this.j2.playerLimit;
+                newCount = this.j2.config.access_max_players;
             }
-            this.j2.playerLimit = newCount;
-            this.j2.sendAdminPlusLog(ChatColor.RED + playerName + " set max players to " + this.j2.playerLimit);
+            this.j2.config.access_max_players = newCount;
+            this.j2.sendAdminPlusLog(ChatColor.RED + playerName + " set max players to " + newCount);
         }
     }
 }

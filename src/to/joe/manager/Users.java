@@ -392,7 +392,7 @@ public class Users {
             player.getInventory().setHelmet(new ItemStack(Material.GRASS));
             player.sendMessage(ChatColor.RED + "You fizzle out");
         }
-        if (this.j2.maintenance) {
+        if (this.j2.config.maintenance_enable) {
             player.sendMessage(ChatColor.YELLOW + "We are in maintenance mode");
         }
         if (!quiet) {

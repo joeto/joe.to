@@ -9,28 +9,25 @@ public class IRCBot extends PircBot {
 
     private final IRC manager;
 
-    private final boolean useMsgCmd;
-
-    public IRCBot(String name, boolean useMsgCmd, IRC irc) {
+    public IRCBot(String name, IRC irc) {
         this.setName(name);
         this.setAutoNickChange(true);
-        this.useMsgCmd = useMsgCmd;
         this.manager = irc;
         this.setMessageDelay(1100);
     }
 
     @Override
     public void onDisconnect() {
-        if (this.manager.getJ2().ircEnable) {
+        if (this.manager.getJ2().config.irc_enable) {
             this.manager.restart = true;
-            this.manager.getJ2().ircEnable = false;
+            this.manager.getJ2().config.irc_enable = false;
             this.dispose();
         }
     }
 
     @Override
     public void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel) {
-        if (targetNick.equalsIgnoreCase(this.getNick()) && channel.equalsIgnoreCase(this.manager.getJ2().ircAdminChannel)) {
+        if (targetNick.equalsIgnoreCase(this.getNick()) && channel.equalsIgnoreCase(this.manager.getJ2().config.irc_admin_channel)) {
             this.joinChannel(channel);
         }
     }
@@ -45,7 +42,7 @@ public class IRCBot extends PircBot {
                 String playerList = "";
                 int playerCount = 0;
                 Player[] players;
-                if (channel.equalsIgnoreCase(this.manager.getJ2().ircAdminChannel)) {
+                if (channel.equalsIgnoreCase(this.manager.getJ2().config.irc_admin_channel)) {
                     players = this.manager.getJ2().getServer().getOnlinePlayers();
                 } else {
                     players = this.manager.getJ2().minitrue.getOnlinePlayers();
@@ -64,9 +61,9 @@ public class IRCBot extends PircBot {
                     this.sendMessage(channel, "No players online.");
                 } else {
                     if (message.equalsIgnoreCase("!players")) {
-                        this.sendMessage(channel, "Currently " + playerCount + " of " + this.manager.getJ2().playerLimit + " on the server");
+                        this.sendMessage(channel, "Currently " + playerCount + " of " + this.manager.getJ2().config.access_max_players + " on the server");
                     } else {
-                        this.sendMessage(channel, "Players (" + playerCount + " of " + this.manager.getJ2().playerLimit + "): " + playerList);
+                        this.sendMessage(channel, "Players (" + playerCount + " of " + this.manager.getJ2().config.access_max_players + "): " + playerList);
                     }
                 }
             } else if (message.equalsIgnoreCase("!admins")) {
@@ -81,7 +78,7 @@ public class IRCBot extends PircBot {
                     }
                 }
                 final boolean adminsOnline = !adminList.equals("Admins: ");
-                if (channel.equalsIgnoreCase(this.manager.getJ2().ircAdminChannel)) {
+                if (channel.equalsIgnoreCase(this.manager.getJ2().config.irc_admin_channel)) {
                     if (!adminsOnline) {
                         this.sendMessage(channel, "No admins online.");
                     } else {
@@ -94,20 +91,20 @@ public class IRCBot extends PircBot {
                         this.sendMessage(channel, "There are admins online!");
                     }
                 }
-            } else if (this.useMsgCmd && parts[0].equalsIgnoreCase("!msg")) {
-                if (channel.equalsIgnoreCase(this.manager.getJ2().ircAdminChannel)) {
+            } else if (this.manager.getJ2().config.irc_require_msg_cmd && parts[0].equalsIgnoreCase("!msg")) {
+                if (channel.equalsIgnoreCase(this.manager.getJ2().config.irc_admin_channel)) {
                     this.sendMessage(channel, "Try that in the other channel.");
                 } else {
                     this.handleMessage(channel, sender, this.manager.getJ2().combineSplit(1, parts, " "));
                 }
             } else if (parts[0].equalsIgnoreCase("!broadcast")) {
-                if (!channel.equalsIgnoreCase(this.manager.getJ2().ircAdminChannel)) {
+                if (!channel.equalsIgnoreCase(this.manager.getJ2().config.irc_admin_channel)) {
                     this.sendMessage(channel, "Try that in the other channel.");
                 } else {
                     this.manager.getJ2().chat.handleBroadcastFromIRC(sender, this.manager.getJ2().combineSplit(1, parts, " "));
                 }
             } else if (parts[0].equalsIgnoreCase("!reports")) {
-                if (!channel.equalsIgnoreCase(this.manager.getJ2().ircAdminChannel)) {
+                if (!channel.equalsIgnoreCase(this.manager.getJ2().config.irc_admin_channel)) {
                     this.sendMessage(channel, "Try that in the other channel.");
                 } else {
                     String response = "";
@@ -135,13 +132,13 @@ public class IRCBot extends PircBot {
                     }
                     this.sendMessage(channel, response);
                 }
-            } else if (this.useMsgCmd && parts[0].equalsIgnoreCase("!me")) {
-                if (channel.equalsIgnoreCase(this.manager.getJ2().ircAdminChannel)) {
+            } else if (this.manager.getJ2().config.irc_require_msg_cmd && parts[0].equalsIgnoreCase("!me")) {
+                if (channel.equalsIgnoreCase(this.manager.getJ2().config.irc_admin_channel)) {
                     this.sendMessage(channel, "Try that in the other channel.");
                 }
                 this.handleMeMessage(channel, sender, this.manager.getJ2().combineSplit(1, parts, " "));
             } else if (parts[0].equalsIgnoreCase("!has")) {
-                if (!channel.equalsIgnoreCase(this.manager.getJ2().ircAdminChannel)) {
+                if (!channel.equalsIgnoreCase(this.manager.getJ2().config.irc_admin_channel)) {
                     this.sendMessage(channel, "Try that in the other channel.");
                 }
                 String playerName = null;
@@ -157,11 +154,11 @@ public class IRCBot extends PircBot {
             }
             return;
         }
-        if ((message.charAt(0) == '.') && channel.equalsIgnoreCase(this.manager.getJ2().ircChannel)) {
+        if ((message.charAt(0) == '.') && channel.equalsIgnoreCase(this.manager.getJ2().config.irc_relay_channel)) {
             final String[] parts = message.split(" ");
             if (this.manager.ircCommand(hostname, sender, parts)) {
                 this.sendRawLine("NOTICE " + sender + " :Done");
-            } else if (!this.useMsgCmd) {
+            } else if (!this.manager.getJ2().config.irc_require_msg_cmd) {
                 this.handleMessage(channel, sender, " " + message);
             }
             return;
@@ -169,7 +166,7 @@ public class IRCBot extends PircBot {
         if (message.equals("A MAN IN BRAZIL IS COUGHING")) {
             this.manager.cough(hostname);
         }
-        if (!this.useMsgCmd) {
+        if (!this.manager.getJ2().config.irc_require_msg_cmd) {
             this.handleMessage(channel, sender, " " + message);
         }
     }

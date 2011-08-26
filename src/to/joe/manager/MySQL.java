@@ -525,7 +525,7 @@ public class MySQL {
 
         } catch (final SQLException ex) {
             this.j2.logWarn(ChatColor.RED + "Unable to load base data from MySQL. Oh hell");
-            this.j2.maintenance = true;
+            this.j2.config.maintenance_enable = true;
         } finally {
             try {
                 if (ps != null) {

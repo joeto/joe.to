@@ -21,7 +21,7 @@ public class Recipes {
      * Implement recipes to mc3
      */
     public void addRecipes() {
-        if (this.j2.servernumber != 3) {
+        if (this.j2.config.general_server_number != 3) {
             return;
         }
         // Diamond

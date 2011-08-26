@@ -5,17 +5,17 @@ import org.bukkit.event.weather.WeatherListener;
 
 import to.joe.J2;
 
-public class Weather extends WeatherListener {
+public class WeatherAll extends WeatherListener {
 
     private J2 j2;
 
-    public Weather(J2 j2) {
+    public WeatherAll(J2 j2) {
         this.j2 = j2;
     }
 
     @Override
     public void onWeatherChange(WeatherChangeEvent event) {
-        if (event.toWeatherState() && !this.j2.enableWeather) {
+        if (event.toWeatherState() && !this.j2.config.world_weather_enable) {
             event.setCancelled(true);
         }
     }
