@@ -3,6 +3,7 @@ package to.joe.util.Runnables.BanCooperative;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
+import org.json.JSONObject;
 
 import to.joe.J2;
 import to.joe.manager.BanCooperative;
@@ -24,8 +25,9 @@ public class CoopRunnerBan extends CoopRunner {
     @Override
     public void run() {
         this.mcbans_ban();
+        this.mcbouncer_ban();
     }
-
+    
     private void mcbans_ban() {
         String banType = this.local;
         final String reason_lower = this.reason.toLowerCase();
@@ -53,9 +55,14 @@ public class CoopRunnerBan extends CoopRunner {
         }
     }
 
-    @SuppressWarnings("unused")
     private void mcbouncer_ban() {
-
+        JSONObject result=this.mcbouncer_api("addBan", this.admin+"/"+this.name+"/"+this.reason);
+        if(result.optBoolean("success")){
+            this.j2.log(ChatColor.RED+"[mcbouncer] Added ban: "+this.name);
+        }
+        else{
+            this.j2.log(ChatColor.RED+"[mcbouncer] Failed to ban "+this.name);
+        }
     }
 
 }

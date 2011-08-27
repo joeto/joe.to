@@ -3,6 +3,7 @@ package to.joe.util.Runnables.BanCooperative;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
+import org.json.JSONObject;
 
 import to.joe.J2;
 import to.joe.manager.BanCooperative;
@@ -19,6 +20,7 @@ public class CoopRunnerUnban extends CoopRunner {
     @Override
     public void run() {
         this.mcbans_unban();
+        this.mcbouncer_unban();
     }
 
     private void mcbans_unban() {
@@ -31,6 +33,16 @@ public class CoopRunnerUnban extends CoopRunner {
             this.j2.log(ChatColor.RED + "[mcbans] Unbanned " + this.name);
         } else {
             this.j2.log(ChatColor.RED + "[mcbans] Failed to unban " + this.name);
+        }
+    }
+
+    private void mcbouncer_unban(){
+        JSONObject result=this.mcbouncer_api("removeBan", this.name);
+        if(result.optBoolean("success")){
+            this.j2.log(ChatColor.RED+"[mcbouncer] Unbanned: "+this.name);
+        }
+        else{
+            this.j2.log(ChatColor.RED+"[mcbouncer] Failed to unban "+this.name);
         }
     }
 

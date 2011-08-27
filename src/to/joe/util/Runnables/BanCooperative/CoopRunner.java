@@ -192,7 +192,7 @@ public abstract class CoopRunner implements Runnable {
     private JSONObject mcbouncer_getBans(String name) {
         return this.mcbouncer_api("getBans", name + "/0/100");
     }
-
+    
     @SuppressWarnings("unused")
     private JSONObject mcbouncer_getIPBans(String ip) {
         return this.mcbouncer_api("getIPBans", ip + "/0/100");
@@ -202,7 +202,7 @@ public abstract class CoopRunner implements Runnable {
         return result.optBoolean("success");
     }
 
-    private JSONObject mcbouncer_api(String action, String parameters) {
+    protected JSONObject mcbouncer_api(String action, String parameters) {
         return this.apiGet(this.mcbouncer_host, action + "/" + this.j2.config.bans_mcbouncer_api + "/" + parameters, new HashMap<String, String>());
     }
 
