@@ -36,6 +36,10 @@ public class Vanish {
     private final Logger log = Logger.getLogger("Minecraft");
     private final Minitrue mini;
 
+    private final Object eidSync = new Object();
+
+    private final ArrayList<Integer> eidVanished;
+
     public Vanish(Minitrue mini) {
         this.eidVanished = new ArrayList<Integer>();
         this.mini = mini;
@@ -56,9 +60,68 @@ public class Vanish {
         SpoutManager.getPacketManager().addListener(39, new Packeteer39AttachEntity(this));
     }
 
+    public void addEIDVanished(int id) {
+        synchronized (this.eidSync) {
+            this.eidVanished.add(id);
+        }
+    }
+
+    /**
+     * Vanish toggle on player
+     * 
+     * @param player
+     */
+    public void callVanish(Player player) {
+        if (this.invisible.contains(player)) {
+            this.callUnVanish(player);
+            return;
+        }
+        this.invisible.add(player);
+        final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
+        for (final Player p : playerList) {
+            if ((this.getDistance(player, p) > this.RANGE) || (p.equals(player))) {
+                continue;
+            }
+            this.sendDestroyPacket(player, p);
+            if (this.mini.j2.hasFlag(p, Flag.ADMIN)) {
+                this.sendSpawnPacket(player, p);
+            }
+        }
+        this.addEIDVanished(((CraftPlayer) player).getEntityId());
+        this.log.info(player.getName() + " disappeared.");
+        player.sendMessage(ChatColor.RED + "Poof!");
+    }
+
+    public int invisibleCount() {
+        synchronized (this.sync) {
+            return this.invisible.size();
+        }
+    }
+
+    public boolean isEIDVanished(int id) {
+        synchronized (this.eidSync) {
+            return this.eidVanished.contains(id);
+        }
+    }
+
     public boolean isInvisible(Player player) {
         synchronized (this.sync) {
             return this.invisible.contains(player);
+        }
+    }
+
+    public void refreshForAdmin(Player admin) {
+        for (final Player player : this.mini.j2.getServer().getOnlinePlayers()) {
+            if ((player != null) && !player.equals(admin)) {
+                this.sendDestroyPacket(player, admin);
+                this.sendSpawnPacket(player, admin);
+            }
+        }
+    }
+
+    public void removeEIDVanished(int id) {
+        synchronized (this.eidSync) {
+            this.eidVanished.remove(id);
         }
     }
 
@@ -71,10 +134,38 @@ public class Vanish {
         }
     }
 
-    public int invisibleCount() {
-        synchronized (this.sync) {
-            return this.invisible.size();
+    public boolean shouldHide(Player from, int eid) {
+        if (!this.mini.j2.hasFlag(from, Flag.ADMIN)) {
+            return this.isEIDVanished(eid);
         }
+        return false;
+    }
+
+    private void callUnVanish(Player player) {
+        if (!this.isInvisible(player)) {
+            return;
+        }
+        this.removeInvisibility(player);
+
+        final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
+        for (final Player p : playerList) {
+            if ((this.getDistance(player, p) >= this.RANGE) || (p.equals(player))) {
+                continue;
+            }
+            if (this.mini.j2.hasFlag(p, Flag.ADMIN)) {
+                this.sendDestroyPacket(player, p);
+            }
+            this.sendSpawnPacket(player, p);
+        }
+
+        this.log.info(player.getName() + " reappeared.");
+        player.sendMessage(ChatColor.RED + "You have reappeared!");
+    }
+
+    private double getDistance(Player player1, Player player2) {
+        final Location loc1 = player1.getLocation();
+        final Location loc2 = player1.getLocation();
+        return Math.sqrt(Math.pow(loc1.getX() - loc2.getX(), 2.0D) + Math.pow(loc1.getY() - loc2.getY(), 2.0D) + Math.pow(loc1.getZ() - loc2.getZ(), 2.0D));
     }
 
     /**
@@ -101,86 +192,5 @@ public class Vanish {
         final CraftPlayer unHide = (CraftPlayer) unHidingPlayer;
         final CraftPlayer unHideFrom = (CraftPlayer) nowAwarePlayer;
         unHideFrom.getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(unHide.getHandle()));
-    }
-
-    /**
-     * Vanish toggle on player
-     * 
-     * @param player
-     */
-    public void callVanish(Player player) {
-        if (this.invisible.contains(player)) {
-            this.callUnVanish(player);
-            return;
-        }
-        this.invisible.add(player);
-        final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
-        for (final Player p : playerList) {
-            if ((this.getDistance(player, p) > this.RANGE) || (p.equals(player))) {
-                continue;
-            }
-            this.sendDestroyPacket(player, p);
-            if(this.mini.j2.hasFlag(p, Flag.ADMIN)){
-                this.sendSpawnPacket(player, p);
-            }
-        }
-        this.addEIDVanished(((CraftPlayer) player).getEntityId());
-        this.log.info(player.getName() + " disappeared.");
-        player.sendMessage(ChatColor.RED + "Poof!");
-    }
-
-    private void callUnVanish(Player player) {
-        if (!this.isInvisible(player)) {
-            return;
-        }
-        this.removeInvisibility(player);
-
-        final Player[] playerList = this.mini.j2.getServer().getOnlinePlayers();
-        for (final Player p : playerList) {
-            if ((this.getDistance(player, p) >= this.RANGE) || (p.equals(player))) {
-                continue;
-            }
-            if(this.mini.j2.hasFlag(p, Flag.ADMIN)){
-                this.sendDestroyPacket(player, p);
-            }
-            this.sendSpawnPacket(player, p);
-        }
-
-        this.log.info(player.getName() + " reappeared.");
-        player.sendMessage(ChatColor.RED + "You have reappeared!");
-    }
-
-    private double getDistance(Player player1, Player player2) {
-        final Location loc1 = player1.getLocation();
-        final Location loc2 = player1.getLocation();
-        return Math.sqrt(Math.pow(loc1.getX() - loc2.getX(), 2.0D) + Math.pow(loc1.getY() - loc2.getY(), 2.0D) + Math.pow(loc1.getZ() - loc2.getZ(), 2.0D));
-    }
-
-    private final Object eidSync = new Object();
-    private final ArrayList<Integer> eidVanished;
-
-    public void addEIDVanished(int id) {
-        synchronized (this.eidSync) {
-            this.eidVanished.add(id);
-        }
-    }
-
-    public void removeEIDVanished(int id) {
-        synchronized (this.eidSync) {
-            this.eidVanished.remove(id);
-        }
-    }
-
-    public boolean isEIDVanished(int id) {
-        synchronized (this.eidSync) {
-            return this.eidVanished.contains(id);
-        }
-    }
-
-    public boolean shouldHide(Player from, int eid) {
-        if (!this.mini.j2.hasFlag(from, Flag.ADMIN)) {
-            return this.isEIDVanished(eid);
-        }
-        return false;
     }
 }
