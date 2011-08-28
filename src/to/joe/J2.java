@@ -111,6 +111,7 @@ import to.joe.Commands.SeniorStaff.MaxPlayersCommand;
 import to.joe.Commands.SeniorStaff.MobCommand;
 import to.joe.Commands.SeniorStaff.SayCommand;
 import to.joe.Commands.SeniorStaff.SetSpawnCommand;
+import to.joe.Commands.SeniorStaff.ShowerCommand;
 import to.joe.Commands.SeniorStaff.SmackIRCCommand;
 import to.joe.listener.BlockAll;
 import to.joe.listener.EntityAll;
@@ -393,7 +394,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("trustreq").setExecutor(new TrustedRequestCommand(this));
         this.getCommand("woof").setExecutor(new WoofCommand(this));
         this.getCommand("slap").setExecutor(new SlapCommand(this));
-        //this.getCommand("shower").setExecutor(new ShowerCommand(this));
+        this.getCommand("shower").setExecutor(new ShowerCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.config.general_server_number);
@@ -401,10 +402,7 @@ public class J2 extends JavaPlugin {
         this.minitrue.restartManager();
         this.activity.restartManager();
         this.banCoop.startCallback();
-        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new AutoSave(this), 1, 6000);// Saves
-        // every
-        // 5
-        // minutes
+        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new AutoSave(this), 1, 6000);
     }
 
     /**

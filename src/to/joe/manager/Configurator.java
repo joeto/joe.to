@@ -71,6 +71,10 @@ public class Configurator {
         this.mysql_password = conf.getString("MySQL.password", "root");
         this.mysql_username = conf.getString("MySQL.username", "root");
 
+        this.blacklist_prevent_general=new ArrayList<Integer>();
+        this.blacklist_prevent_trusted=new ArrayList<Integer>();
+        this.blacklist_summon=new ArrayList<Integer>();
+        this.blacklist_watchlist=new ArrayList<Integer>();
         final String bl_trust = conf.getString("Blacklists.prevent-trusted", "0");
         for (final String s : bl_trust.split(",")) {
             if (s != null) {
