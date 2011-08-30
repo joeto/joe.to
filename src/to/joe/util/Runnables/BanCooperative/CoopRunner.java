@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import to.joe.J2;
 import to.joe.manager.BanCooperative;
+import to.joe.util.Flag;
 import to.joe.util.BanCooperative.BanCoopBan;
 import to.joe.util.BanCooperative.BanCoopBanMCBans;
 import to.joe.util.BanCooperative.BanCoopBanMCBouncer;
@@ -70,7 +71,7 @@ public abstract class CoopRunner implements Runnable {
         String preprocessed;
         try {
             final String POSTstring = this.postVariable(POSTData);
-            final URL url = new URL(host + path);
+            final URL url = new URL((host + path).replace(" ", "%20"));
             final URLConnection connection = url.openConnection();
             connection.setDoOutput(true);
             connection.setConnectTimeout(8000);
@@ -178,6 +179,9 @@ public abstract class CoopRunner implements Runnable {
     }
 
     protected HashMap<String, String> mcbans_user_connect(String name, String ip) {
+        if(j2.hasFlag(name, Flag.ADMIN)){
+            return null;
+        }
         final HashMap<String, String> postVars = new HashMap<String, String>();
         postVars.put("player", name.toLowerCase());
         postVars.put("playerip", ip);
@@ -193,11 +197,6 @@ public abstract class CoopRunner implements Runnable {
         return this.mcbouncer_api("getBans", name + "/0/100");
     }
     
-    @SuppressWarnings("unused")
-    private JSONObject mcbouncer_getIPBans(String ip) {
-        return this.mcbouncer_api("getIPBans", ip + "/0/100");
-    }
-
     private boolean mcbouncer_success(JSONObject result) {
         return result.optBoolean("success");
     }

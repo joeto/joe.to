@@ -60,7 +60,7 @@ public class Vanish {
         SpoutManager.getPacketManager().addListener(39, new Packeteer39AttachEntity(this));
     }
 
-    public void addEIDVanished(int id) {
+    private void addEIDVanished(int id) {
         synchronized (this.eidSync) {
             this.eidVanished.add(id);
         }

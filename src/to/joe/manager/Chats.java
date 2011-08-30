@@ -215,9 +215,9 @@ public class Chats {
         }
         String combined;
         if (me) {
-            combined = "* " + this.j2.config.irc_ingame_color + name + ChatColor.WHITE + message;
+            combined = "* " + this.j2.config.irc_ingame_color + name + ChatColor.WHITE + " "+ message;
         } else {
-            combined = this.j2.config.irc_ingame_separator[0] + this.j2.config.irc_ingame_color + name + ChatColor.WHITE + this.j2.config.irc_ingame_separator[1] + message;
+            combined = this.j2.config.irc_ingame_separator[0] + this.j2.config.irc_ingame_color + name + ChatColor.WHITE + this.j2.config.irc_ingame_separator[1] + " " + message;
         }
 
         if (combined.length() > this.j2.config.irc_char_limit) {
