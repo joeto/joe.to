@@ -23,7 +23,7 @@ public class Packeteer20NamedEntitySpawn implements PacketListener {
         final Packet20NamedEntitySpawn packet20 = (Packet20NamedEntitySpawn) ((MCCraftPacket) packet).getPacket();
         if (this.vanish.isEIDVanished(packet20.a)) {
             packet20.b = ChatColor.DARK_AQUA + packet20.b;
-            if(packet20.b.length()==16){
+            if(packet20.b.length()>15){
                 packet20.b=packet20.b.substring(0, 15);
             }
         }
