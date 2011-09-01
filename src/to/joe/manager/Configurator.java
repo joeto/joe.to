@@ -25,7 +25,7 @@ public class Configurator {
      * Loads the config
      */
     public void load() {
-        Configuration conf = this.j2.getConfiguration();
+        final Configuration conf = this.j2.getConfiguration();
         conf.load();
 
         this.access_block_nontrusted = conf.getBoolean("Access.block-nontrusted", false);

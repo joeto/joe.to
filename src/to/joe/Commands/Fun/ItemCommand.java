@@ -82,7 +82,7 @@ public class ItemCommand extends MasterCommand {
             }
             player.sendMessage("Given " + targetPlayer.getDisplayName() + " " + itemCount + " " + itemMaterial.toString());
             this.j2.log("Giving " + playerName + " " + itemCount + " " + itemMaterial.toString());
-            if ((this.j2.isOnWatchlist(itemMaterial.getId())) && ((itemCount > 10) || (itemCount < 1)) && !j2.hasFlag(player, Flag.ADMIN) && !j2.hasFlag(player, Flag.QUIET_IRC)) {
+            if ((this.j2.isOnWatchlist(itemMaterial.getId())) && ((itemCount > 10) || (itemCount < 1)) && !this.j2.hasFlag(player, Flag.ADMIN) && !this.j2.hasFlag(player, Flag.QUIET_IRC)) {
                 this.j2.irc.messageAdmins("Detecting summon of " + itemCount + " " + itemMaterial.toString() + " by " + playerName);
                 this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE + "Detecting summon of " + ChatColor.WHITE + itemCount + " " + ChatColor.LIGHT_PURPLE + itemMaterial.toString() + " by " + ChatColor.WHITE + playerName);
             }

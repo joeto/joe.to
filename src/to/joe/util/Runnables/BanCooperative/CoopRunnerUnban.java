@@ -37,7 +37,7 @@ public class CoopRunnerUnban extends CoopRunner {
     }
 
     private void mcbouncer_unban(){
-        JSONObject result=this.mcbouncer_api("removeBan", this.name);
+        final JSONObject result=this.mcbouncer_api("removeBan", this.name);
         if(result.optBoolean("success")){
             this.j2.log(ChatColor.RED+"[mcbouncer] Unbanned: "+this.name);
         }

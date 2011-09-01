@@ -7,7 +7,7 @@ import to.joe.J2;
 
 public class WeatherAll extends WeatherListener {
 
-    private J2 j2;
+    private final J2 j2;
 
     public WeatherAll(J2 j2) {
         this.j2 = j2;

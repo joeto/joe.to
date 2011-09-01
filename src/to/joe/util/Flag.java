@@ -23,6 +23,7 @@ public enum Flag {
     SRSTAFF('s', "Senior Staff"), // senior staff
     TRUSTED('t', "Trusted"), // trusted
     TOOLS('T', "Tool mode"), // admin tool mode
+    VANISHED('V',"Currently invisible"),//Invisabull
     THOR('x', "Thor Powers"), // admin lightning powers
     MUTED('X', "Muted"), // player muted
     QUIET_IRC('y', "Minimal IRC alerts"), //Stop spamming IRC!

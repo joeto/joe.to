@@ -1,6 +1,5 @@
 package to.joe.listener;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
@@ -85,12 +84,12 @@ public class EntityAll extends EntityListener {
             if (event instanceof EntityDamageByEntityEvent) {
                 final EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) event;
                 final Entity damager = ev.getDamager();
-                if (damager instanceof Player) {// YOU MONSTER
+                if ((damager instanceof Player) && this.j2.config.general_website_enable) {// YOU MONSTER
                     final Location loc = damager.getLocation();
                     final int x = (int) loc.getX();
                     final int y = (int) loc.getY();
                     final int z = (int) loc.getZ();
-                    this.j2.log(ChatColor.AQUA + "[WOOF] " + ((Player) damager).getName() + " smacked a wolf for " + event.getDamage() + " damage at " + x + " " + y + " " + z);
+                    this.j2.dogLog.add("[WOOF] " + ((Player) damager).getName() + " smacked a wolf for " + event.getDamage() + " damage at " + x + " " + y + " " + z);
                 }
             }
         }

@@ -179,7 +179,7 @@ public abstract class CoopRunner implements Runnable {
     }
 
     protected HashMap<String, String> mcbans_user_connect(String name, String ip) {
-        if(j2.hasFlag(name, Flag.ADMIN)){
+        if(this.j2.hasFlag(name, Flag.ADMIN)){
             return null;
         }
         final HashMap<String, String> postVars = new HashMap<String, String>();

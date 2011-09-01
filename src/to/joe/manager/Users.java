@@ -190,6 +190,7 @@ public class Users {
         user.addFlag(flag);
         this.j2.debug("Adding flag " + flag.getChar() + " for " + name);
         this.j2.mysql.setFlags(name, user.getUserFlags());
+        this.updatePerms(name);
     }
 
     /**
@@ -203,6 +204,7 @@ public class Users {
         if (user != null) {
             user.addFlag(flag);
         }
+        this.updatePerms(name);
     }
 
     /**
@@ -219,6 +221,7 @@ public class Users {
         user.dropFlag(flag);
         this.j2.debug("Dropping flag " + flag.getChar() + " for " + name);
         this.j2.mysql.setFlags(name, user.getUserFlags());
+        this.updatePerms(name);
     }
 
     /**
@@ -232,6 +235,7 @@ public class Users {
         if (user != null) {
             user.dropFlag(flag);
         }
+        this.updatePerms(name);
     }
 
     /**
@@ -367,7 +371,13 @@ public class Users {
                 }
             }
         }
-
+    }
+    
+    private void updatePerms(String name){
+        Player player=this.j2.getServer().getPlayer(name);
+        if(player!=null && player.getName().equalsIgnoreCase(name)){
+            this.j2.perms.setPerms(player);
+        }
     }
 
     /**
@@ -423,6 +433,7 @@ public class Users {
                 }
             }
         }
+        this.j2.perms.setPerms(player);
     }
 
     public Location jail;

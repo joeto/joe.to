@@ -1,6 +1,9 @@
 package to.joe.manager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.bukkit.entity.Player;
 
 import to.joe.J2;
 import to.joe.util.Flag;
@@ -41,8 +44,8 @@ public class Permissions {
         if (this.j2.hasFlag(playername, Flag.SRSTAFF)) {
             return true;
         }
-        if (permission.startsWith("nocheat") || permission.startsWith("afkbooter")) {
-            if (this.j2.reallyHasFlag(playername, Flag.ADMIN)) {
+        if (permission.startsWith("nocheat")) {
+            if (this.j2.reallyHasFlag(playername, Flag.SRSTAFF) || this.j2.hasFlag(playername, Flag.VANISHED)) {
                 return true;
             }
         }
@@ -64,9 +67,27 @@ public class Permissions {
             }
         }
         return false;
-
     }
 
+    public void setPerms(Player player){
+        HashMap<String, Flag> permissions= new HashMap<String, Flag>();
+        permissions.putAll(this.perms);
+        ArrayList<Flag> flags=new ArrayList<Flag>(this.j2.users.getAllFlags(player));
+        if(!this.j2.users.isAuthed(player.getName())){
+            flags.remove(Flag.ADMIN);
+            flags.remove(Flag.SRSTAFF);
+        }
+        for(String perm:permissions.keySet()){
+            if(flags.contains(permissions.get(perm))){
+                player.addAttachment(j2, perm, true);
+                this.j2.debug("Giving "+player.getName()+ " perm "+perm);
+            }
+            else{
+                player.addAttachment(j2, perm, false);
+            }
+        }
+    }
+    
     /**
      * Return if player is in named group
      * 

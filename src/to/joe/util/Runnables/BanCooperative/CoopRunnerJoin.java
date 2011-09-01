@@ -19,9 +19,9 @@ public class CoopRunnerJoin extends CoopRunner {
 
     @Override
     public void run() {
-        String ip=this.player.getAddress().getAddress().getHostAddress();
+        final String ip = this.player.getAddress().getAddress().getHostAddress();
         this.mcbans_user_connect(this.name, ip);
-        this.mcbouncer_api("updateUser",name+"/"+ip);
+        this.mcbouncer_api("updateUser", this.name + "/" + ip);
         this.dox();
         final BanCoopDossier dox = this.coop.record.get(this.name);
         if (dox.totalBans() > 0) {
@@ -31,5 +31,6 @@ public class CoopRunnerJoin extends CoopRunner {
                 this.j2.irc.messageAdmins("[BANS] " + this.name + ": Bans: " + dox.totalBans() + ". MCBans Rep " + dox.getMCBansRep() + "/10");
             }
         }
+        this.j2.log(ChatColor.LIGHT_PURPLE + "[BANS] " + this.name + ": " + dox.totalBans() + " bans, mcbans rep " + dox.getMCBansRep() + "/10");
     }
 }

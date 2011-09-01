@@ -89,6 +89,7 @@ public class Vanish {
         }
         this.addEIDVanished(((CraftPlayer) player).getEntityId());
         this.log.info(player.getName() + " disappeared.");
+        this.mini.j2.users.addFlagLocal(player.getName(), Flag.VANISHED);
         player.sendMessage(ChatColor.RED + "Poof!");
     }
 
@@ -157,7 +158,7 @@ public class Vanish {
             }
             this.sendSpawnPacket(player, p);
         }
-
+        this.mini.j2.users.dropFlagLocal(player.getName(), Flag.VANISHED);
         this.log.info(player.getName() + " reappeared.");
         player.sendMessage(ChatColor.RED + "You have reappeared!");
     }

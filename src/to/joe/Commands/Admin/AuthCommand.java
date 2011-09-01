@@ -25,14 +25,20 @@ public class AuthCommand extends MasterCommand {
                     this.j2.users.authenticatedAdmin(playerName);
                     this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE + "[J2AUTH] " + playerName + " authenticated");
                     this.j2.minitrue.vanish.refreshForAdmin(player);
+                    this.j2.perms.setPerms(player);
                     return;
                 }
             }
+            boolean deauthed=false;
             if (this.j2.users.isAuthed(playerName)) {
                 this.j2.sendAdminPlusLog(ChatColor.LIGHT_PURPLE + "[J2AUTH] " + playerName + " deauthenticated");
+                deauthed=true;
             }
             this.j2.users.resetAuthentication(player);
             this.j2.minitrue.vanish.refreshForAdmin(player);
+            if(deauthed){
+                this.j2.perms.setPerms(player);
+            }
         }
     }
 }

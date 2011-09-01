@@ -67,6 +67,7 @@ import to.joe.Commands.Admin.ImAToolCommand;
 import to.joe.Commands.Admin.J2LookupCommand;
 import to.joe.Commands.Admin.KickCommand;
 import to.joe.Commands.Admin.LookupCommand;
+import to.joe.Commands.Admin.MobCommand;
 import to.joe.Commands.Admin.MuteAllCommand;
 import to.joe.Commands.Admin.MuteCommand;
 import to.joe.Commands.Admin.NSACommand;
@@ -108,7 +109,6 @@ import to.joe.Commands.SeniorStaff.KickAllCommand;
 import to.joe.Commands.SeniorStaff.MadagascarCommand;
 import to.joe.Commands.SeniorStaff.MaintenanceCommand;
 import to.joe.Commands.SeniorStaff.MaxPlayersCommand;
-import to.joe.Commands.SeniorStaff.MobCommand;
 import to.joe.Commands.SeniorStaff.SayCommand;
 import to.joe.Commands.SeniorStaff.SetSpawnCommand;
 import to.joe.Commands.SeniorStaff.ShowerCommand;
@@ -141,6 +141,7 @@ import to.joe.manager.Users;
 import to.joe.manager.Voting;
 import to.joe.manager.Warps;
 import to.joe.manager.WebPage;
+import to.joe.util.DogLog;
 import to.joe.util.Flag;
 import to.joe.util.MCLogFilter;
 import to.joe.util.Property;
@@ -304,9 +305,9 @@ public class J2 extends JavaPlugin {
         pm.registerEvent(Event.Type.ITEM_SPAWN, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.MAP_INITIALIZE, this.mapListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.WEATHER_CHANGE, this.weatherListener, Priority.Normal, this);
-            
+
         this.debug("Events registered");
-        
+
         this.getCommand("kickall").setExecutor(new KickAllCommand(this));
         this.getCommand("smackirc").setExecutor(new SmackIRCCommand(this));
         this.getCommand("blacklist").setExecutor(new BlacklistCommand(this));
@@ -415,7 +416,9 @@ public class J2 extends JavaPlugin {
         this.motd = this.readDaFile("motd.txt");
         this.help = this.readDaFile("help.txt");
         this.config.load();
-
+        if(this.config.general_website_enable){
+            this.dogLog=new DogLog(this.config.general_server_number);
+        }
         this.mysql = new MySQL(this.config.mysql_username, this.config.mysql_password, this.config.mysql_database, this.config.general_server_number, this);
         this.warps.restartManager();
         this.reports.restartManager();
@@ -808,6 +811,7 @@ public class J2 extends JavaPlugin {
 
     public SimpleDateFormat shortdateformat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
     private Logger log;
+    public DogLog dogLog;
     public ArrayList<String> protectedUsers;
     public String[] rules, blacklist, intro, motd, help;
     private final String tips_location = "tips.txt";

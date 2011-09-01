@@ -19,21 +19,21 @@ public class ShowerCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer && this.j2.hasFlag(player, Flag.SRSTAFF)) {
-            Location target = player.getTargetBlock(null, 50).getLocation();
+            final Location target = player.getTargetBlock(null, 50).getLocation();
             for(int x=0;x<30;x++){
-                Location tar = new Location(target.getWorld(), target.getX(), target.getY(), target.getZ());
-                this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(j2, new singleFireball(tar.add((j2.random.nextInt(6)-3)*5,40,(j2.random.nextInt(6)-3)*5-20)), j2.random.nextInt(60));
+                final Location tar = new Location(target.getWorld(), target.getX(), target.getY(), target.getZ());
+                this.j2.getServer().getScheduler().scheduleAsyncDelayedTask(this.j2, new singleFireball(tar.add((this.j2.random.nextInt(6)-3)*5,40,((this.j2.random.nextInt(6)-3)*5)-20)), this.j2.random.nextInt(60));
             }
         }
     }
     private class singleFireball implements Runnable{
-        private Location target;
+        private final Location target;
         public singleFireball(Location target){
             this.target=target;
         }
         @Override
         public void run() {
-            Fireball fireball=((Fireball) (target.getWorld()).spawn(target, Fireball.class));
+            final Fireball fireball=(this.target.getWorld()).spawn(this.target, Fireball.class);
             fireball.setVelocity(new Vector(0, -4, 1));
             fireball.setIsIncendiary(true);
             fireball.setYield(3);
