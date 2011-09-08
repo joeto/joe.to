@@ -1,16 +1,13 @@
 package to.joe.listener;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
 
 import to.joe.J2;
 import to.joe.util.Flag;
@@ -74,7 +71,7 @@ public class PlayerInteract extends PlayerListener {
                     y++;
                 }
             }
-            if ((event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
+            /*if ((event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
                 final Block targetb = player.getTargetBlock(null, 50);
                 if (targetb != null) {
                     event.getPlayer().sendMessage("bloop!");
@@ -84,7 +81,7 @@ public class PlayerInteract extends PlayerListener {
                         world.dropItemNaturally(location, new ItemStack(Material.SLIME_BALL, 1));
                     }
                 }
-            }
+            }*/
         }
         if (this.j2.hasFlag(player, Flag.THOR) && event.hasItem() && material.equals(Material.IRON_SWORD)) {
             final boolean weather = player.getWorld().isThundering();

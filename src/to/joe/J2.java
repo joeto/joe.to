@@ -44,6 +44,7 @@ import to.joe.Commands.GetLocationCommand;
 import to.joe.Commands.MeCommand;
 import to.joe.Commands.MessageCommand;
 import to.joe.Commands.NoteCommand;
+import to.joe.Commands.RegisterCommand;
 import to.joe.Commands.RemoveHomeCommand;
 import to.joe.Commands.RemoveItemCommand;
 import to.joe.Commands.ReportCommand;
@@ -396,6 +397,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("woof").setExecutor(new WoofCommand(this));
         this.getCommand("slap").setExecutor(new SlapCommand(this));
         this.getCommand("shower").setExecutor(new ShowerCommand(this));
+        this.getCommand("register").setExecutor(new RegisterCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.config.general_server_number);

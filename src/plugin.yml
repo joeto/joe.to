@@ -1,6 +1,6 @@
 name: j2Plugin
 main: to.joe.J2
-version: 1.4
+version: 1.4.2
 website: http://forums.joe.to
 depend: [Spout]
 author: J2 Minecraft Plugin Team
@@ -358,3 +358,6 @@ commands:
   shower:
     description: shower time!
     usage: shower
+  register:
+    description: user linkage
+    usage: register authcode

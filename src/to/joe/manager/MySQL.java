@@ -1096,4 +1096,130 @@ public class MySQL {
         return notes;
     }
 
+    public boolean isRegistered(String authcode) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = this.getConnection();
+            final String state = "SELECT * FROM minecraftusers WHERE minecraft_username <>\"\" AND authcode=\"" + authcode + "\"";
+            this.j2.debug("Query: " + state);
+            ps = conn.prepareStatement(state);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return true;
+            }
+        } catch (final SQLException ex) {
+
+        }
+        return false;
+
+    }
+
+    public boolean authCorrect(String authcode) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = this.getConnection();
+            final String state = "SELECT * FROM minecraftusers WHERE authcode=\"" + authcode + "\"";
+            this.j2.debug("Query: " + state);
+            ps = conn.prepareStatement(state);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return true;
+            }
+        } catch (final SQLException ex) {
+
+        }
+        return false;
+
+    }
+
+    public void addLink(String playerName, String authcode) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        conn = this.getConnection();
+        try {
+            final String state = "SELECT * FROM grandfatherlist WHERE name=\"" + playerName + "\"";
+            this.j2.debug("Query: " + state);
+            ps = conn.prepareStatement(state);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                try {
+                    final String query = "UPDATE minecraftusers SET minecraft_username=\"" + playerName + "\" WHERE authcode=\"" + authcode + "\"";
+                    this.j2.debug("Query: " + query);
+                    ps = conn.prepareStatement(query);
+                    ps.executeUpdate();
+                } catch (final SQLException ex) {
+                    this.j2.logWarn(ChatColor.RED + "Uh oh! An error occured while linking " + playerName + "'s forum account | " + ex.getErrorCode());
+                }
+                try {
+                    final String query = "UPDATE minecraftusers SET status=3 WHERE minecraft_username=\"" + playerName + "\"";
+                    this.j2.debug("Query: " + query);
+                    ps = conn.prepareStatement(query);
+                    ps.executeUpdate();
+                } catch (final SQLException ex) {
+                    this.j2.logWarn(ChatColor.RED + "Uh oh! An error occured while linking " + playerName + "'s forum account | " + ex.getErrorCode());
+                }
+                try {
+                    final String state4 = "SELECT minecraft_userid FROM minecraftusers WHERE minecraft_username=\"" + playerName + "\"";
+                    ps = conn.prepareStatement(state4);
+                    ResultSet rs3 = ps.executeQuery();
+                    while (rs3.next()) {
+                        int idint = rs3.getInt("minecraft_userid");
+                        try {
+                            final String state5 = "INSERT into minecraft_vouches (recipient_id,voucher_id,time_vouched,time_added,status) VALUES (?,?,?,?,?)";
+                            ps = conn.prepareStatement(state5);
+                            ps.setInt(1, idint);
+                            ps.setInt(2, 0);
+                            ps.setInt(3, 1314704662);
+                            ps.setInt(4, 1314704662);
+                            ps.setInt(5, 3);
+                            ps.executeUpdate();
+                        } catch (final SQLException ex) {
+                            this.j2.logWarn(ChatColor.RED + "Uh oh! An error occured while linking " + playerName + "'s forum account | " + ex.getErrorCode());
+                        }
+                    }
+                } catch (final SQLException ex) {
+                    this.j2.logWarn(ChatColor.RED + "Uh oh! An error occured while linking " + playerName + "'s forum account | " + ex.getErrorCode());
+                }
+                try {
+                    this.j2.users.addFlag(playerName, Flag.TRUSTED);
+                    final String state3 = "DELETE FROM grandfatherlist WHERE name=\"" + playerName + "\"";
+                    ps = conn.prepareStatement(state3);
+                    ps.executeUpdate();
+                } catch (final SQLException ex) {
+                    this.j2.logWarn(ChatColor.RED + "Uh oh! An error occured while linking " + playerName + "'s forum account | " + ex.getErrorCode());
+                }
+            }
+        } catch (final SQLException exc) {
+            this.j2.logWarn(ChatColor.RED + "Uh oh! An error occured while linking " + playerName + "'s forum account | " + exc.getErrorCode());
+        }
+        try {
+            final String state = "UPDATE minecraftusers SET minecraft_username=\"" + playerName + "\" WHERE authcode=\"" + authcode + "\"";
+            this.j2.debug("Query: " + state);
+            ps = conn.prepareStatement(state);
+            ps.executeUpdate();
+            this.j2.log(playerName + "'s account has been linked.");
+        } catch (final SQLException ex) {
+            this.j2.logWarn(ChatColor.RED + "Uh oh! An error occured while linking " + playerName + "'s forum account | " + ex.getErrorCode());
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (final SQLException ex) {
+                this.j2.logWarn(ChatColor.RED + "Uh oh! An error occured while linking " + playerName + "'s forum account | " + ex.getErrorCode());
+            }
+
+        }
+    }
 }

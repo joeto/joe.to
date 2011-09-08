@@ -167,7 +167,7 @@ public class Chats {
         final String chatlc = chat.toLowerCase();
 
         if (chatlc.contains("nigg") || chatlc.contains("fag")) {
-            final String msg = ChatColor.RED + "Watch " + ChatColor.LIGHT_PURPLE + name + ChatColor.RED + " for language.";
+            final String msg = ChatColor.RED + "Watch " + ChatColor.LIGHT_PURPLE + name + ChatColor.RED + " for language: "+chat;
             this.j2.sendAdminPlusLog(msg);
             this.j2.irc.messageAdmins(ChatColor.stripColor(msg));
         }

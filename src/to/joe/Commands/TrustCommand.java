@@ -16,7 +16,7 @@ public class TrustCommand extends MasterCommand {
     @Override
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer) {
-            if (this.j2.hasFlag(player, Flag.ADMIN)) {
+            if (this.j2.hasFlag(player, Flag.SRSTAFF)) {
                 if ((args.length < 2) || !(args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("drop"))) {
                     player.sendMessage(ChatColor.RED + "Usage: /trust add/drop player");
                     return;
