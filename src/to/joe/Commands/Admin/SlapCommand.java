@@ -32,6 +32,12 @@ public class SlapCommand extends MasterCommand {
                 }
                 final List<Player> results = this.j2.minitrue.matchPlayer(args[0], true);
                 if (results.size() == 1) {
+                    if (force > 10000) {
+                        force = 10000;
+                    }
+                    if (force < 0) {
+                        force = 5;
+                    }
                     final Random randomGen = new Random();
                     final Vector newVelocity = new Vector(((randomGen.nextFloat() * 1.5) - 0.75) * force, (randomGen.nextFloat() / 2.5) + (0.4 * force), ((randomGen.nextFloat() * 1.5) - 0.75) * force);
                     final Player target = results.get(0);
