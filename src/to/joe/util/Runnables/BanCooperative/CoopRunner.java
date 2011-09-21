@@ -200,7 +200,8 @@ public abstract class CoopRunner implements Runnable {
     }
 
     protected JSONObject mcbouncer_api(String action, String parameters) {
-        return this.apiGet(this.mcbouncer_host, action + "/" + this.j2.config.bans_mcbouncer_api + "/" + parameters, new HashMap<String, String>());
+        return null;
+        //return this.apiGet(this.mcbouncer_host, action + "/" + this.j2.config.bans_mcbouncer_api + "/" + parameters, new HashMap<String, String>());
     }
 
 }

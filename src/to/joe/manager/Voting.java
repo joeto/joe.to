@@ -31,7 +31,7 @@ public class Voting {
      * @param player
      */
     private void usageVoteAdmin(Player player) {
-        player.sendMessage(ChatColor.RED + "Usage: /voteadmin start|cancel");
+        player.sendMessage(ChatColor.RED + "Usage: /vote cancel | /vote \"Question\" \"answer\"");
     }
 
     /**

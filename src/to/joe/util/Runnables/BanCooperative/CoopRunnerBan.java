@@ -57,7 +57,7 @@ public class CoopRunnerBan extends CoopRunner {
 
     private void mcbouncer_ban() {
         final JSONObject result=this.mcbouncer_api("addBan", this.admin+"/"+this.name+"/"+this.reason);
-        if(result.optBoolean("success")){
+        if(result!=null && result.optBoolean("success")){
             this.j2.log(ChatColor.RED+"[mcbouncer] Added ban: "+this.name);
         }
         else{

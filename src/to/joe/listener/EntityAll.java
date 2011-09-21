@@ -78,6 +78,13 @@ public class EntityAll extends EntityListener {
                     event.setCancelled(true);
                     return;
                 }
+                if(this.j2.config.general_server_number==3 && smacked instanceof Wolf){
+                    Wolf woof=(Wolf)smacked;
+                    if(woof.isTamed()){
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
             }
         }
         if (smacked instanceof Wolf) {
