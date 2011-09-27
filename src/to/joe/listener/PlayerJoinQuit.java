@@ -10,6 +10,7 @@ package to.joe.listener;
  */
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -21,6 +22,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import to.joe.J2;
 import to.joe.util.Flag;
 import to.joe.util.User;
+import to.joe.util.Warp;
 
 public class PlayerJoinQuit extends PlayerListener {
 
@@ -38,6 +40,16 @@ public class PlayerJoinQuit extends PlayerListener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         event.setJoinMessage(null);
         final Player player = event.getPlayer();
+        if(!this.j2.hasFlag(player, Flag.JOINED)){
+         Random rand = new Random();
+        	String name = player.getName();
+        	int randint = rand.nextInt((12+1) - 1) + 1;
+        	String randWarp =  Integer.toString(randint);
+        	final Warp warp = this.j2.warps.getPublicWarp(randWarp);
+        	this.j2.safePort(player, warp.getLocation());
+        	this.j2.users.addFlag(name, Flag.JOINED);
+        }
+        
         this.j2.users.processJoin(player, false);
 
         /*
