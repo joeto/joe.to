@@ -28,6 +28,8 @@ public enum Flag {
     MUTED('X', "Muted"), // player muted
     QUIET_IRC('y', "Minimal IRC alerts"), //Stop spamming IRC!
     CUSTOM3('z', "Custom3"),
+    SAFE('S', "Safe during RedAlert Mode"),
+    PERMSAFE('P', "Permenant safe mode during RedAlert Mode"),
     // Numbers are reserved for internal programming.
     PLAYER_HOME('0', "Home designation (internal)"), //homes
     PLAYER_WARP_PUBLIC('1', "Unflagged warp designation (internal)");//warps

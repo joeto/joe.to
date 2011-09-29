@@ -79,6 +79,9 @@ public class PlayerJoinQuit extends PlayerListener {
             this.j2.warps.dropPlayer(name);
             this.j2.irc.processLeave(name);
         }
+        if(this.j2.hasFlag(player, Flag.SAFE)){
+        	this.j2.users.dropFlag(name, Flag.SAFE);
+        }
         event.setQuitMessage(null);
         this.j2.damage.arf(name);
         this.j2.users.dropAuthentication(name);

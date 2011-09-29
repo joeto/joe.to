@@ -411,6 +411,11 @@ public class Users {
         for (final String line : this.j2.motd) {
             player.sendMessage(line);
         }
+        if (this.j2.RedAlert == true){
+        	if(this.j2.reallyHasFlag(name, Flag.ADMIN) || this.j2.hasFlag(name, Flag.TRUSTED) || this.j2.hasFlag(name, Flag.DONOR)){
+        		this.j2.users.addFlag(name, Flag.SAFE);
+        	}
+        }
         if (this.j2.reallyHasFlag(name, Flag.ADMIN)) {
             final int count = this.j2.reports.numReports();
             player.sendMessage(ChatColor.LIGHT_PURPLE + "There are " + count + " reports. ");
@@ -434,6 +439,22 @@ public class Users {
             }
         }
         this.j2.perms.setPerms(player);
+    }
+    
+    public void RedAlertMarkSafePlayers(){
+    	for (final Player plr : this.j2.getServer().getOnlinePlayers()) {
+    		if(this.j2.hasFlag(plr, Flag.TRUSTED) || this.j2.hasFlag(plr, Flag.ADMIN) || this.j2.hasFlag(plr, Flag.DONOR)){
+    			this.j2.users.addFlag(plr.getName(), Flag.SAFE);
+    		}
+    	}
+    }
+    
+    public void UnmarkUsers(){
+    	for (final Player plr : this.j2.getServer().getOnlinePlayers()) {
+    		if(this.j2.hasFlag(plr, Flag.SAFE)){
+    			this.j2.users.dropFlag(plr.getName(), Flag.SAFE);
+    		}
+    	}
     }
 
     public Location jail;

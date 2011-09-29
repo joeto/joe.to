@@ -221,6 +221,11 @@ public class Minitrue {
                     if (this.j2.hasFlag(p, Flag.JAILED)) {
                         cname += ChatColor.GRAY + "[ø]";
                     }
+                    if (this.j2.RedAlert == true){
+                    	if(!this.j2.hasFlag(p, Flag.SAFE) || !this.j2.hasFlag(p, Flag.PERMSAFE)){
+                    		cname = ChatColor.RED + "<!>" + ChatColor.WHITE + name;
+                    	}
+                    }
                 }
                 cname += ChatColor.WHITE.toString();
                 int thislen = 0;
