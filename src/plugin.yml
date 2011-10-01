@@ -361,3 +361,13 @@ commands:
   register:
     description: user linkage
     usage: register authcode
+  redalert:
+    description: puts server on panic mode
+  greenalert:
+    description: pulls server out of panic mode
+  safe:
+    description: declares a user safe during panic mode
+  flag:
+    description: declares a safe user unsafe during panic mode
+  permsafe:
+    description: permenantyl adds a user to safe list

@@ -72,6 +72,8 @@ import to.joe.Commands.Admin.MobCommand;
 import to.joe.Commands.Admin.MuteAllCommand;
 import to.joe.Commands.Admin.MuteCommand;
 import to.joe.Commands.Admin.NSACommand;
+import to.joe.Commands.Admin.RedAlertCommand;
+import to.joe.Commands.Admin.RedAlertFlagCommands;
 import to.joe.Commands.Admin.RemoveWarpCommand;
 import to.joe.Commands.Admin.ReportHandlingCommand;
 import to.joe.Commands.Admin.SetWarpCommand;
@@ -398,6 +400,11 @@ public class J2 extends JavaPlugin {
         this.getCommand("slap").setExecutor(new SlapCommand(this));
         this.getCommand("shower").setExecutor(new ShowerCommand(this));
         this.getCommand("register").setExecutor(new RegisterCommand(this));
+        this.getCommand("redalert").setExecutor(new RedAlertCommand(this));
+        this.getCommand("greenalert").setExecutor(new RedAlertCommand(this));
+        this.getCommand("flag").setExecutor(new RedAlertFlagCommands(this));
+        this.getCommand("safe").setExecutor(new RedAlertFlagCommands(this));
+        this.getCommand("permsafe").setExecutor(new RedAlertFlagCommands(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.config.general_server_number);
@@ -810,7 +817,7 @@ public class J2 extends JavaPlugin {
         }
         player.teleport(location);
     }
-
+    public boolean RedAlert;
     public SimpleDateFormat shortdateformat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
     private Logger log;
     public DogLog dogLog;
