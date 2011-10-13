@@ -5,20 +5,9 @@
 
 package to.joe;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +17,6 @@ import jline.Terminal;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -38,115 +26,15 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import to.joe.Commands.AmITrustedCommand;
-import to.joe.Commands.FlexCommand;
-import to.joe.Commands.GetLocationCommand;
-import to.joe.Commands.MeCommand;
-import to.joe.Commands.MessageCommand;
-import to.joe.Commands.NoteCommand;
-import to.joe.Commands.RegisterCommand;
-import to.joe.Commands.RemoveHomeCommand;
-import to.joe.Commands.RemoveItemCommand;
-import to.joe.Commands.ReportCommand;
-import to.joe.Commands.TrustCommand;
-import to.joe.Commands.TrustedRequestCommand;
-import to.joe.Commands.VoteCommand;
-import to.joe.Commands.Admin.AddBanCommand;
-import to.joe.Commands.Admin.AdminChatCommand;
-import to.joe.Commands.Admin.AdminGlobalChatCommand;
-import to.joe.Commands.Admin.AuthCommand;
-import to.joe.Commands.Admin.BanCommand;
-import to.joe.Commands.Admin.CoordinateTeleportCommand;
-import to.joe.Commands.Admin.GetFlagsCommand;
-import to.joe.Commands.Admin.GetGroupCommand;
-import to.joe.Commands.Admin.GodmodeCommand;
-import to.joe.Commands.Admin.HarassCommand;
-import to.joe.Commands.Admin.HatCommand;
-import to.joe.Commands.Admin.HomeInvasionCommand;
-import to.joe.Commands.Admin.IPLookupCommand;
-import to.joe.Commands.Admin.ImAToolCommand;
-import to.joe.Commands.Admin.J2LookupCommand;
-import to.joe.Commands.Admin.KickCommand;
-import to.joe.Commands.Admin.LookupCommand;
-import to.joe.Commands.Admin.MobCommand;
-import to.joe.Commands.Admin.MuteAllCommand;
-import to.joe.Commands.Admin.MuteCommand;
-import to.joe.Commands.Admin.NSACommand;
-import to.joe.Commands.Admin.RemoveWarpCommand;
-import to.joe.Commands.Admin.ReportHandlingCommand;
-import to.joe.Commands.Admin.SetWarpCommand;
-import to.joe.Commands.Admin.ShushCommand;
-import to.joe.Commands.Admin.SlapCommand;
-import to.joe.Commands.Admin.SlayCommand;
-import to.joe.Commands.Admin.SmiteCommand;
-import to.joe.Commands.Admin.StormCommand;
-import to.joe.Commands.Admin.TeleportHereCommand;
-import to.joe.Commands.Admin.ThorCommand;
-import to.joe.Commands.Admin.TimeCommand;
-import to.joe.Commands.Admin.UnBanCommand;
-import to.joe.Commands.Admin.VanishCommand;
-import to.joe.Commands.Admin.WhereIsPlayerCommand;
-import to.joe.Commands.Admin.WoofCommand;
-import to.joe.Commands.Fun.ClearInventoryCommand;
-import to.joe.Commands.Fun.HomeCommand;
-import to.joe.Commands.Fun.ItemCommand;
-import to.joe.Commands.Fun.ProtectMeCommand;
-import to.joe.Commands.Fun.SetHomeCommand;
-import to.joe.Commands.Fun.SpawnCommand;
-import to.joe.Commands.Fun.StationCommand;
-import to.joe.Commands.Fun.TeleportCommand;
-import to.joe.Commands.Fun.WarpCommand;
-import to.joe.Commands.Info.BlacklistCommand;
-import to.joe.Commands.Info.HelpCommand;
-import to.joe.Commands.Info.IntroCommand;
-import to.joe.Commands.Info.MOTDCommand;
-import to.joe.Commands.Info.PlayerListCommand;
-import to.joe.Commands.Info.RulesCommand;
-import to.joe.Commands.SeniorStaff.FlagsCommand;
-import to.joe.Commands.SeniorStaff.J2ReloadCommand;
-import to.joe.Commands.SeniorStaff.IRCMessageCommand;
-import to.joe.Commands.SeniorStaff.IRCAdminReloadCommand;
-import to.joe.Commands.SeniorStaff.KickAllCommand;
-import to.joe.Commands.SeniorStaff.MadagascarCommand;
-import to.joe.Commands.SeniorStaff.MaintenanceCommand;
-import to.joe.Commands.SeniorStaff.MaxPlayersCommand;
-import to.joe.Commands.SeniorStaff.SayCommand;
-import to.joe.Commands.SeniorStaff.SetSpawnCommand;
-import to.joe.Commands.SeniorStaff.ShowerCommand;
-import to.joe.Commands.SeniorStaff.SmackIRCCommand;
-import to.joe.listener.BlockAll;
-import to.joe.listener.EntityAll;
-import to.joe.listener.MapAll;
-import to.joe.listener.PlayerChat;
-import to.joe.listener.PlayerInteract;
-import to.joe.listener.PlayerJoinQuit;
-import to.joe.listener.PlayerMovement;
-import to.joe.listener.WeatherAll;
-import to.joe.manager.ActivityTracker;
-import to.joe.manager.BanCooperative;
-import to.joe.manager.Chats;
-import to.joe.manager.Configurator;
-import to.joe.manager.CraftualHarassmentPanda;
-import to.joe.manager.Damages;
-import to.joe.manager.IPTracker;
-import to.joe.manager.IRC;
-import to.joe.manager.Jailer;
-import to.joe.manager.KicksBans;
-import to.joe.manager.Minitrue;
-import to.joe.manager.MoveTracker;
-import to.joe.manager.MySQL;
-import to.joe.manager.Permissions;
-import to.joe.manager.Recipes;
-import to.joe.manager.Reports;
-import to.joe.manager.Users;
-import to.joe.manager.Voting;
-import to.joe.manager.Warps;
-import to.joe.manager.WebPage;
-import to.joe.util.DogLog;
-import to.joe.util.Flag;
-import to.joe.util.MCLogFilter;
-import to.joe.util.Property;
-import to.joe.util.User;
+import to.joe.Commands.*;
+import to.joe.Commands.Admin.*;
+import to.joe.Commands.Fun.*;
+import to.joe.Commands.Info.*;
+import to.joe.Commands.SeniorStaff.*;
+import to.joe.listener.*;
+import to.joe.manager.*;
+import to.joe.manager.serverlink.ServerLink;
+import to.joe.util.*;
 import to.joe.util.Runnables.AutoSave;
 
 /**
@@ -242,6 +130,8 @@ public class J2 extends JavaPlugin {
      * Configuration
      */
     public Configurator config=new Configurator(this);
+    
+    public ServerLink serverLink = new ServerLink(this);
 
     /*
      * (non-Javadoc)
@@ -253,6 +143,7 @@ public class J2 extends JavaPlugin {
         this.irc.kill();
         this.stopTimer();
     }
+    
 
     /*
      * (non-Javadoc)
@@ -398,6 +289,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("slap").setExecutor(new SlapCommand(this));
         this.getCommand("shower").setExecutor(new ShowerCommand(this));
         this.getCommand("register").setExecutor(new RegisterCommand(this));
+        this.getCommand("afk").setExecutor(new AfkCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.config.general_server_number);
@@ -405,6 +297,7 @@ public class J2 extends JavaPlugin {
         this.minitrue.restartManager();
         this.activity.restartManager();
         this.banCoop.startCallback();
+        this.serverLink.start();
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new AutoSave(this), 1, 6000);
     }
 
@@ -793,7 +686,7 @@ public class J2 extends JavaPlugin {
         }
         this.config.maintenance_enable = true;
         this.kickbans.kickAll("We'll be back after these brief messages");
-        this.getServer().dispatchCommand(new ConsoleCommandSender(this.getServer()), "stop");
+        this.getServer().dispatchCommand(this.getServer().getConsoleSender(), "stop");
     }
 
     /**

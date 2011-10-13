@@ -100,9 +100,11 @@ public class PlayerJoinQuit extends PlayerListener {
         }
         // j2.mysql.userIP(name,player.getAddress().getHostName());
         // if(event.getResult().equals(Result.ALLOWED)){
+        this.j2.debug("Ban system check complete.");
         this.j2.ip.incoming(name, ip);
         // }
         final User user = this.j2.mysql.getUser(name);
+        this.j2.debug("Acquired user");
         final boolean isAdmin = (user.getUserFlags().contains(Flag.ADMIN) || this.j2.users.groupHasFlag(user.getGroup(), Flag.ADMIN));
         final boolean isDonor = (user.getUserFlags().contains(Flag.DONOR) || this.j2.users.groupHasFlag(user.getGroup(), Flag.DONOR));
         final boolean isContributor = (user.getUserFlags().contains(Flag.CONTRIBUTOR) || this.j2.users.groupHasFlag(user.getGroup(), Flag.CONTRIBUTOR));
@@ -110,7 +112,7 @@ public class PlayerJoinQuit extends PlayerListener {
         final boolean isPrivBlocked = user.getUserFlags().contains(Flag.BARRED_MC1);
         boolean incoming = true;
         if (reason != null) {
-            if (!reason.equals("Try again. Ban system hiccup.")) {
+            if (!reason.equals("Try again. Ban system didn't like you.")) {
                 reason = "Visit http://forums.joe.to for unban";
             }
             event.setKickMessage(reason);

@@ -41,14 +41,14 @@ public class ReportHandlingCommand extends MasterCommand {
             } else {
                 final String action = args[0].toLowerCase();
                 if (action.equals("close")) {
-                    if (args.length > 2) {
+                    if (args.length > 1) {
                         final int id = Integer.parseInt(args[1]);
                         if (id != 0) {
                             this.j2.reports.close(id, playerName, this.j2.combineSplit(2, args, " "));
                             player.sendMessage(ChatColor.DARK_PURPLE + "Report closed");
                         }
                     } else {
-                        player.sendMessage(ChatColor.DARK_PURPLE + "/r close ID reason");
+                        player.sendMessage(ChatColor.DARK_PURPLE + "/r close ID [reason]");
                     }
                 }
                 if (action.equals("tp")) {

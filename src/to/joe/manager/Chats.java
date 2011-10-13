@@ -107,6 +107,7 @@ public class Chats {
     public void adminOnlyMessage(String name, String message) {
         final String msg = "<" + ChatColor.LIGHT_PURPLE + name + ChatColor.WHITE + "> " + message;
         this.j2.sendAdminPlusLog(msg);
+        this.j2.serverLink.broadcastChat(msg);
     }
 
     /**

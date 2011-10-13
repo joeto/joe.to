@@ -189,7 +189,7 @@ public class Users {
         }
         user.addFlag(flag);
         this.j2.debug("Adding flag " + flag.getChar() + " for " + name);
-        this.j2.mysql.setFlags(name, user.getUserFlags());
+        this.j2.mysql.setFlags(name, user.getNonTempFlags());
         this.updatePerms(name);
     }
 
@@ -202,7 +202,7 @@ public class Users {
     public void addFlagLocal(String name, Flag flag) {
         final User user = this.getUser(name);
         if (user != null) {
-            user.addFlag(flag);
+            user.addFlagTemp(flag);
         }
         this.updatePerms(name);
     }
@@ -220,7 +220,7 @@ public class Users {
         }
         user.dropFlag(flag);
         this.j2.debug("Dropping flag " + flag.getChar() + " for " + name);
-        this.j2.mysql.setFlags(name, user.getUserFlags());
+        this.j2.mysql.setFlags(name, user.getNonTempFlags());
         this.updatePerms(name);
     }
 
@@ -233,7 +233,7 @@ public class Users {
     public void dropFlagLocal(String name, Flag flag) {
         final User user = this.getUser(name);
         if (user != null) {
-            user.dropFlag(flag);
+            user.dropFlagTemp(flag);
         }
         this.updatePerms(name);
     }

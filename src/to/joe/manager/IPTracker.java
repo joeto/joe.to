@@ -45,7 +45,9 @@ public class IPTracker {
     public void incoming(String name, String IP) {
         this.j2.debug("Checking " + name);
         this.j2.mysql.userIP(name, IP);
-        HashMap<String, Boolean> names = new HashMap<String, Boolean>();
+        return;
+        //TODO
+        /*HashMap<String, Boolean> names = new HashMap<String, Boolean>();
         HashMap<String, Boolean> ips = new HashMap<String, Boolean>();
         names.put(name, false);
         ips = this.getIPs(names, ips);
@@ -83,7 +85,7 @@ public class IPTracker {
             this.j2.debug("Adding to list");
         } else {
             this.j2.debug("Not enough to add");
-        }
+        }*/
     }
 
     /**

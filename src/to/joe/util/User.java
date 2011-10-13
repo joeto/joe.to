@@ -13,16 +13,13 @@ import org.bukkit.block.Block;
  */
 public class User {
 
-    public User(String name, ChatColor color, String group, ArrayList<Flag> extraFlags, World world, String safeWord/*
-                                                                                                                     * ,
-                                                                                                                     * int
-                                                                                                                     * channel
-                                                                                                                     */) {
+    public User(String name, ChatColor color, String group, ArrayList<Flag> extraFlags, World world, String safeWord) {
         this.name = name;
         this.color = color;
         this.backup = color;
         this.group = group;
         this.extraFlags = extraFlags;
+        this.sessionFlags = new ArrayList<Flag>();
         this.lastChat = new ArrayList<Long>();
         this.lastChat.add(0L);
         this.lastChat.add(0L);
@@ -114,8 +111,14 @@ public class User {
     /**
      * @return list of user's flags
      */
-    public ArrayList<Flag> getUserFlags() {
+    public ArrayList<Flag> getNonTempFlags() {
         return this.extraFlags;
+    }
+    
+    public ArrayList<Flag> getUserFlags(){
+        ArrayList<Flag> ret=new ArrayList<Flag>(this.extraFlags);
+        ret.addAll(this.sessionFlags);
+        return ret;
     }
 
     /**
@@ -131,6 +134,14 @@ public class User {
         }
         return false;
     }
+    
+    public boolean addFlagTemp(Flag flag){
+        if (!this.sessionFlags.contains(flag)) {
+            this.sessionFlags.add(flag);
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Drop flag
@@ -141,6 +152,14 @@ public class User {
     public boolean dropFlag(Flag flag) {
         if (this.extraFlags.contains(flag)) {
             this.extraFlags.remove(flag);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean dropFlagTemp(Flag flag) {
+        if (this.sessionFlags.contains(flag)) {
+            this.sessionFlags.remove(flag);
             return true;
         }
         return false;
@@ -206,6 +225,7 @@ public class User {
 
     private final ArrayList<Block> blocksTravelled;
     private ArrayList<Flag> extraFlags;
+    private ArrayList<Flag> sessionFlags;
     private final String name;
     private ChatColor color;
     private final ChatColor backup;

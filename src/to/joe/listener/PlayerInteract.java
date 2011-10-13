@@ -49,7 +49,7 @@ public class PlayerInteract extends PlayerListener {
                 return;
             }
         }
-        if (material.equals(Material.STICK) && this.j2.hasFlag(player, Flag.TOOLS)) {
+        /*if (material.equals(Material.STICK) && this.j2.hasFlag(player, Flag.TOOLS)) {
             if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 this.j2.debug(player.getName() + " used a stick");
                 event.setCancelled(true);
@@ -81,7 +81,7 @@ public class PlayerInteract extends PlayerListener {
                         world.dropItemNaturally(location, new ItemStack(Material.SLIME_BALL, 1));
                     }
                 }
-            }*/
+            }
         }
         if (this.j2.hasFlag(player, Flag.THOR) && event.hasItem() && material.equals(Material.IRON_SWORD)) {
             final boolean weather = player.getWorld().isThundering();
@@ -96,7 +96,7 @@ public class PlayerInteract extends PlayerListener {
                     player.getWorld().setStorm(weather);
                 }
             }
-        }
+        }*/
     }
 
     @Override
