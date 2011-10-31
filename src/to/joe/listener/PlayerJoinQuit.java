@@ -11,6 +11,9 @@ package to.joe.listener;
 
 import java.util.ArrayList;
 
+import net.minecraft.server.Packet201PlayerInfo;
+
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -47,6 +50,7 @@ public class PlayerJoinQuit extends PlayerListener {
          * player.sendMessage(ChatColor.RED+"To get out, talk to the jailer");
          * player.sendMessage(ChatColor.RED+"You need to punch him"); }
          */
+        ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(new Packet201PlayerInfo("Nyan",true,1));
     }
 
     ArrayList<String> kicked = new ArrayList<String>();

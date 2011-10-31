@@ -8,8 +8,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import to.joe.J2;
 import to.joe.util.Ban;
+
+import to.joe.J2;
 import to.joe.util.Flag;
 
 /**

@@ -7,9 +7,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import to.joe.util.Ban;
+
 import to.joe.J2;
 import to.joe.Commands.MasterCommand;
-import to.joe.util.Ban;
 import to.joe.util.Flag;
 
 public class J2LookupCommand extends MasterCommand {

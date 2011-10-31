@@ -14,8 +14,9 @@ import java.util.HashMap;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
-import to.joe.J2;
 import to.joe.util.Ban;
+
+import to.joe.J2;
 import to.joe.util.Flag;
 import to.joe.util.Note;
 import to.joe.util.Report;
