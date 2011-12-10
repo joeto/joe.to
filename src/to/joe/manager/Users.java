@@ -409,7 +409,7 @@ public class Users {
             this.j2.banCoop.processJoin(player);
         }
         for (final String line : this.j2.motd) {
-            player.sendMessage(line);
+            player.sendMessage(ChatColor.RED+line);
         }
         if (this.j2.reallyHasFlag(name, Flag.ADMIN)) {
             final int count = this.j2.reports.numReports();

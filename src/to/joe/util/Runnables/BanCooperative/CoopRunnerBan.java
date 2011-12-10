@@ -24,20 +24,20 @@ public class CoopRunnerBan extends CoopRunner {
 
     @Override
     public void run() {
-        this.mcbans_ban();
+        //this.mcbans_ban();
         this.mcbouncer_ban();
     }
     
     private void mcbans_ban() {
         String banType = this.local;
         final String reason_lower = this.reason.toLowerCase();
-        if (reason_lower.contains("grief") && !(reason_lower.contains("fuck") || reason_lower.contains("shit") || reason_lower.contains("bitch"))) {
+        /*if (reason_lower.contains("grief") && !(reason_lower.contains("fuck") || reason_lower.contains("shit") || reason_lower.contains("bitch"))) {
             banType = this.global;
         }
         if (this.admin.toLowerCase().contains("bob")) {
             this.admin = "mbaxter";
             banType = this.local;
-        }
+        }*/
         final HashMap<String, String> postVars = new HashMap<String, String>();
         postVars.put("player", this.name);
         postVars.put("admin", this.admin);

@@ -364,3 +364,6 @@ commands:
   afk:
     description: Go afk
     usage: afk
+  extme:
+    description: anti-fire
+    usage: ext

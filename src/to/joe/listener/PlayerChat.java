@@ -52,6 +52,9 @@ public class PlayerChat extends PlayerListener {
         final Player player = event.getPlayer();
         final String name = player.getName();
         final String message = event.getMessage();
+        if(message.equals("/ext")){
+            event.setMessage("/extme");
+        }
         if (this.j2.chat.isSpam(player, message) || !this.j2.panda.chat(player, message)) {
             event.setCancelled(true);
             return;

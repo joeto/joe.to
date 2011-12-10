@@ -117,7 +117,7 @@ public class PlayerJoinQuit extends PlayerListener {
         boolean incoming = true;
         if (reason != null) {
             if (!reason.equals("Try again. Ban system didn't like you.")) {
-                reason = "Visit http://forums.joe.to for unban";
+                reason = "Visit http://www.joe.to/unban/ for unban";
             }
             event.setKickMessage(reason);
             event.disallow(PlayerPreLoginEvent.Result.KICK_BANNED, reason);

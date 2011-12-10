@@ -47,7 +47,7 @@ public class Vanish {
         SpoutManager.getPacketManager().addListener(255, new PacketeerTest(this));
         
         SpoutManager.getPacketManager().addListener(5, new Packeteer5EntityEquipment(this));
-        SpoutManager.getPacketManager().addListener(17, new Packeteer17(this));
+        SpoutManager.getPacketManager().addListener(17, new Packeteer17EntityLocationAction(this));
         SpoutManager.getPacketManager().addListener(18, new Packeteer18ArmAnimation(this));
         SpoutManager.getPacketManager().addListener(19, new Packeteer19EntityAction(this));
         SpoutManager.getPacketManager().addListener(20, new Packeteer20NamedEntitySpawn(this));

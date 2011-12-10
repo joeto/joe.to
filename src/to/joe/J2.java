@@ -290,6 +290,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("shower").setExecutor(new ShowerCommand(this));
         this.getCommand("register").setExecutor(new RegisterCommand(this));
         this.getCommand("afk").setExecutor(new AfkCommand(this));
+        this.getCommand("extme").setExecutor(new ExtCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.config.general_server_number);
@@ -406,7 +407,7 @@ public class J2 extends JavaPlugin {
         if (this.tips.isEmpty()) {
             return;
         }
-        final String message = ChatColor.AQUA + "[TIP] " + this.tips.get(this.curTipNum);
+        final String message = ChatColor.RED + "[TIP] " + this.tips.get(this.curTipNum);
         this.chat.messageAll(message);
         this.log(message);
         this.curTipNum++;

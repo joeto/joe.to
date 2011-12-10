@@ -1,5 +1,6 @@
 package to.joe.Commands.Info;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -16,7 +17,7 @@ public class IntroCommand extends MasterCommand {
     public void exec(CommandSender sender, String commandName, String[] args, Player player, String playerName, boolean isPlayer) {
         if (isPlayer) {
             for (final String line : this.j2.intro) {
-                player.sendMessage(line);
+                player.sendMessage(ChatColor.RED+line);
             }
         }
     }
