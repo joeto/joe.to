@@ -44,6 +44,9 @@ public class Warps {
      */
     public void addWarpInternal(Warp warp) {
         synchronized (this.lock) {
+            if(this.warps.contains(warp)){
+                return;
+            }
             if (warp.getFlag().equals(Flag.PLAYER_HOME)) {
                 this.homes.add(warp);
             } else {

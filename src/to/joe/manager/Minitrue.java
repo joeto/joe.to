@@ -207,19 +207,19 @@ public class Minitrue {
                         cname = ChatColor.YELLOW + name;
                     }
                     if (this.j2.hasFlag(p, Flag.NSA)) {
-                        cname += ChatColor.DARK_AQUA + "«»";
+                        cname += ChatColor.DARK_AQUA + "<>";
                     }
-                    if (this.j2.hasFlag(p, Flag.THOR)) {
-                        cname += ChatColor.WHITE + "/";
+                    if (this.j2.hasFlag(p, Flag.MAYBETHREAT)) {
+                        cname += ChatColor.YELLOW + "[T]";
                     }
                     if (this.j2.hasFlag(p, Flag.GODMODE)) {
-                        cname += ChatColor.DARK_RED + "⌂";
+                        cname += ChatColor.DARK_RED + "[G]";
                     }
-                    if (this.j2.hasFlag(p, Flag.TOOLS)) {
-                        cname += ChatColor.AQUA + "¬";
+                    if (this.j2.hasFlag(p, Flag.TRUSTED)) {
+                        cname += ChatColor.DARK_GREEN + "[T]";
                     }
                     if (this.j2.hasFlag(p, Flag.JAILED)) {
-                        cname += ChatColor.GRAY + "[ø]";
+                        cname += ChatColor.GRAY + "[J]";
                     }
                 }
                 cname += ChatColor.WHITE.toString();

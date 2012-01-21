@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import to.joe.J2;
 import to.joe.manager.BanCooperative;
-
+@SuppressWarnings("unused")
 public class CoopRunnerBan extends CoopRunner {
 
     private String admin;
@@ -27,6 +27,7 @@ public class CoopRunnerBan extends CoopRunner {
         //this.mcbans_ban();
         this.mcbouncer_ban();
     }
+    
     
     private void mcbans_ban() {
         String banType = this.local;

@@ -7,11 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -21,11 +17,7 @@ import org.json.JSONObject;
 import to.joe.J2;
 import to.joe.manager.BanCooperative;
 import to.joe.util.Flag;
-import to.joe.util.BanCooperative.BanCoopBan;
-import to.joe.util.BanCooperative.BanCoopBanMCBans;
-import to.joe.util.BanCooperative.BanCoopBanMCBouncer;
-import to.joe.util.BanCooperative.BanCoopDossier;
-import to.joe.util.BanCooperative.BanCoopType;
+import to.joe.util.BanCooperative.*;
 
 public abstract class CoopRunner implements Runnable {
 

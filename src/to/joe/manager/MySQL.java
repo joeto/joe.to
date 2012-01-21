@@ -1,12 +1,7 @@
 package to.joe.manager;
 
 //import java.net.InetSocketAddress;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,14 +9,8 @@ import java.util.HashMap;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
-import to.joe.util.Ban;
-
 import to.joe.J2;
-import to.joe.util.Flag;
-import to.joe.util.Note;
-import to.joe.util.Report;
-import to.joe.util.User;
-import to.joe.util.Warp;
+import to.joe.util.*;
 
 /**
  * All interactions with SQL
@@ -486,6 +475,7 @@ public class MySQL {
             this.j2.users.setGroups(groups);
 
             // reports
+            this.j2.reports.restartManager();
             final String state2 = "SELECT id,user,x,y,z,pitch,yaw,message,world,time,closed from reports where server=" + this.serverNumber + " and closed=0";
             ps = conn.prepareStatement(state2);
             this.j2.debug("Query: " + state2);
@@ -493,7 +483,7 @@ public class MySQL {
             while (rs.next()) {
                 final String user = rs.getString("user");
                 final Location loc = new Location(this.j2.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("pitch"), rs.getFloat("yaw"));
-                this.j2.reports.addReportViaSQL(new Report(rs.getInt("id"), loc, user, rs.getString("message"), rs.getLong("time"), rs.getBoolean("closed")));
+                this.j2.reports.addReportViaSQLSilent(new Report(rs.getInt("id"), loc, user, rs.getString("message"), rs.getLong("time"), rs.getBoolean("closed")));
                 this.j2.debug("Adding new report to list, user " + user);
             }
 

@@ -1,6 +1,8 @@
 package to.joe.manager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -13,7 +15,7 @@ import to.joe.util.Report;
  * 
  */
 public class Reports {
-    private ArrayList<Report> reports;
+    private HashMap<Integer,Report> reports;
     J2 j2;
     /**
      * current highest report id
@@ -32,7 +34,8 @@ public class Reports {
      */
     public void restartManager() {
         synchronized (this.sync) {
-            this.reports = new ArrayList<Report>();
+            this.reports = new HashMap<Integer,Report>();
+            this.maxid=-1;
         }
     }
 
@@ -61,7 +64,7 @@ public class Reports {
      * @return
      */
     public String addReportViaSQL(Report report) {
-        this.reports.add(report);
+        this.reports.put(report.getID(),report);
         if (report.getID() > this.maxid) {
             this.maxid = report.getID();
         }
@@ -76,7 +79,20 @@ public class Reports {
         this.j2.sendAdminPlusLog(message);
         return message;
     }
-
+    
+    /**
+     * Add report,  no alert message
+     * 
+     * @param report
+     * @return
+     */
+    public void addReportViaSQLSilent(Report report) {
+        this.reports.put(report.getID(),report);
+        if (report.getID() > this.maxid) {
+            this.maxid = report.getID();
+        }
+    }
+    
     /**
      * Close a report
      * 
@@ -90,7 +106,7 @@ public class Reports {
             if (r != null) {
                 this.j2.debug("Closing report " + id);
                 this.j2.mysql.closeReport(id, admin, reason);
-                this.reports.remove(r);
+                this.reports.remove(id);
             }
         }
     }
@@ -103,12 +119,7 @@ public class Reports {
      */
     public Report getReport(int id) {
         synchronized (this.sync) {
-            for (final Report r : this.reports) {
-                if (r.getID() == id) {
-                    return r;
-                }
-            }
-            return null;
+            return this.reports.get(id);
         }
     }
 
@@ -131,6 +142,6 @@ public class Reports {
      * @return
      */
     public ArrayList<Report> getReports() {
-        return new ArrayList<Report>(this.reports);
+        return new ArrayList<Report>(this.reports.values());
     }
 }

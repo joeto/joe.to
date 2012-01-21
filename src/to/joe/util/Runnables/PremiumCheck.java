@@ -66,7 +66,7 @@ public class PremiumCheck implements Runnable {
             }
             if (status.equals(accountStatus.NONPREMIUM)) {
                 this.j2.sendAdminPlusLog(message);
-                this.j2.irc.messageAdmins(message);
+                this.j2.irc.messageAdmins(ChatColor.stripColor(message));
             } else {
                 //this.j2.log(message);
             }

@@ -1,19 +1,16 @@
 package to.joe.manager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.jibble.pircbot.PircColors;
 
 import to.joe.J2;
 import to.joe.util.Flag;
-import to.joe.util.User;
 import to.joe.util.IRCBot;
+import to.joe.util.User;
 
 /**
  * Manager for the IRC relay
@@ -33,10 +30,40 @@ public class IRC {
     public IRC(J2 j2p) {
         this.j2 = j2p;
         this.cleanStartup();
+        this.queue=new ArrayList<String>();
     }
-
+    
     public void reloadIRCAdmins() {
         this.admins = this.j2.mysql.getIRCAdmins();
+    }
+    
+    public void start(){
+        this.j2.getServer().getScheduler().scheduleSyncRepeatingTask(this.j2, new Runnable(){
+            @Override
+            public void run() {
+                IRC.this.queue();
+            }
+        }, 3600, 3600);
+    }
+    private ArrayList<String> queue;
+    public void queueAlert(String message){
+        if(!queue.contains(message)&&this.goodToGo(message)){
+            queue.add(message);
+        }
+    }
+    
+    private void queue(){
+        if(queue.size()>0){
+            StringBuilder message=new StringBuilder();
+            for(String string:queue){
+                if(message.length()>0){
+                    message.append(", ");
+                }
+                message.append(string);
+            }
+        this.messageAdmins("Latest: "+ChatColor.stripColor(message.toString()));
+        queue.clear();
+        }
     }
 
     /**
@@ -66,7 +93,7 @@ public class IRC {
      * @return
      */
     private boolean goodToGo(String string) {
-        if (string.startsWith("[J2BANS]") || string.startsWith("[BANS]")) {
+        //if (string.startsWith("[J2BANS]") || string.startsWith("[BANS]")) {
             final long rightNow = (new Date()).getTime();
             if (this.msgs.containsKey(string)) {
                 if ((this.msgs.get(string).longValue() + 3600000L) < rightNow) {
@@ -80,8 +107,8 @@ public class IRC {
                 this.msgs.put(string, rightNow);
                 return true;
             }
-        }
-        return true;
+        //}
+        //return true;
     }
 
     /**
@@ -325,9 +352,29 @@ public class IRC {
      * @param message
      */
     public void messageAdmins(String message) {
-        if (this.j2.config.irc_enable && this.goodToGo(message)) {
-            this.bot.sendMessage(this.j2.config.irc_admin_channel, message);
+        if (this.j2.config.irc_enable /*&& this.goodToGo(message)*/) {
+            this.bot.sendMessage(this.j2.config.irc_admin_channel, this.colors(message));
         }
+    }
+
+    private String colors(String message) {
+        message=message.replace(ChatColor.AQUA.toString(), PircColors.TEAL);
+        message=message.replace(ChatColor.BLACK.toString(), PircColors.BLACK);
+        message=message.replace(ChatColor.BLUE.toString(), PircColors.BLUE);
+        message=message.replace(ChatColor.DARK_AQUA.toString(), PircColors.BLUE);
+        message=message.replace(ChatColor.DARK_BLUE.toString(), PircColors.BLUE);
+        message=message.replace(ChatColor.DARK_GRAY.toString(), PircColors.DARK_GRAY);
+        message=message.replace(ChatColor.DARK_GREEN.toString(), PircColors.GREEN);
+        message=message.replace(ChatColor.DARK_PURPLE.toString(), PircColors.PURPLE);
+        message=message.replace(ChatColor.DARK_RED.toString(), PircColors.RED);
+        message=message.replace(ChatColor.GOLD.toString(), PircColors.OLIVE);
+        message=message.replace(ChatColor.GRAY.toString(), PircColors.DARK_GRAY);
+        message=message.replace(ChatColor.GREEN.toString(), PircColors.GREEN);
+        message=message.replace(ChatColor.LIGHT_PURPLE.toString(), PircColors.MAGENTA);
+        message=message.replace(ChatColor.RED.toString(), PircColors.RED);
+        message=message.replace(ChatColor.WHITE.toString(), PircColors.NORMAL);
+        message=message.replace(ChatColor.YELLOW.toString(), PircColors.YELLOW);
+        return message;
     }
 
     /**

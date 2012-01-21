@@ -16,6 +16,7 @@ import to.joe.util.Flag;
  */
 public class IPTracker {
     private final J2 j2;
+    @SuppressWarnings("unused")
     private HashMap<String, String> html, nameslist;
     private HashMap<String, Integer> totalcount, bannedcount;
     public ArrayList<String> badlist;

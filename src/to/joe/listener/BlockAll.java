@@ -3,12 +3,8 @@ package to.joe.listener;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
-import org.bukkit.event.block.BlockListener;
-import org.bukkit.event.block.BlockPlaceEvent;
 
 import to.joe.J2;
 import to.joe.util.Flag;

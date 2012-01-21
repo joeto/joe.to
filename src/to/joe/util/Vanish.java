@@ -44,7 +44,6 @@ public class Vanish {
         this.eidVanished = new ArrayList<Integer>();
         this.mini = mini;
         
-        SpoutManager.getPacketManager().addListener(255, new PacketeerTest(this));
         
         SpoutManager.getPacketManager().addListener(5, new Packeteer5EntityEquipment(this));
         SpoutManager.getPacketManager().addListener(17, new Packeteer17EntityLocationAction(this));
@@ -52,7 +51,7 @@ public class Vanish {
         SpoutManager.getPacketManager().addListener(19, new Packeteer19EntityAction(this));
         SpoutManager.getPacketManager().addListener(20, new Packeteer20NamedEntitySpawn(this));
         SpoutManager.getPacketManager().addListener(28, new Packeteer28EntityVelocity(this));
-        SpoutManager.getPacketManager().addListener(201, new Packeteer201());
+        SpoutManager.getPacketManager().addListener(201, new Packeteer201PlayerInfo());
         // SpoutManager.getPacketManager().addListener(29, new
         // Packeteer29DestroyEntity(this));
         SpoutManager.getPacketManager().addListener(30, new Packeteer30Entity(this));

@@ -3,11 +3,11 @@ package to.joe.util.Packeteer;
 import net.minecraft.server.Packet201PlayerInfo;
 
 import org.bukkit.entity.Player;
+import org.getspout.spout.packet.standard.MCCraftPacket;
 import org.getspout.spoutapi.packet.listener.PacketListener;
 import org.getspout.spoutapi.packet.standard.MCPacket;
-import org.getspout.spout.packet.standard.MCCraftPacket;
 
-public class Packeteer201 implements PacketListener {
+public class Packeteer201PlayerInfo implements PacketListener {
 
 
     @Override

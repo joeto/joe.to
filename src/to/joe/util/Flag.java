@@ -28,6 +28,7 @@ public enum Flag {
     MUTED('X', "Muted"), // player muted
     QUIET_IRC('y', "Minimal IRC alerts"), //Stop spamming IRC!
     CUSTOM3('z', "Custom3"),
+    MAYBETHREAT('H',"Other Server Bans"),
     // Numbers are reserved for internal programming.
     PLAYER_HOME('0', "Home designation (internal)"), //homes
     PLAYER_WARP_PUBLIC('1', "Unflagged warp designation (internal)");//warps

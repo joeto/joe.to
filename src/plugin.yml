@@ -233,10 +233,12 @@ commands:
             lookup
   j2lookup:
     description: Look up in j2 ban system
+    aliases: [j2l,j2]
     usage: |
             j2lookup
   iplookup:
     description: See most recent users to log in via named player's IP
+    aliases: [match,ipmatch]
     usage: |
             iplookup
   smite:
@@ -367,3 +369,6 @@ commands:
   extme:
     description: anti-fire
     usage: ext
+  gm:
+    description: gm
+    usage: gm

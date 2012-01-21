@@ -6,12 +6,7 @@ import org.bukkit.entity.Player;
 
 import to.joe.J2;
 import to.joe.util.BanCooperative.BanCoopDossier;
-import to.joe.util.Runnables.BanCooperative.CoopRunnerBan;
-import to.joe.util.Runnables.BanCooperative.CoopRunnerDisconnect;
-import to.joe.util.Runnables.BanCooperative.CoopRunnerJoin;
-import to.joe.util.Runnables.BanCooperative.CoopRunnerLookup;
-import to.joe.util.Runnables.BanCooperative.CoopRunnerMCBansHeartbeat;
-import to.joe.util.Runnables.BanCooperative.CoopRunnerUnban;
+import to.joe.util.Runnables.BanCooperative.*;
 
 /**
  * System for interfacing with MCBans and MCBouncer Easy to incorporate

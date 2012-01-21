@@ -1,6 +1,7 @@
 package to.joe.listener;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -38,6 +39,12 @@ public class PlayerChat extends PlayerListener {
     public void onPlayerChat(PlayerChatEvent event) {
         final Player player = event.getPlayer();
         final String message = event.getMessage();
+        if(message.contains("§")){
+            String[] bit={player.getName(),"Color","code","hacking"};
+            j2.kickbans.callAddBan("BobTheHaxor", bit, new Location(this.j2.getServer().getWorlds().get(0), 0, 0, 0));
+            event.setCancelled(true);
+            return;
+        }
         if (this.j2.chat.isSpam(player, message) || !this.j2.panda.chat(player, message)) {
             event.setCancelled(true);
             return;

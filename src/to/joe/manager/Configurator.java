@@ -12,6 +12,7 @@ import to.joe.J2;
  * Configuration handler. Not yet implemented
  * 
  */
+@SuppressWarnings("deprecation")
 public class Configurator {
 
     private final J2 j2;
@@ -25,6 +26,7 @@ public class Configurator {
      * Loads the config
      */
     public void load() {
+        
         final Configuration conf = this.j2.getConfiguration();
         conf.load();
 

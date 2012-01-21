@@ -28,12 +28,14 @@ public class HarassCommand extends MasterCommand {
             }
             if (!this.j2.panda.panda(target)) {
                 this.j2.panda.harass(target.getName());
-                this.j2.sendAdminPlusLog(ChatColor.AQUA + "[HARASS] Target Acquired: " + ChatColor.DARK_AQUA + target.getName() + ChatColor.AQUA + ". Thanks, " + playerName + "!");
-                this.j2.irc.messageAdmins("[HARASS] Target Acquired: " + target.getName() + ". Thanks, " + playerName + "!");
+                String msg=ChatColor.AQUA + "[HARASS] Target Acquired: " + ChatColor.DARK_AQUA + target.getName() + ChatColor.AQUA + ". Thanks, " + playerName + "!";
+                this.j2.sendAdminPlusLog(msg);
+                this.j2.irc.messageAdmins("[Harass] "+playerName+" added by "+target.getName());
             } else {
                 this.j2.panda.remove(target.getName());
-                this.j2.sendAdminPlusLog(ChatColor.AQUA + "[HARASS] Target Removed: " + ChatColor.DARK_AQUA + target.getName() + ChatColor.AQUA + ". Thanks, " + playerName + "!");
-                this.j2.irc.messageAdmins("[HARASS] Target Removed: " + target.getName() + ". Thanks, " + playerName + "!");
+                String msg=ChatColor.AQUA + "[HARASS] Target Removed: " + ChatColor.DARK_AQUA + target.getName() + ChatColor.AQUA + ". Thanks, " + playerName + "!";
+                this.j2.sendAdminPlusLog(msg);
+                this.j2.irc.messageAdmins("[Harass] "+playerName+" removed by "+target.getName());
             }
         }
     }

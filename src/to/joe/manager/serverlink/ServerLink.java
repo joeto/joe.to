@@ -10,8 +10,7 @@ import org.bukkit.util.config.Configuration;
 import org.bukkit.util.config.ConfigurationNode;
 
 import to.joe.J2;
-import to.joe.util.Flag;
-
+@SuppressWarnings("deprecation")
 public class ServerLink implements ConnectionCallback {
     
     private final Connection conn = new Connection(this);

@@ -291,6 +291,7 @@ public class J2 extends JavaPlugin {
         this.getCommand("register").setExecutor(new RegisterCommand(this));
         this.getCommand("afk").setExecutor(new AfkCommand(this));
         this.getCommand("extme").setExecutor(new ExtCommand(this));
+        this.getCommand("gm").setExecutor(new GameModeToggleCommand(this));
         final PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
         this.webpage.go(this.config.general_server_number);
@@ -300,6 +301,15 @@ public class J2 extends JavaPlugin {
         this.banCoop.startCallback();
         this.serverLink.start();
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new AutoSave(this), 1, 6000);
+        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+
+            @Override
+            public void run() {
+                mysql.loadMySQLData();
+            }
+            
+        }, 6000, 6000);
+        this.irc.start();
     }
 
     /**
