@@ -123,6 +123,7 @@ public abstract class CoopRunner implements Runnable {
             postVars.put("exec", "playerLookup");
             final JSONObject mcbans_json = this.mcbans_api(postVars);
             if (mcbans_json != null) {
+                int mcbans_count=0;
                 try {
                     final JSONArray local = mcbans_json.optJSONArray("local");
                     for (int i = 0; i < local.length(); i++) {
@@ -133,11 +134,13 @@ public abstract class CoopRunner implements Runnable {
                         mcbans_bans.add(new BanCoopBanMCBans(global.getString(i), "g"));
                         sigCount++;
                     }
-                } catch (final JSONException e) {
-                    e.printStackTrace();
+                    mcbans_rep = mcbans_json.optDouble("reputation", 10.0);
+                    mcbans_count = mcbans_json.optInt("total", 0);
+                } catch (final Exception e) {
+                    //e.printStackTrace();
                 }
-                mcbans_rep = mcbans_json.optDouble("reputation", 10.0);
-                int mcbans_count = mcbans_json.optInt("total", 0);
+                
+                
                 if (mcbans_count < mcbans_bans.size()) {
                     mcbans_count = mcbans_bans.size();
                 }
