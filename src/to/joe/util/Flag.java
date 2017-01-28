@@ -16,6 +16,7 @@ public enum Flag {
     SHUT_OUT_WORLD('l', "Shutting out the world"), //Temporary - /shush
     MODWORLD('m', "Can Modify"), // standard ability to edit blocks
     NEW('n', "New"), // new player. currently unused
+    JOINED('J', "Joined since last reset"), //Indicates user is has joined
     NSA('N', "Listening In"), // admin listening to msg
     BARRED_MC1('p', "Banned from mc1"), // Cannot join mc1 no matter what.
     SILENT_JOIN('q', "Silent but deadly"), // invisadmin
@@ -23,6 +24,8 @@ public enum Flag {
     SRSTAFF('s', "Senior Staff"), // senior staff
     TRUSTED('t', "Trusted"), // trusted
     TOOLS('T', "Tool mode"), // admin tool mode
+    WATCH('W', "Suspicious player"), //Watch flag for redalert system
+    AUTOWATCH('w', "Joined during redalert"), //Given to player if joined during redalert
     VANISHED('V',"Currently invisible"),//Invisabull
     THOR('x', "Thor Powers"), // admin lightning powers
     MUTED('X', "Muted"), // player muted
