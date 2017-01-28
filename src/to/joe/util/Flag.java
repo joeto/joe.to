@@ -25,6 +25,7 @@ public enum Flag {
     TOOLS('T', "Tool mode"), // admin tool mode
     VANISHED('V',"Currently invisible"),//Invisabull
     THOR('x', "Thor Powers"), // admin lightning powers
+    WATCH('w','Susipicous player') //flag for redalert system
     MUTED('X', "Muted"), // player muted
     QUIET_IRC('y', "Minimal IRC alerts"), //Stop spamming IRC!
     CUSTOM3('z', "Custom3"),
